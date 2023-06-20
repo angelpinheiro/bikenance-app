@@ -1,4 +1,4 @@
-package dev.anxops.bikenance.ui.theme
+package com.anxops.bkn.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

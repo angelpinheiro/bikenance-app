@@ -1,4 +1,4 @@
-package dev.anxops.bikenance.ui.theme
+package com.anxops.bkn.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

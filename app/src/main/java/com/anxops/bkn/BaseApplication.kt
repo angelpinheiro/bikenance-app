@@ -1,4 +1,4 @@
-package dev.anxops.bikenance
+package com.anxops.bkn
 
 import android.app.Application
 
