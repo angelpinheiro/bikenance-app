@@ -17,7 +17,7 @@ gen/
 local.properties
 
 # Google/Firebase secrets
-google-services.json
+google-services-private.json
 
 ### Windows template
 # Windows thumbnail cache files
