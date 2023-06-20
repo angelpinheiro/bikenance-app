@@ -4,7 +4,7 @@ Bikenance is an Android application that allows you to keep complete control ove
 
 This is an ongoing learning project that I build to explore and enhance my programming skills and try new stuff. There may be changes or updates made at any time without prior notice.
 
-## Key Features 🔑
+## Key Features
 
 - Strava Integration: Bikenance seamlessly integrates with Strava, allowing you to leverage your activity data for enhanced maintenance tracking.
 
@@ -42,17 +42,17 @@ The MVP version of Bikenance will focus on the following functionalities:
     - Utilize activity parameters from Strava to weigh component wear. These parameters may include terrain type, weather conditions, and activity intensity.
     - Dynamic Wear Thresholds: Over time, the app analyzes the user's maintenance history to determine personalized wear thresholds for each component. If a component consistently wears out before the initially suggested threshold, the app adjusts the threshold accordingly for future maintenance notifications.
 
-# Architecture
+## Architecture
 
 Bikenance utilizes a client-server architecture, with a mobile app for Android and a backend server.
 
-## Android App
+### Android App
 
 Technologies used in the Android app:
 - User Interface: Jetpack Compose for modern UI development.
 - Push Notifications: Firebase Cloud Messaging (FCM) for delivering push notifications.
 
-## Backend Server
+### Backend Server
 
 The Bikenance backend server comprises the following components and technologies:
 
@@ -62,7 +62,7 @@ The Bikenance backend server comprises the following components and technologies
 - API Integration: Utilizes the Strava API to authenticate users, retrieve bike data, and receive activity information.
 
 
-## Flow of Information
+### Flow of Information
 
 The flow of information involves the app, the Bikenance server, and Strava. Let's dive into the details:
 
@@ -87,7 +87,7 @@ The flow of information involves the app, the Bikenance server, and Strava. Let'
     - The app receives the notification and displays it to the user, indicating that the new activity has been synchronized.
 
 
-# Main Challenges
+## Main Challenges
 
 - Ensuring a smooth integration with Strava to import bike and activity data without any issues.
 - Developing an accurate algorithm to calculate component wear.
