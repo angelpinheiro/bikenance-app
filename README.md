@@ -49,7 +49,8 @@ Bikenance utilizes a client-server architecture, with a mobile app for Android a
 ### Android App
 
 Technologies used in the Android app:
-- User Interface: Jetpack Compose for modern UI development.
+- Jetpack Compose for modern UI development.
+- Room, Hilt, ViewModel, Coroutines, and other Android Jetpack Libraries.
 - Push Notifications: Firebase Cloud Messaging (FCM) for delivering push notifications.
 
 ### Backend Server
@@ -60,6 +61,8 @@ The Bikenance backend server comprises the following components and technologies
 - Framework: Ktor, a flexible and asynchronous web framework for building server applications.
 - Database: MongoDB, a NoSQL database used to store user profiles, bike data, and activity information.
 - API Integration: Utilizes the Strava API to authenticate users, retrieve bike data, and receive activity information.
+
+
 
 
 ### Flow of Information
