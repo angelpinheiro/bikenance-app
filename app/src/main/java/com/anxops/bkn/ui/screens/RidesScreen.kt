@@ -1,0 +1,143 @@
+package com.anxops.bkn.ui.screens
+
+import android.content.Context
+import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.anxops.bkn.R
+import com.anxops.bkn.ui.components.Ride
+import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.shared.BknIcon
+import com.anxops.bkn.ui.shared.Loading
+import com.anxops.bkn.ui.shared.coloredShadow
+import com.anxops.bkn.util.formatAsYearMonth
+import com.anxops.bkn.util.toDate
+import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.util.*
+
+//@GarageNavGraph
+//@Destination
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun RidesScreen(
+    navigator: DestinationsNavigator,
+    viewModel: RidesScreenViewModel = hiltViewModel(),
+) {
+    val state = viewModel.state.collectAsState()
+    val bknNav = BknNavigator(navigator)
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = context) {
+
+        viewModel.openActivityEvent.collect {
+            openStravaActivity(context, it)
+        }
+    }
+
+    val bikes = viewModel.bikes.collectAsState()
+    val rides = viewModel.rides.collectAsState()
+
+    if (rides.value == null) {
+        Loading()
+    } else if (rides.value?.isEmpty() == true) {
+        EmptyRides()
+    } else {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+
+            rides.value?.groupBy { it.dateTime?.substring(0, 7) ?: "" }?.toList()
+                ?.sortedByDescending { it.first }?.forEach { item ->
+
+                    val gRides = item.second.sortedByDescending { it.dateTime }
+                    val date = gRides.first().dateTime.toDate()?.formatAsYearMonth() ?: "Other"
+
+                    stickyHeader {
+                        Text(
+                            text = date.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .coloredShadow()
+                                .background(MaterialTheme.colors.primary)
+                                .padding(6.dp),
+                            color = MaterialTheme.colors.onPrimary,
+                            style = MaterialTheme.typography.h3
+                        )
+                    }
+                    items(items = gRides, itemContent = {
+                        Ride(ride = it, bikes.value, onClickOpenOnStrava = {
+                            it.stravaId?.let { id ->
+                                viewModel.openActivity(id)
+                            }
+                        }, onClick = {
+                            bknNav.navigateToRide(it._id)
+                        })
+                    })
+                }
+        }
+    }
+}
+
+
+@Composable
+fun EmptyRides(onClickNew: () -> Unit = {}) {
+    Box(Modifier.fillMaxSize()) {
+        Text(
+            text = "You have no rides yet",
+            style = MaterialTheme.typography.h3,
+            modifier = Modifier
+                .padding(bottom = 100.dp)
+                .align(Alignment.Center)
+        )
+        Button(
+            onClick = onClickNew,
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .align(Alignment.Center)
+        ) {
+            BknIcon(
+                icon = CommunityMaterial.Icon3.cmd_plus,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .size(20.dp),
+                color = MaterialTheme.colors.onPrimary
+            )
+            Text(text = "Add a new ride")
+        }
+        Image(
+            painter = painterResource(id = R.drawable.ic_undraw_not_found),
+            contentDescription = "Not found",
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .padding(bottom = 30.dp)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+
+fun openStravaActivity(context: Context, activityId: String) {
+    val url = "https://www.strava.com/activities/$activityId"
+    val intent = CustomTabsIntent
+        .Builder()
+        .build()
+    intent.launchUrl(context, Uri.parse(url))
+}

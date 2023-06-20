@@ -1,0 +1,80 @@
+package com.anxops.bkn.ui.theme
+
+import androidx.compose.material.Colors
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+
+
+val BknGrey = Color(0xFFACACAC)
+
+val BknRed = Color(0xFFd32f2f)
+val BknOrange = Color(0xFFf57c00)
+val BknGreen = Color(0xFF7cb342)
+val BknBlue = Color(0xFF5fa3fe)
+
+
+val md_theme_light_primary = Color(0xFF282e41)
+val md_theme_light_primary_variant = Color(0xFF181B25)
+val md_theme_light_onPrimary = Color(0xFFFFFFFF)
+val md_theme_light_secondary = Color(0xFF5fa3fe)
+val md_theme_light_secondary_variant = Color(0xAAeeeef5)
+val md_theme_light_onSecondary = Color(0xFFFFFFFF)
+val md_theme_light_error = Color(0xFFB3261E)
+val md_theme_light_onError = Color(0xFFFFFFFF)
+val md_theme_light_background = Color(0xFFeeeef5)
+val md_theme_light_onBackground = Color(0xFF282e41)
+val md_theme_light_surface = Color(0xFFFFFFFF)
+val md_theme_light_onSurface = Color(0xFF282e41)
+
+
+val md_theme_dark_primary = Color(0xFF181B25)
+val md_theme_dark_primary_variant = Color(0xFF181B25)
+val md_theme_dark_onPrimary = Color(0xAAeeeef5)
+val md_theme_dark_secondary = Color(0xFF5fa3fe)
+val md_theme_dark_secondary_variant = Color(0xAAeeeef5)
+val md_theme_dark_onSecondary = Color(0xFFFFFFFF)
+val md_theme_dark_error = Color(0xFFB3261E)
+val md_theme_dark_onError = Color(0xFFFFFFFF)
+val md_theme_dark_background = Color(0xFF282e41).copy(alpha = 0.8f).compositeOver(Color.White)
+val md_theme_dark_onBackground = Color(0xFFFFFFFF)
+val md_theme_dark_surface = Color(0xFF282e41)
+val md_theme_dark_onSurface = Color(0xFFFFFFFF)
+
+
+//
+//val Colors.tertiary : Color
+//    @Composable
+//    get() = BknBlackVar
+//
+//val Colors.secondaryText : Color
+//    @Composable
+//    get() = BknGrey
+
+val Colors.strava: Color
+    @Composable
+    get() = BknOrange
+
+val Colors.onStrava: Color
+    @Composable
+    get() = Color.White
+
+val Colors.surfaceShadow: Color
+    @Composable
+    get() = primary
+
+val Colors.statusDanger: Color
+    @Composable
+    get() = BknRed
+
+val Colors.statusWarning: Color
+    @Composable
+    get() = BknOrange
+
+val Colors.statusOk: Color
+    @Composable
+    get() = BknBlue
+
+val Colors.statusGood: Color
+    @Composable
+    get() = BknGreen
