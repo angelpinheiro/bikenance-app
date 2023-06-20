@@ -180,25 +180,3 @@ fun Bike(bike: Bike, onEdit: () -> Unit = {}) {
     }
 
 }
-
-fun getPhotoUrl(bike: Bike): String {
-
-    if (bike.photoUrl != null) {
-        return bike.photoUrl!!
-    }
-
-    val name = bike.name?.lowercase() ?: ""
-
-    return when {
-        name.contains("spark") -> {
-            "https://basatibike.com/dir_productos/producto_1190/qqmedia_scott_Spark_950.png"
-        }
-        name.contains("cube") -> {
-            "https://olimpiasport.pl/upload/olimpiadb_10845_d.jpg"
-        }
-        else -> {
-            "https://www.gymcompany.es/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/f/i/file-fxqss-rtpc4.jpeg"
-        }
-    }
-
-}

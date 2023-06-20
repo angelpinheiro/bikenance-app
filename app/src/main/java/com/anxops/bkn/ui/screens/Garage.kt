@@ -3,6 +3,7 @@ package com.anxops.bkn.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,10 +38,18 @@ fun Garage(
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     navController.navigatorProvider.addNavigator(bottomSheetNavigator)
 
-    var selectedItem by remember { mutableStateOf(GarageSections.Home) }
+    var selectedItem by rememberSaveable { mutableStateOf(GarageSections.Home) }
 
 
     println("Garage section: $section")
+
+    LaunchedEffect(true) {
+        if (section?.isNotBlank() == true) {
+            GarageSections.values().firstOrNull {
+                it.id == section
+            }?.let { selectedItem = it }
+        }
+    }
 
     if (section?.isNotBlank() == true) {
         GarageSections.values().firstOrNull {

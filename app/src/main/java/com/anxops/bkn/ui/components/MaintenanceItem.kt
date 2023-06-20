@@ -38,40 +38,7 @@ data class MaintenanceItem(
 
 @Composable
 fun MaintenanceItemView(item: MaintenanceItem) {
-
-//    Card(
-//        elevation = 3.dp,
-//        backgroundColor = MaterialTheme.colors.surface,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .height(110.dp)
-//    ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.surface)) {
-//            Column(
-//                Modifier
-//                    .fillMaxHeight()
-//                    .background(
-//                        getColorForProgress(item.percentage)
-//                    )
-//                    .padding(16.dp),
-//                verticalArrangement = Arrangement.SpaceAround
-//            ) {
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    BknIcon(
-//                        icon = CommunityMaterial.Icon.cmd_check,
-//                        modifier = Modifier.size(22.dp),
-//                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary)
-//                    )
-//                }
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    BknIcon(
-//                        icon = CommunityMaterial.Icon.cmd_clock_plus_outline,
-//                        modifier = Modifier.size(22.dp),
-//                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary)
-//                    )
-//                }
-//            }
-
         Box(
             Modifier
                 .fillMaxSize()

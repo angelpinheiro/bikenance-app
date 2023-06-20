@@ -120,53 +120,56 @@ fun RideView(
             }
         }, onClickRideBike = onClickRideBike)
 
-        state.polyline?.let { pl ->
+        if(state.polyline?.isNotEmpty() == true) {
 
-            val start = pl.first()
-            val end = pl.last()
-            val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(start, 12f)
-            }
-            var mapProperties by remember {
-                mutableStateOf(
-                    MapProperties(
-                        maxZoomPreference = 20f,
-                        minZoomPreference = 8f,
-                        mapType = MapType.HYBRID
+            state.polyline?.let { pl ->
+
+                val start = pl.first()
+                val end = pl.last()
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(start, 12f)
+                }
+                var mapProperties by remember {
+                    mutableStateOf(
+                        MapProperties(
+                            maxZoomPreference = 20f,
+                            minZoomPreference = 8f,
+                            mapType = MapType.HYBRID
+                        )
                     )
-                )
-            }
-            var mapUiSettings by remember {
-                mutableStateOf(
-                    MapUiSettings(mapToolbarEnabled = true)
-                )
-            }
-            GoogleMap(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp)
-                    .weight(1f),
-                cameraPositionState = cameraPositionState,
-                uiSettings = mapUiSettings,
-                properties = mapProperties
-            ) {
-                Polyline(
-                    points = pl,
-                    color = MaterialTheme.colors.secondary,
-                    jointType = JointType.ROUND,
-                    width = 10.dp.value
-                )
+                }
+                var mapUiSettings by remember {
+                    mutableStateOf(
+                        MapUiSettings(mapToolbarEnabled = true)
+                    )
+                }
+                GoogleMap(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp)
+                        .weight(1f),
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = mapUiSettings,
+                    properties = mapProperties
+                ) {
+                    Polyline(
+                        points = pl,
+                        color = MaterialTheme.colors.secondary,
+                        jointType = JointType.ROUND,
+                        width = 10.dp.value
+                    )
 
-                Marker(
-                    title = "Start",
-                    position = start
-                )
+                    Marker(
+                        title = "Start",
+                        position = start
+                    )
 
-                Marker(
-                    title = "End",
-                    position = end,
-                )
+                    Marker(
+                        title = "End",
+                        position = end,
+                    )
 
+                }
             }
         }
 
