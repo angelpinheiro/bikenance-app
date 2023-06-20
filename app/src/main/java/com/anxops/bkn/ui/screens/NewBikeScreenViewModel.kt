@@ -71,7 +71,7 @@ class NewBikeScreenViewModel @Inject constructor(
                     )
                 }
                 else -> {
-                    TODO("Handle api call failure")
+//                    TODO("Handle api call failure")
                 }
             }
         }
