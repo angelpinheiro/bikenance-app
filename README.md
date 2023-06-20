@@ -2,7 +2,7 @@
 
 Bikenance is an Android application that allows you to keep complete control over bike and component maintenance. With Bikenance, you can register your bikes, manage components, track maintenance, and receive reminders to keep your bikes in optimal condition. The app features seamless integration with Strava, a popular platform for tracking cycling activities.
 
-This is an ongoing learning project that I build to explore and enhance my programming skills and try new stuff. There may be changes or updates made at any time without prior notice.
+**This is an ongoing learning project** that I build to explore and enhance my programming skills and try new stuff. There may be changes or updates made at any time without prior notice.
 
 ## Key Features
 
