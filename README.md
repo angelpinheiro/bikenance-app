@@ -4,6 +4,12 @@ Bikenance is an Android application that allows you to keep complete control ove
 
 **This is an ongoing learning project** that I build to explore and enhance my programming skills and try new stuff. There may be changes or updates made at any time without prior notice.
 
+
+| <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120"> | <img src="assets/6.png" width="120"> |
+|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
+
+
+
 ## Key Features
 
 - Strava Integration: Bikenance seamlessly integrates with Strava, allowing you to leverage your activity data for enhanced maintenance tracking.
