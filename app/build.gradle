@@ -93,6 +93,7 @@ dependencies {
     implementation libs.okhttp
     implementation libs.google.gson
 
+    //noinspection BomWithoutPlatform
     implementation libs.firebase.bom
 
     implementation libs.maps.playservices
