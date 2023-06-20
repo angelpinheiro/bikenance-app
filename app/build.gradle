@@ -53,9 +53,14 @@ kapt {
 }
 
 dependencies {
-    def platform = platform(libs.bom.compose)
-    implementation platform
-    androidTestImplementation platform
+
+    def composePlatform = platform(libs.bom.compose)
+    implementation composePlatform
+    androidTestImplementation composePlatform
+
+    def firebasePlatform = platform(libs.firebase.bom)
+    implementation firebasePlatform
+    androidTestImplementation firebasePlatform
 
     implementation libs.androidx.core
     implementation libs.androidx.material
@@ -93,15 +98,21 @@ dependencies {
     implementation libs.okhttp
     implementation libs.google.gson
 
-    //noinspection BomWithoutPlatform
-    implementation libs.firebase.bom
+    implementation libs.firebase.storage.ktx
+    implementation libs.firebase.messaging.ktx
 
     implementation libs.maps.playservices
     implementation libs.maps.compose
 
     implementation libs.rc.compose.destinations.core
-    implementation libs.rc.compose.destinations.ksp
+    ksp libs.rc.compose.destinations.ksp
 
+    implementation libs.iconics.compose
+    implementation(libs.iconics.community.material) {
+        artifact {
+            type = 'aar'
+        }
+    }
 
     testImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.junit

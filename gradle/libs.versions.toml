@@ -22,9 +22,9 @@ maps = "18.1.0"
 maps-compose = "1.0.0"
 accompanist = "0.23.1"
 iconics = "5.4.0"
-iconics-community-material = "7.0.96.0-kotlin@aar"
+iconics-community-material = "7.0.96.0-kotlin"
 browser = "1.5.0"
-okhttp = "4.9.3"
+okhttp = "4.10.0"
 gson = "2.9.0"
 rc-compose-destinations = "1.8.42-beta"
 
@@ -72,8 +72,8 @@ ktor-logging = { module = 'io.ktor:ktor-client-logging', version.ref = 'ktor'}
 coil-compose = {module = 'io.coil-kt:coil-compose', version.ref = 'coil'}
 
 firebase-bom = {module = 'com.google.firebase:firebase-bom', version.ref = 'firebase'}
-firebase-messaging-ktx = {module = 'com.google.firebase:firebase-messaging-ktx', version.ref = 'firebase'}
-firebase-storage-ktx = {module = 'com.google.firebase:firebase-storage-ktx', version.ref = 'firebase'}
+firebase-messaging-ktx = {module = 'com.google.firebase:firebase-messaging-ktx'}
+firebase-storage-ktx = {module = 'com.google.firebase:firebase-storage-ktx'}
 
 maps-playservices = {module = 'com.google.android.gms:play-services-maps', version.ref = 'maps'}
 maps-compose = {module = 'com.google.maps.android:maps-compose', version.ref = 'maps-compose'}
@@ -94,7 +94,7 @@ rc-compose-destinations-ksp = {module =  "io.github.raamcosta.compose-destinatio
 
 
 androidx-browser = {module =  "androidx.browser:browser", version.ref="browser" }
-okhttp = {module =  "om.squareup.okhttp3:okhttp", version.ref="okhttp" }
+okhttp = {module =  "com.squareup.okhttp3:okhttp", version.ref="okhttp" }
 google-gson = {module =  "com.google.code.gson:gson", version.ref="gson" }
 
 
