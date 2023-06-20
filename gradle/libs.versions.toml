@@ -8,9 +8,26 @@ activity = "1.10.1"
 kotlin = "1.8.10"
 ksp = "1.8.10-1.0.9"
 hilt = "2.46.1"
+hilt-work = "1.0.0"
 androidGradlePlugin = "8.0.2"
 kotlinxSerializationJson = "1.5.0"
-gms-google-services = '4.3.10'
+gms-google-services = '4.3.15'
+ktor = '1.6.4'
+coil = '2.1.0'
+datastore-preferences = '1.0.0'
+room = "2.5.1"
+firebase = "32.1.1"
+work = "2.8.1"
+maps = "18.1.0"
+maps-compose = "1.0.0"
+accompanist = "0.23.1"
+iconics = "5.4.0"
+iconics-community-material = "7.0.96.0-kotlin@aar"
+browser = "1.5.0"
+okhttp = "4.9.3"
+gson = "2.9.0"
+rc-compose-destinations = "1.8.42-beta"
+
 
 [libraries]
 bom-compose = { group = "androidx.compose", name = "compose-bom", version.ref = "bomCompose" }
@@ -18,6 +35,12 @@ bom-compose = { group = "androidx.compose", name = "compose-bom", version.ref = 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "activity" }
 androidx-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
 androidx-material = { module = "com.google.android.material:material", version = "1.9.0" }
+androidx-datastore-preferences = {module = 'androidx.datastore:datastore-preferences', version.ref = 'datastore-preferences'}
+
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 
 compose-activity = { group = "androidx.activity", name = "activity-compose" }
 compose-material = { group = "androidx.compose.material", name = "material" }
@@ -35,10 +58,45 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-core = { module = "com.google.dagger:hilt-core", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-androidCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 google-gradle = { module = 'com.google.gms:google-services', version.ref = 'gms-google-services' }
+
+ktor-client-core= { module = 'io.ktor:ktor-client-core', version.ref = 'ktor'}
+ktor-client-android = { module = 'io.ktor:ktor-client-android', version.ref = 'ktor'}
+ktor-serialization = { module = 'io.ktor:ktor-client-serialization', version.ref = 'ktor'}
+ktor-logging = { module = 'io.ktor:ktor-client-logging', version.ref = 'ktor'}
+
+coil-compose = {module = 'io.coil-kt:coil-compose', version.ref = 'coil'}
+
+firebase-bom = {module = 'com.google.firebase:firebase-bom', version.ref = 'firebase'}
+firebase-messaging-ktx = {module = 'com.google.firebase:firebase-messaging-ktx', version.ref = 'firebase'}
+firebase-storage-ktx = {module = 'com.google.firebase:firebase-storage-ktx', version.ref = 'firebase'}
+
+maps-playservices = {module = 'com.google.android.gms:play-services-maps', version.ref = 'maps'}
+maps-compose = {module = 'com.google.maps.android:maps-compose', version.ref = 'maps-compose'}
+
+accompanist-systemuicontroller = {module =  "com.google.accompanist:accompanist-systemuicontroller", version.ref="accompanist" }
+accompanist-navigation-material = {module =  "com.google.accompanist:accompanist-navigation-material", version.ref="accompanist" }
+accompanist-pager = {module =  "com.google.accompanist:accompanist-pager", version.ref="accompanist" }
+accompanist-pager-indicators = {module =  "com.google.accompanist:accompanist-pager-indicators", version.ref="accompanist" }
+accompanist-swiperefresh = {module =  "com.google.accompanist:accompanist-swiperefresh", version.ref="accompanist" }
+
+iconics-compose = {module =  "com.mikepenz:iconics-compose", version.ref="iconics" }
+iconics-community-material = {module =  "com.mikepenz:community-material-typeface", version.ref="iconics-community-material" }
+
+
+rc-compose-destinations-core = {module =  "io.github.raamcosta.compose-destinations:core", version.ref="rc-compose-destinations" }
+rc-compose-destinations-ksp = {module =  "io.github.raamcosta.compose-destinations:ksp", version.ref="rc-compose-destinations" }
+
+
+
+androidx-browser = {module =  "androidx.browser:browser", version.ref="browser" }
+okhttp = {module =  "om.squareup.okhttp3:okhttp", version.ref="okhttp" }
+google-gson = {module =  "com.google.code.gson:gson", version.ref="gson" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

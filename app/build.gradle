@@ -59,6 +59,17 @@ dependencies {
 
     implementation libs.androidx.core
     implementation libs.androidx.material
+    implementation libs.androidx.datastore.preferences
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    implementation libs.androidx.work
+    implementation libs.androidx.browser
+
+    ksp libs.androidx.room.compiler
+
+    implementation libs.hilt.android
+    implementation libs.hilt.work
+    kapt libs.hilt.androidCompiler
 
     implementation libs.compose.ui
     implementation libs.compose.material
@@ -67,13 +78,33 @@ dependencies {
     implementation libs.compose.navigation.hilt
     implementation libs.compose.activity
 
-    testImplementation libs.androidx.junit
+    implementation libs.accompanist.navigation.material
+    implementation libs.accompanist.pager.indicators
+    implementation libs.accompanist.pager.indicators
+    implementation libs.accompanist.systemuicontroller
+    implementation libs.accompanist.swiperefresh
 
+    implementation libs.ktor.client.android
+    implementation libs.ktor.client.core
+    implementation libs.ktor.serialization
+    implementation libs.ktor.logging
+
+    implementation libs.coil.compose
+    implementation libs.okhttp
+    implementation libs.google.gson
+
+    implementation libs.firebase.bom
+
+    implementation libs.maps.playservices
+    implementation libs.maps.compose
+
+    implementation libs.rc.compose.destinations.core
+    implementation libs.rc.compose.destinations.ksp
+
+
+    testImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.compose.test.uiJunit4
-
-    implementation libs.hilt.android
-    kapt libs.hilt.androidCompiler
 
     debugImplementation libs.compose.test.uiManifest
     debugImplementation libs.compose.tooling
