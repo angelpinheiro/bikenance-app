@@ -3,13 +3,8 @@ package com.anxops.bkn.storage
 import com.anxops.bkn.model.Bike
 import com.anxops.bkn.model.BikeRide
 import com.anxops.bkn.model.Profile
+import com.anxops.bkn.util.RepositoryResult
 import kotlinx.coroutines.flow.Flow
-
-interface Syncable {
-
-    fun sync() {}
-
-}
 
 interface BikeRepositoryFacade {
 
@@ -49,7 +44,7 @@ interface ProfileRepositoryFacade {
 
     suspend fun getProfile(): Profile?
 
-    suspend fun updateProfile(profile: Profile)
+    suspend fun updateProfile(profile: Profile): RepositoryResult<Profile>
 
     fun getProfileFlow(): Flow<Profile?>
 

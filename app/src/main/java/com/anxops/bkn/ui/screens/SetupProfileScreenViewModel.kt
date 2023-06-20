@@ -9,6 +9,7 @@ import com.anxops.bkn.network.Api
 import com.anxops.bkn.storage.BikeRepositoryFacade
 import com.anxops.bkn.storage.BknDataStore
 import com.anxops.bkn.storage.ProfileRepositoryFacade
+import com.anxops.bkn.util.RepositoryResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -107,11 +108,26 @@ class SetupProfileScreenViewModel @Inject constructor(
             try {
 
                 _profileState.value?.let { profile ->
-                    profileRepository.updateProfile(profile)
-                    bikeRepository.updateSynchronizedBikes(
-                        state.value.bikes.filter { !it.draft }.map { it._id }
-                    )
-                    updateEvent.emit(true)
+                    val r = profileRepository.updateProfile(profile)
+
+
+                    when(r) {
+                        is RepositoryResult.Success -> {
+                            bikeRepository.updateSynchronizedBikes(
+                                state.value.bikes.filter { !it.draft }.map { it._id }
+                            )
+                            updateEvent.emit(true)
+                        }
+                        else -> {
+                            _state.value = _state.value.copy(
+                                status = SetupProfileScreenStatus.DisplayingProfile
+                            )
+                            updateEvent.emit(false)
+                        }
+                    }
+
+
+
                 }
             } catch (err: Exception) {
                 Log.e("ProfileScreenViewModel", "Error", err)

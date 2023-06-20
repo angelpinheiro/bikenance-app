@@ -5,6 +5,7 @@ import com.anxops.bkn.network.Api
 import com.anxops.bkn.network.ApiResponse
 import com.anxops.bkn.storage.room.AppDb
 import com.anxops.bkn.storage.room.toEntity
+import com.anxops.bkn.util.RepositoryResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,6 +20,7 @@ class ProfileRepository(val api: Api, val db: AppDb) : ProfileRepositoryFacade {
                 }
                 true
             }
+
             else -> false
         }
         return success
@@ -35,9 +37,19 @@ class ProfileRepository(val api: Api, val db: AppDb) : ProfileRepositoryFacade {
         }
     }
 
-    override suspend fun updateProfile(profile: Profile) {
-        db.profileDao().update(profile.toEntity())
-        api.updateProfile(profile)
+    override suspend fun updateProfile(profile: Profile): RepositoryResult<Profile> {
+        return when (val result = api.updateProfile(profile)) {
+
+            is ApiResponse.Success -> {
+                db.profileDao().update(profile.toEntity())
+                RepositoryResult.Success(profile)
+            }
+
+            else -> RepositoryResult.Error(result.message ?: "Unknown error")
+
+        }
+
+
     }
 
 }
