@@ -15,7 +15,7 @@
         android:supportsRtl="true">
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCF0RdwEKY3_yfNLcjxXhLgl6FDvTPk-mo"/>
+            android:value="${googleMapsApiKey}"/>
 
         <activity
             android:name=".MainActivity"
