@@ -16,6 +16,7 @@ class BknDataStore(private val context: Context) {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("bikenance_data_store")
         val AUTH_USER = stringPreferencesKey("AUTH_USER")
         val AUTH_TOKEN = stringPreferencesKey("AUTH_TOKEN")
+        val REFRESH_TOKEN = stringPreferencesKey("REFRESH_TOKEN")
         val FIREBASE_TOKEN = stringPreferencesKey("FIREBASE_TOKEN")
     }
 
@@ -29,15 +30,27 @@ class BknDataStore(private val context: Context) {
         }
     }
 
+    suspend fun saveAuthTokens(token: String, refreshToken: String) {
+        context.dataStore.edit { preferences ->
+            preferences[AUTH_TOKEN] = token
+            preferences[REFRESH_TOKEN] = refreshToken
+        }
+    }
+
     suspend fun deleteAuthToken() {
         context.dataStore.edit { preferences ->
             preferences.remove(AUTH_TOKEN)
+            preferences.remove(REFRESH_TOKEN)
             preferences.remove(FIREBASE_TOKEN)
         }
     }
 
     suspend fun getAuthToken(): String? {
         return context.dataStore.data.first()[AUTH_TOKEN]
+    }
+
+    suspend fun getRefreshToken(): String? {
+        return context.dataStore.data.first()[REFRESH_TOKEN]
     }
 
     suspend fun saveFirebaseToken(token: String) {

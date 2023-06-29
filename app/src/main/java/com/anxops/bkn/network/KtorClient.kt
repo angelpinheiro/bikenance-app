@@ -15,7 +15,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 
-class KtorClient() {
+class KtorClient {
     val client = HttpClient(Android) {
         // Logging
         install(Logging) {

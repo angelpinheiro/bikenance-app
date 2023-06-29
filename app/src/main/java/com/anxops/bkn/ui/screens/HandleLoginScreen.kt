@@ -1,5 +1,6 @@
 package com.anxops.bkn.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,17 +26,17 @@ import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Destination(
     deepLinks = [
         DeepLink(
-            uriPattern = "bikenance://redirect?code={code}"
+            uriPattern = "bikenance://redirect?code={code}&refresh={refresh}"
         )
     ]
 )
 @Composable
 fun HandleLoginScreen(
     code: String?,
+    refresh: String?,
     navigator: DestinationsNavigator,
     viewModel: HandleLoginScreenViewModel = hiltViewModel(),
 ) {
@@ -44,7 +45,9 @@ fun HandleLoginScreen(
     val context = LocalContext.current
     val state = viewModel.state.collectAsState()
 
-    viewModel.setAuthToken(code = code)
+    Log.d("HandleLoginScreen", "Tokens: [$code,$refresh]")
+
+    viewModel.setAuthTokens(code, refresh)
 
     LaunchedEffect(key1 = context) {
         viewModel.loadProfileEvent.collect { ev ->
@@ -80,6 +83,7 @@ fun HandleLoginScreen(
                         style = MaterialTheme.typography.h3
                     )
                 }
+
                 true -> {
                     Text(
                         text = "Welcome ${state.value.profile?.firstname}...",
@@ -87,6 +91,7 @@ fun HandleLoginScreen(
                         style = MaterialTheme.typography.h3
                     )
                 }
+
                 else -> {
                     Text(
                         text = "Hi ${state.value.profile?.firstname}, nice to see you again!",

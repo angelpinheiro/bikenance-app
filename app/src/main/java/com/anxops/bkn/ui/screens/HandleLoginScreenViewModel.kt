@@ -38,13 +38,14 @@ class HandleLoginScreenViewModel @Inject constructor(
     val state: StateFlow<HandleLoginScreenState> = _state
     val loadProfileEvent: MutableSharedFlow<LoadProfileEvent> = MutableSharedFlow()
 
-    fun setAuthToken(code: String?) {
-        code?.let { loadUserProfile(it) }
+    fun setAuthTokens(code: String?, refreshToken: String?) {
+        code?.let { loadUserProfile(it, refreshToken) }
     }
 
-    private fun loadUserProfile(token: String) {
+    private fun loadUserProfile(token: String, refreshToken: String?) {
         viewModelScope.launch {
-            dataStore.saveAuthToken(token)
+
+            dataStore.saveAuthTokens(token, refreshToken ?: "")
             dbSync.refreshInTransaction(viewModelScope)
             when (val profile = repository.getProfile()) {
                 null -> {
