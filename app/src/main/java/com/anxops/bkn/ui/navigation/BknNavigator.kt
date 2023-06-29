@@ -21,8 +21,8 @@ class BknNavigator(var navigator: DestinationsNavigator) {
         navigator.navigate(SplashScreenDestination.route)
     }
 
-    fun navigateToLogin() {
-        navigator.navigate(LoginScreenDestination.route)
+    fun navigateToLogin(sessionExpired: Boolean = false) {
+        navigator.navigate(LoginScreenDestination.invoke(sessionExpired = sessionExpired))
     }
 
     fun navigateToGarage() {

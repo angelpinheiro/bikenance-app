@@ -121,6 +121,17 @@ fun Garage(
                                     .size(20.dp)
                             )
                         }
+                        IconButton(onClick = {
+                            viewModel.refreshToken()
+                        }) {
+                            BknIcon(
+                                icon = CommunityMaterial.Icon.cmd_cloud_refresh,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .size(20.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -143,6 +154,7 @@ fun Garage(
                 GarageSections.Home -> {
                     HomeScreen(navigator = navigator, bikeUpdateResult, profileUpdateResult)
                 }
+
                 GarageSections.Rides -> {
                     RidesScreen(navigator = navigator)
                 }

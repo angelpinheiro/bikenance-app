@@ -5,6 +5,7 @@ import com.anxops.bkn.BuildConfig
 object ApiEndpoints {
     private const val baseApiUrl = BuildConfig.API_URL
 
+    const val refreshTokenEndpoint = "$baseApiUrl/refresh"
     const val profileEndpoint = "$baseApiUrl/profile"
     const val profileBikesEndpoint = "$baseApiUrl/profile/bikes"
     const val profileRidesEndpoint = "$baseApiUrl/profile/rides"

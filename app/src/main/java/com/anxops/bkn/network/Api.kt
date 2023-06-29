@@ -202,12 +202,33 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     }
 
+    suspend fun updateRefreshToken(refreshToken: String): ApiResponse<LoginResult> {
+        return safeApiCall {
+            httpClient.post(ApiEndpoints.refreshTokenEndpoint) {
+                body = RefreshData(refreshToken)
+            }
+        }
+
+    }
+
 
 }
 
 @Serializable
 data class TokenWrapper(
     val token: String
+)
+@Serializable
+data class RefreshData(
+    val refreshToken: String,
+)
+
+@Serializable
+data class LoginResult(
+    val success: Boolean,
+    val token: String? = null,
+    val refreshToken: String? = null,
+    val message: String? = null
 )
 
 @Serializable

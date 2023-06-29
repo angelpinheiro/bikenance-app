@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 sealed class CheckLoginState {
-    object Success : CheckLoginState()
-    object Failure : CheckLoginState()
+    object LoggedIn : CheckLoginState()
+    object NotLoggedIn : CheckLoginState()
+    object LoginExpired : CheckLoginState()
     object Checking : CheckLoginState()
 }
 
@@ -22,8 +23,15 @@ class SplashScreenViewModel @Inject constructor(
     private val repository: ProfileRepositoryFacade,
 ) : ViewModel() {
 
-    val isLogged = dataStore.authToken.map {
-        if (it != null && repository.getProfile() != null) CheckLoginState.Success else CheckLoginState.Failure
+    val isLogged = dataStore.authToken.map { token ->
+        val profile = repository.getProfile()
+        if(token != null && profile != null) {
+            CheckLoginState.LoggedIn
+        }else if (token == null && profile != null) {
+            CheckLoginState.LoginExpired
+        }else{
+            CheckLoginState.NotLoggedIn
+        }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), CheckLoginState.Checking)
 
 }

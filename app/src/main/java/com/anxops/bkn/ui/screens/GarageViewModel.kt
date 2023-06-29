@@ -18,6 +18,8 @@ package com.anxops.bkn.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anxops.bkn.network.Api
+import com.anxops.bkn.network.tokenRefresh.RefreshTokenHelper
 import com.anxops.bkn.storage.BknDataStore
 import com.anxops.bkn.storage.DBSynchronizer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,13 +29,20 @@ import javax.inject.Inject
 @HiltViewModel
 class GarageViewModel @Inject constructor(
     private val dataStore: BknDataStore,
-    private val dbSync: DBSynchronizer
+    private val dbSync: DBSynchronizer,
+    private val api: Api
 ) : ViewModel() {
 
     init {
         // Refresh db
         viewModelScope.launch {
             dbSync.refreshProfileAndBikesInTransaction(viewModelScope)
+        }
+    }
+
+    fun refreshToken() {
+        viewModelScope.launch {
+            RefreshTokenHelper.performRefresh(dataStore, api)
         }
     }
 

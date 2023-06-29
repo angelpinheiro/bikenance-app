@@ -42,6 +42,7 @@ import com.anxops.bkn.storage.BknDataStore
 import com.anxops.bkn.ui.shared.BknOutlinedTextField
 import com.anxops.bkn.ui.shared.onSurfaceTextFieldColors
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
+import com.anxops.bkn.ui.theme.statusDanger
 import com.anxops.bkn.ui.theme.strava
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -53,6 +54,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 fun LoginScreen(
     navigator: DestinationsNavigator,
     viewModel: LoginScreenViewModel = hiltViewModel(),
+    sessionExpired: Boolean = false
 ) {
     val context = LocalContext.current
     val store = BknDataStore(context)
@@ -87,6 +89,16 @@ fun LoginScreen(
 
         )
 
+        Text(
+            text = "Your session has been closed, please sign in again!",
+            color = MaterialTheme.colors.onSecondary,
+            style = MaterialTheme.typography.h3,
+            modifier = Modifier.background(MaterialTheme.colors.secondary)
+                .fillMaxWidth()
+                .padding(10.dp)
+                .align(Alignment.BottomEnd)
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -113,6 +125,7 @@ fun LoginScreen(
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier.padding(top = 5.dp)
             )
+
             BknOutlinedTextField(
                 value = state.value.email,
                 label = "E-mail address",

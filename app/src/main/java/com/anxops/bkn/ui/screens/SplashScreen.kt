@@ -64,7 +64,7 @@ fun SplashScreen(
     // Execute this when isLogged state changes
     LaunchedEffect(isLogged.value) {
         when (isLogged.value) {
-            is CheckLoginState.Success -> {
+            is CheckLoginState.LoggedIn -> {
                 SendTokenToServerWorker.launch(context)
                 nav.popBackStack()
                 if (section != null)
@@ -72,9 +72,13 @@ fun SplashScreen(
                 else
                     nav.navigateToGarage()
             }
-            is CheckLoginState.Failure -> {
+            is CheckLoginState.NotLoggedIn -> {
                 nav.popBackStack()
                 nav.navigateToLogin()
+            }
+            is CheckLoginState.LoginExpired -> {
+                nav.popBackStack()
+                nav.navigateToLogin(sessionExpired = true)
             }
             is CheckLoginState.Checking -> {
                 // do nothing

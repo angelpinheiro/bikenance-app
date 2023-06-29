@@ -1,8 +1,10 @@
 package com.anxops.bkn.ui.screens
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.model.Profile
+import com.anxops.bkn.network.tokenRefresh.RefreshTokenHelper
 import com.anxops.bkn.storage.BknDataStore
 import com.anxops.bkn.storage.DBSynchronizer
 import com.anxops.bkn.storage.ProfileRepositoryFacade
@@ -46,7 +48,8 @@ class HandleLoginScreenViewModel @Inject constructor(
         viewModelScope.launch {
 
             dataStore.saveAuthTokens(token, refreshToken ?: "")
-            dbSync.refreshInTransaction(viewModelScope)
+            repository.reloadData()
+
             when (val profile = repository.getProfile()) {
                 null -> {
                     dataStore.deleteAuthToken()
