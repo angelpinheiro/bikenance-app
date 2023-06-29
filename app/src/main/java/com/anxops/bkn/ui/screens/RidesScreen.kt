@@ -45,7 +45,6 @@ fun RidesScreen(
 
     val context = LocalContext.current
     LaunchedEffect(key1 = context) {
-
         viewModel.openActivityEvent.collect {
             openStravaActivity(context, it)
         }
@@ -133,7 +132,7 @@ fun RideList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .coloredShadow()
-                        .background(MaterialTheme.colors.primary)
+                        .background(MaterialTheme.colors.primaryVariant)
                         .padding(6.dp),
                     color = MaterialTheme.colors.onPrimary,
                     style = MaterialTheme.typography.h3

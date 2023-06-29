@@ -157,7 +157,7 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
 
             OutlinedButton(
                 onClick =  { onEditBike(currentBike) },
-                modifier = Modifier.padding(horizontal = 2.dp).weight(1f).background(MaterialTheme.colors.background)
+                modifier = Modifier.padding(horizontal = 2.dp).weight(1f)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BknIcon(

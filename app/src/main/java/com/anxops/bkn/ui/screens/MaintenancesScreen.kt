@@ -39,14 +39,27 @@ fun MaintenancesScreen(
 
         maintenances.groupBy { it.bike }.forEach { (name, items) ->
 
-            stickyHeader {
+//            stickyHeader {
+//                Text(
+//                    text = name + " (${items.size})",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .coloredShadow()
+//                        .background(MaterialTheme.colors.secondary)
+//                        .padding(16.dp),
+//                    color = MaterialTheme.colors.onSecondary,
+//                    style = MaterialTheme.typography.h3
+//                )
+//            }
+
+            item {
                 Text(
                     text = name + " (${items.size})",
                     modifier = Modifier
                         .fillMaxWidth()
                         .coloredShadow()
-                        .background(MaterialTheme.colors.primary)
-                        .padding(6.dp),
+                        .background(MaterialTheme.colors.primaryVariant)
+                        .padding(16.dp),
                     color = MaterialTheme.colors.onPrimary,
                     style = MaterialTheme.typography.h3
                 )

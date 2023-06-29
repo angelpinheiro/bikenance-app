@@ -69,10 +69,12 @@ fun Ride(ride: BikeRide, bikes: List<Bike>,
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .background(MaterialTheme.colors.background)
             .padding(bottom = 5.dp)
             .background(MaterialTheme.colors.surface)
-            .padding(10.dp),
+            .padding(10.dp)
+        ,
         horizontalAlignment = Alignment.Start,
     ) {
         Row(
