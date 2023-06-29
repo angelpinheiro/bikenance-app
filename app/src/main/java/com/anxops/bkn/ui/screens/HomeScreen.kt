@@ -1,13 +1,21 @@
 package com.anxops.bkn.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -25,7 +33,7 @@ import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SetupProfileScreenDestination
 import com.anxops.bkn.ui.shared.BknIcon
-import com.google.accompanist.pager.*
+import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -35,6 +43,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,
@@ -67,29 +76,9 @@ fun HomeScreen(
         }
     }
 
-    SwipeRefresh(
-        state = SwipeRefreshState(state.value.refreshing),
-        onRefresh = {
-            viewModel.reload()
-        },
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                // Pass the SwipeRefreshState + trigger through
-                state = state,
-                refreshTriggerDistance = trigger,
-                // Enable the scale animation
-                scale = true,
-                // Change the color and shape
-                backgroundColor = MaterialTheme.colors.primary,
-                shape = CircleShape,
-            )
-        },
-    ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())) {
-
+    val pullRefreshState = rememberPullRefreshState(refreshing = state.value.refreshing, onRefresh = { viewModel.reload()})
+    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             Box(
                 Modifier
                     .weight(1f)
@@ -105,12 +94,13 @@ fun HomeScreen(
                 }
             }
         }
+
+        PullRefreshIndicator(state.value.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
-
-
 }
 
-@OptIn(ExperimentalPagerApi::class)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
     val pagerState = rememberPagerState()
@@ -121,12 +111,12 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
             .background(MaterialTheme.colors.surface)
     ) {
         Box(Modifier.weight(1F)) {
-            HorizontalPager(count = bikes.size, state = pagerState) { page ->
+            HorizontalPager(pageCount = bikes.size, state = pagerState) { page ->
                 Box(
                     Modifier
                         .graphicsLayer {
                             // Absolute offset for the current page from the scroll position.
-                            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                            val pageOffset = (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
                             // We animate the scaleX + scaleY, between 75% and 100%
                             lerp(
                                 start = ScaleFactor(0.65f, 0.65f),
@@ -146,6 +136,7 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
             if (bikes.size > 1) {
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
+                    bikes.size,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(16.dp),
@@ -157,7 +148,7 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.background)
-                .padding(10.dp),
+                .padding(2.dp),
             horizontalArrangement = Arrangement.Center
 
         ) {
@@ -166,7 +157,7 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
 
             OutlinedButton(
                 onClick =  { onEditBike(currentBike) },
-                modifier = Modifier.padding(horizontal = 5.dp)
+                modifier = Modifier.padding(horizontal = 2.dp).weight(1f).background(MaterialTheme.colors.background)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BknIcon(
@@ -187,7 +178,7 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
 
             OutlinedButton(
                 onClick =  { onEditBike(currentBike) },
-                modifier = Modifier.padding(horizontal = 1.dp)
+                modifier = Modifier.padding(horizontal = 2.dp).weight(1f)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BknIcon(
@@ -195,6 +186,7 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
                         MaterialTheme.colors.primary,
                         modifier = Modifier
                             .padding(end = 10.dp)
+
                             .size(16.dp)
                     )
                     Text(
@@ -206,20 +198,20 @@ fun Bikes(bikes: List<Bike>, onEditBike: (Bike) -> Unit = {}) {
                 }
             }
 
-            OutlinedButton(
-                onClick =  { onEditBike(currentBike) },
-                modifier = Modifier.padding(horizontal = 5.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    BknIcon(
-                        CommunityMaterial.Icon3.cmd_pencil,
-                        MaterialTheme.colors.primary,
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .size(16.dp)
-                    )
-                }
-            }
+//            OutlinedButton(
+//                onClick =  { onEditBike(currentBike) },
+//                modifier = Modifier.padding(horizontal = 5.dp)
+//            ) {
+//                Row(verticalAlignment = Alignment.CenterVertically) {
+//                    BknIcon(
+//                        CommunityMaterial.Icon3.cmd_pencil,
+//                        MaterialTheme.colors.primary,
+//                        modifier = Modifier
+//                            .padding(5.dp)
+//                            .size(16.dp)
+//                    )
+//                }
+//            }
 
         }
 

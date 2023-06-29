@@ -19,12 +19,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.model.Bike
 import com.anxops.bkn.model.BikeRide
 import com.anxops.bkn.ui.shared.BknIcon
 import com.anxops.bkn.ui.theme.strava
 import com.anxops.bkn.util.formatAsLocalDate
+import com.anxops.bkn.util.formatAsRelativeDate
 import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.util.concurrent.TimeUnit
@@ -62,17 +64,19 @@ fun Ride(ride: BikeRide, bikes: List<Bike>,
          onClickRideBike: () -> Unit = {}
 ) {
 
-//    Card(elevation = 1.dp) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .background(MaterialTheme.colors.background)
+            .padding(bottom = 5.dp)
             .background(MaterialTheme.colors.surface)
             .padding(10.dp),
         horizontalAlignment = Alignment.Start,
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 5.dp),
+            modifier = Modifier.padding(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             BknIcon(
@@ -88,7 +92,7 @@ fun Ride(ride: BikeRide, bikes: List<Bike>,
         }
 
         Text(
-            text = ride.dateTime.toDate()?.formatAsLocalDate() ?: "",
+            text = ride.dateTime.toDate()?.formatAsRelativeDate(context) ?: "",
             style = MaterialTheme.typography.h3,
             color = MaterialTheme.colors.primary,
             modifier = Modifier.padding(start = 3.dp),

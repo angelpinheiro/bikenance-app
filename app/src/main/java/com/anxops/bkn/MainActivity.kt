@@ -91,12 +91,3 @@ fun app() {
 }
 
 
-@HiltViewModel
-class BikeGarageViewModel @Inject constructor(private val dataStore: BknDataStore) : ViewModel() {
-    fun logout() {
-        viewModelScope.launch {
-            dataStore.deleteAuthToken()
-        }
-
-    }
-}

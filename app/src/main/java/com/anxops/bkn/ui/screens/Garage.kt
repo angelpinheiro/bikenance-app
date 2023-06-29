@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.anxops.bkn.BikeGarageViewModel
 import com.anxops.bkn.ui.components.GarageBottomBar
 import com.anxops.bkn.ui.components.GarageSections
 import com.anxops.bkn.ui.navigation.BknNavigator
@@ -29,7 +28,7 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 @Composable
 fun Garage(
     navigator: DestinationsNavigator,
-    viewModel: BikeGarageViewModel = hiltViewModel(),
+    viewModel: GarageViewModel = hiltViewModel(),
     bikeUpdateResult: ResultRecipient<NewBikeScreenDestination, Boolean>,
     profileUpdateResult: ResultRecipient<SetupProfileScreenDestination, Boolean>,
     section: String?

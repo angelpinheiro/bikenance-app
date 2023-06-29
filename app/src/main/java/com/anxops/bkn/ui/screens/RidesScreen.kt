@@ -22,6 +22,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
+import com.anxops.bkn.model.Bike
+import com.anxops.bkn.model.BikeRide
 import com.anxops.bkn.ui.components.Ride
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.BknIcon
@@ -33,9 +35,6 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*
 
-//@GarageNavGraph
-//@Destination
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RidesScreen(
     navigator: DestinationsNavigator,
@@ -52,6 +51,7 @@ fun RidesScreen(
         }
     }
 
+
     val bikes = viewModel.bikes.collectAsState()
     val rides = viewModel.rides.collectAsState()
 
@@ -60,39 +60,11 @@ fun RidesScreen(
     } else if (rides.value?.isEmpty() == true) {
         EmptyRides()
     } else {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-
-            rides.value?.groupBy { it.dateTime?.substring(0, 7) ?: "" }?.toList()
-                ?.sortedByDescending { it.first }?.forEach { item ->
-
-                    val gRides = item.second.sortedByDescending { it.dateTime }
-                    val date = gRides.first().dateTime.toDate()?.formatAsYearMonth() ?: "Other"
-
-                    stickyHeader {
-                        Text(
-                            text = date.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .coloredShadow()
-                                .background(MaterialTheme.colors.primary)
-                                .padding(6.dp),
-                            color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.h3
-                        )
-                    }
-                    items(items = gRides, itemContent = {
-                        Ride(ride = it, bikes.value, onClickOpenOnStrava = {
-                            it.stravaId?.let { id ->
-                                viewModel.openActivity(id)
-                            }
-                        }, onClick = {
-                            bknNav.navigateToRide(it._id)
-                        })
-                    })
-                }
-        }
+        RideList(rides = rides.value ?: emptyList(), bikes.value, onClickOpenStrava = {
+            viewModel.openActivity(it)
+        }, onClickRide = {
+            bknNav.navigateToRide(it)
+        })
     }
 }
 
@@ -130,6 +102,53 @@ fun EmptyRides(onClickNew: () -> Unit = {}) {
                 .padding(bottom = 30.dp)
                 .align(Alignment.BottomCenter)
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun RideList(
+    rides: List<BikeRide>,
+    bikes: List<Bike>,
+    onClickRide: (id: String) -> Unit = {},
+    onClickOpenStrava: (stravaId: String) -> Unit = {}
+) {
+
+    val loadedRides = rides.groupBy { it.dateTime?.substring(0, 7) ?: "" }?.toList()
+        ?.sortedByDescending { it.first }
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+        modifier = Modifier.background(MaterialTheme.colors.primary)
+    ) {
+
+        loadedRides?.forEach { item ->
+
+            val gRides = item.second.sortedByDescending { it.dateTime }
+            val date = gRides.first().dateTime.toDate()?.formatAsYearMonth() ?: "Other"
+
+            stickyHeader {
+                Text(
+                    text = date.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .coloredShadow()
+                        .background(MaterialTheme.colors.primary)
+                        .padding(6.dp),
+                    color = MaterialTheme.colors.onPrimary,
+                    style = MaterialTheme.typography.h3
+                )
+            }
+            items(items = gRides, itemContent = {
+                Ride(ride = it, bikes, onClickOpenOnStrava = {
+                    it.stravaId?.let { id ->
+                        onClickOpenStrava(id)
+                    }
+                }, onClick = {
+                    onClickRide(it._id)
+                })
+            })
+        }
     }
 }
 

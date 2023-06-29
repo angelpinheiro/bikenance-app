@@ -71,13 +71,6 @@ fun NewBikeScreen(
 
     val isNew = viewModel.isNewBike().collectAsState(true).value
 
-    val animationState = remember {
-        MutableTransitionState(false).apply {
-            // Start the animation immediately.
-            targetState = true
-        }
-    }
-
 
     val imageData = remember { mutableStateOf<Uri?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -107,6 +100,7 @@ fun NewBikeScreen(
         NewBikeScreenStatus.Loading -> {
             Loading()
         }
+
         NewBikeScreenStatus.Saving -> {
             Box(Modifier.fillMaxSize()) {
                 Loading()
@@ -123,6 +117,7 @@ fun NewBikeScreen(
             }
 
         }
+
         else -> {
 
 

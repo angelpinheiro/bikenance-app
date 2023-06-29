@@ -122,7 +122,7 @@ fun RideView(
 
         if(state.polyline?.isNotEmpty() == true) {
 
-            state.polyline?.let { pl ->
+            state.polyline.let { pl ->
 
                 val start = pl.first()
                 val end = pl.last()

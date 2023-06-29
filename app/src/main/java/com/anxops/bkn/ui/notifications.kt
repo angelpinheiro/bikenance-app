@@ -1,12 +1,15 @@
 package com.anxops.bkn.ui
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
@@ -50,7 +53,8 @@ class Notifier {
     fun show(context: Context, data: NotificationData): Int {
         val notificationId: Int = genNotificationId()
         val intent = getIntent(context, data)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE)
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_link)
             .setContentTitle(data.title)
@@ -60,6 +64,13 @@ class Notifier {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return -1
+            }
             notify(notificationId, builder.build())
         }
         return notificationId

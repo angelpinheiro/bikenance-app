@@ -2,6 +2,8 @@ package com.anxops.bkn.ui.screens
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
+import android.provider.Browser
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
@@ -44,6 +46,7 @@ import com.anxops.bkn.ui.theme.strava
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+
 
 @Destination
 @Composable
@@ -197,9 +200,14 @@ private fun onClickLogin(navigator: DestinationsNavigator, loginEvent: LoginEven
 }
 
 private fun launchStravaLogin(context: Context) {
+
+    val intent = CustomTabsIntent.Builder().build()
+
+    val headers = Bundle()
+    headers.putString("Content-Type", "application/json")
+    intent.intent.putExtra(Browser.EXTRA_HEADERS, headers)
+
     val url = "https://bikenanceapp.loca.lt/strava"
-    val intent = CustomTabsIntent
-        .Builder()
-        .build()
+
     intent.launchUrl(context, Uri.parse(url))
 }

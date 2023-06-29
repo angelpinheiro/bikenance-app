@@ -18,6 +18,12 @@ class DBSynchronizer(
         }
     }
 
+    suspend fun refreshProfileAndBikesInTransaction(scope: CoroutineScope): Boolean {
+        return db.database().run {
+            return@run refreshProfileAndBikes(scope)
+        }
+    }
+
     private suspend fun refresh(scope: CoroutineScope): Boolean {
         return scope.run {
             awaitAll(
@@ -29,6 +35,19 @@ class DBSynchronizer(
                 },
                 async {
                     rideRepository.reloadData()
+                }
+            ).all { success -> success }
+        }
+    }
+
+    private suspend fun refreshProfileAndBikes(scope: CoroutineScope): Boolean {
+        return scope.run {
+            awaitAll(
+                async {
+                    profileRepository.reloadData()
+                },
+                async {
+                    bikeRepository.reloadData()
                 }
             ).all { success -> success }
         }
