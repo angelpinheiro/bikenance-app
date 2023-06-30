@@ -67,6 +67,18 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
+    suspend fun getPaginatedRidesByDateTime(key: String?, pageSize: Int = 10): ApiResponse<List<BikeRide>> {
+        return safeApiCall {
+            httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint) {
+                header("Authorization", tokenHeader())
+                key?.let {
+                    parameter("key", it)
+                }
+                parameter("pageSize", pageSize)
+            }
+        }
+    }
+
     suspend fun updateProfile(update: Profile): ApiResponse<Profile> {
         return safeApiCall {
             httpClient.put(ApiEndpoints.profileEndpoint) {

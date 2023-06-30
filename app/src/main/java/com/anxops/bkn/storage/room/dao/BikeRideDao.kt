@@ -1,5 +1,6 @@
 package com.anxops.bkn.storage.room.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.anxops.bkn.storage.room.entities.BikeRideEntity
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,9 @@ interface BikeRideDao {
 
     @Query("SELECT * FROM bike_ride ORDER BY date_time DESC")
     fun flow(): Flow<List<BikeRideEntity>>
+
+    @Query("SELECT * FROM bike_ride")
+    fun pagingSource(): PagingSource<Int, BikeRideEntity>
 
     @Insert
     suspend fun insert(ride: BikeRideEntity)

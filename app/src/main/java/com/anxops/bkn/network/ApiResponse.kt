@@ -8,7 +8,6 @@ sealed class ApiResponse<T>(
 ) {
     class Success<T>(val data: T) : ApiResponse<T>()
     class Error<T>(errorMessage: String) : ApiResponse<T>(message = errorMessage)
-    class Loading<T> : ApiResponse<T>()
 }
 
 suspend fun <T> safeApiCall(apiToBeCalled: suspend () -> T): ApiResponse<T> {

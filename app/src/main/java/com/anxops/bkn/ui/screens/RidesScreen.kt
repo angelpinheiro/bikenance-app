@@ -12,15 +12,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.anxops.bkn.R
 import com.anxops.bkn.model.Bike
 import com.anxops.bkn.model.BikeRide
@@ -40,6 +45,9 @@ fun RidesScreen(
     navigator: DestinationsNavigator,
     viewModel: RidesScreenViewModel = hiltViewModel(),
 ) {
+
+
+
     val state = viewModel.state.collectAsState()
     val bknNav = BknNavigator(navigator)
 
@@ -50,21 +58,39 @@ fun RidesScreen(
         }
     }
 
-
     val bikes = viewModel.bikes.collectAsState()
-    val rides = viewModel.rides.collectAsState()
+    val pagedRides = viewModel.getRidesFlow().collectAsLazyPagingItems()
 
-    if (rides.value == null) {
-        Loading()
-    } else if (rides.value?.isEmpty() == true) {
-        EmptyRides()
-    } else {
-        RideList(rides = rides.value ?: emptyList(), bikes.value, onClickOpenStrava = {
-            viewModel.openActivity(it)
-        }, onClickRide = {
-            bknNav.navigateToRide(it)
-        })
+    Column(modifier = Modifier.fillMaxSize()) {
+//        Row(modifier = Modifier.padding(10.dp)) {
+//            Text(text = "", modifier = Modifier.padding(5.dp))
+//            Button(onClick = { pagedRides.refresh() }) {
+//                Text(
+//                    text = "Refresh",
+//                    style = MaterialTheme.typography.h5,
+//                    color = MaterialTheme.colors.onPrimary
+//                )
+//            }
+//        }
+        Box(modifier = Modifier
+            .fillMaxSize()) {
+            PagedRideList(rides = pagedRides, bikes = bikes.value)
+        }
+
     }
+
+
+//    if (rides.value == null) {
+//        Loading()
+//    } else if (rides.value?.isEmpty() == true) {
+//        EmptyRides()
+//    } else {
+//        RideList(rides = rides.value ?: emptyList(), bikes.value, onClickOpenStrava = {
+//            viewModel.openActivity(it)
+//        }, onClickRide = {
+//            bknNav.navigateToRide(it)
+//        })
+//    }
 }
 
 
@@ -102,6 +128,38 @@ fun EmptyRides(onClickNew: () -> Unit = {}) {
                 .align(Alignment.BottomCenter)
         )
     }
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PagedRideList(
+    rides: LazyPagingItems<BikeRide>,
+    bikes: List<Bike>,
+    onClickRide: (id: String) -> Unit = {},
+    onClickOpenStrava: (stravaId: String) -> Unit = {}
+) {
+
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+        modifier = Modifier.background(MaterialTheme.colors.primary)
+    ) {
+
+        items(count = rides.itemCount) { index ->
+            rides[index]?.let {
+                Ride(ride = it, bikes, onClickOpenOnStrava = {
+                    it.stravaId?.let { id ->
+                        onClickOpenStrava(id)
+                    }
+                }, onClick = {
+                    onClickRide(it._id)
+                })
+
+            }
+        }
+    }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -11,9 +11,8 @@ object ApiEndpoints {
     const val profileEndpoint = "$baseApiUrl/profile"
     const val profileBikesEndpoint = "$baseApiUrl/profile/bikes"
     const val profileRidesEndpoint = "$baseApiUrl/profile/rides"
+    const val profileRidesByKeyEndpoint = "$baseApiUrl/profile/pagedRides"
     const val profileSyncBikesEndpoint = "$baseApiUrl/profile/sync"
-    const val uploadFileEndpoint = "$baseApiUrl/upload"
-    const val filesEndpoint = "$baseApiUrl/files"
 
     const val firebaseTokenEndpoint = "$baseApiUrl/users/messagingToken"
 
