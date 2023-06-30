@@ -26,6 +26,12 @@ class RidesScreenViewModel @Inject constructor(
     private val bikesRepository: BikeRepositoryFacade
 ) : ViewModel() {
 
+    init {
+        viewModelScope.launch {
+            ridesRepository.reloadData()
+        }
+    }
+
     private var _state = MutableStateFlow(RidesScreenState())
     val state: StateFlow<RidesScreenState> = _state
 

@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
+import com.anxops.bkn.network.ApiEndpoints
 import com.anxops.bkn.storage.BknDataStore
 import com.anxops.bkn.ui.shared.BknOutlinedTextField
 import com.anxops.bkn.ui.shared.onSurfaceTextFieldColors
@@ -219,8 +220,5 @@ private fun launchStravaLogin(context: Context) {
     val headers = Bundle()
     headers.putString("Content-Type", "application/json")
     intent.intent.putExtra(Browser.EXTRA_HEADERS, headers)
-
-    val url = "https://bikenanceapp.loca.lt/strava"
-
-    intent.launchUrl(context, Uri.parse(url))
+    intent.launchUrl(context, Uri.parse(ApiEndpoints.stravaLoginEndpoint))
 }

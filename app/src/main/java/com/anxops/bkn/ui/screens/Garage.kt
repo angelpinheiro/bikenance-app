@@ -86,17 +86,17 @@ fun Garage(
                         )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = {
-                            nav.navigateToNewBike()
-                        }) {
-                            BknIcon(
-                                icon = CommunityMaterial.Icon3.cmd_plus,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .size(20.dp)
-                            )
-                        }
+//                        IconButton(onClick = {
+//                            nav.navigateToNewBike()
+//                        }) {
+//                            BknIcon(
+//                                icon = CommunityMaterial.Icon3.cmd_plus,
+//                                color = Color.White,
+//                                modifier = Modifier
+//                                    .padding(horizontal = 6.dp)
+//                                    .size(20.dp)
+//                            )
+//                        }
                         IconButton(onClick = {
                             nav.navigateToProfile()
                         }) {

@@ -6,25 +6,31 @@ import com.anxops.bkn.network.ApiResponse
 import com.anxops.bkn.storage.room.AppDb
 import com.anxops.bkn.storage.room.toEntity
 import com.anxops.bkn.util.RepositoryResult
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
-class ProfileRepository(val api: Api, val db: AppDb) : ProfileRepositoryFacade {
+class ProfileRepository(
+    val api: Api, val db: AppDb, private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : ProfileRepositoryFacade {
 
     override suspend fun reloadData(): Boolean {
-        val success = when (val profile = api.profile()) {
-            is ApiResponse.Success -> {
-                db.profileDao().clear()
-                profile.data.let {
-                    db.profileDao().insert(it.toEntity())
+        return withContext(defaultDispatcher) {
+            val success = when (val profile = api.profile()) {
+                is ApiResponse.Success -> {
+                    db.profileDao().clear()
+                    profile.data.let {
+                        db.profileDao().insert(it.toEntity())
+                    }
+                    true
                 }
-                true
+
+                else -> false
             }
-
-            else -> false
+            success
         }
-        return success
-
     }
 
     override suspend fun getProfile(): Profile? {

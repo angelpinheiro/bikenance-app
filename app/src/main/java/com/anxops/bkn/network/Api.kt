@@ -159,41 +159,6 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-
-    suspend fun uploadImage(
-        byteArray: ByteArray?,
-        token: String,
-        onUpdateUpload: (Float) -> Unit = {}
-    ): String? {
-        try {
-            if (byteArray != null) {
-                val response: HttpResponse = fileClient.submitFormWithBinaryData(
-                    url = ApiEndpoints.uploadFileEndpoint,
-                    formData = formData {
-                        append("image", byteArray, Headers.build {
-                            append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
-                            append("Authorization", "Bearer $token")
-                        })
-                    }
-                ) {
-                    onUpload { bytesSentTotal, contentLength ->
-                        onUpdateUpload(bytesSentTotal.div(contentLength.toFloat()))
-                    }
-                }
-                if (response.status == HttpStatusCode.OK) {
-                    return fileUri(response.readText())
-                }
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-        return null
-    }
-
-    fun fileUri(id: String): String {
-        return ApiEndpoints.filesEndpoint + "/$id"
-    }
-
     suspend fun updateFirebaseToken(token: String): Boolean {
         return httpClient.put(ApiEndpoints.firebaseTokenEndpoint) {
             header("Authorization", tokenHeader())
