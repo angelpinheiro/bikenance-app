@@ -43,7 +43,6 @@ import com.anxops.bkn.storage.BknDataStore
 import com.anxops.bkn.ui.shared.BknOutlinedTextField
 import com.anxops.bkn.ui.shared.onSurfaceTextFieldColors
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
-import com.anxops.bkn.ui.theme.statusDanger
 import com.anxops.bkn.ui.theme.strava
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

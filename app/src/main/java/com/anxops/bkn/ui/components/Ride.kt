@@ -25,7 +25,6 @@ import com.anxops.bkn.model.Bike
 import com.anxops.bkn.model.BikeRide
 import com.anxops.bkn.ui.shared.BknIcon
 import com.anxops.bkn.ui.theme.strava
-import com.anxops.bkn.util.formatAsLocalDate
 import com.anxops.bkn.util.formatAsRelativeDate
 import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial

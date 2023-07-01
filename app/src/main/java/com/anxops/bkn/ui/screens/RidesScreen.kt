@@ -20,7 +20,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,11 +35,8 @@ import com.anxops.bkn.model.BikeRide
 import com.anxops.bkn.ui.components.Ride
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.BknIcon
-import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.coloredShadow
 import com.anxops.bkn.util.formatAsYearMonth
-import com.anxops.bkn.util.localDateFormat
-import com.anxops.bkn.util.localTimeFormat
 import com.anxops.bkn.util.simpleLocalTimeFormat
 import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial

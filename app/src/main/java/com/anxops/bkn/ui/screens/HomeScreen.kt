@@ -5,15 +5,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -34,14 +31,10 @@ import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SetupProfileScreenDestination
 import com.anxops.bkn.ui.shared.BknIcon
 import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

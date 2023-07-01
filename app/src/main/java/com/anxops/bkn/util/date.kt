@@ -2,11 +2,9 @@ package com.anxops.bkn.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.icu.text.RelativeDateTimeFormatter
 import android.text.format.DateUtils
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 
 @SuppressLint("SimpleDateFormat")

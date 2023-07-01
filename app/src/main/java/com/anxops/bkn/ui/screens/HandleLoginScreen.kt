@@ -21,7 +21,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
 import com.anxops.bkn.network.firebase.SendTokenToServerWorker
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
