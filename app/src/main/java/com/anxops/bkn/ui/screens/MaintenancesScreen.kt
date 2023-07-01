@@ -30,7 +30,6 @@ fun MaintenancesScreen(
     navigator: DestinationsNavigator,
     viewModel: RidesScreenViewModel = hiltViewModel(),
 ) {
-    val state = viewModel.state.collectAsState()
     val maintenances = FakeData.maintenances
 
     LazyColumn(

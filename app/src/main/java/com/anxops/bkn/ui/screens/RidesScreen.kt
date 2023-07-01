@@ -9,10 +9,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,20 +39,20 @@ import com.anxops.bkn.ui.shared.BknIcon
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.coloredShadow
 import com.anxops.bkn.util.formatAsYearMonth
+import com.anxops.bkn.util.localDateFormat
+import com.anxops.bkn.util.localTimeFormat
+import com.anxops.bkn.util.simpleLocalTimeFormat
 import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RidesScreen(
     navigator: DestinationsNavigator,
     viewModel: RidesScreenViewModel = hiltViewModel(),
 ) {
-
-
-
-    val state = viewModel.state.collectAsState()
     val bknNav = BknNavigator(navigator)
 
     val context = LocalContext.current
@@ -59,38 +63,40 @@ fun RidesScreen(
     }
 
     val bikes = viewModel.bikes.collectAsState()
-    val pagedRides = viewModel.getRidesFlow().collectAsLazyPagingItems()
+    val pagedRides = viewModel.paginatedRidesFlow.collectAsLazyPagingItems()
+    val lastUpdated = viewModel.lastUpdatedFlow.collectAsState(null)
 
-    Column(modifier = Modifier.fillMaxSize()) {
-//        Row(modifier = Modifier.padding(10.dp)) {
-//            Text(text = "", modifier = Modifier.padding(5.dp))
-//            Button(onClick = { pagedRides.refresh() }) {
-//                Text(
-//                    text = "Refresh",
-//                    style = MaterialTheme.typography.h5,
-//                    color = MaterialTheme.colors.onPrimary
-//                )
-//            }
-//        }
-        Box(modifier = Modifier
-            .fillMaxSize()) {
-            PagedRideList(rides = pagedRides, bikes = bikes.value)
-        }
+    val at = lastUpdated.value?.let { simpleLocalTimeFormat.format(Date(it.lastRidesUpdate)) } ?: "Never"
 
+    val isRefreshing =
+        pagedRides.loadState.refresh == LoadState.Loading || pagedRides.loadState.append == LoadState.Loading
+
+    val pullRefreshState =
+        rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { pagedRides.refresh() })
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState)
+    ) {
+
+        PagedRideList(rides = pagedRides, bikes = bikes.value,
+            modifier = Modifier.padding(top = 30.dp),
+            onClickOpenStrava = {
+            viewModel.openActivity(it)
+        }, onClickRide = {
+            bknNav.navigateToRide(it)
+        })
+        Text(
+            text = "Last Updated: $at",
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.primaryVariant)
+                .padding(6.dp)
+        )
+        // EmptyRides()
+        PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
-
-
-//    if (rides.value == null) {
-//        Loading()
-//    } else if (rides.value?.isEmpty() == true) {
-//        EmptyRides()
-//    } else {
-//        RideList(rides = rides.value ?: emptyList(), bikes.value, onClickOpenStrava = {
-//            viewModel.openActivity(it)
-//        }, onClickRide = {
-//            bknNav.navigateToRide(it)
-//        })
-//    }
 }
 
 
@@ -137,13 +143,16 @@ fun PagedRideList(
     rides: LazyPagingItems<BikeRide>,
     bikes: List<Bike>,
     onClickRide: (id: String) -> Unit = {},
-    onClickOpenStrava: (stravaId: String) -> Unit = {}
+    onClickOpenStrava: (stravaId: String) -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
 
+    val lazyColumnState = rememberLazyListState()
 
     LazyColumn(
+        state = lazyColumnState,
         verticalArrangement = Arrangement.spacedBy(0.dp),
-        modifier = Modifier.background(MaterialTheme.colors.primary)
+        modifier = modifier.background(MaterialTheme.colors.primary)
     ) {
 
         items(count = rides.itemCount) { index ->

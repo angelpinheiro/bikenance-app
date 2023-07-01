@@ -1,5 +1,6 @@
 package com.anxops.bkn.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -26,11 +27,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
-data class RidesScreenState(
-    val refreshing: Boolean = false
-)
-
 @HiltViewModel
 class RidesScreenViewModel @Inject constructor(
     private val ridesRepository: RidesRepositoryFacade,
@@ -40,18 +36,11 @@ class RidesScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch {
-//            db.bikeRideDao().clear()
-        }
+        Log.d("RidesScreenViewModel", "RidesScreenViewModel Init")
     }
 
-    fun getRidesFlow() = createPaginatedRidesFlow(db, api)
-
-    private var _state = MutableStateFlow(RidesScreenState())
-    val state: StateFlow<RidesScreenState> = _state
-
-    val rides: StateFlow<List<BikeRide>?> =
-        ridesRepository.getRidesFlow().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val lastUpdatedFlow = db.appInfoDao().getAppInfoFlow()
+    val paginatedRidesFlow = createPaginatedRidesFlow(db, api)
 
     val bikes: StateFlow<List<Bike>> =
         bikesRepository.getBikesFlow().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -63,6 +52,16 @@ class RidesScreenViewModel @Inject constructor(
             openActivityEvent.emit(
                 id
             )
+        }
+    }
+
+
+    private fun createPaginatedRidesFlow(
+        db: AppDb,
+        api: Api,
+    ): Flow<PagingData<BikeRide>> = createPager(db, api).flow.map { p ->
+        p.map {
+            it.toDomain()
         }
     }
 
@@ -83,15 +82,6 @@ class RidesScreenViewModel @Inject constructor(
                 db, api
             )
         )
-    }
-
-    private fun createPaginatedRidesFlow(
-        db: AppDb,
-        api: Api,
-    ): Flow<PagingData<BikeRide>> = createPager(db, api).flow.map { p ->
-        p.map {
-            it.toDomain()
-        }
     }
 
 

@@ -24,9 +24,11 @@ import androidx.paging.RemoteMediator
 import com.anxops.bkn.network.Api
 import com.anxops.bkn.network.ApiResponse
 import com.anxops.bkn.storage.room.AppDb
+import com.anxops.bkn.storage.room.entities.AppInfo
 import com.anxops.bkn.storage.room.entities.BikeRideEntity
 import com.anxops.bkn.storage.room.toEntity
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalPagingApi::class)
@@ -35,18 +37,19 @@ class RideRemoteMediator(
     private val api: Api,
 ) : RemoteMediator<Int, BikeRideEntity>() {
     override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, BikeRideEntity>
+        loadType: LoadType, state: PagingState<Int, BikeRideEntity>
     ): MediatorResult {
         return try {
             val loadKey = when (loadType) {
                 LoadType.REFRESH -> null
-                LoadType.PREPEND -> null
+                LoadType.PREPEND -> return MediatorResult.Success(
+                    endOfPaginationReached = false
+                )
+
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-                        ?: return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
+                    val lastItem = state.lastItemOrNull() ?: return MediatorResult.Success(
+                        endOfPaginationReached = true
+                    )
                     lastItem.dateTime
                 }
             }
@@ -58,13 +61,19 @@ class RideRemoteMediator(
             when (response) {
                 is ApiResponse.Success -> {
 
-                    Log.d("RideRemoteMediator", "Success -> LoadType: [$loadType], LoadKey: [$loadKey], [${response.data.size} items loaded]")
+                    Log.d(
+                        "RideRemoteMediator",
+                        "Success -> LoadType: [$loadType], LoadKey: [$loadKey], [${response.data.size} items loaded]"
+                    )
                     if (response.data.isEmpty()) {
                         return MediatorResult.Success(true)
                     }
                     db.database().run {
-                        if(loadType == LoadType.REFRESH) {
+                        if (loadType == LoadType.REFRESH) {
                             db.bikeRideDao().clear()
+                            db.appInfoDao().clear()
+                            db.appInfoDao()
+                                .insert(AppInfo(lastRidesUpdate = System.currentTimeMillis()))
                         }
                         response.data.forEach {
                             db.bikeRideDao().insert(it.toEntity())
@@ -76,7 +85,9 @@ class RideRemoteMediator(
 
                 is ApiResponse.Error -> {
 
-                    Log.d("RideRemoteMediator", "Error -> LoadKey: [$loadKey] [${response.message}]")
+                    Log.d(
+                        "RideRemoteMediator", "Error -> LoadKey: [$loadKey] [${response.message}]"
+                    )
 
                     return MediatorResult.Error(
                         Exception("ApiResponse error")
@@ -91,4 +102,17 @@ class RideRemoteMediator(
             MediatorResult.Error(e)
         }
     }
+
+    override suspend fun initialize(): InitializeAction {
+        val lastUpdate = db.appInfoDao().getAppInfo()?.lastRidesUpdate ?: 0
+        val cacheTimeout = TimeUnit.HOURS.toMillis(1) // 1 hour
+
+        return if (System.currentTimeMillis() - lastUpdate > cacheTimeout) {
+            InitializeAction.LAUNCH_INITIAL_REFRESH
+        } else {
+            InitializeAction.SKIP_INITIAL_REFRESH
+        }
+    }
+
+
 }

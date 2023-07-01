@@ -21,6 +21,8 @@ val localDateFormat: DateFormat = SimpleDateFormat("d 'de' MMMM 'de' yyyy")
 @SuppressLint("SimpleDateFormat")
 val localTimeFormat: DateFormat = SimpleDateFormat("'a las' HH:mm")
 
+@SuppressLint("SimpleDateFormat")
+val simpleLocalTimeFormat: DateFormat = SimpleDateFormat("HH:mm")
 
 fun String?.toDate(): Date? {
     return if (this != null) iso8061DateFormat.parse(this) else null
