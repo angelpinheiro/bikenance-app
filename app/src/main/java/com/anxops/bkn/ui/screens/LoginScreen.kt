@@ -89,15 +89,17 @@ fun LoginScreen(
 
         )
 
-        Text(
-            text = "Your session has been closed, please sign in again!",
-            color = MaterialTheme.colors.onSecondary,
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.background(MaterialTheme.colors.secondary)
-                .fillMaxWidth()
-                .padding(10.dp)
-                .align(Alignment.BottomEnd)
-        )
+        if(sessionExpired) {
+            Text(
+                text = "Your session has been closed, please sign in again!",
+                color = MaterialTheme.colors.onSecondary,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.background(MaterialTheme.colors.secondary)
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .align(Alignment.BottomEnd)
+            )
+        }
 
         Column(
             modifier = Modifier

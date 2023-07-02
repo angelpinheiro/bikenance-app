@@ -25,12 +25,13 @@ class SplashScreenViewModel @Inject constructor(
 
     val isLogged = dataStore.authToken.map { token ->
         val profile = repository.getProfile()
-        if(token != null && profile != null) {
-            CheckLoginState.LoggedIn
-        }else if (token == null && profile != null) {
-            CheckLoginState.LoginExpired
-        }else{
+        if(profile == null) {
             CheckLoginState.NotLoggedIn
+        }else if(token != null) {
+            // TODO: check token is valid or refresh token
+            CheckLoginState.LoggedIn
+        }else {
+            CheckLoginState.LoginExpired
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), CheckLoginState.Checking)
 
