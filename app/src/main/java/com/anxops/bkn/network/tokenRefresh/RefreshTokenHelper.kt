@@ -45,9 +45,9 @@ object RefreshTokenHelper {
                         return true
                     }
                 }
-                else -> {
-                    // Logout user if we can not refresh token
-                    dataStore.deleteAuthToken()
+                is ApiResponse.Error -> {
+                    // TODO: Logout user if we can not refresh token?
+                    // dataStore.deleteAuthToken()
                 }
             }
         }
