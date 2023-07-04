@@ -46,11 +46,12 @@ fun Date.formatAsLocalDate(): String? {
     return localDateFormat.format(this) + ", " + localTimeFormat.format(this)
 }
 
-fun Date.formatAsRelativeDate(context: Context) : String {
+fun Date.formatAsRelativeDate(context: Context): String {
     return DateUtils.getRelativeDateTimeString(
         context,
         this.time,
         DateUtils.MINUTE_IN_MILLIS,
         DateUtils.WEEK_IN_MILLIS,
-        DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_WEEKDAY).toString()
+        DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_WEEKDAY
+    ).toString()
 }

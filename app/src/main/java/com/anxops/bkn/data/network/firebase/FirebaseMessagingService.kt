@@ -1,19 +1,3 @@
-/*
- * Copyright 2023 Angel Piñeiro
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.anxops.bkn.data.network.firebase
 
 import android.util.Log
@@ -29,7 +13,7 @@ import javax.inject.Inject
 
 
 enum class MessageType(
-  val type: String
+    val type: String
 ) {
     NEW_ACTIVITY("NEW_ACTIVITY"),
     RIDES_UPDATED("RIDES_UPDATED"),
@@ -57,7 +41,6 @@ class MessagingService : FirebaseMessagingService() {
                 .setInputData(Data.Builder().putAll(remoteMessage.data as Map<String, Any>).build())
                 .build()
             WorkManager.getInstance(this).beginWith(work).enqueue()
-
 
 
         }

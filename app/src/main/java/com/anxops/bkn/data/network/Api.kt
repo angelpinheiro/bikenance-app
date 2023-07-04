@@ -1,20 +1,5 @@
-/*
- * Copyright 2023 Angel Piñeiro
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.anxops.bkn.data.network
+
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.model.ExtendedProfile
@@ -83,7 +68,10 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun getPaginatedRidesByDateTime(key: String?, pageSize: Int = 10): ApiResponse<List<BikeRide>> {
+    suspend fun getPaginatedRidesByDateTime(
+        key: String?,
+        pageSize: Int = 10
+    ): ApiResponse<List<BikeRide>> {
         return safeApiCall {
             httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint) {
                 header("Authorization", tokenHeader())
@@ -104,7 +92,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun updateBike(bike: Bike) : ApiResponse<Bike> {
+    suspend fun updateBike(bike: Bike): ApiResponse<Bike> {
         return safeApiCall {
             httpClient.put(ApiEndpoints.profileBikeEndpoint(bike._id)) {
                 header("Authorization", tokenHeader())
@@ -122,7 +110,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun createBike(bike: Bike) : ApiResponse<Bike> {
+    suspend fun createBike(bike: Bike): ApiResponse<Bike> {
         return safeApiCall {
             httpClient.post(ApiEndpoints.profileBikesEndpoint) {
                 header("Authorization", tokenHeader())
@@ -131,7 +119,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun deleteBike(bike: Bike) : ApiResponse<String> {
+    suspend fun deleteBike(bike: Bike): ApiResponse<String> {
         return safeApiCall {
             httpClient.delete(ApiEndpoints.profileBikeEndpoint(bike._id)) {
                 header("Authorization", tokenHeader())
@@ -139,7 +127,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun syncBikes(ids: List<String>)  : ApiResponse<Boolean> {
+    suspend fun syncBikes(ids: List<String>): ApiResponse<Boolean> {
         return safeApiCall {
             httpClient.put(ApiEndpoints.profileSyncBikesEndpoint) {
                 header("Authorization", tokenHeader())
@@ -167,16 +155,16 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
                 val progress = (100.0 * bytesTransferred) / totalByteCount
                 onUpdateUpload(progress.toFloat())
             }.addOnCompleteListener { task ->
-                if(task.isSuccessful) {
+                if (task.isSuccessful) {
                     fileRef.downloadUrl.addOnCompleteListener { urlTask ->
                         val url = urlTask.result
-                        if(urlTask.isSuccessful && url != null) {
+                        if (urlTask.isSuccessful && url != null) {
                             onSuccess(url.toString())
-                        }else{
+                        } else {
                             onFailure()
                         }
                     }
-                }else{
+                } else {
                     onFailure()
                 }
             }
@@ -211,6 +199,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 data class TokenWrapper(
     val token: String
 )
+
 @Serializable
 data class RefreshData(
     val refreshToken: String,

@@ -13,12 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.anxops.bkn.ui.screens.login.LoginScreen
-import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.mikepenz.iconics.typeface.IIcon
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
 @Composable
 fun onSurfaceTextFieldColors(): TextFieldColors =
@@ -32,7 +28,11 @@ fun onSurfaceTextFieldColors(): TextFieldColors =
 
 
 @Composable
-fun BknIcon(icon: IIcon, color: Color = MaterialTheme.colors.onPrimary, modifier: Modifier = Modifier) {
+fun BknIcon(
+    icon: IIcon,
+    color: Color = MaterialTheme.colors.onPrimary,
+    modifier: Modifier = Modifier
+) {
 
     com.mikepenz.iconics.compose.Image(
         icon,

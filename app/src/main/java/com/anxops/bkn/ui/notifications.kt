@@ -53,8 +53,10 @@ class Notifier {
     fun show(context: Context, data: NotificationData): Int {
         val notificationId: Int = genNotificationId()
         val intent = getIntent(context, data)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent,
-            PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_link)
             .setContentTitle(data.title)
@@ -81,6 +83,7 @@ class Notifier {
             is NotificationData.Simple -> {
                 Intent(context, MainActivity::class.java)
             }
+
             is NotificationData.DeepLink -> {
                 Intent(
                     Intent.ACTION_VIEW,
@@ -89,6 +92,7 @@ class Notifier {
                     MainActivity::class.java
                 )
             }
+
             is NotificationData.DestinationDeepLink -> {
                 Intent(
                     Intent.ACTION_VIEW,

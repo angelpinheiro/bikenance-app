@@ -1,19 +1,3 @@
-/*
- * Copyright 2023 Angel Piñeiro
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.anxops.bkn.ui.screens.rides.list
 
 import android.content.Context
@@ -48,10 +32,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
-import com.anxops.bkn.ui.screens.rides.list.components.Ride
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.screens.rides.list.components.Ride
 import com.anxops.bkn.ui.shared.coloredShadow
+import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatAsYearMonth
 import com.anxops.bkn.util.simpleLocalTimeFormat
 import com.anxops.bkn.util.toDate
@@ -78,7 +62,8 @@ fun RidesScreen(
     val pagedRides = viewModel.paginatedRidesFlow.collectAsLazyPagingItems()
     val lastUpdated = viewModel.lastUpdatedFlow.collectAsState(null)
 
-    val at = lastUpdated.value?.let { simpleLocalTimeFormat.format(Date(it.lastRidesUpdate)) } ?: "Never"
+    val at =
+        lastUpdated.value?.let { simpleLocalTimeFormat.format(Date(it.lastRidesUpdate)) } ?: "Never"
 
     val isRefreshing =
         pagedRides.loadState.refresh == LoadState.Loading || pagedRides.loadState.append == LoadState.Loading
@@ -94,10 +79,10 @@ fun RidesScreen(
         PagedRideList(rides = pagedRides, bikes = bikes.value,
             modifier = Modifier.padding(top = 30.dp),
             onClickOpenStrava = {
-            viewModel.openActivity(it)
-        }, onClickRide = {
-            bknNav.navigateToRide(it)
-        })
+                viewModel.openActivity(it)
+            }, onClickRide = {
+                bknNav.navigateToRide(it)
+            })
         Text(
             text = "Last Updated: $at",
             color = MaterialTheme.colors.onPrimary,

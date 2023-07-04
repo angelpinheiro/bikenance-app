@@ -15,7 +15,7 @@ data class ProfileEntity(
     @ColumnInfo(name = "profile_photo") val profilePhoto: String?,
     @ColumnInfo(name = "createdAt") val createdAt: String?,
 ) {
-    fun toDomain() : Profile {
+    fun toDomain(): Profile {
         return Profile(
             _id = _id ?: "",
             userId = userId,

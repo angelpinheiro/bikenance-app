@@ -3,11 +3,11 @@ package com.anxops.bkn.ui.navigation
 
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
+import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
-import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
-import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
+import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 

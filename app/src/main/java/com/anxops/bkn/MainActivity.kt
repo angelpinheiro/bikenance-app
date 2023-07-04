@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
     private fun handleAction(intent: Intent?, navController: NavHostController) {
         println("Intent action: ${intent?.action}")
-        when(intent?.action) {
+        when (intent?.action) {
             "VIEW_RIDES" -> {
 
             }
