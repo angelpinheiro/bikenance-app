@@ -18,10 +18,10 @@ package com.anxops.bkn.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.model.Profile
-import com.anxops.bkn.storage.BknDataStore
-import com.anxops.bkn.storage.DBSynchronizer
-import com.anxops.bkn.storage.ProfileRepositoryFacade
+import com.anxops.bkn.data.model.Profile
+import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.DBSynchronizer
+import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow

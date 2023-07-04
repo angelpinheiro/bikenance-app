@@ -46,8 +46,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.anxops.bkn.R
-import com.anxops.bkn.model.Bike
-import com.anxops.bkn.model.BikeRide
+import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.components.BknIcon

@@ -18,8 +18,8 @@ package com.anxops.bkn.ui.screens.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.storage.BknDataStore
-import com.anxops.bkn.storage.ProfileRepositoryFacade
+import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map

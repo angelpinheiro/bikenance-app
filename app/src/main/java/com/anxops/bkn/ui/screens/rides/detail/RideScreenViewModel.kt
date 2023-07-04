@@ -18,11 +18,11 @@ package com.anxops.bkn.ui.screens.rides.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.model.Bike
-import com.anxops.bkn.model.BikeRide
-import com.anxops.bkn.storage.BikeRepositoryFacade
-import com.anxops.bkn.storage.BknDataStore
-import com.anxops.bkn.storage.RidesRepositoryFacade
+import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.util.decodePoly
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel

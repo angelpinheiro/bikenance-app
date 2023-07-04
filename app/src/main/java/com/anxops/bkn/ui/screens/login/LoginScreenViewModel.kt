@@ -18,7 +18,7 @@ package com.anxops.bkn.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.storage.BknDataStore
+import com.anxops.bkn.data.preferences.BknDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

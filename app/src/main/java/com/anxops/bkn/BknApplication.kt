@@ -3,8 +3,8 @@ package com.anxops.bkn
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.anxops.bkn.network.tokenRefresh.RefreshTokenHelper
-import com.anxops.bkn.storage.DBSynchronizer
+import com.anxops.bkn.data.network.tokenRefresh.RefreshTokenHelper
+import com.anxops.bkn.data.DBSynchronizer
 import com.anxops.bkn.ui.Notifier
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject

@@ -18,10 +18,10 @@ package com.anxops.bkn.ui.screens.garage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.model.Bike
-import com.anxops.bkn.network.Api
-import com.anxops.bkn.storage.BikeRepositoryFacade
-import com.anxops.bkn.storage.room.AppDb
+import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.util.createPaginatedRidesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

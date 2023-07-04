@@ -28,7 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.anxops.bkn.storage.FakeData
+import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
 import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItemView
 import com.anxops.bkn.ui.screens.rides.list.RidesScreenViewModel

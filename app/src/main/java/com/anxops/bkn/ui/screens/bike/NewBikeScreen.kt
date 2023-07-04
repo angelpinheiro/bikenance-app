@@ -58,7 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.anxops.bkn.model.BikeType
+import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.ui.shared.components.BknLabelTopTextField
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.onSurfaceTextFieldColors

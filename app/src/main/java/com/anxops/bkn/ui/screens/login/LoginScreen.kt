@@ -54,8 +54,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
-import com.anxops.bkn.network.ApiEndpoints
-import com.anxops.bkn.storage.BknDataStore
+import com.anxops.bkn.data.network.ApiEndpoints
+import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.ui.shared.components.BknOutlinedTextField
 import com.anxops.bkn.ui.shared.components.onSurfaceTextFieldColors
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme

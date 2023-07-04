@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.anxops.bkn.R
-import com.anxops.bkn.model.Bike
+import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.Loading
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial

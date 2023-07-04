@@ -36,8 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.anxops.bkn.model.Bike
-import com.anxops.bkn.storage.FakeData
+import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.screens.maintenances.components.getColorForProgress
 import com.anxops.bkn.ui.theme.statusDanger
 

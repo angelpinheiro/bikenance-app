@@ -21,11 +21,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.anxops.bkn.model.BikeRide
-import com.anxops.bkn.network.Api
-import com.anxops.bkn.storage.RideRemoteMediator
-import com.anxops.bkn.storage.room.AppDb
-import com.anxops.bkn.storage.room.entities.BikeRideEntity
+import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.mediator.RideRemoteMediator
+import com.anxops.bkn.data.database.AppDb
+import com.anxops.bkn.data.database.entities.BikeRideEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

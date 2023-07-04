@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.anxops.bkn.model.Bike
+import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
 import com.anxops.bkn.ui.screens.rides.list.openStravaActivity
 import com.anxops.bkn.ui.shared.Loading

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Marco Cattaneo
+ * Copyright 2023 Angel Piñeiro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package com.anxops.bkn.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.network.Api
-import com.anxops.bkn.network.tokenRefresh.RefreshTokenHelper
-import com.anxops.bkn.storage.BknDataStore
-import com.anxops.bkn.storage.DBSynchronizer
+import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.network.tokenRefresh.RefreshTokenHelper
+import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.DBSynchronizer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import com.anxops.bkn.model.BikeRide
+import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatAsSimpleDate
 import com.anxops.bkn.util.toDate

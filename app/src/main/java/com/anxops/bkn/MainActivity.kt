@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.anxops.bkn.storage.BknDataStore
+import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi

@@ -35,7 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
-import com.anxops.bkn.network.firebase.SendTokenToServerWorker
+import com.anxops.bkn.data.network.firebase.SendTokenToServerWorker
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
