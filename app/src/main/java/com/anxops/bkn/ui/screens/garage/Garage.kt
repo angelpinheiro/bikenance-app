@@ -11,15 +11,19 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
+import com.anxops.bkn.ui.screens.garage.components.OngoingMaintenance
+import com.anxops.bkn.ui.screens.garage.components.RecentActivity
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -34,15 +38,15 @@ fun Garage(
 ) {
     val nav = BknNavigator(navigator)
     val state = viewModel.state.collectAsState()
-    val rides = viewModel.paginatedRidesFlow.collectAsLazyPagingItems()
-    val bikesState = viewModel.bikes.collectAsState()
-    val bikes = bikesState.value.sortedByDescending { it.distance }
+    val rides = viewModel.selectedBikeRides
+    val bikes = viewModel.bikes.collectAsState()
+
+    var selectedBike = viewModel.selectedBike.collectAsState()
 
     updateBikeResult.onNavResult {
         when (it) {
             is NavResult.Value -> {
-                Log.d("HOmeScreen", "Nav result received ${it.value}")
-//                viewModel.reload()
+                // viewModel.reload()
             }
 
             else -> {}
@@ -52,8 +56,7 @@ fun Garage(
     updateProfileResult.onNavResult {
         when (it) {
             is NavResult.Value -> {
-                Log.d("HOmeScreen", "Nav result received ${it.value}")
-//                viewModel.reload()
+                // viewModel.reload()
             }
 
             else -> {}
@@ -67,51 +70,39 @@ fun Garage(
         1f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.96f),
     )
 
-
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.value.refreshing,
         onRefresh = { viewModel.reload() })
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(bgGradient)
             .pullRefresh(pullRefreshState)
     ) {
-
-        Box(Modifier.fillMaxSize()) {
-
-//            Image(
-//                painter = painterResource(id = R.drawable.ic_biking),
-//                contentDescription = "Not found",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .alpha(0.5f)
-//                    .align(Alignment.BottomCenter)
-//            )
-
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(bgGradient)
-            )
-
-        }
 
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(
-                Modifier
-                    .weight(1f)
-            ) {
 
-                if (bikes != null && bikes.isNotEmpty()) {
-                    BikesPager(bikes = bikes, rides = rides) {
-                        nav.navigateToBike(it._id)
-                    }
-                }
+            BikesPager(
+                bikes = bikes.value,
+                onBikeChanged = {
+                    Log.d("onBikeChanged", "Bike changed ${it.name}")
+                    viewModel.setSelectedBike(it)
+                },
+                onEditBike = {
+                    nav.navigateToBike(it._id)
+                })
+
+            RecentActivity(rides = rides.value)
+
+            selectedBike.value?.let {
+                OngoingMaintenance(it)
             }
+
+
         }
 
         PullRefreshIndicator(

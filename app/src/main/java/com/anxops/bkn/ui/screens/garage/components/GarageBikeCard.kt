@@ -41,7 +41,7 @@ import java.text.DecimalFormat
 
 
 @Composable
-fun BikeCardV2(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {}) {
+fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {}) {
 
     val configuration = LocalConfiguration.current
 

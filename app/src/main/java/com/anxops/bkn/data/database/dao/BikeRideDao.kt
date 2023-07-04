@@ -18,6 +18,12 @@ interface BikeRideDao {
     @Query("SELECT * FROM bike_ride ORDER BY date_time DESC")
     fun flow(): Flow<List<BikeRideEntity>>
 
+    @Query("SELECT * FROM bike_ride WHERE bike_id = :bikeId ORDER BY date_time DESC")
+    fun bikeFlow(bikeId: String): Flow<List<BikeRideEntity>>
+
+    @Query("SELECT * FROM bike_ride WHERE bike_id = :bikeId ORDER BY date_time DESC LIMIT :limit")
+    fun lastBikeRides(bikeId: String, limit: Int = 3): List<BikeRideEntity>
+
     @Query("SELECT * FROM bike_ride")
     fun pagingSource(): PagingSource<Int, BikeRideEntity>
 
@@ -32,5 +38,6 @@ interface BikeRideDao {
 
     @Query("DELETE FROM bike_ride")
     suspend fun clear()
+
 
 }

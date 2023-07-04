@@ -15,21 +15,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatAsSimpleDate
+import com.anxops.bkn.util.formatDistanceAsKm
 import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.text.DecimalFormat
 
 @Composable
-fun LastRides(rides: LazyPagingItems<BikeRide>) {
+fun RecentActivity(rides: List<BikeRide>) {
 
-    if (rides != null && rides.itemCount > 1) {
+    if (rides.isNotEmpty()) {
 
-        val rand1 = rides[0] //Random.nextInt(rides.itemCount - 1)
-        val rand2 = rides[1] //Random.nextInt(rides.itemCount - 1)
+        val total = rides.sumOf { it.distance ?: 0 }
+
+        Text(
+            text = "Recent activity (${formatDistanceAsKm(total)})",
+            modifier = Modifier.padding(10.dp),
+            style = MaterialTheme.typography.h2,
+            color = MaterialTheme.colors.onPrimary
+        )
 
         Column(
             modifier = Modifier
@@ -37,7 +43,7 @@ fun LastRides(rides: LazyPagingItems<BikeRide>) {
                 .clip(RoundedCornerShape(10.dp))
         ) {
 
-            listOfNotNull(rand1, rand2).forEach() {
+            rides.forEach() {
 
                 Box(
                     modifier = Modifier
@@ -67,7 +73,7 @@ fun LastRides(rides: LazyPagingItems<BikeRide>) {
                                 .weight(1f)
                         )
                         Text(
-                            text = DecimalFormat("#.#").format(it.distance?.div(1000f)) + "km",
+                            text = formatDistanceAsKm(it.distance ?: 0),
                             color = MaterialTheme.colors.onPrimary,
                             style = MaterialTheme.typography.h5,
                             modifier = Modifier
