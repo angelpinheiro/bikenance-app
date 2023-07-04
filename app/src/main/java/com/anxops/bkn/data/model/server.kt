@@ -98,3 +98,4 @@ data class BikeRide(
     @SerialName("date_time") var dateTime: String? = null,
     @SerialName("map_summary_polyline") var mapSummaryPolyline: String? = null,
 )
+

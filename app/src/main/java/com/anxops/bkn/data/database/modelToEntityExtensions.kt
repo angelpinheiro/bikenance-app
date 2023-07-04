@@ -2,9 +2,11 @@ package com.anxops.bkn.data.database
 
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.entities.BikeRideEntity
+import com.anxops.bkn.data.database.entities.ComponentEntity
 import com.anxops.bkn.data.database.entities.ProfileEntity
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.Profile
 
 
@@ -49,3 +51,17 @@ fun BikeRide.toEntity(): BikeRideEntity {
         mapSummaryPolyline = mapSummaryPolyline
     )
 }
+
+fun BikeComponent.toEntity(): ComponentEntity {
+    return ComponentEntity(
+        _id = _id,
+        bikeId = bikeId,
+        description = description,
+        componentType = type.type,
+        componentTypeName = type.name,
+        usageDistance = usage.km,
+        usageHours = usage.hours
+    )
+}
+
+
