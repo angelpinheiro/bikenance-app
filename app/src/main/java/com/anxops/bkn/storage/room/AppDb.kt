@@ -14,7 +14,7 @@ import com.anxops.bkn.storage.room.entities.BikeRideEntity
 import com.anxops.bkn.storage.room.entities.ProfileEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 
-@Database(entities = [ProfileEntity::class, BikeEntity::class, BikeRideEntity::class, AppInfo::class], version = 1)
+@Database(entities = [ProfileEntity::class, BikeEntity::class, BikeRideEntity::class, AppInfo::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
     abstract fun bikeDao(): BikeDao

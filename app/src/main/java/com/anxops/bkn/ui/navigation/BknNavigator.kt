@@ -3,11 +3,11 @@ package com.anxops.bkn.ui.navigation
 
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
-import com.anxops.bkn.ui.screens.destinations.GarageDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
-import com.anxops.bkn.ui.screens.destinations.SetupProfileScreenDestination
+import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
+import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -26,15 +26,15 @@ class BknNavigator(var navigator: DestinationsNavigator) {
     }
 
     fun navigateToGarage() {
-        navigator.navigate(GarageDestination.invoke(section = null))
+        navigator.navigate(HomeScreenDestination.invoke(section = null))
     }
 
     fun navigateToGarage(section: String) {
-        navigator.navigate(GarageDestination.invoke(section = section))
+        navigator.navigate(HomeScreenDestination.invoke(section = section))
     }
 
     fun navigateToProfile() {
-        navigator.navigate(SetupProfileScreenDestination.route)
+        navigator.navigate(ProfileScreenDestination.route)
     }
 
     fun navigateToNewBike() {

@@ -17,7 +17,7 @@
 package com.anxops.bkn.storage
 
 import com.anxops.bkn.model.Bike
-import com.anxops.bkn.ui.components.MaintenanceItem
+import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
 
 object FakeData {
 

@@ -7,9 +7,9 @@ import androidx.work.WorkerParameters
 import com.anxops.bkn.storage.RidesRepositoryFacade
 import com.anxops.bkn.ui.NotificationData
 import com.anxops.bkn.ui.Notifier
-import com.anxops.bkn.ui.components.GarageSections
-import com.anxops.bkn.ui.screens.destinations.GarageDestination
+import com.anxops.bkn.ui.screens.home.HomeSections
 import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
+import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -33,7 +33,7 @@ class HandleFcmMessageWorker @AssistedInject constructor(
                     applicationContext, NotificationData.DestinationDeepLink(
                         title = "Rides updated!",
                         text = "$count rides where imported from strava!",
-                        to = GarageDestination.invoke(section = GarageSections.Rides.id)
+                        to = HomeScreenDestination.invoke(section = HomeSections.Rides.id)
                     )
                 )
             }
