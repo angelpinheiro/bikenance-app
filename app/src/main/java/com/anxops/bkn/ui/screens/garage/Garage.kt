@@ -85,11 +85,12 @@ fun Garage(
             BikesPager(
                 bikes = bikes.value,
                 onBikeChanged = {
-                    Log.d("onBikeChanged", "Bike changed ${it.name}")
                     viewModel.setSelectedBike(it)
                 },
                 onEditBike = {
                     nav.navigateToBike(it._id)
+                }, onBikeDetails = {
+                    nav.navigateToBikeDetails(it._id)
                 })
 
             RecentActivity(rides = rides.value)

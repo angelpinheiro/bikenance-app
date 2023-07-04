@@ -14,7 +14,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
@@ -30,6 +29,7 @@ fun BikesPager(
     bikes: List<Bike>,
     onEditBike: (Bike) -> Unit = {},
     onBikeChanged: (Bike) -> Unit = {},
+    onBikeDetails: (Bike) -> Unit = {}
 ) {
     val configuration = LocalConfiguration.current
     val pagerState = rememberPagerState()
@@ -73,7 +73,7 @@ fun BikesPager(
                 GarageBikeCard(bike = it, onEdit = {
                     onEditBike(it)
                 }, onDetail = {
-
+                    onBikeDetails(it)
                 })
             }
 
