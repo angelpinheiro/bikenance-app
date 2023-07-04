@@ -10,6 +10,7 @@ import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.VisualTransformation
@@ -40,6 +41,15 @@ fun BknIcon(
         modifier = modifier
     )
 }
+
+
+@Composable
+fun  bgGradient() = Brush.verticalGradient(
+    0f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.95f),
+    0.1f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.98f),
+    0.5f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.98f),
+    1f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.96f),
+)
 
 @Composable
 fun BknOutlinedTextField(

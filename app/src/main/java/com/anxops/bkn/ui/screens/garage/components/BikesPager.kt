@@ -1,7 +1,5 @@
 package com.anxops.bkn.ui.screens.garage.components
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,11 +14,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -34,15 +33,19 @@ fun BikesPager(
 ) {
     val configuration = LocalConfiguration.current
     val pagerState = rememberPagerState()
-    val bikeCount = remember { bikes.size }
     val pageWidth = remember {
         (configuration.screenWidthDp.dp.value * 0.85).toInt()
+    }
+
+    val selectedBike = remember {
+        mutableStateOf<Bike?>(null)
     }
 
     LaunchedEffect(pagerState, bikes) {
         // Observe bike selection en notify callback
         snapshotFlow { pagerState.currentPage }.collect { page ->
             bikes.getOrNull(page)?.let {
+                selectedBike.value = it
                 onBikeChanged(it)
             }
         }
@@ -65,10 +68,15 @@ fun BikesPager(
             pageCount = bikes.size,
             state = pagerState,
             pageSize = PageSize.Fixed(pageWidth.dp),
-        ) { page ->
-            GarageBikeCard(bike = bikes[page]) {
-                onEditBike(bikes[page])
+        ) {
+            selectedBike.value?.let {
+                GarageBikeCard(bike = it, onEdit = {
+                    onEditBike(it)
+                }, onDetail = {
+
+                })
             }
+
         }
 
         BikePagerIndicator(pagerState, bikes.size)

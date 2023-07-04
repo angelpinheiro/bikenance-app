@@ -1,7 +1,9 @@
 package com.anxops.bkn.ui.screens.garage.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +42,9 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import java.text.DecimalFormat
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {}) {
+fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {},  onDetail: () -> Unit = {}) {
 
     val configuration = LocalConfiguration.current
 
@@ -55,7 +58,12 @@ fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {}) {
             .fillMaxWidth()
             .height(100.dp)
             .padding(horizontal = 10.dp)
-            .clickable { onEdit() },
+            .combinedClickable(
+                onClick = { onDetail() },
+                onLongClick = { onEdit() },
+            )
+        ,
+
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.primary
     ) {

@@ -24,6 +24,7 @@ import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
 import com.anxops.bkn.ui.screens.garage.components.OngoingMaintenance
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
+import com.anxops.bkn.ui.shared.components.bgGradient
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -63,12 +64,7 @@ fun Garage(
         }
     }
 
-    val bgGradient = Brush.verticalGradient(
-        0f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.95f),
-        0.1f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.98f),
-        0.5f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.98f),
-        1f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.96f),
-    )
+    val gradientBackground = bgGradient()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.value.refreshing,
@@ -76,7 +72,7 @@ fun Garage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bgGradient)
+            .background(gradientBackground)
             .pullRefresh(pullRefreshState)
     ) {
 
