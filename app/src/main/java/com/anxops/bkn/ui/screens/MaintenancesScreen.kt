@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.storage.FakeData
+import com.anxops.bkn.ui.components.MaintenanceItem
 import com.anxops.bkn.ui.components.MaintenanceItemView
 import com.anxops.bkn.ui.shared.coloredShadow
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -25,8 +26,11 @@ fun MaintenancesScreen(
     navigator: DestinationsNavigator,
     viewModel: RidesScreenViewModel = hiltViewModel(),
 ) {
-    val maintenances = FakeData.maintenances
+    MaintenanceList(FakeData.maintenances)
+}
 
+@Composable
+fun MaintenanceList(maintenances: List<MaintenanceItem>) {
     LazyColumn(
         modifier = Modifier.background(MaterialTheme.colors.primary)
     ) {
@@ -65,6 +69,4 @@ fun MaintenancesScreen(
 
 
     }
-
-
 }

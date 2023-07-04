@@ -3,7 +3,10 @@ package com.anxops.bkn.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.model.Bike
+import com.anxops.bkn.network.Api
 import com.anxops.bkn.storage.BikeRepositoryFacade
+import com.anxops.bkn.storage.room.AppDb
+import com.anxops.bkn.util.createPaginatedRidesFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +21,8 @@ data class HomeScreenState(
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
+    private val db: AppDb,
+    private val api: Api,
     private val bikeRepository: BikeRepositoryFacade
 ) :
     ViewModel() {
@@ -27,6 +32,8 @@ class HomeScreenViewModel @Inject constructor(
 
     val bikes: StateFlow<List<Bike>> = bikeRepository.getBikesFlow()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val paginatedRidesFlow = createPaginatedRidesFlow(db, api)
 
     fun reload() {
         viewModelScope.launch {

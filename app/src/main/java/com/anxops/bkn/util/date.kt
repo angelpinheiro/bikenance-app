@@ -17,6 +17,9 @@ val iso8061DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
 val localDateFormat: DateFormat = SimpleDateFormat("d 'de' MMMM 'de' yyyy")
 
 @SuppressLint("SimpleDateFormat")
+val simpleLocalDateFormat: DateFormat = SimpleDateFormat("dd/MM")
+
+@SuppressLint("SimpleDateFormat")
 val localTimeFormat: DateFormat = SimpleDateFormat("'a las' HH:mm")
 
 @SuppressLint("SimpleDateFormat")
@@ -32,6 +35,10 @@ fun Date.formatAsIso8061(): String? {
 
 fun Date.formatAsYearMonth(): String? {
     return yearMonthFormat.format(this)
+}
+
+fun Date.formatAsSimpleDate(): String? {
+    return simpleLocalDateFormat.format(this)
 }
 
 

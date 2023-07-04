@@ -55,6 +55,10 @@ data class Bike(
     fun toBikeUpdate(): BikeUpdate {
         return BikeUpdate(userId, stravaId, name, brandName, modelName, distance, photoUrl, draft, type)
     }
+
+    fun displayName() : String{
+        return (brandName ?: "") + " " + (modelName ?: "")
+    }
 }
 
 @Serializable

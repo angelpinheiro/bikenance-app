@@ -1,5 +1,7 @@
 package com.anxops.bkn.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -7,9 +9,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.anxops.bkn.R
 import com.anxops.bkn.ui.components.GarageBottomBar
 import com.anxops.bkn.ui.components.GarageSections
 import com.anxops.bkn.ui.navigation.BknNavigator
@@ -62,6 +66,7 @@ fun Garage(
             TopAppBar(
                 elevation = 6.dp,
                 contentPadding = PaddingValues(5.dp),
+                backgroundColor = MaterialTheme.colors.primaryVariant
             )
             {
                 Row(
@@ -121,17 +126,17 @@ fun Garage(
                                     .size(20.dp)
                             )
                         }
-                        IconButton(onClick = {
-                            viewModel.refreshToken()
-                        }) {
-                            BknIcon(
-                                icon = CommunityMaterial.Icon.cmd_cloud_refresh,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .size(20.dp)
-                            )
-                        }
+//                        IconButton(onClick = {
+//                            viewModel.refreshToken()
+//                        }) {
+//                            BknIcon(
+//                                icon = CommunityMaterial.Icon.cmd_cloud_refresh,
+//                                color = Color.White,
+//                                modifier = Modifier
+//                                    .padding(horizontal = 6.dp)
+//                                    .size(20.dp)
+//                            )
+//                        }
                     }
                 }
             }
@@ -150,9 +155,10 @@ fun Garage(
                 .padding(it)
                 .fillMaxSize()
         ) {
+
             when (selectedItem) {
                 GarageSections.Home -> {
-                    HomeScreen(navigator = navigator, bikeUpdateResult, profileUpdateResult)
+                    BikesScreen(navigator = navigator, bikeUpdateResult, profileUpdateResult)
                 }
 
                 GarageSections.Rides -> {

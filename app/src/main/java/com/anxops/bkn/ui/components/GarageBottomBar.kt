@@ -76,7 +76,7 @@ enum class GarageSections(
     val icon: IIcon,
     val title: String
 ) {
-    Home("HomeScreenDestination", CommunityMaterial.Icon.cmd_bike, "Bikes"),
+    Home("HomeScreenDestination", CommunityMaterial.Icon.cmd_bike, "Garage"),
     Rides("RidesScreenDestination", CommunityMaterial.Icon.cmd_bike_fast, "Rides"),
     Maintenances(
         "MaintenancesScreenDestination",

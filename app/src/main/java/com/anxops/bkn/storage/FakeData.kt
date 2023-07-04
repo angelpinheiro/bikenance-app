@@ -16,9 +16,18 @@
 
 package com.anxops.bkn.storage
 
+import com.anxops.bkn.model.Bike
 import com.anxops.bkn.ui.components.MaintenanceItem
 
 object FakeData {
+
+    val bike = Bike(
+        _id = "1",
+        brandName = "Specialized",
+        modelName = "Epic",
+        photoUrl = "https://assets.specialized.com/i/specialized/97620-01_EPIC-SW-REDTNT-BRSH-WHT_HERO?bg=rgb(241,241,241)&w=1600&h=900&fmt=auto",
+        distance = 10456000
+    )
 
     val maintenances = listOf(
         MaintenanceItem(

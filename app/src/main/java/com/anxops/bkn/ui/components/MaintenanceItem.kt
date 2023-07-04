@@ -211,6 +211,8 @@ fun getColorForProgress(percentage: Float): Color {
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun MaintenanceItemPreview() {
