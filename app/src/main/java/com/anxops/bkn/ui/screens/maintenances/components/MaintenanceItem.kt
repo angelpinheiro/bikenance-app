@@ -23,10 +23,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.mock.FakeData
+import com.anxops.bkn.data.model.BikeComponentType
+import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.anxops.bkn.ui.theme.statusDanger
@@ -41,8 +44,12 @@ data class MaintenanceItem(
     val bikePart: String,
     val title: String,
     val time: String,
-    val percentage: Float
-)
+    val percentage: Float,
+    val componentType: BikeComponentType
+) {
+    fun displayPercentage(): String =
+        "${(percentage * 100).toInt()}%"
+}
 
 @Composable
 fun MaintenanceItemView(item: MaintenanceItem) {
@@ -82,12 +89,21 @@ fun MaintenanceItemView(item: MaintenanceItem) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    BknIcon(
-                        CommunityMaterial.Icon3.cmd_tools,
-                        MaterialTheme.colors.primary,
+//                    BknIcon(
+//                        CommunityMaterial.Icon3.cmd_tools,
+//                        MaterialTheme.colors.primary,
+//                        modifier = Modifier
+//                            .padding(end = 6.dp)
+//                            .size(16.dp)
+//                    )
+                    BikeComponentIcon(
+                        type = item.componentType, tint = MaterialTheme.colors.onSurface,
                         modifier = Modifier
-                            .padding(end = 6.dp)
-                            .size(16.dp)
+                            .padding(5.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colors.surface)
+                            .padding(10.dp)
                     )
                     Text(
                         item.bikePart,

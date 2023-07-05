@@ -3,6 +3,9 @@ package com.anxops.bkn.ui.screens.bike
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -18,13 +21,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponentType
+import com.anxops.bkn.data.model.defaultComponentTypes
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.components.AsyncImage
+import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -51,6 +58,8 @@ fun BikeDetailsScreen(
         viewModel.loadBike(bikeId)
     }
 
+    val scrollState = rememberScrollState()
+
     val gradient = bgGradient()
     val state = viewModel.state.collectAsState()
 
@@ -67,7 +76,7 @@ fun BikeDetailsScreen(
                     .background(bgGradient())
                     .pullRefresh(pullRefreshState)
             ) {
-                Column {
+                Column(Modifier.verticalScroll(scrollState)) {
 
                     BikeDetailsHeader(bike = bike)
 
@@ -83,6 +92,33 @@ fun BikeDetailsScreen(
                             style = MaterialTheme.typography.h2,
                             color = MaterialTheme.colors.onPrimary
                         )
+
+                        BikeComponentType.values().forEach { type ->
+
+                            val desc = defaultComponentTypes[type]?.name ?: "Unknown"
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                                BikeComponentIcon(
+                                    type = type,
+                                    tint = MaterialTheme.colors.onPrimary,
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .size(60.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colors.primary)
+                                        .padding(10.dp)
+                                )
+
+                                Text(
+                                    text = desc,
+                                    modifier = Modifier.padding(10.dp),
+                                    style = MaterialTheme.typography.h3,
+                                    color = MaterialTheme.colors.onPrimary
+                                )
+                            }
+
+                        }
 
                     }
                 }
@@ -157,6 +193,7 @@ fun BikeDetailsHeader(bike: Bike) {
                 )
 
             }
+
         }
 
     }

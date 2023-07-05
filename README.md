@@ -123,9 +123,17 @@ details:
     - The app receives the notification and displays it to the user, indicating that the new
       activity has been synchronized.
 
-## License
-Bikenance is [licensed](LICENSE.md) under the [CC BY-NC-SA 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+## Artwork attribution
 
+Icons used for bike components are from
+the [Bicycle Parts](https://thenounproject.com/browse/collection-icon/bicycle-parts-line-87192/)
+collection by [Kipasangin Stock](https://thenounproject.com/kipasangincreative123/)
+at [The Noun Project ](https://thenounproject.com)
+
+## License
+
+Bikenance is [licensed](LICENSE.md) under
+the [CC BY-NC-SA 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 
 

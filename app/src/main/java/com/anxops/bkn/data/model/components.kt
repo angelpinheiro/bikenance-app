@@ -34,18 +34,35 @@ data class BikeComponent(
 )
 
 
+enum class BikeComponentType {
+    FRAME,
+    FORK,
+    HANDLEBAR,
+    BRAKES,
+    DERAILLEURS,
+    CHAIN,
+    PEDALS,
+    RIMS,
+    TIRES,
+    SADDLE,
+    CABLES,
+    BOTTOM_BRACKET,
+    HEADSET
+}
+
+
 val defaultComponentTypes = mapOf(
-    "FRAME" to ComponentType("FRAME", "Frame"),
-    "FORK" to ComponentType("FORK", "Front suspension"),
-    "HANDLEBAR" to ComponentType("HANDLEBAR", "Handlebar"),
-    "BRAKES" to ComponentType("BRAKES", "Brakes"),
-    "DERAILLEURS" to ComponentType("DERAILLEURS", "Derailleurs"),
-    "CHAIN" to ComponentType("CHAIN", "Chain"),
-    "PEDALS" to ComponentType("PEDALS", "Pedals"),
-    "RIMS" to ComponentType("RIMS", "Rims"),
-    "TIRES" to ComponentType("TIRES", "Tires"),
-    "SADDLE" to ComponentType("SADDLE", "Saddle"),
-    "CABLES" to ComponentType("CABLES", "Cables and housings"),
-    "BOTTOM_BRACKET" to ComponentType("BOTTOM_BRACKET", "Bottom bracket"),
-    "HEADSET" to ComponentType("HEADSET", "Headset")
+    BikeComponentType.FRAME to ComponentType(BikeComponentType.FRAME.name, "Frame"),
+    BikeComponentType.FORK to ComponentType(BikeComponentType.FORK.name, "Front suspension"),
+    BikeComponentType.HANDLEBAR to ComponentType(BikeComponentType.HANDLEBAR.name, "Handlebar"),
+    BikeComponentType.BRAKES to ComponentType(BikeComponentType.BRAKES.name, "Brakes"),
+    BikeComponentType.DERAILLEURS to ComponentType(BikeComponentType.DERAILLEURS.name, "Derailleurs"),
+    BikeComponentType.CHAIN to ComponentType(BikeComponentType.CHAIN.name, "Chain"),
+    BikeComponentType.PEDALS to ComponentType(BikeComponentType.PEDALS.name, "Pedals"),
+    BikeComponentType.RIMS to ComponentType(BikeComponentType.RIMS.name, "Rims"),
+    BikeComponentType.TIRES to ComponentType(BikeComponentType.TIRES.name, "Tires"),
+    BikeComponentType.SADDLE to ComponentType(BikeComponentType.SADDLE.name, "Saddle"),
+    BikeComponentType.CABLES to ComponentType(BikeComponentType.CABLES.name, "Cables and housings"),
+    BikeComponentType.BOTTOM_BRACKET to ComponentType(BikeComponentType.BOTTOM_BRACKET.name, "Bottom bracket"),
+    BikeComponentType.HEADSET to ComponentType(BikeComponentType.HEADSET.name, "Headset")
 )

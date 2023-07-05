@@ -1,6 +1,7 @@
 package com.anxops.bkn.data.mock
 
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponentType
 import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
 
 object FakeData {
@@ -16,38 +17,43 @@ object FakeData {
     val maintenances = listOf(
         MaintenanceItem(
             bike = "Scott Spark",
-            bikePart = "Tubeless liquid",
+            bikePart = "Tires tubeless liquid",
             title = "Check / Refill",
             time = "Two weeks ago",
-            percentage = 1f
+            percentage = 1f,
+            componentType = BikeComponentType.TIRES
         ),
         MaintenanceItem(
             bike = "Scott Spark",
-            bikePart = "FOX 32 Float Performance",
+            bikePart = "FOX 32 Float Performance Kashima Coating",
             title = "Full service",
             time = "3 months left",
-            percentage = 0.8f
+            percentage = 0.8f,
+            componentType = BikeComponentType.FORK
         ),
         MaintenanceItem(
             bike = "Scott Spark",
             bikePart = "Shimano XT Chain",
             title = "Check / Replace",
             time = "2000km left",
-            percentage = 0.4f
+            percentage = 0.4f,
+            componentType = BikeComponentType.CHAIN
         ),
         MaintenanceItem(
             bike = "Cube Analog",
             bikePart = "Front brake pads",
             title = "Check / Replace",
             time = "2 months left",
-            percentage = 0.3f
+            percentage = 0.3f,
+            componentType = BikeComponentType.BRAKES
         ),
         MaintenanceItem(
             bike = "Cube Analog",
             bikePart = "Shimano XT Chain",
             title = "Check / Replace",
             time = "500km left",
-            percentage = 0.8f
+            percentage = 0.8f,
+            componentType = BikeComponentType.CHAIN
         ),
     ).sortedByDescending { it.percentage }
 
