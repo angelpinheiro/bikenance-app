@@ -36,6 +36,7 @@ data class BikeComponent(
 
 enum class BikeComponentType {
     FRAME,
+    FRAME_BEARINGS,
     FORK,
     HANDLEBAR,
     BRAKES,
@@ -53,6 +54,7 @@ enum class BikeComponentType {
 
 val defaultComponentTypes = mapOf(
     BikeComponentType.FRAME to ComponentType(BikeComponentType.FRAME.name, "Frame"),
+    BikeComponentType.FRAME_BEARINGS to ComponentType(BikeComponentType.FRAME_BEARINGS.name, "Frame bearings"),
     BikeComponentType.FORK to ComponentType(BikeComponentType.FORK.name, "Front suspension"),
     BikeComponentType.HANDLEBAR to ComponentType(BikeComponentType.HANDLEBAR.name, "Handlebar"),
     BikeComponentType.BRAKES to ComponentType(BikeComponentType.BRAKES.name, "Brakes"),

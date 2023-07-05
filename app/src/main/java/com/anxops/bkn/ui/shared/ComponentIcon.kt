@@ -19,6 +19,7 @@ import com.anxops.bkn.data.model.BikeComponentType
 
 val defaultComponentIcons = mapOf(
     BikeComponentType.FRAME to R.drawable.noun_bike_frame_2,
+    BikeComponentType.FRAME_BEARINGS to R.drawable.noun_bike_frame,
     BikeComponentType.FORK to R.drawable.noun_suspension_fork,
     BikeComponentType.HANDLEBAR to null,
     BikeComponentType.BRAKES to R.drawable.noun_bottom_bracket,

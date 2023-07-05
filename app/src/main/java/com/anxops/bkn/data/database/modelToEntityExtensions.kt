@@ -32,7 +32,8 @@ fun Bike.toEntity(): BikeEntity {
         modelName = modelName,
         distance = distance,
         photoUrl = photoUrl,
-        draft = draft
+        draft = draft,
+        type = type.toString()
     )
 }
 

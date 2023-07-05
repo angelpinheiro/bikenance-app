@@ -36,13 +36,13 @@ val Typography = Typography(
     h2 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
+        fontSize = 18.sp,
 //        letterSpacing = (-0.5).sp
     ),
     h3 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.Light,
-        fontSize = 16.sp,
+        fontSize = 15.sp,
         color = BknGrey,
 //        letterSpacing = 0.sp
     ),

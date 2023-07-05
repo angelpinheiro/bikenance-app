@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.model.Bike
@@ -34,10 +37,11 @@ import com.anxops.bkn.ui.screens.garage.components.AsyncImage
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
+import com.anxops.bkn.ui.theme.strava
+import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import java.text.DecimalFormat
 import java.util.*
 
 
@@ -73,24 +77,27 @@ fun BikeDetailsScreen(
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
-                    .background(bgGradient())
+                    .background(MaterialTheme.colors.primaryVariant)
                     .pullRefresh(pullRefreshState)
             ) {
-                Column(Modifier.verticalScroll(scrollState)) {
+                Column(
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .background(MaterialTheme.colors.surface)
+                ) {
 
                     BikeDetailsHeader(bike = bike)
 
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(bgGradient())
                             .padding(10.dp)
                     ) {
                         Text(
                             text = "Components",
                             modifier = Modifier.padding(10.dp),
                             style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.onPrimary
+                            color = MaterialTheme.colors.primary
                         )
 
                         BikeComponentType.values().forEach { type ->
@@ -114,7 +121,7 @@ fun BikeDetailsScreen(
                                     text = desc,
                                     modifier = Modifier.padding(10.dp),
                                     style = MaterialTheme.typography.h3,
-                                    color = MaterialTheme.colors.onPrimary
+                                    color = MaterialTheme.colors.primary
                                 )
                             }
 
@@ -130,72 +137,116 @@ fun BikeDetailsScreen(
 @Composable
 fun BikeDetailsHeader(bike: Bike) {
 
+    val headerBg = MaterialTheme.colors.primary
+
     val gradient = Brush.horizontalGradient(
-        0f to MaterialTheme.colors.primary,
-        0.5f to MaterialTheme.colors.primary.copy(alpha = 0.95f),
+        0f to headerBg,
+        1f to headerBg.copy(alpha = 0.7f),
     )
 
-    val headerHeight = 150.dp
-
+    val headerHeight = 170.dp
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.primary)
+            .height(headerHeight)
+            .background(headerBg)
     ) {
 
-        AsyncImage(
-            url = bike.photoUrl,
-            modifier = Modifier
-                .width(headerHeight)
-                .height(headerHeight)
-                .padding(1.dp)
-                .align(Alignment.CenterEnd)
-        )
-        Box(
-            modifier =
-            Modifier
-                .width(headerHeight)
-                .height(headerHeight)
-                .align(Alignment.CenterEnd)
-                .background(gradient)
-        )
+        Row (Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically){
+            Divider(modifier = Modifier.weight(0.5f))
+            Box(modifier = Modifier.weight(0.5f)) {
+                AsyncImage(
+                    url = bike.photoUrl,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(gradient)
+                )
+            }
+        }
+
+
+
+
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+                .width(IntrinsicSize.Max)
+                .height(IntrinsicSize.Min)
+                .align(Alignment.BottomStart)
         ) {
 
+            HeaderInfo(item = "Brand", detail = bike.brandName ?: "")
+            HeaderInfo(item = "Model", detail = bike.modelName ?: "")
+            HeaderInfo(item = "Distance", detail = formatDistanceAsKm(bike.distance?.toInt() ?: 0))
 
-            Column(Modifier.padding(15.dp)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    BknIcon(
-                        CommunityMaterial.Icon.cmd_bike,
-                        MaterialTheme.colors.onPrimary,
-                        modifier = Modifier.size(24.dp)
-                    )
+            Row {
+                Text(
+                    bike.type.extendedType,
+                    color = MaterialTheme.colors.onPrimary,
+                    style = MaterialTheme.typography.h3,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .background(
+                            color = MaterialTheme.colors.primaryVariant,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(horizontal = 10.dp, vertical = 2.dp)
+                )
+                if (bike.stravaId != null) {
                     Text(
-                        modifier = Modifier.padding(start = 10.dp),
-                        color = MaterialTheme.colors.onPrimary,
-                        text = bike.displayName(),
+                        "Sync with strava",
+                        color = MaterialTheme.colors.strava,
                         style = MaterialTheme.typography.h3,
+                        modifier = Modifier
+                            .padding(top = 10.dp, start = 10.dp)
+                            .background(
+                                color = MaterialTheme.colors.primaryVariant,
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                            .padding(horizontal = 10.dp, vertical = 2.dp)
                     )
                 }
-                Text(
-                    text = DecimalFormat("###,###,###,###").format(
-                        (bike.distance ?: 0).div(1000f)
-                    ) + " km",
-                    style = MaterialTheme.typography.h1,
-                    color = MaterialTheme.colors.secondary
-                )
-
             }
-
         }
 
+    }
+}
+
+@Composable
+fun HeaderInfo(
+    item: String,
+    detail: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.onPrimary
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 3.dp)
+    ) {
+        Text(
+            modifier = modifier
+                .weight(1f)
+                .padding(start = 4.dp),
+            text = "$item: ",
+            color = color,
+            style = MaterialTheme.typography.h3,
+
+            )
+        Text(
+            modifier = modifier
+                .weight(1f)
+                .padding(start = 3.dp),
+            text = detail,
+            color = color.copy(alpha = 0.8f),
+            style = MaterialTheme.typography.h3,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
 
@@ -204,7 +255,6 @@ fun BikeDetailsHeader(bike: Bike) {
 fun BikeDetailsTopBar(bike: Bike) =
 
     TopAppBar(
-        elevation = 6.dp,
         contentPadding = PaddingValues(5.dp),
         backgroundColor = MaterialTheme.colors.primaryVariant
     )
@@ -223,13 +273,23 @@ fun BikeDetailsTopBar(bike: Bike) =
                         .padding(start = 12.dp)
                         .size(20.dp)
                 )
+
+//                AsyncImage(
+//                    url = bike.photoUrl,
+//                    modifier = Modifier
+//                        .padding(6.dp)
+//                        .size(40.dp)
+//                        .clip(CircleShape)
+//                )
+
                 Text(
-                    text = bike.displayName(),
+                    text = bike.name ?: bike.displayName(),
                     color = MaterialTheme.colors.onPrimary,
                     style = MaterialTheme.typography.h2,
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
             }
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = {
 

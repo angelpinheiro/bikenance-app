@@ -5,13 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = BikeTypeSerializer::class)
 enum class BikeType(
-    val type: String
+    val type: String,
+    val extendedType: String
 ) {
-    UNKNOWN("UNKNOWN"),
-    MTB("MTB"),
-    ROAD("Road"),
-    E_BIKE("E-Bike"),
-    GRAVEL("Gravel")
+    UNKNOWN("UNKNOWN", "Unknown bike type"),
+    MTB("MTB", "Mountain Bike"),
+    ROAD("Road", "Road Bike"),
+    E_BIKE("E-Bike","Electric Bike"),
+    GRAVEL("Gravel", "Gravel Bike")
 }
 
 @Serializable

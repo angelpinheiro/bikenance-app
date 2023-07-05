@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeType
 
 @Entity(tableName = "bike")
 data class BikeEntity(
@@ -16,6 +17,7 @@ data class BikeEntity(
     @ColumnInfo(name = "distance") val distance: Long?,
     @ColumnInfo(name = "photo_url") val photoUrl: String?,
     @ColumnInfo(name = "draft") val draft: Boolean = false,
+    @ColumnInfo(name = "type") val type: String,
 ) {
     fun toDomain(): Bike {
         return Bike(
@@ -27,7 +29,8 @@ data class BikeEntity(
             modelName = modelName,
             distance = distance,
             photoUrl = photoUrl,
-            draft = draft
+            draft = draft,
+            type = BikeType.valueOf(type)
         )
     }
 }
