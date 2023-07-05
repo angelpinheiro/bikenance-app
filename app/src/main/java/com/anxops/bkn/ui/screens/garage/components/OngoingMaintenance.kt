@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -26,45 +25,51 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
 import com.anxops.bkn.ui.screens.maintenances.components.getColorForProgress
 import com.anxops.bkn.ui.shared.BikeComponentIcon
+import com.anxops.bkn.ui.shared.components.SlideInOutAnimatedVisibility
 import com.anxops.bkn.ui.theme.statusDanger
 
 @Composable
 fun OngoingMaintenance(bike: Bike) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp, end = 16.dp, top = 16.dp)
-    ) {
 
-        val items = remember(bike) {
-            FakeData.maintenances.filter { it.bike == bike.name }
-        }
+    val items = remember(bike) {
+        FakeData.maintenances.filter { it.bike == bike.name }
+    }
 
-        val title = (if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance")
-
-        Text(
-            modifier = Modifier.padding(bottom = 10.dp),
-            text = title,
-            style = MaterialTheme.typography.h2,
-            color = MaterialTheme.colors.onPrimary
-        )
+    SlideInOutAnimatedVisibility(visible = items.isNotEmpty()) {
 
         if (items.isNotEmpty()) {
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp, top = 24.dp)
             ) {
 
-                items.forEachIndexed { index, item ->
-                    OngoingMaintenanceItemV2(item)
+                val title =
+                    (if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance")
 
-                    if (index != items.lastIndex)
-                        Divider(
-                            color = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                                .height(1.dp)
-                        )
+                Text(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    text = title,
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onPrimary
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    items.forEachIndexed { index, item ->
+                        OngoingMaintenanceItemV2(item)
+
+                        if (index != items.lastIndex)
+                            Divider(
+                                color = MaterialTheme.colors.primary,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp)
+                                    .height(1.dp)
+                            )
+                    }
                 }
             }
         }
@@ -110,7 +115,9 @@ fun OngoingMaintenanceItemV2(item: MaintenanceItem) {
                     text = item.bikePart,
                     color = MaterialTheme.colors.onPrimary,
                     style = MaterialTheme.typography.h3,
-                    modifier = Modifier.weight(1f).padding(end=10.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 10.dp),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
@@ -154,7 +161,6 @@ fun OngoingMaintenanceItemV2(item: MaintenanceItem) {
 
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-
 
 
                 Text(

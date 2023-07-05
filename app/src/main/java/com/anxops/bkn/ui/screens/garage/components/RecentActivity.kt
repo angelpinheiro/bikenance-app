@@ -17,75 +17,83 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.shared.components.SlideInOutAnimatedVisibility
 import com.anxops.bkn.util.formatAsSimpleDate
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import java.text.DecimalFormat
 
 @Composable
 fun RecentActivity(rides: List<BikeRide>) {
 
-    if (rides.isNotEmpty()) {
+    SlideInOutAnimatedVisibility(visible = rides.isNotEmpty()) {
 
-        val total = rides.sumOf { it.distance ?: 0 }
+        if (rides.isNotEmpty()) {
 
-        Text(
-            text = "Recent activity (${formatDistanceAsKm(total)})",
-            modifier = Modifier.padding(10.dp),
-            style = MaterialTheme.typography.h2,
-            color = MaterialTheme.colors.onPrimary
-        )
+            val total = rides.sumOf { it.distance ?: 0 }
 
-        Column(
-            modifier = Modifier
-                .padding(10.dp)
-                .clip(RoundedCornerShape(10.dp))
-        ) {
 
-            rides.forEach() {
+            Column {
+                Text(
+                    text = "Recent activity (${formatDistanceAsKm(total)})",
+                    modifier = Modifier.padding(start = 10.dp, top = 24.dp, bottom = 10.dp),
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onPrimary
+                )
 
-                Box(
+
+
+                Column(
                     modifier = Modifier
-                        .padding(bottom = 1.dp)
-                        .background(MaterialTheme.colors.primary)
-                        .fillMaxWidth()
-                        .padding(horizontal = 0.dp),
+                        .padding(horizontal = 10.dp)
+                        .clip(RoundedCornerShape(10.dp))
                 ) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        verticalAlignment = Alignment.CenterVertically
 
-                    ) {
-                        BknIcon(
-                            CommunityMaterial.Icon.cmd_bike_fast,
-                            color = MaterialTheme.colors.onPrimary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = it.name ?: "",
-                            color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.h3,
-                            modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                                .weight(1f)
-                        )
-                        Text(
-                            text = formatDistanceAsKm(it.distance ?: 0),
-                            color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.h5,
-                            modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                        )
-                        Text(
-                            text = it.dateTime.toDate()?.formatAsSimpleDate() ?: "",
-                            color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.h5,
-                            modifier = Modifier.padding(horizontal = 10.dp)
-                        )
+                    rides.forEach() {
 
+                        Box(
+                            modifier = Modifier
+                                .padding(bottom = 1.dp)
+                                .background(MaterialTheme.colors.primary)
+                                .fillMaxWidth()
+                                .padding(horizontal = 0.dp),
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+
+                            ) {
+                                BknIcon(
+                                    CommunityMaterial.Icon.cmd_bike_fast,
+                                    color = MaterialTheme.colors.onPrimary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Text(
+                                    text = it.name ?: "",
+                                    color = MaterialTheme.colors.onPrimary,
+                                    style = MaterialTheme.typography.h3,
+                                    modifier = Modifier
+                                        .padding(horizontal = 10.dp)
+                                        .weight(1f)
+                                )
+                                Text(
+                                    text = formatDistanceAsKm(it.distance ?: 0),
+                                    color = MaterialTheme.colors.onPrimary,
+                                    style = MaterialTheme.typography.h5,
+                                    modifier = Modifier
+                                        .padding(horizontal = 10.dp)
+                                )
+                                Text(
+                                    text = it.dateTime.toDate()?.formatAsSimpleDate() ?: "",
+                                    color = MaterialTheme.colors.onPrimary,
+                                    style = MaterialTheme.typography.h5,
+                                    modifier = Modifier.padding(horizontal = 10.dp)
+                                )
+
+                            }
+                        }
                     }
                 }
             }

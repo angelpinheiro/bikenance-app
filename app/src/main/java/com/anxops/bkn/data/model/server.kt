@@ -69,7 +69,7 @@ data class Bike(
     }
 
     fun displayName(): String {
-        return (brandName ?: "") + " " + (modelName ?: "")
+        return name ?: (brandName ?: "") + " " + (modelName ?: "")
     }
 }
 

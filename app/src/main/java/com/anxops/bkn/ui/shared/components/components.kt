@@ -1,5 +1,11 @@
 package com.anxops.bkn.ui.shared.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -44,7 +50,7 @@ fun BknIcon(
 
 
 @Composable
-fun  bgGradient() = Brush.verticalGradient(
+fun bgGradient() = Brush.verticalGradient(
     0f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.95f),
     0.1f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.98f),
     0.5f to MaterialTheme.colors.primaryVariant.copy(alpha = 0.98f),
@@ -106,3 +112,20 @@ fun BknLabelTopTextField(
 
     )
 }
+
+@Composable
+fun SlideInOutAnimatedVisibility(
+    visible: Boolean,
+    content: @Composable() AnimatedVisibilityScope.() -> Unit
+) {
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+
+        ) {
+        content()
+    }
+}
+

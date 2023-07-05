@@ -49,9 +49,9 @@ class DBSynchronizer(
                 async {
                     profileRepository.reloadData()
                 },
-                async {
-                    bikeRepository.reloadData()
-                }
+//                async {
+////                    bikeRepository.reloadData()
+//                }
             ).all { success -> success }
         }
     }

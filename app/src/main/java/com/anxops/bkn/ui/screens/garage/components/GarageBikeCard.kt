@@ -3,9 +3,11 @@ package com.anxops.bkn.ui.screens.garage.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -27,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,7 +50,8 @@ fun GarageBikeCard(
     onDetail: () -> Unit = {}
 ) {
 
-    val configuration = LocalConfiguration.current
+
+    val height = 110.dp
 
     val gradient = Brush.horizontalGradient(
         0f to MaterialTheme.colors.primary,
@@ -60,7 +61,7 @@ fun GarageBikeCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(height)
             .padding(horizontal = 10.dp)
             .combinedClickable(
                 onClick = { onDetail() },
@@ -80,54 +81,50 @@ fun GarageBikeCard(
             AsyncImage(
                 url = bike.photoUrl,
                 modifier = Modifier
-                    .width(180.dp)
-                    .height(100.dp)
+                    .width(height + (height * 0.6f))
+                    .height(height)
                     .padding(1.dp)
-                    .clip(RoundedCornerShape(4.dp))
                     .align(Alignment.CenterEnd)
             )
             Box(
                 modifier =
                 Modifier
-                    .width(180.dp)
-                    .height(100.dp)
+                    .width(height + (height * 0.6f))
+                    .height(height)
                     .align(Alignment.CenterEnd)
                     .background(gradient)
             )
 
-
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            ) {
-
-
-                Column(Modifier.padding(15.dp)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        BknIcon(
-                            CommunityMaterial.Icon.cmd_bike,
-                            MaterialTheme.colors.onPrimary,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Text(
-                            modifier = Modifier.padding(start = 10.dp),
-                            color = MaterialTheme.colors.onPrimary,
-                            text = bike.displayName(),
-                            style = MaterialTheme.typography.h3,
-                        )
-                    }
-                    Text(
-                        text = DecimalFormat("###,###,###,###").format(
-                            (bike.distance ?: 0).div(1000f)
-                        ) + " km",
-                        style = MaterialTheme.typography.h1,
-                        color = MaterialTheme.colors.secondary
+                Modifier
+                    .fillMaxHeight()
+                    .padding(start = 16.dp, top = 16.dp, bottom = 10.dp)
+                    .align(Alignment.BottomStart),
+                verticalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BknIcon(
+                        CommunityMaterial.Icon.cmd_bike,
+                        MaterialTheme.colors.onPrimary,
+                        modifier = Modifier.size(20.dp)
                     )
-
+                    Text(
+                        modifier = Modifier.padding(start = 10.dp),
+                        color = MaterialTheme.colors.onPrimary,
+                        text = bike.displayName(),
+                        style = MaterialTheme.typography.h3,
+                    )
                 }
+                Text(
+                    text = DecimalFormat("###,###,###,###").format(
+                        (bike.distance ?: 0).div(1000f)
+                    ) + " km",
+                    style = MaterialTheme.typography.h1,
+                    color = MaterialTheme.colors.secondary
+                )
+
+
             }
 
         }

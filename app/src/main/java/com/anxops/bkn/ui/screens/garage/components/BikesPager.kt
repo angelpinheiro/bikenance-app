@@ -1,10 +1,13 @@
 package com.anxops.bkn.ui.screens.garage.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -17,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
@@ -57,12 +61,17 @@ fun BikesPager(
             .padding(top = 10.dp)
     ) {
 
-        Text(
-            text = "Bikes",
-            modifier = Modifier.padding(10.dp),
-            style = MaterialTheme.typography.h2,
-            color = MaterialTheme.colors.onPrimary
-        )
+        Box(Modifier.padding(10.dp)) {
+            Text(
+                text = "Bikes",
+                modifier = Modifier.align(Alignment.CenterStart),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onPrimary
+            )
+            Box(modifier = Modifier.align(Alignment.Center).padding(bottom = 10.dp)) {
+                BikePagerIndicator(pagerState, bikes.size)
+            }
+        }
 
         HorizontalPager(
             pageCount = bikes.size,
@@ -79,7 +88,7 @@ fun BikesPager(
 
         }
 
-        BikePagerIndicator(pagerState, bikes.size)
+
     }
 }
 
@@ -92,7 +101,7 @@ fun BikePagerIndicator(pagerState: PagerState, bikeCount: Int) {
             HorizontalPagerIndicator(
                 pagerState = pagerState,
                 bikeCount,
-                activeColor = MaterialTheme.colors.onSurface,
+                activeColor = MaterialTheme.colors.onPrimary,
                 modifier = Modifier
                     .padding(top = 16.dp),
             )
