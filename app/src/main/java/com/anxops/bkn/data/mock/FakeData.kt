@@ -21,7 +21,7 @@ object FakeData {
             title = "Check / Refill",
             time = "Two weeks ago",
             percentage = 1f,
-            componentType = BikeComponentType.TIRES
+            componentType = BikeComponentType.TIRE
         ),
         MaintenanceItem(
             bike = "Scott Spark",
@@ -33,11 +33,19 @@ object FakeData {
         ),
         MaintenanceItem(
             bike = "Scott Spark",
-            bikePart = "Shimano XT Chain",
+            bikePart = "Shimano XT Cassete",
             title = "Check / Replace",
             time = "2000km left",
             percentage = 0.4f,
-            componentType = BikeComponentType.CHAIN
+            componentType = BikeComponentType.CASSETTE
+        ),
+        MaintenanceItem(
+            bike = "Scott Spark",
+            bikePart = "Cable Housing",
+            title = "Replace",
+            time = "1500km left",
+            percentage = 0.6f,
+            componentType = BikeComponentType.CABLE_HOUSING
         ),
         MaintenanceItem(
             bike = "Cube Analog",
@@ -45,7 +53,7 @@ object FakeData {
             title = "Check / Replace",
             time = "2 months left",
             percentage = 0.3f,
-            componentType = BikeComponentType.BRAKES
+            componentType = BikeComponentType.DISC_PAD
         ),
         MaintenanceItem(
             bike = "Cube Analog",

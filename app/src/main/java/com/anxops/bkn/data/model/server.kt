@@ -12,7 +12,8 @@ enum class BikeType(
     MTB("MTB", "Mountain Bike"),
     ROAD("Road", "Road Bike"),
     E_BIKE("E-Bike","Electric Bike"),
-    GRAVEL("Gravel", "Gravel Bike")
+    GRAVEL("Gravel", "Gravel Bike"),
+    STATIONARY("Stationary", "Stationary Bike")
 }
 
 @Serializable

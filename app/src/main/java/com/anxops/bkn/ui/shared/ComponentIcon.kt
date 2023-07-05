@@ -18,20 +18,22 @@ import com.anxops.bkn.data.model.BikeComponentType
 
 
 val defaultComponentIcons = mapOf(
-    BikeComponentType.FRAME to R.drawable.noun_bike_frame_2,
-    BikeComponentType.FRAME_BEARINGS to R.drawable.noun_bike_frame,
-    BikeComponentType.FORK to R.drawable.noun_suspension_fork,
-    BikeComponentType.HANDLEBAR to null,
-    BikeComponentType.BRAKES to R.drawable.noun_bottom_bracket,
-    BikeComponentType.DERAILLEURS to R.drawable.noun_rear_derailleur,
-    BikeComponentType.CHAIN to R.drawable.noun_chain,
-    BikeComponentType.PEDALS to null,
-    BikeComponentType.RIMS to R.drawable.noun_bike_tire,
-    BikeComponentType.TIRES to R.drawable.noun_bike_tube,
-    BikeComponentType.SADDLE to null,
-    BikeComponentType.CABLES to null,
-    BikeComponentType.BOTTOM_BRACKET to R.drawable.noun_bottom_bracket,
-    BikeComponentType.HEADSET to null
+    BikeComponentType.BRAKE_LEVER to R.drawable.brake_lever,
+    BikeComponentType.CASSETTE to R.drawable.cassette,
+    BikeComponentType.DISC_BRAKE to R.drawable.disc_brake,
+    BikeComponentType.FORK to R.drawable.fork,
+    BikeComponentType.PEDAL_CLIPLESS to R.drawable.pedal_clipless,
+    BikeComponentType.REAR_HUB to R.drawable.rear_hub,
+    BikeComponentType.THRU_AXLE to R.drawable.thru_axle,
+    BikeComponentType.WHEELSET to R.drawable.wheelset,
+    BikeComponentType.CABLE_HOUSING to R.drawable.cable_housing,
+    BikeComponentType.CHAIN to R.drawable.chain,
+    BikeComponentType.DISC_PAD to R.drawable.disc_pad,
+    BikeComponentType.DROPER_POST to R.drawable.droper_post,
+    BikeComponentType.FRONT_HUB to R.drawable.front_hub,
+    BikeComponentType.REAR_DERAUILLEURS to R.drawable.rear_derauilleurs,
+    BikeComponentType.REAR_SUSPENSION to R.drawable.rear_suspension,
+    BikeComponentType.TIRE to R.drawable.tire
 )
 
 @Composable
@@ -42,7 +44,7 @@ fun BikeComponentIcon(
 ) {
 
     val icon = remember {
-        defaultComponentIcons[type] ?: R.drawable.noun_crank
+        defaultComponentIcons[type] ?: R.drawable.tire
     }
 
     Image(

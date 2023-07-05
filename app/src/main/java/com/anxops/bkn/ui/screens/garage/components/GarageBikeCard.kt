@@ -2,7 +2,6 @@ package com.anxops.bkn.ui.screens.garage.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +43,12 @@ import java.text.DecimalFormat
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {},  onDetail: () -> Unit = {}) {
+fun GarageBikeCard(
+    bike: Bike,
+    elevation: Dp = 5.dp,
+    onEdit: () -> Unit = {},
+    onDetail: () -> Unit = {}
+) {
 
     val configuration = LocalConfiguration.current
 
@@ -61,8 +65,7 @@ fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {},  o
             .combinedClickable(
                 onClick = { onDetail() },
                 onLongClick = { onEdit() },
-            )
-        ,
+            ),
 
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.primary
@@ -133,7 +136,12 @@ fun GarageBikeCard(bike: Bike, elevation: Dp = 5.dp, onEdit: () -> Unit = {},  o
 }
 
 @Composable
-fun AsyncImage(url: String?, modifier: Modifier = Modifier.fillMaxSize()) {
+fun AsyncImage(
+    url: String?,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    contentScale: ContentScale = ContentScale.Crop,
+    alignment: Alignment = Alignment.Center,
+) {
 
     val defaultImage = R.drawable.default_bike_image
 
@@ -157,7 +165,7 @@ fun AsyncImage(url: String?, modifier: Modifier = Modifier.fillMaxSize()) {
             loading = {
                 Loading()
             },
-            contentScale = ContentScale.Crop,
+            contentScale = contentScale,
             onSuccess = {
                 imageLoadFinished = true
             },
@@ -168,7 +176,8 @@ fun AsyncImage(url: String?, modifier: Modifier = Modifier.fillMaxSize()) {
             onLoading = {
                 imageLoadFinished = false
                 imageBroken = false
-            }
+            },
+            alignment = alignment
         )
 
         if (imageBroken) {

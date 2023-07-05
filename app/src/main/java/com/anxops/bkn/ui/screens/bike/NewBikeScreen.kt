@@ -244,14 +244,14 @@ fun NewBikeScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
                     ) {
 
 
                         BikeType.values().filter { it != BikeType.UNKNOWN }.forEach { type ->
                             val selected = type == state.value.bike.type
                             Button(
-                                modifier = Modifier.padding(horizontal = 5.dp),
+                                modifier = Modifier.padding(horizontal = 5.dp).weight(1f),
                                 shape = MaterialTheme.shapes.small,
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = if (selected) MaterialTheme.colors.primary else MaterialTheme.colors.background

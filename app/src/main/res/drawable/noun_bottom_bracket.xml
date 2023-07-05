@@ -1,9 +1,0 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="52dp"
-    android:height="24dp"
-    android:viewportWidth="52"
-    android:viewportHeight="24">
-  <path
-      android:fillColor="#FF000000"
-      android:pathData="m51,0h-7a1,1 0,0 0,-1 1v2h-5a1,1 0,0 0,-0.71 0.29L36.59,4L15.41,4l-0.7,-0.71A1,1 0,0 0,14 3L9,3L9,1A1,1 0,0 0,8 0L1,0a1,1 0,0 0,-1 1v22a1,1 0,0 0,1 1h7a1,1 0,0 0,1 -1v-2h5a1,1 0,0 0,0.71 -0.29L15.41,20h21.18l0.7,0.71A1,1 0,0 0,38 21h5v2a1,1 0,0 0,1 1h7a1,1 0,0 0,1 -1L52,1A1,1 0,0 0,51 0ZM7,22L2,22v-1h2a1,1 0,0 0,0 -2L2,19v-2h2a1,1 0,0 0,0 -2L2,15v-2h2a1,1 0,0 0,0 -2L2,11v-2h2a1,1 0,0 0,0 -2L2,7v-2h2a1,1 0,0 0,0 -2L2,3v-1h5zM13.59,19L9,19L9,5h4.59L14,5.41L14,18.59ZM16,6L36,6L36,18L16,18ZM38.41,19 L38,18.59L38,5.41L38.41,5L43,5L43,19ZM45,22L45,2h5v1h-2a1,1 0,0 0,0 2h2v2h-2a1,1 0,0 0,0 2h2v2h-2a1,1 0,0 0,0 2h2v2h-2a1,1 0,0 0,0 2h2v2h-2a1,1 0,0 0,0 2h2v1z"/>
-</vector>

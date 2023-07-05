@@ -1,13 +1,13 @@
 package com.anxops.bkn.ui.screens.bike
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,18 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeComponentType
 import com.anxops.bkn.data.model.defaultComponentTypes
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.components.AsyncImage
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
-import com.anxops.bkn.ui.theme.strava
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
@@ -82,6 +82,7 @@ fun BikeDetailsScreen(
             ) {
                 Column(
                     Modifier
+                        .fillMaxSize()
                         .verticalScroll(scrollState)
                         .background(MaterialTheme.colors.surface)
                 ) {
@@ -100,9 +101,8 @@ fun BikeDetailsScreen(
                             color = MaterialTheme.colors.primary
                         )
 
-                        BikeComponentType.values().forEach { type ->
+                        defaultComponentTypes.forEach { (type, value) ->
 
-                            val desc = defaultComponentTypes[type]?.name ?: "Unknown"
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
 
@@ -117,12 +117,26 @@ fun BikeDetailsScreen(
                                         .padding(10.dp)
                                 )
 
-                                Text(
-                                    text = desc,
+                                Column(
                                     modifier = Modifier.padding(10.dp),
-                                    style = MaterialTheme.typography.h3,
-                                    color = MaterialTheme.colors.primary
-                                )
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = value.name,
+                                        modifier = Modifier.padding(0.dp),
+                                        style = MaterialTheme.typography.h3,
+                                        color = MaterialTheme.colors.primary
+                                    )
+                                    Text(
+                                        text = value.description,
+                                        modifier = Modifier.padding(0.dp),
+                                        style = MaterialTheme.typography.h4,
+                                        color = MaterialTheme.colors.primary
+                                    )
+
+                                }
+
+
                             }
 
                         }
@@ -137,11 +151,16 @@ fun BikeDetailsScreen(
 @Composable
 fun BikeDetailsHeader(bike: Bike) {
 
-    val headerBg = MaterialTheme.colors.primary
+    val headerBg = MaterialTheme.colors.primaryVariant
 
     val gradient = Brush.horizontalGradient(
         0f to headerBg,
         1f to headerBg.copy(alpha = 0.7f),
+    )
+
+    val verticalGradient = Brush.verticalGradient(
+        0f to headerBg,
+        1f to headerBg.copy(alpha = 0.8f),
     )
 
     val headerHeight = 170.dp
@@ -153,32 +172,35 @@ fun BikeDetailsHeader(bike: Bike) {
             .background(headerBg)
     ) {
 
-        Row (Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically){
-            Divider(modifier = Modifier.weight(0.5f))
-            Box(modifier = Modifier.weight(0.5f)) {
+        Column(Modifier.fillMaxHeight()) {
+            Box(modifier = Modifier.weight(1f)) {
                 AsyncImage(
                     url = bike.photoUrl,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    alignment = Alignment.TopCenter
                 )
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(gradient)
+//                        .background(gradient)
                 )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(verticalGradient)
+                )
+
             }
+
         }
-
-
-
 
 
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp)
-                .width(IntrinsicSize.Max)
-                .height(IntrinsicSize.Min)
-                .align(Alignment.BottomStart)
+                .align(Alignment.TopCenter)
         ) {
 
             HeaderInfo(item = "Brand", detail = bike.brandName ?: "")
@@ -193,27 +215,30 @@ fun BikeDetailsHeader(bike: Bike) {
                     modifier = Modifier
                         .padding(top = 10.dp)
                         .background(
-                            color = MaterialTheme.colors.primaryVariant,
+                            color = MaterialTheme.colors.primary,
                             shape = RoundedCornerShape(6.dp)
                         )
                         .padding(horizontal = 10.dp, vertical = 2.dp)
                 )
-                if (bike.stravaId != null) {
-                    Text(
-                        "Sync with strava",
-                        color = MaterialTheme.colors.strava,
-                        style = MaterialTheme.typography.h3,
-                        modifier = Modifier
-                            .padding(top = 10.dp, start = 10.dp)
-                            .background(
-                                color = MaterialTheme.colors.primaryVariant,
-                                shape = RoundedCornerShape(6.dp)
-                            )
-                            .padding(horizontal = 10.dp, vertical = 2.dp)
-                    )
-                }
             }
         }
+
+        if (bike.stravaId != null) {
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_strava_logo),
+                contentDescription = null,
+
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colors.primary)
+                    .padding(5.dp),
+            )
+        }
+
 
     }
 }
@@ -227,7 +252,8 @@ fun HeaderInfo(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 3.dp)
+        modifier = Modifier.padding(vertical = 3.dp),
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(
             modifier = modifier
@@ -240,7 +266,7 @@ fun HeaderInfo(
             )
         Text(
             modifier = modifier
-                .weight(1f)
+                .weight(3f)
                 .padding(start = 3.dp),
             text = detail,
             color = color.copy(alpha = 0.8f),
@@ -256,7 +282,8 @@ fun BikeDetailsTopBar(bike: Bike) =
 
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
-        backgroundColor = MaterialTheme.colors.primaryVariant
+        backgroundColor = MaterialTheme.colors.primaryVariant,
+        elevation = 0.dp
     )
     {
         Row(
