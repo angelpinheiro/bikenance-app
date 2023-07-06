@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Maintenance Types -->
+    <string name="brake_maintenance">Maintenance of Brakes</string>
+    <string name="cables_and_housing_maintenance">Maintenance of Cables and Housings</string>
+    <string name="cassette_maintenance">Maintenance of Cassette</string>
+    <string name="chain_maintenance">Maintenance of Chain</string>
+    <string name="disc_brake_maintenance">Maintenance of Disc Brakes</string>
+    <string name="dropper_post_maintenance">Maintenance of Dropper Post</string>
+    <string name="fork_maintenance">Maintenance of Fork</string>
+    <string name="front_hub_maintenance">Maintenance of Front Hub</string>
+    <string name="rear_suspension_maintenance">Maintenance of Rear Suspension</string>
+    <string name="thru_axle_maintenance">Maintenance of Thru Axle</string>
+    <string name="tire_maintenance">Maintenance of Tires</string>
+    <string name="wheelset_tubeless_maintenance">Tubeless Fluid Replacement</string>
+    <string name="wheelset_wheels_and_spokes_maintenance">Wheels and Spokes Inspection</string>
+    <string name="wheelset_tread_wear_maintenance">Tread Wear Inspection</string>
+
+    <!-- Maintenance Descriptions -->
+    <string name="brake_maintenance_description">Hydraulic circuit purging and piston maintenance.</string>
+    <string name="cables_and_housing_maintenance_description">Visual inspection of cable housings for wear or damage. Replace if necessary.</string>
+    <string name="cassette_maintenance_description">Check the wear of the cassette. Consider replacing if it shows excessive wear or hinders gear shifting.</string>
+    <string name="chain_maintenance_description">Replace the chain.</string>
+    <string name="disc_brake_maintenance_description">Check the wear of the disc brakes. Consider replacing if they are worn or deformed.</string>
+    <string name="dropper_post_maintenance_description">Check and lubricate the adjustable seatpost. Ensure proper functioning without play or lockout.</string>
+    <string name="fork_maintenance_description">"Check and maintain the fork according to the manufacturer\'s recommendations.</string>
+    <string name="front_hub_maintenance_description">Check the condition and lubrication of the front hub.</string>
+    <string name="rear_suspension_maintenance_description">Check and maintain the rear suspension according to the manufacturer\'s recommendations.</string>
+    <string name="thru_axle_maintenance_description">Check the condition and proper tightening of the thru axle.</string>
+    <string name="tire_maintenance_description">Check the tread wear of the tires. Consider replacing if they are worn.</string>
+    <string name="wheelset_tubeless_maintenance_description">Replace tubeless fluid every 1000 km.</string>
+    <string name="wheelset_wheels_and_spokes_maintenance_description">Inspect the condition of wheels and spokes every 1000 km. Ensure they are properly tensioned and free from visible damage.</string>
+    <string name="wheelset_tread_wear_maintenance_description">Inspect the tread wear of the tires every 4000 km. Consider replacing if they are worn.</string>
+
+</resources>

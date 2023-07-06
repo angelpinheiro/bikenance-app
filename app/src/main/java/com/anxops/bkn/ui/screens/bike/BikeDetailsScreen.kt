@@ -39,17 +39,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.defaultComponentTypes
+import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.components.AsyncImage
 import com.anxops.bkn.ui.shared.BikeComponentIcon
+import com.anxops.bkn.ui.shared.componentResourcesMap
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
+import com.anxops.bkn.ui.shared.resources
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
@@ -78,7 +81,7 @@ fun BikeDetailsScreen(
     val gradient = bgGradient()
     val state = viewModel.state.collectAsState()
 
-    val ct = remember { defaultComponentTypes.toList() }
+    val ct = remember { ComponentTypes.values() }
 
     val lazyColumnState = rememberLazyListState()
 
@@ -121,7 +124,8 @@ fun BikeDetailsScreen(
 
                     items(count = ct.size) { index ->
 
-                        val (type, value) = ct[index]
+                        val type = ct[index]
+                        val resources = type.resources()
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -146,13 +150,13 @@ fun BikeDetailsScreen(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = value.name,
+                                    text = stringResource(resources.nameResId),
                                     modifier = Modifier.padding(0.dp),
                                     style = MaterialTheme.typography.h3,
                                     color = MaterialTheme.colors.primary
                                 )
                                 Text(
-                                    text = value.description,
+                                    text = stringResource(resources.descriptionResId),
                                     modifier = Modifier.padding(0.dp),
                                     style = MaterialTheme.typography.h4,
                                     color = MaterialTheme.colors.primary

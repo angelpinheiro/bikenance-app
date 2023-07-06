@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.BikeComponent
-import com.anxops.bkn.data.model.ComponentType
+import com.anxops.bkn.data.model.ComponentInfo
 import com.anxops.bkn.data.model.Usage
 
 @Entity(tableName = "component")
@@ -21,8 +21,8 @@ data class ComponentEntity(
         return BikeComponent(
             _id = _id,
             bikeId = bikeId,
-            description = description,
-            type = ComponentType(componentType, componentTypeName),
+            alias = description,
+            info = ComponentInfo(componentType, componentTypeName),
             usage = Usage(usageHours, usageDistance)
         )
     }

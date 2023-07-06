@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.mock.FakeData
-import com.anxops.bkn.data.model.BikeComponentType
+import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
@@ -45,7 +45,7 @@ data class MaintenanceItem(
     val title: String,
     val time: String,
     val percentage: Float,
-    val componentType: BikeComponentType
+    val componentType: ComponentTypes
 ) {
     fun displayPercentage(): String =
         "${(percentage * 100).toInt()}%"

@@ -57,9 +57,9 @@ fun BikeComponent.toEntity(): ComponentEntity {
     return ComponentEntity(
         _id = _id,
         bikeId = bikeId,
-        description = description,
-        componentType = type.type,
-        componentTypeName = type.name,
+        description = alias,
+        componentType = info.type,
+        componentTypeName = info.name,
         usageDistance = usage.km,
         usageHours = usage.hours
     )
