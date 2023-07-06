@@ -1,13 +1,25 @@
 package com.anxops.bkn.ui.screens.bike
 
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -42,10 +54,9 @@ import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import java.util.*
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun BikeDetailsScreen(
@@ -67,12 +78,16 @@ fun BikeDetailsScreen(
     val gradient = bgGradient()
     val state = viewModel.state.collectAsState()
 
+    val ct = remember { defaultComponentTypes.toList() }
+
+    val lazyColumnState = rememberLazyListState()
 
     state.value.bike?.let { bike ->
 
         Scaffold(
-            topBar = { BikeDetailsTopBar(bike = bike) }
-        ) {
+            topBar = { BikeDetailsTopBar(bike = bike) },
+
+            ) {
             Box(
                 modifier = Modifier
                     .padding(it)
@@ -80,73 +95,121 @@ fun BikeDetailsScreen(
                     .background(MaterialTheme.colors.primaryVariant)
                     .pullRefresh(pullRefreshState)
             ) {
-                Column(
-                    Modifier
+                LazyColumn(
+                    state = lazyColumnState,
+                    modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .background(MaterialTheme.colors.surface)
+//                        .verticalScroll(scrollState)
+                        .background(MaterialTheme.colors.primaryVariant)
                 ) {
 
-                    BikeDetailsHeader(bike = bike)
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    ) {
+                    item {
+                        BikeDetailsHeader(bike = bike)
+                    }
+                    stickyHeader {
                         Text(
                             text = "Components",
-                            modifier = Modifier.padding(10.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colors.primary)
+                                .padding(10.dp),
                             style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.primary
+                            color = MaterialTheme.colors.onPrimary
                         )
 
-                        defaultComponentTypes.forEach { (type, value) ->
+                    }
 
+                    items(count = ct.size) { index ->
 
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                        val (type, value) = ct[index]
 
-                                BikeComponentIcon(
-                                    type = type,
-                                    tint = MaterialTheme.colors.onPrimary,
-                                    modifier = Modifier
-                                        .padding(10.dp)
-                                        .size(60.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colors.primary)
-                                        .padding(10.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colors.surface)
+                        ) {
+
+                            BikeComponentIcon(
+                                type = type,
+                                tint = MaterialTheme.colors.onPrimary,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .size(60.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colors.primary)
+                                    .padding(10.dp)
+                            )
+
+                            Column(
+                                modifier = Modifier.padding(10.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = value.name,
+                                    modifier = Modifier.padding(0.dp),
+                                    style = MaterialTheme.typography.h3,
+                                    color = MaterialTheme.colors.primary
+                                )
+                                Text(
+                                    text = value.description,
+                                    modifier = Modifier.padding(0.dp),
+                                    style = MaterialTheme.typography.h4,
+                                    color = MaterialTheme.colors.primary
                                 )
 
-                                Column(
-                                    modifier = Modifier.padding(10.dp),
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = value.name,
-                                        modifier = Modifier.padding(0.dp),
-                                        style = MaterialTheme.typography.h3,
-                                        color = MaterialTheme.colors.primary
-                                    )
-                                    Text(
-                                        text = value.description,
-                                        modifier = Modifier.padding(0.dp),
-                                        style = MaterialTheme.typography.h4,
-                                        color = MaterialTheme.colors.primary
-                                    )
-
-                                }
-
-
                             }
+
 
                         }
 
                     }
+
+//
+//                        defaultComponentTypes.forEach { (type, value) ->
+//
+//
+//                            Row(verticalAlignment = Alignment.CenterVertically) {
+//
+//                                BikeComponentIcon(
+//                                    type = type,
+//                                    tint = MaterialTheme.colors.onPrimary,
+//                                    modifier = Modifier
+//                                        .padding(10.dp)
+//                                        .size(60.dp)
+//                                        .clip(CircleShape)
+//                                        .background(MaterialTheme.colors.primary)
+//                                        .padding(10.dp)
+//                                )
+//
+//                                Column(
+//                                    modifier = Modifier.padding(10.dp),
+//                                    verticalArrangement = Arrangement.Center
+//                                ) {
+//                                    Text(
+//                                        text = value.name,
+//                                        modifier = Modifier.padding(0.dp),
+//                                        style = MaterialTheme.typography.h3,
+//                                        color = MaterialTheme.colors.primary
+//                                    )
+//                                    Text(
+//                                        text = value.description,
+//                                        modifier = Modifier.padding(0.dp),
+//                                        style = MaterialTheme.typography.h4,
+//                                        color = MaterialTheme.colors.primary
+//                                    )
+//
+//                                }
+//
+//
+//                            }
+
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun BikeDetailsHeader(bike: Bike) {
@@ -210,12 +273,12 @@ fun BikeDetailsHeader(bike: Bike) {
             Row {
                 Text(
                     bike.type.extendedType,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.onSecondary,
                     style = MaterialTheme.typography.h3,
                     modifier = Modifier
                         .padding(top = 10.dp)
                         .background(
-                            color = MaterialTheme.colors.primary,
+                            color = MaterialTheme.colors.secondary,
                             shape = RoundedCornerShape(6.dp)
                         )
                         .padding(horizontal = 10.dp, vertical = 2.dp)
