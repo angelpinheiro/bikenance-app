@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -67,26 +68,37 @@ fun BikeDetailsScreen(
     }
 
     val scrollState = rememberScrollState()
-
     val gradient = bgGradient()
     val state = viewModel.state.collectAsState()
+    val checked = remember {
+        mutableStateOf(setOf<ComponentTypes>())
+    }
 
     state.value.bike?.let { bike ->
 
         Scaffold(
             topBar = { BikeDetailsTopBar(bike = bike) },
 
-            ) {
+            ) { paddingValues ->
             Box(
                 modifier = Modifier
-                    .padding(it)
+                    .padding(paddingValues)
                     .fillMaxSize()
                     .background(MaterialTheme.colors.primaryVariant)
                     .pullRefresh(pullRefreshState)
             ) {
-                ComponentList {
-                    BikeDetailsHeader(bike = bike)
-                }
+
+
+                ComponentList(
+                    checkable = true,
+                    headerContent = {
+                        BikeDetailsHeader(bike = bike)
+                    }, onCheckChanged = { checkedItems ->
+                        checked.value = checkedItems
+                    }
+                )
+
+                Text(text = checked.value.joinToString { it.name })
             }
         }
     }
@@ -94,10 +106,14 @@ fun BikeDetailsScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ComponentList(headerContent: @Composable () -> Unit = {}) {
+fun ComponentList(
+    headerContent: @Composable () -> Unit = {}, checkable: Boolean = true,
+    onCheckChanged: (Set<ComponentTypes>) -> Unit = {}
+) {
 
     val componentTypes = remember { ComponentTypes.values() }
     val lazyColumnState = rememberLazyListState()
+    val checkedItems = remember { mutableStateOf(setOf<ComponentTypes>()) }
 
     LazyColumn(
         state = lazyColumnState,
@@ -124,7 +140,19 @@ fun ComponentList(headerContent: @Composable () -> Unit = {}) {
 
         items(count = componentTypes.size) { index ->
             val type = componentTypes[index]
-            ComponentListItem(type = type)
+            val checked = remember {
+                checkedItems.value.contains(type)
+            }
+            ComponentListItem(
+                type = type,
+                checkable = checkable,
+                checked = checked,
+                onCheckChanged = { isChecked ->
+                    if (isChecked)
+                        checkedItems.value = checkedItems.value.plus(type)
+                    else
+                        checkedItems.value = checkedItems.value.minus(type)
+                })
 
         }
     }
@@ -132,15 +160,26 @@ fun ComponentList(headerContent: @Composable () -> Unit = {}) {
 
 
 @Composable
-fun ComponentListItem(type: ComponentTypes) {
+fun ComponentListItem(
+    type: ComponentTypes,
+    checkable: Boolean = false,
+    checked: Boolean = true,
+    onCheckChanged: (Boolean) -> Unit = {}
+) {
 
     val resources = type.resources()
+
+    val isChecked = remember {
+        mutableStateOf(checked)
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.surface)
+            .padding(end = 10.dp)
+            .padding(vertical = 5.dp)
     ) {
 
         BikeComponentIcon(
@@ -155,7 +194,9 @@ fun ComponentListItem(type: ComponentTypes) {
         )
 
         Column(
-            modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .padding(10.dp)
+                .weight(1f), verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = stringResource(resources.nameResId),
@@ -165,11 +206,18 @@ fun ComponentListItem(type: ComponentTypes) {
             )
             Text(
                 text = stringResource(resources.descriptionResId),
-                modifier = Modifier.padding(0.dp),
+                modifier = Modifier
+                    .padding(0.dp),
                 style = MaterialTheme.typography.h4,
                 color = MaterialTheme.colors.primary
             )
 
+        }
+        if (checkable) {
+            RadioButton(selected = isChecked.value, onClick = {
+                isChecked.value = isChecked.value.not()
+                onCheckChanged(isChecked.value)
+            })
         }
     }
 }
