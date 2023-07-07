@@ -16,7 +16,7 @@ data class ComponentInfo(
     fun componentType(): ComponentTypes {
         return try {
             ComponentTypes.valueOf(type)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             throw e
             // TODO: return ComponentTypes.CUSTOM
         }
@@ -24,6 +24,7 @@ data class ComponentInfo(
     }
 }
 
+// TODO Add: Frame bearings, handlebar tape
 enum class ComponentTypes {
     BRAKE_LEVER,
     CABLE_HOUSING,
@@ -43,6 +44,49 @@ enum class ComponentTypes {
     WHEELSET,
     CUSTOM,
     UNKNOWN
+}
+
+enum class MaintenanceConfigurations(val configName: String, val types: Set<ComponentTypes>) {
+    MTB(
+        "MTB", ComponentTypes.values().toSet().minus(
+            setOf(
+                ComponentTypes.CUSTOM,
+                ComponentTypes.UNKNOWN,
+                ComponentTypes.DROPER_POST,
+                ComponentTypes.FORK,
+            )
+        )
+    ),
+    FULL_MTB(
+        "Full MTB", ComponentTypes.values().toSet().minus(
+            setOf(
+                ComponentTypes.CUSTOM,
+                ComponentTypes.UNKNOWN,
+            )
+        )
+    ),
+    ROAD(
+        "Road", ComponentTypes.values().toSet().minus(
+            setOf(
+                ComponentTypes.CUSTOM,
+                ComponentTypes.UNKNOWN,
+                ComponentTypes.REAR_SUSPENSION,
+                ComponentTypes.DROPER_POST,
+                ComponentTypes.FORK,
+            )
+        )
+    ),
+    GRAVEL(
+        "Gravel", ComponentTypes.values().toSet().minus(
+            setOf(
+                ComponentTypes.CUSTOM,
+                ComponentTypes.UNKNOWN,
+                ComponentTypes.REAR_SUSPENSION,
+                ComponentTypes.DROPER_POST,
+                ComponentTypes.FORK,
+            )
+        )
+    )
 }
 
 
@@ -90,11 +134,11 @@ data class MaintenanceInfo(
     val defaultFrequency: RevisionFrequency,
     @SerialName("componentType")
     val componentType: ComponentTypes
-){
+) {
     fun maintenanceType(): MaintenanceTypes {
         return try {
             MaintenanceTypes.valueOf(type)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             throw e
             // TODO: return ComponentTypes.CUSTOM
         }
@@ -105,7 +149,7 @@ data class Maintenance(
     @SerialName("type")
     val type: MaintenanceInfo,
     @SerialName("usage")
-    var usageSinceLastMaintenance: Usage = Usage(0.0,0.0),
+    var usageSinceLastMaintenance: Usage = Usage(0.0, 0.0),
     @SerialName("dueDate")
     var dateTime: String? = null,
 )

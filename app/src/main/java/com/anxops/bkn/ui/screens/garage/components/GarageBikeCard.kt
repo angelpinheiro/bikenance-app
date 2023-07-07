@@ -37,6 +37,7 @@ import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.text.DecimalFormat
 
@@ -117,9 +118,7 @@ fun GarageBikeCard(
                     )
                 }
                 Text(
-                    text = DecimalFormat("###,###,###,###").format(
-                        (bike.distance ?: 0).div(1000f)
-                    ) + " km",
+                    text = formatDistanceAsKm(bike.distance?.toInt() ?: 0),
                     style = MaterialTheme.typography.h1,
                     color = MaterialTheme.colors.secondary
                 )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -80,46 +81,45 @@ fun BikeDetailsHeader(bike: Bike) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .align(Alignment.TopCenter)
+                .height(IntrinsicSize.Min)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 10.dp)
+                .align(Alignment.BottomStart)
         ) {
 
-            HeaderInfo(item = "Brand", detail = bike.brandName ?: "")
-            HeaderInfo(item = "Model", detail = bike.modelName ?: "")
-            HeaderInfo(item = "Distance", detail = formatDistanceAsKm(bike.distance?.toInt() ?: 0))
+//            HeaderInfo(item = "Brand", detail = bike.brandName ?: "")
+//            HeaderInfo(item = "Model", detail = bike.modelName ?: "")
+//            HeaderInfo(item = "Distance", detail = formatDistanceAsKm(bike.distance?.toInt() ?: 0))
 
-            Row {
-                Text(
-                    bike.type.extendedType,
-                    color = MaterialTheme.colors.onSecondary,
-                    style = MaterialTheme.typography.h3,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .background(
-                            color = MaterialTheme.colors.secondary,
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .padding(horizontal = 10.dp, vertical = 2.dp)
-                )
-            }
-        }
 
-        if (bike.stravaId != null) {
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_strava_logo),
-                contentDescription = null,
-
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.primary)
-                    .padding(5.dp),
+            Text(
+                modifier = Modifier,
+                text = formatDistanceAsKm(bike.distance?.toInt() ?: 0),
+                color = MaterialTheme.colors.secondary,
+                style = MaterialTheme.typography.h2,
+            )
+            Text(
+                modifier = Modifier,
+                text = "${bike.brandName} ${bike.modelName}",
+                color = MaterialTheme.colors.onPrimary,
+                style = MaterialTheme.typography.h1
             )
         }
 
+        Text(
+            bike.type.type,
+            color = MaterialTheme.colors.onSecondary,
+            style = MaterialTheme.typography.h3,
+            modifier = Modifier
+                .padding(16.dp)
+                .padding(bottom = 10.dp)
+                .background(
+                    color = MaterialTheme.colors.secondary,
+                    shape = RoundedCornerShape(6.dp)
+                )
+                .padding(horizontal = 10.dp, vertical = 2.dp)
+                .align(Alignment.BottomEnd)
+        )
 
     }
 }
