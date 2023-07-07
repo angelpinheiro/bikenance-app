@@ -8,30 +8,31 @@ with Strava, a popular platform for tracking cycling activities.
 **This is an ongoing learning project** that I build to explore and enhance my programming skills
 and try new stuff. There may be changes or updates made at any time without prior notice.
 
-Below you can see some screenshots of some parts off the app already developed.
+Below you can see some screenshots of some parts off the app that are currently being developed.
 
 | <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120"> | <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/7.png" width="120"> |
 |:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|
 
 ## Key Features
 
-- Strava Integration: Bikenance seamlessly integrates with Strava, allowing you to leverage your
+- **Strava Integration**: Bikenance integrates with Strava, allowing you to leverage your
   activity data for enhanced maintenance tracking.
 
-- Bike Registration: Register your bikes in the app, including details such as name, model, and
-  technical specifications for each bike. Import bikes from Strava to streamline the process.
+- **Component Management**: Manage the components of your bikes, such as forks, wheels, brakes,
+  chains,
+  etc. Record details such as the brand, model, and installation date for each component, and
+  associate
+  them with your Strava-imported bikes.
 
-- Component Management: Manage the components of your bikes, such as forks, wheels, brakes, chains,
-  etc. Record details such as the brand, model, and installation date for each component. Associate
-  components with your Strava-imported bikes.
+- **Maintenance Tracking**: Activity data from Strava is used to update component mileage and usage
+  hours.
 
-- Maintenance Tracking: Keep a detailed maintenance history for each component. Record repairs, part
-  replacements, adjustments, and other maintenance tasks performed. Activity data from Strava
-  updates component mileage and usage hours.
-
-- Maintenance Reminders: Receive notifications and reminders when maintenance or component
-  replacement is due based on accumulated mileage and usage hours. Futore smart calculations will
+- **Maintenance Reminders**: Receive notifications and reminders when maintenance or component
+  replacement is due based on accumulated mileage and usage hours. Future smart calculations will
   take into account your Strava activity parameters like avg power, or climatological data.
+
+- **Maintenance History**: Keep a maintenance history for each component. Record
+  repairs, part replacements, adjustments, and other maintenance tasks performed.
 
 ## Roadmap
 
@@ -71,7 +72,7 @@ Bikenance utilizes a client-server architecture, with a mobile app for Android a
 
 ### Android App
 
-Technologies used in the Android app:
+The Android app follow an MVVM architecture.
 
 - Jetpack Compose for modern UI development.
 - Room, Hilt, ViewModel, Coroutines, and other Android Jetpack Libraries.
@@ -79,7 +80,7 @@ Technologies used in the Android app:
 
 ### Backend Server
 
-The Bikenance backend server comprises the following components and technologies:
+The Bikenance backend server comprises the following technologies:
 
 - Language: Kotlin
 - Framework: Ktor, a flexible and asynchronous web framework for building server applications.
@@ -88,46 +89,11 @@ The Bikenance backend server comprises the following components and technologies
 - API Integration: Utilizes the Strava API to authenticate users, retrieve bike data, and receive
   activity information.
 
-### Flow of Information
-
-The flow of information involves the app, the Bikenance server, and Strava. Let's dive into the
-details:
-
-1. User Authentication:
-    - Users log in to the Bikenance mobile app using OAuth with Strava. The app requests
-      authorization from the Strava API, and upon successful authentication, the app receives an
-      access token.
-    - The app sends the access token and the user's Strava athlete ID to the Bikenance server.
-
-   For the secure storage of the "client_id" and "secret" parameters required for OAuth with Strava,
-   the Bikenance server will act as a gateway for authentication, adding this sensitive info to the
-   client requests.
-
-2. User Profile Creation and Bike Data Retrieval:
-    - The Bikenance server receives the access token and athlete ID.
-    - If it's the user's first login, the server creates a user profile and stores the access token
-      for future use.
-    - The server queries the Strava API to retrieve the user's bike list and store it in the
-      Bikenance database.
-
-3. Activity Synchronization:
-    - When a user completes a cycling activity, Strava sends the activity data to the Bikenance
-      server.
-    - The server identifies the user based on the received Strava athlete ID and associates the
-      activity with the corresponding user in the database.
-    - The activity data is stored in the Bikenance server's database.
-
-4. Notification to the App:
-    - After the activity is successfully synchronized, the Bikenance server sends a push
-      notification to the user's mobile app using Firebase Cloud Messaging (FCM).
-    - The app receives the notification and displays it to the user, indicating that the new
-      activity has been synchronized.
-
 ## Artwork attribution
 
 Icons used for bike components are from
-the [Bicycle Parts](https://thenounproject.com/browse/collection-icon/bicycle-parts-line-87192/)
-collection by [Kipasangin Stock](https://thenounproject.com/kipasangincreative123/)
+the [Mountain Bike](https://thenounproject.com/timo40/collection/mountain-bike)
+collection by [Timo Nagel](https://thenounproject.com/timo40/)
 at [The Noun Project ](https://thenounproject.com)
 
 ## License
