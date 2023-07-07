@@ -55,8 +55,12 @@ val Typography = Typography(
     h5 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.ExtraBold,
-        fontSize = 12.sp,
+        fontSize = 14.sp,
         color = BknGrey,
+    ),
+    h6 = TextStyle(
+        fontFamily = fonts,
+        fontSize = 12.sp,
     ),
     subtitle1 = TextStyle(
         fontFamily = fonts,

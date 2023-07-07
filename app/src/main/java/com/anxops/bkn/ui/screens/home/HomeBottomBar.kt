@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.shared.components.BknIcon
@@ -61,7 +62,8 @@ fun HomeBottomBar(
                     Text(
                         destination.title,
                         color = MaterialTheme.colors.onPrimary,
-                        style = if (isCurrent) MaterialTheme.typography.h5 else MaterialTheme.typography.h4,
+                        style = MaterialTheme.typography.h4,
+                        fontWeight = if (isCurrent) FontWeight.ExtraBold else FontWeight.Normal,
                         modifier = Modifier.alpha(if (isCurrent) 1f else 0.5f)
                     )
                 },

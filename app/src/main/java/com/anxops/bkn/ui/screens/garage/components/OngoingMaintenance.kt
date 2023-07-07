@@ -157,12 +157,6 @@ fun OngoingMaintenanceItemV2(item: MaintenanceItem) {
                     color = getColorForProgress(percentage = item.percentage),
                     backgroundColor = MaterialTheme.colors.primary,
                 )
-//                Text(
-//                    text = item.displayPercentage(),
-//                    color = MaterialTheme.colors.onPrimary,
-//                    style = MaterialTheme.typography.h4,
-//                    modifier = Modifier.width(60.dp).padding(horizontal = 10.dp)
-//                )
             }
 
 

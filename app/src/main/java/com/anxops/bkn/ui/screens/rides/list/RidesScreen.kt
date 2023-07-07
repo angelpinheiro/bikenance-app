@@ -36,6 +36,7 @@ import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
 import com.anxops.bkn.ui.shared.coloredShadow
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.shared.components.bgGradient
 import com.anxops.bkn.util.formatAsYearMonth
 import com.anxops.bkn.util.simpleLocalTimeFormat
 import com.anxops.bkn.util.toDate
@@ -73,6 +74,7 @@ fun RidesScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(bgGradient())
             .pullRefresh(pullRefreshState)
     ) {
 
@@ -84,11 +86,12 @@ fun RidesScreen(
                 bknNav.navigateToRide(it)
             })
         Text(
-            text = "Last Updated: $at",
+            text = "Last updated $at",
             color = MaterialTheme.colors.onPrimary,
+            style = MaterialTheme.typography.h6,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colors.primaryVariant)
+                .background(MaterialTheme.colors.primary)
                 .padding(6.dp)
         )
         // EmptyRides()
@@ -149,7 +152,7 @@ fun PagedRideList(
     LazyColumn(
         state = lazyColumnState,
         verticalArrangement = Arrangement.spacedBy(0.dp),
-        modifier = modifier.background(MaterialTheme.colors.primary)
+        modifier = modifier
     ) {
 
         items(count = rides.itemCount) { index ->

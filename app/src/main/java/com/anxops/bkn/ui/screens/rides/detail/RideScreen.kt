@@ -17,6 +17,7 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
 import com.anxops.bkn.ui.screens.rides.list.openStravaActivity
 import com.anxops.bkn.ui.shared.Loading
+import com.anxops.bkn.ui.shared.components.bgGradient
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.JointType
 import com.google.maps.android.compose.*
@@ -115,7 +116,10 @@ fun RideView(
 
     val context = LocalContext.current
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(bgGradient())) {
 
         Ride(ride = state.ride, bikes = bikes, onClickOpenOnStrava = {
             state.ride.stravaId?.let {
