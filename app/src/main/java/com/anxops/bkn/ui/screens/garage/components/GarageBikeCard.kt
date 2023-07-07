@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -39,7 +38,6 @@ import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import java.text.DecimalFormat
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -56,6 +54,7 @@ fun GarageBikeCard(
 
     val gradient = Brush.horizontalGradient(
         0f to MaterialTheme.colors.primary,
+        0.1f to MaterialTheme.colors.primary,
         0.5f to MaterialTheme.colors.primary.copy(alpha = 0.9f),
     )
 
@@ -76,21 +75,23 @@ fun GarageBikeCard(
         Box(
             modifier = Modifier
                 .padding(0.dp)
-                .background(MaterialTheme.colors.primary)
+                .clip(MaterialTheme.shapes.medium),
         ) {
 
             AsyncImage(
                 url = bike.photoUrl,
                 modifier = Modifier
-                    .width(height + (height * 0.6f))
+                    .width(height + (height * 0.8f))
                     .height(height)
-                    .padding(1.dp)
-                    .align(Alignment.CenterEnd)
+                    .padding(start = 0.dp, top = 1.dp, end = 1.dp, bottom = 1.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .align(Alignment.CenterEnd),
+                alignment = Alignment.TopCenter
             )
             Box(
                 modifier =
                 Modifier
-                    .width(height + (height * 0.6f))
+                    .width(height + (height * 0.8f))
                     .height(height)
                     .align(Alignment.CenterEnd)
                     .background(gradient)
@@ -101,7 +102,8 @@ fun GarageBikeCard(
                     .fillMaxHeight()
                     .padding(start = 16.dp, top = 16.dp, bottom = 10.dp)
                     .align(Alignment.BottomStart),
-                verticalArrangement = Arrangement.SpaceBetween) {
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -185,7 +187,6 @@ fun AsyncImage(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(CircleShape)
                     .background(MaterialTheme.colors.surface),
                 contentScale = ContentScale.Crop
             )
