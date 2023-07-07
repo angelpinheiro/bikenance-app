@@ -14,11 +14,8 @@ import com.anxops.bkn.util.mutableStateIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,7 +28,7 @@ sealed class SetupProfileScreenStatus {
 
 data class SetupProfileScreenState(
     val bikes: List<Bike> = emptyList(),
-    val status: SetupProfileScreenStatus = SetupProfileScreenStatus.DisplayingProfile,
+    val status: SetupProfileScreenStatus = SetupProfileScreenStatus.LoadingProfile,
     val profileImagePercent: Float = 0f,
     val profile: Profile? = null,
 )
@@ -42,8 +39,7 @@ class SetupProfileScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
     private val profileRepository: ProfileRepositoryFacade,
     private val bikeRepository: BikeRepositoryFacade
-) :
-    ViewModel() {
+) : ViewModel() {
 
     val updateEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
@@ -55,7 +51,12 @@ class SetupProfileScreenViewModel @Inject constructor(
         bikesFlow.combine(profileFlow, transform = { bikes, profile ->
             SetupProfileScreenState(
                 bikes = bikes.sortedByDescending { it.distance },
-                profile = profile
+                profile = profile,
+                status = if (state.value.status != SetupProfileScreenStatus.SavingProfile) {
+                    SetupProfileScreenStatus.DisplayingProfile
+                } else {
+                    state.value.status
+                }
             )
         }).mutableStateIn(viewModelScope, SetupProfileScreenState())
 
@@ -88,11 +89,11 @@ class SetupProfileScreenViewModel @Inject constructor(
                 }
             }
 
-            _state.value = _state.value.copy(
-                bikes = updatedBikeList.sortedByDescending { it.distance }
-            )
+            _state.value =
+                _state.value.copy(bikes = updatedBikeList.sortedByDescending { it.distance })
 
-            Log.d("syncBike", "Bikes (${_state.value.bikes.size})" + _state.value.bikes.joinToString { "${it.name}: ${it.draft}" })
+            Log.d("syncBike",
+                "Bikes (${_state.value.bikes.size})" + _state.value.bikes.joinToString { "${it.name}: ${it.draft}" })
         }
     }
 
@@ -130,9 +131,8 @@ class SetupProfileScreenViewModel @Inject constructor(
 
                     when (r) {
                         is RepositoryResult.Success -> {
-                            bikeRepository.updateSynchronizedBikes(
-                                state.value.bikes.filter { !it.draft }.map { it._id }
-                            )
+                            bikeRepository.updateSynchronizedBikes(state.value.bikes.filter { !it.draft }
+                                .map { it._id })
                             updateEvent.emit(true)
                         }
 
@@ -159,14 +159,14 @@ class SetupProfileScreenViewModel @Inject constructor(
 
             imageByteArray?.let {
 
-                api.uploadImageToFirebase(dataStore.getAuthUserOrFail(), it,
+                api.uploadImageToFirebase(dataStore.getAuthUserOrFail(),
+                    it,
                     onUpdateUpload = { updatePercent ->
                         _state.value = _state.value.copy(profileImagePercent = updatePercent)
                     },
                     onSuccess = { url ->
                         _state.value = _state.value.copy(
-                            profileImagePercent = 0f,
-                            profile = _state.value.profile?.copy(
+                            profileImagePercent = 0f, profile = _state.value.profile?.copy(
                                 profilePhotoUrl = url,
                             )
                         )
