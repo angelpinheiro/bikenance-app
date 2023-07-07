@@ -29,10 +29,14 @@ import com.anxops.bkn.ui.shared.components.SlideInOutAnimatedVisibility
 import com.anxops.bkn.ui.theme.statusDanger
 
 @Composable
-fun OngoingMaintenance(bike: Bike) {
+fun UpcomingMaintenance(bike: Bike? = null, showTile: Boolean = true, titleText: String? = null, filter: Float = 0f) {
 
     val items = remember(bike) {
-        FakeData.maintenances.filter { it.bike == bike.name }
+        if(bike != null)
+            FakeData.maintenances.filter { it.bike == bike.name && it.percentage >= filter }
+        else{
+            FakeData.maintenances.filter { it.percentage >= filter }
+        }
     }
 
     SlideInOutAnimatedVisibility(visible = items.isNotEmpty()) {
@@ -44,15 +48,17 @@ fun OngoingMaintenance(bike: Bike) {
                     .padding(start = 10.dp, end = 10.dp, top = 24.dp)
             ) {
 
-                val title =
-                    (if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance")
+                if(showTile) {
+                    val title = titleText?:
+                        (if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance")
 
-                Text(
-                    modifier = Modifier.padding(bottom = 10.dp),
-                    text = title,
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onPrimary
-                )
+                    Text(
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        text = title,
+                        style = MaterialTheme.typography.h2,
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
 
                 Column(
                     modifier = Modifier.fillMaxWidth()

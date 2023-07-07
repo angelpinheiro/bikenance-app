@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.mikepenz.iconics.typeface.IIcon
@@ -25,6 +26,8 @@ fun HomeBottomBar(
     BottomNavigation(
         elevation = 5.dp
     ) {
+
+        val critical = FakeData.maintenances.filter { it.percentage >= 1 }.size
 
         HomeSections.values().forEach { destination ->
 
@@ -41,7 +44,7 @@ fun HomeBottomBar(
                     BadgedBox(badge = {
                         if (destination.title.contains("Maintenance")) {
                             Badge {
-                                Text("3")
+                                Text("$critical")
                             }
                         }
                     }) {
