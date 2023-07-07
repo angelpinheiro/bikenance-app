@@ -1,13 +1,11 @@
 package com.anxops.bkn.ui.screens.garage.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -37,9 +35,16 @@ fun BikesPager(
 ) {
     val configuration = LocalConfiguration.current
     val pagerState = rememberPagerState()
-    val pageWidth = remember {
-        (configuration.screenWidthDp.dp.value * 0.85).toInt()
+    val pageSize = remember(bikes) {
+        mutableStateOf(
+            if (bikes.size == 1) {
+                PageSize.Fill
+            } else {
+                PageSize.Fixed((configuration.screenWidthDp.dp.value * 0.85).toInt().dp)
+            }
+        )
     }
+
 
     val selectedBike = remember {
         mutableStateOf<Bike?>(null)
@@ -47,7 +52,7 @@ fun BikesPager(
 
     LaunchedEffect(pagerState, bikes) {
         // Observe bike selection en notify callback
-        snapshotFlow { pagerState.currentPage }.collect { page ->
+        snapshotFlow { pagerState.settledPage }.collect { page ->
             bikes.getOrNull(page)?.let {
                 selectedBike.value = it
                 onBikeChanged(it)
@@ -58,37 +63,43 @@ fun BikesPager(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp)
+            .padding(top = 16.dp)
     ) {
 
-        Box(Modifier.padding(10.dp)) {
-            Text(
-                text = "Bikes",
-                modifier = Modifier.align(Alignment.CenterStart),
-                style = MaterialTheme.typography.h2,
-                color = MaterialTheme.colors.onPrimary
-            )
-            Box(modifier = Modifier.align(Alignment.Center).padding(bottom = 10.dp)) {
-                BikePagerIndicator(pagerState, bikes.size)
+        if (bikes.size > 1) {
+            Box(
+                Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp)
+            ) {
+                Text(
+                    text = "Bikes",
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onPrimary
+                )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(bottom = 10.dp)
+                ) {
+                    BikePagerIndicator(pagerState, bikes.size)
+                }
             }
         }
 
         HorizontalPager(
             pageCount = bikes.size,
             state = pagerState,
-            pageSize = PageSize.Fixed(pageWidth.dp),
+            pageSize = pageSize.value,
         ) {
-            selectedBike.value?.let {
-                GarageBikeCard(bike = it, onEdit = {
-                    onEditBike(it)
-                }, onDetail = {
-                    onBikeDetails(it)
-                })
-            }
-
+            val bike = bikes[it]
+            GarageBikeCard(bike = bike, onEdit = {
+                onEditBike(bike)
+            }, onDetail = {
+                onBikeDetails(bike)
+            })
         }
-
-
     }
 }
 
@@ -102,8 +113,7 @@ fun BikePagerIndicator(pagerState: PagerState, bikeCount: Int) {
                 pagerState = pagerState,
                 bikeCount,
                 activeColor = MaterialTheme.colors.onPrimary,
-                modifier = Modifier
-                    .padding(top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp),
             )
         }
     }

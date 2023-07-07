@@ -93,7 +93,9 @@ fun Garage(
                     nav.navigateToBikeDetails(it._id)
                 })
 
-            RecentActivity(rides = rides.value)
+            RecentActivity(rides = rides.value) {
+                nav.navigateToRide(it._id)
+            }
 
             selectedBike.value?.let {
                 OngoingMaintenance(it)
