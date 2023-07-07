@@ -122,7 +122,7 @@ fun BikeDetailsScreen(
             ),
             sheetPeekHeight = 0.dp,
             floatingActionButton = {
-                fab(visible = scaffoldState.bottomSheetState.isCollapsed, click = {
+                fab(visible = scaffoldState.bottomSheetState.isCollapsed && false, click = {
                     scope.launch { scaffoldState.bottomSheetState.expand() }
                 })
             },
@@ -144,7 +144,7 @@ fun BikeDetailsScreen(
                             modifier = Modifier
                                 .fillMaxHeight()
                         ) {
-                            EmptyComponentList(onClickNew = {
+                            EmptyComponentList(onClickAction = {
                                 scope.launch { scaffoldState.bottomSheetState.expand() }
                             })
                         }
@@ -182,7 +182,7 @@ fun fab(visible: Boolean = true, click: () -> Unit = {}) {
 
 
 @Composable
-fun EmptyComponentList(onClickNew: () -> Unit = {}) {
+fun EmptyComponentList(onClickAction: () -> Unit = {}) {
     Column(
         Modifier
             .fillMaxSize()
@@ -203,10 +203,18 @@ fun EmptyComponentList(onClickNew: () -> Unit = {}) {
             painter = painterResource(id = R.drawable.ic_undraw_not_found),
             contentDescription = "Not found",
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(0.6f)
                 .background(Color.Transparent)
-                .padding(top = 30.dp)
+                .padding(top = 0.dp)
         )
+
+        OutlinedButton(onClick = { onClickAction() }, modifier = Modifier.padding(top = 20.dp)) {
+            Text(
+                text = "Proceed with initial setup",
+                color = MaterialTheme.colors.primary,
+                style = MaterialTheme.typography.h3,
+            )
+        }
     }
 }
 
@@ -223,12 +231,12 @@ fun ComponentListBottomSheet(
 
     val componentTypes = remember { ComponentTypes.values() }
     val lazyColumnState = rememberLazyListState()
-    val bottomPartSize = 80.dp
+    val bottomPartSize = 60.dp
 
     Box(
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
+            .fillMaxHeight(0.9f)
     ) {
 
 
@@ -313,7 +321,8 @@ fun ComponentListBottomSheet(
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colors.surface)
+//                .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+                .background(MaterialTheme.colors.primaryVariant)
                 .height(bottomPartSize)
                 .padding(0.dp)
                 .align(Alignment.BottomCenter)
