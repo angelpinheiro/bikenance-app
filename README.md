@@ -68,7 +68,8 @@ The MVP version of Bikenance will focus on the following functionalities:
 
 ## Architecture
 
-Bikenance utilizes a client-server architecture, with a mobile app for Android and a backend server.
+Bikenance utilizes a client-server architecture, with a mobile app for Android and
+a [backend server](https://github.com/angelpinheiro/bikenance-backend).
 
 ### Android App
 
