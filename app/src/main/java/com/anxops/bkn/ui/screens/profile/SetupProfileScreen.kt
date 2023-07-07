@@ -54,8 +54,7 @@ fun ProfileScreen(
 ) {
     val context = LocalContext.current
     val state = viewModel.state.collectAsState()
-    val profile = viewModel.profileState.collectAsState()
-    val isNew = profile.value?.createdAt == null
+    val isNew = state.value.profile?.createdAt == null
 
     val nav = BknNavigator(navigator)
 
@@ -119,7 +118,7 @@ fun ProfileScreen(
 
 
                 Text(
-                    text = if (isNew) "Welcome to Bikenance!" else "Hi, ${profile.value?.firstname}!",
+                    text = if (isNew) "Welcome to Bikenance!" else "Hi, ${state.value.profile?.firstname}!",
                     style = MaterialTheme.typography.h1,
                     modifier = Modifier.padding(start = 10.dp),
                     color = MaterialTheme.colors.onSurface
@@ -154,7 +153,7 @@ fun ProfileScreen(
                             )
                             SubcomposeAsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
-                                    .data(profile.value?.profilePhotoUrl)
+                                    .data(state.value.profile?.profilePhotoUrl)
                                     .crossfade(true)
                                     .build(),
                                 contentDescription = null,
@@ -187,7 +186,7 @@ fun ProfileScreen(
                     )
 
                     BknLabelTopTextField(
-                        value = profile.value?.firstname,
+                        value = state.value.profile?.firstname,
                         label = "First name",
                         colors = colors,
                         modifier = Modifier.fillMaxWidth(),
@@ -195,7 +194,7 @@ fun ProfileScreen(
                             viewModel.updateFirstname(it)
 
                         })
-                    BknLabelTopTextField(value = profile.value?.lastname,
+                    BknLabelTopTextField(value = state.value.profile?.lastname,
                         label = "Last name",
                         modifier = Modifier.fillMaxWidth(),
                         colors = colors,
@@ -204,7 +203,7 @@ fun ProfileScreen(
                         })
 
                     val bikesTitle = if (isNew)
-                        "We found ${state.value.bikes.size} bikes on Strava"
+                        "We found ${state.value.bikes.size} bikes on Strava (${state.value.bikes.count { !it.draft }})"
                     else
                         "Tracking ${state.value.bikes.filter { !it.draft }.size} bikes from Strava"
 
@@ -230,7 +229,7 @@ fun ProfileScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
 
-                    state.value.bikes.sortedByDescending { it.distance }
+                    state.value.bikes
                         .forEach { bike ->
                             ProfileBike(bike = bike) {
                                 viewModel.syncBike(bike._id)
@@ -245,7 +244,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .fillMaxWidth(),
-                    enabled = (profile.value?.firstname != null && profile.value?.lastname != null)
+                    enabled = (state.value.profile?.firstname != null && state.value.profile?.lastname != null)
                 ) {
 
                     Text(text = "Save changes", modifier = Modifier.padding(4.dp))

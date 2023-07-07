@@ -10,10 +10,15 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.util.RepositoryResult
+import com.anxops.bkn.util.mutableStateIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,8 +31,9 @@ sealed class SetupProfileScreenStatus {
 
 data class SetupProfileScreenState(
     val bikes: List<Bike> = emptyList(),
-    val status: SetupProfileScreenStatus = SetupProfileScreenStatus.LoadingProfile,
-    val profileImagePercent: Float = 0f
+    val status: SetupProfileScreenStatus = SetupProfileScreenStatus.DisplayingProfile,
+    val profileImagePercent: Float = 0f,
+    val profile: Profile? = null,
 )
 
 @HiltViewModel
@@ -39,67 +45,78 @@ class SetupProfileScreenViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _state = MutableStateFlow(SetupProfileScreenState())
     val updateEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
-    val state: StateFlow<SetupProfileScreenState> = _state
 
-    private val _profileState: MutableStateFlow<Profile?> = MutableStateFlow(null)
-    val profileState: StateFlow<Profile?> = _profileState
+    private val bikesFlow = bikeRepository.getBikesFlow(true).filterNotNull()
+    private val profileFlow = profileRepository.getProfileFlow().filterNotNull()
+
+    private val _state: MutableStateFlow<SetupProfileScreenState> =
+        bikesFlow.combine(profileFlow, transform = { bikes, profile ->
+            SetupProfileScreenState(
+                bikes = bikes.sortedByDescending { it.distance },
+                profile = profile
+            )
+        }).mutableStateIn(viewModelScope, SetupProfileScreenState())
+
+    val state = _state
 
     init {
         loadUserProfile()
     }
 
+
     fun updateFirstname(value: String) {
-        _profileState.value = _profileState.value?.copy(
-            firstname = value
+        _state.value = _state.value.copy(
+            profile = _state.value.profile?.copy(firstname = value)
         )
     }
 
     fun updateLastname(value: String) {
-        _profileState.value = _profileState.value?.copy(
-            lastname = value
+        _state.value = _state.value.copy(
+            profile = _state.value.profile?.copy(lastname = value)
         )
     }
 
     fun syncBike(id: String) {
-
-        val updatedBikeList = _state.value.bikes.toList().map {
-            Log.d("VM", "${it._id} == $id")
-            if (it._id == id) {
-                it.copy(draft = !it.draft)
-            } else {
-                it
+        viewModelScope.launch {
+            val updatedBikeList = _state.value.bikes.map {
+                if (it._id == id) {
+                    it.copy(draft = !it.draft)
+                } else {
+                    it
+                }
             }
 
+            _state.value = _state.value.copy(
+                bikes = updatedBikeList.sortedByDescending { it.distance }
+            )
+
+            Log.d("syncBike", "Bikes (${_state.value.bikes.size})" + _state.value.bikes.joinToString { "${it.name}: ${it.draft}" })
         }
-        _state.value = _state.value.copy(
-            bikes = updatedBikeList
-        )
     }
 
 
     private fun loadUserProfile() {
         viewModelScope.launch {
-
-            val profile = profileRepository.getProfile()
-            val bikes = bikeRepository.getBikes()
-
-            profile?.let {
-                _profileState.value = profile
-                _state.value = _state.value.copy(
-                    bikes = bikes,
-                    status = SetupProfileScreenStatus.DisplayingProfile
-                )
-            }
+            bikeRepository.reloadData()
+//            val profile = profileRepository.getProfile()
+//            val bikes = bikeRepository.getBikes()
+//
+//            profile?.let {
+//                _profileState.value = profile
+//                _state.value = _state.value.copy(
+//                    bikes = bikes,
+//                    status = SetupProfileScreenStatus.DisplayingProfile
+//                )
+//            }
         }
     }
 
     fun saveProfileChanges() {
 
-        val firstName = _profileState.value?.firstname ?: return
-        val lastName = _profileState.value?.lastname ?: return
+        val firstName = _state.value.profile?.firstname ?: return
+        val lastName = _state.value.profile?.lastname ?: return
 
         viewModelScope.launch {
             _state.value = _state.value.copy(
@@ -107,7 +124,7 @@ class SetupProfileScreenViewModel @Inject constructor(
             )
             try {
 
-                _profileState.value?.let { profile ->
+                _state.value.profile?.let { profile ->
                     val r = profileRepository.updateProfile(profile)
 
 
@@ -149,9 +166,9 @@ class SetupProfileScreenViewModel @Inject constructor(
                     onSuccess = { url ->
                         _state.value = _state.value.copy(
                             profileImagePercent = 0f,
-                        )
-                        _profileState.value = _profileState.value?.copy(
-                            profilePhotoUrl = url,
+                            profile = _state.value.profile?.copy(
+                                profilePhotoUrl = url,
+                            )
                         )
                     },
                     onFailure = {

@@ -7,8 +7,11 @@ import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.withContext
 
 
 interface BikeRepositoryFacade {
@@ -30,11 +33,16 @@ interface BikeRepositoryFacade {
     suspend fun reloadData(): Boolean
 }
 
-class BikeRepository(val api: Api, val db: AppDb, val ridesRepository: RidesRepositoryFacade) :
+class BikeRepository(
+    val api: Api,
+    val db: AppDb,
+    val ridesRepository: RidesRepositoryFacade,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+) :
     BikeRepositoryFacade {
 
-    override suspend fun reloadData(): Boolean {
-        val success = when (val bikes = api.getBikes()) {
+    override suspend fun reloadData(): Boolean = withContext(defaultDispatcher) {
+        when (val bikes = api.getBikes()) {
             is ApiResponse.Success -> {
                 db.bikeDao().clear()
                 bikes.data.let {
@@ -47,22 +55,19 @@ class BikeRepository(val api: Api, val db: AppDb, val ridesRepository: RidesRepo
 
             else -> false
         }
-        return success
-
     }
 
-    override suspend fun getBike(id: String): Bike? {
-        return db.bikeDao().getById(id)?.toDomain()
+    override suspend fun getBike(id: String): Bike? = withContext(defaultDispatcher) {
+        db.bikeDao().getById(id)?.toDomain()
     }
 
 
-    override suspend fun getBikes(): List<Bike> {
-        return db.bikeDao().findAll().map(BikeEntity::toDomain)
+    override suspend fun getBikes(): List<Bike> = withContext(defaultDispatcher) {
+        db.bikeDao().findAll().map(BikeEntity::toDomain)
     }
 
     override fun getBikesFlow(draft: Boolean): Flow<List<Bike>> {
         return db.bikeDao().flow().mapNotNull { list ->
-
             if (draft) {
                 list.map {
                     it.toDomain()
