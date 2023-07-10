@@ -3,6 +3,7 @@ package com.anxops.bkn.data.preferences
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -18,10 +19,15 @@ class BknDataStore(private val context: Context) {
         val AUTH_TOKEN = stringPreferencesKey("AUTH_TOKEN")
         val REFRESH_TOKEN = stringPreferencesKey("REFRESH_TOKEN")
         val FIREBASE_TOKEN = stringPreferencesKey("FIREBASE_TOKEN")
+        val DEBUG_API = booleanPreferencesKey("DEBUG_API")
     }
 
     val authToken: Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[AUTH_TOKEN]
+    }
+
+    val useDebugAPi: Flow<Boolean?> = context.dataStore.data.map { preferences ->
+        preferences[DEBUG_API]
     }
 
     suspend fun saveAuthToken(token: String) {
@@ -49,8 +55,18 @@ class BknDataStore(private val context: Context) {
         return context.dataStore.data.first()[AUTH_TOKEN]
     }
 
+    suspend fun setUseDebugAPi(use: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[DEBUG_API] = use
+        }
+    }
+
     suspend fun getRefreshToken(): String? {
         return context.dataStore.data.first()[REFRESH_TOKEN]
+    }
+
+    suspend fun getUseDebugAPi(): Boolean? {
+        return context.dataStore.data.first()[DEBUG_API]
     }
 
     suspend fun saveFirebaseToken(token: String) {

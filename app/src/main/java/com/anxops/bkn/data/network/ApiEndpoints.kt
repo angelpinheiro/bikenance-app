@@ -3,22 +3,31 @@ package com.anxops.bkn.data.network
 import com.anxops.bkn.BuildConfig
 
 object ApiEndpoints {
-    private const val baseApiUrl = BuildConfig.API_URL
 
-    const val stravaLoginEndpoint = "$baseApiUrl/strava"
+    private var baseApiUrl = BuildConfig.API_URL + "/api"
 
-    const val refreshTokenEndpoint = "$baseApiUrl/refresh"
-    const val profileEndpoint = "$baseApiUrl/profile"
-    const val profileBikesEndpoint = "$baseApiUrl/profile/bikes"
-    const val profileRidesEndpoint = "$baseApiUrl/profile/rides"
-    const val profileRidesByKeyEndpoint = "$baseApiUrl/profile/pagedRides"
-    const val profileSyncBikesEndpoint = "$baseApiUrl/profile/sync"
+    fun stravaLoginEndpoint() = "$baseApiUrl/strava"
 
-    const val firebaseTokenEndpoint = "$baseApiUrl/users/messagingToken"
+    fun refreshTokenEndpoint() = "$baseApiUrl/refresh"
+    fun profileEndpoint() = "$baseApiUrl/profile"
+    fun profileBikesEndpoint() = "$baseApiUrl/profile/bikes"
+    fun profileRidesEndpoint() = "$baseApiUrl/profile/rides"
+    fun profileRidesByKeyEndpoint() = "$baseApiUrl/profile/pagedRides"
+    fun profileSyncBikesEndpoint() = "$baseApiUrl/profile/sync"
+
+    fun firebaseTokenEndpoint() = "$baseApiUrl/users/messagingToken"
 
     fun extendedProfileEndpoint(draft: Boolean = false) =
         "$baseApiUrl/profile/extended?draft=$draft"
 
     fun profileBikeEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId"
     fun profileRideEndpoint(rideId: String) = "$baseApiUrl/profile/rides/$rideId"
+
+    fun setUseDebugAPi(use: Boolean) {
+        baseApiUrl = if (use) {
+            BuildConfig.DEBUG_API_URL + "/api"
+        } else {
+            BuildConfig.API_URL + "/api"
+        }
+    }
 }

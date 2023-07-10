@@ -30,7 +30,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun profile(): ApiResponse<Profile> {
         return safeApiCall {
-            httpClient.get(ApiEndpoints.profileEndpoint) {
+            httpClient.get(ApiEndpoints.profileEndpoint()) {
                 header("Authorization", tokenHeader())
             }
         }
@@ -54,7 +54,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun getBikes(includeDraftBikes: Boolean = false): ApiResponse<List<Bike>> {
         return safeApiCall {
-            httpClient.get(ApiEndpoints.profileBikesEndpoint) {
+            httpClient.get(ApiEndpoints.profileBikesEndpoint()) {
                 header("Authorization", tokenHeader())
             }
         }
@@ -62,7 +62,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun getRides(): ApiResponse<List<BikeRide>> {
         return safeApiCall {
-            httpClient.get(ApiEndpoints.profileRidesEndpoint) {
+            httpClient.get(ApiEndpoints.profileRidesEndpoint()) {
                 header("Authorization", tokenHeader())
             }
         }
@@ -73,7 +73,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         pageSize: Int = 10
     ): ApiResponse<List<BikeRide>> {
         return safeApiCall {
-            httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint) {
+            httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint()) {
                 header("Authorization", tokenHeader())
                 key?.let {
                     parameter("key", it)
@@ -85,7 +85,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun updateProfile(update: Profile): ApiResponse<Profile> {
         return safeApiCall {
-            httpClient.put(ApiEndpoints.profileEndpoint) {
+            httpClient.put(ApiEndpoints.profileEndpoint()) {
                 header("Authorization", tokenHeader())
                 body = update
             }
@@ -112,7 +112,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun createBike(bike: Bike): ApiResponse<Bike> {
         return safeApiCall {
-            httpClient.post(ApiEndpoints.profileBikesEndpoint) {
+            httpClient.post(ApiEndpoints.profileBikesEndpoint()) {
                 header("Authorization", tokenHeader())
                 body = bike.toBikeUpdate()
             }
@@ -129,7 +129,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun syncBikes(ids: List<String>): ApiResponse<Boolean> {
         return safeApiCall {
-            httpClient.put(ApiEndpoints.profileSyncBikesEndpoint) {
+            httpClient.put(ApiEndpoints.profileSyncBikesEndpoint()) {
                 header("Authorization", tokenHeader())
                 body = SyncBikes(ids)
             }
@@ -176,7 +176,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
     }
 
     suspend fun updateFirebaseToken(token: String): Boolean {
-        return httpClient.put(ApiEndpoints.firebaseTokenEndpoint) {
+        return httpClient.put(ApiEndpoints.firebaseTokenEndpoint()) {
             header("Authorization", tokenHeader())
             body = TokenWrapper(token)
         }
@@ -185,7 +185,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     suspend fun updateRefreshToken(refreshToken: String): ApiResponse<LoginResult> {
         return safeApiCall {
-            httpClient.post(ApiEndpoints.refreshTokenEndpoint) {
+            httpClient.post(ApiEndpoints.refreshTokenEndpoint()) {
                 body = RefreshData(refreshToken)
             }
         }

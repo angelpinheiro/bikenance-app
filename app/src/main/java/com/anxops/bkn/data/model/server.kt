@@ -92,6 +92,8 @@ data class BikeRide(
     @SerialName("user_id") var userId: String? = null,
     @SerialName("bike_id") var bikeId: String? = null,
     @SerialName("strava_activity_id") var stravaId: String? = null,
+    @SerialName("activity_type") var activityType: String? = null,
+    @SerialName("sport_type") var sportType: String? = null,
     @SerialName("name") var name: String? = null,
     @SerialName("distance") var distance: Int? = null,
     @SerialName("moving_time") var movingTime: Int? = null,

@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +62,7 @@ fun LoginScreen(
     val context = LocalContext.current
     val store = BknDataStore(context)
     val state = viewModel.state.collectAsState()
+    val useDebugApi = viewModel.useDebugApi.collectAsState(true)
 
     LaunchedEffect(key1 = context) {
 
@@ -75,7 +79,6 @@ fun LoginScreen(
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
     ) {
-
 
         Image(
             painter = painterResource(id = R.drawable.ic_login_artwork),
@@ -133,7 +136,7 @@ fun LoginScreen(
                 value = state.value.email,
                 label = "E-mail address",
                 update = { viewModel.updateEmail(it) },
-                modifier = Modifier.padding(top = 56.dp),
+                modifier = Modifier.padding(top = 36.dp),
                 colors = colors
             )
             BknOutlinedTextField(
@@ -150,8 +153,20 @@ fun LoginScreen(
             Text(
                 text = "Forgot Password ?",
                 color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.padding(top = 70.dp)
+                modifier = Modifier.padding(top = 60.dp)
             )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Use debug api", color = MaterialTheme.colors.onPrimary)
+                RadioButton(selected = useDebugApi.value, onClick = {
+                    viewModel.setUseDebugApi(useDebugApi.value.not())
+                }, colors = RadioButtonDefaults.colors(MaterialTheme.colors.onPrimary))
+            }
         }
 
 
@@ -228,5 +243,5 @@ private fun launchStravaLogin(context: Context) {
     val headers = Bundle()
     headers.putString("Content-Type", "application/json")
     intent.intent.putExtra(Browser.EXTRA_HEADERS, headers)
-    intent.launchUrl(context, Uri.parse(ApiEndpoints.stravaLoginEndpoint))
+    intent.launchUrl(context, Uri.parse(ApiEndpoints.stravaLoginEndpoint()))
 }

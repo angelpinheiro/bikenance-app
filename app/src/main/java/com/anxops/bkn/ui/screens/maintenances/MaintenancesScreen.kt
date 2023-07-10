@@ -39,7 +39,7 @@ fun MaintenanceList(maintenances: List<MaintenanceItem>) {
 
     var tabIndex = remember { mutableStateOf(0) }
 
-    val tabs = listOf("Critical", "Ongoing", "History")
+    val tabs = listOf("Critical", "Upcoming", "History")
 
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex.value) {

@@ -2,11 +2,15 @@ package com.anxops.bkn.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anxops.bkn.data.network.ApiEndpoints
 import com.anxops.bkn.data.preferences.BknDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +36,8 @@ class LoginScreenViewModel @Inject constructor(
 
     val loginEvent: MutableSharedFlow<LoginEvent> = MutableSharedFlow()
 
+    val useDebugApi = dataStore.useDebugAPi.stateIn(viewModelScope, SharingStarted.Eagerly, true).map { it ?: false }
+
     fun updateEmail(value: String) {
         _state.value = _state.value.copy(email = value)
     }
@@ -52,6 +58,15 @@ class LoginScreenViewModel @Inject constructor(
         viewModelScope.launch {
             loginEvent.emit(LoginEvent.StravaLogin)
         }
+    }
+
+    fun setUseDebugApi(use: Boolean) {
+        viewModelScope.launch {
+            dataStore.setUseDebugAPi(use)
+            ApiEndpoints.setUseDebugAPi(use)
+        }
+
+
     }
 
 }

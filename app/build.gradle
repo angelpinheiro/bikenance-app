@@ -24,7 +24,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // load maps api key from local.properties and inject it to the manifest
@@ -32,7 +32,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix = ".debug"
+        }
         release {
+            versionNameSuffix = ".release"
             proguardFile(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
@@ -61,6 +65,7 @@ androidComponents {
     onVariants(selector().all()) { variant ->
         // Inject API_URL from local.properties to build config
         variant.buildConfigFields.put("API_URL", new BuildConfigField('String', "\"${localProperties['API_URL']}\"", "Bikenance API URL"))
+        variant.buildConfigFields.put("DEBUG_API_URL", new BuildConfigField('String', "\"${localProperties['DEBUG_API_URL']}\"", "Bikenance debug API URL"))
     }
 }
 
