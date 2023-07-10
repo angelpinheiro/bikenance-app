@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.BikeRide
+import kotlinx.serialization.SerialName
 
 
 @Entity(tableName = "bike_ride")
@@ -12,6 +13,8 @@ data class BikeRideEntity(
     @ColumnInfo(name = "user_id") val userId: String?,
     @ColumnInfo(name = "bike_id") val bikeId: String?,
     @ColumnInfo(name = "strava_id") val stravaId: String?,
+    @ColumnInfo(name = "activity_type") var activityType: String? = null,
+    @ColumnInfo(name = "sport_type") var sportType: String? = null,
     @ColumnInfo(name = "name") val name: String?,
     @ColumnInfo(name = "distance") val distance: Int?,
     @ColumnInfo(name = "moving_time") val movingTime: Int?,
@@ -26,6 +29,8 @@ data class BikeRideEntity(
             userId = userId,
             bikeId = bikeId,
             stravaId = stravaId,
+            activityType = activityType,
+            sportType = sportType,
             name = name,
             distance = distance,
             movingTime = movingTime,
