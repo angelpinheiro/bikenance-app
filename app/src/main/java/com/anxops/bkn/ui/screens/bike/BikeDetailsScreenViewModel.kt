@@ -1,11 +1,10 @@
 package com.anxops.bkn.ui.screens.bike
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
-import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.MaintenanceConfigurations
 import com.anxops.bkn.data.network.Api
@@ -13,15 +12,16 @@ import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ComponentRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flattenConcat
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-
-data class BikeDetailsScreenScreenState(
-    val bike: Bike? = null,
-    val selectedComponentTypes: Set<ComponentTypes> = setOf()
-)
 
 @HiltViewModel
 class BikeDetailsScreenViewModel @Inject constructor(
@@ -32,35 +32,57 @@ class BikeDetailsScreenViewModel @Inject constructor(
 
     ) : ViewModel() {
 
-    private val _state = MutableStateFlow(BikeDetailsScreenScreenState())
-    val state: StateFlow<BikeDetailsScreenScreenState> = _state
-
 
     val selectedComponentTypes = mutableStateOf<Set<ComponentTypes>>(emptySet())
 
+    private val selectedBikeId = MutableStateFlow<String?>(null)
+
+    private val bikeFlow = selectedBikeId.mapLatest {
+        it?.let { id -> bikesRepository.getBike(id) } ?: null
+    }
+
+    private val bikeComponentsFlow = bikeFlow.distinctUntilChanged().filterNotNull().map {
+        bikeComponentRepository.getBikeComponentsFlow(bikeId = it._id)
+    }.flattenConcat().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+
+    val bike = bikeFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val bikeComponents = bikeComponentsFlow.stateIn(
+        viewModelScope, SharingStarted.Eagerly,
+        emptyList()
+    )
+
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
-            bikesRepository.getBike(bikeId)?.let {
-                _state.value = state.value.copy(bike = it)
-            }
+            selectedBikeId.value = bikeId
         }
     }
 
     fun onSelectConfiguration(c: MaintenanceConfigurations) {
         viewModelScope.launch {
             selectedComponentTypes.value = c.types
-            _state.value = _state.value.copy(
-                selectedComponentTypes = c.types
-            )
         }
     }
 
     fun onComponentTypeSelectionChange(it: Set<ComponentTypes>) {
         viewModelScope.launch {
             selectedComponentTypes.value = it
-            _state.value = _state.value.copy(
-                selectedComponentTypes = it
-            )
+        }
+    }
+
+    fun addSelectedComponentsToBike() {
+        viewModelScope.launch {
+
+            bike.value?.let { currentBike ->
+                val newComponents = selectedComponentTypes.value.map {
+                    BikeComponent(
+                        bikeId = currentBike._id,
+                        alias = currentBike.name + " " + it.name,
+                        type = it
+                    )
+                }
+                bikeComponentRepository.createComponents(currentBike._id, newComponents)
+            }
         }
     }
 

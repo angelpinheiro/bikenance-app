@@ -24,24 +24,32 @@ data class ComponentInfo(
     }
 }
 
+enum class ComponentGroup(val order: Int) {
+    TRANSMISSION(1),
+    SUSPENSION(2),
+    BRAKES(3),
+    TIRES(4),
+    OTHER(10)
+}
+
 // TODO Add: Frame bearings, handlebar tape
-enum class ComponentTypes {
-    BRAKE_LEVER,
+enum class ComponentTypes(val group: ComponentGroup = ComponentGroup.OTHER) {
+    BRAKE_LEVER(ComponentGroup.BRAKES),
     CABLE_HOUSING,
-    CASSETTE,
-    CHAIN,
-    DISC_BRAKE,
-    DISC_PAD,
+    CASSETTE(ComponentGroup.TRANSMISSION),
+    CHAIN(ComponentGroup.TRANSMISSION),
+    DISC_BRAKE(ComponentGroup.BRAKES),
+    DISC_PAD(ComponentGroup.BRAKES),
     DROPER_POST,
-    FORK,
-    FRONT_HUB,
+    FORK(ComponentGroup.SUSPENSION),
+    FRONT_HUB(ComponentGroup.TIRES),
     PEDAL_CLIPLESS,
-    REAR_DERAUILLEURS,
-    REAR_HUB,
-    REAR_SUSPENSION,
-    THRU_AXLE,
-    TIRE,
-    WHEELSET,
+    REAR_DERAUILLEURS(ComponentGroup.TRANSMISSION),
+    REAR_HUB(ComponentGroup.TIRES),
+    REAR_SUSPENSION(ComponentGroup.SUSPENSION),
+    THRU_AXLE(ComponentGroup.TIRES),
+    TIRE(ComponentGroup.TIRES),
+    WHEELSET(ComponentGroup.TIRES),
     CUSTOM,
     UNKNOWN
 }
@@ -164,13 +172,13 @@ data class Usage(
 
 @Serializable
 data class BikeComponent(
-    val _id: String,
+    val _id: String? = null,
     @SerialName("bikeId")
     val bikeId: String?,
     @SerialName("alias")
     val alias: String? = null,
-    @SerialName("info")
-    val info: ComponentInfo,
+    @SerialName("type")
+    val type: ComponentTypes,
     @SerialName("usage")
     var usage: Usage = Usage(0.0, 0.0)
 )

@@ -22,6 +22,7 @@ object ApiEndpoints {
 
     fun profileBikeEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId"
     fun profileRideEndpoint(rideId: String) = "$baseApiUrl/profile/rides/$rideId"
+    fun addComponentsEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId/components"
 
     fun setUseDebugAPi(use: Boolean) {
         baseApiUrl = if (use) {

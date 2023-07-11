@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
@@ -45,6 +46,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 fun GarageBikeCard(
     bike: Bike,
     elevation: Dp = 5.dp,
+    tintColor: Color = MaterialTheme.colors.primary,
     onEdit: () -> Unit = {},
     onDetail: () -> Unit = {}
 ) {
@@ -53,9 +55,9 @@ fun GarageBikeCard(
     val height = 110.dp
 
     val gradient = Brush.horizontalGradient(
-        0f to MaterialTheme.colors.primary,
-        0.1f to MaterialTheme.colors.primary,
-        0.5f to MaterialTheme.colors.primary.copy(alpha = 0.9f),
+        0f to tintColor,
+        0.1f to tintColor,
+        0.5f to tintColor.copy(alpha = 0.9f),
     )
 
     Card(
@@ -68,8 +70,8 @@ fun GarageBikeCard(
                 onLongClick = { onEdit() },
             ),
 
-        elevation = 5.dp,
-        backgroundColor = MaterialTheme.colors.primary
+        elevation = elevation,
+        backgroundColor = tintColor
     ) {
 
         Box(

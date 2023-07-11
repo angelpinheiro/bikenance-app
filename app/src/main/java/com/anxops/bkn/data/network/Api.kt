@@ -1,6 +1,7 @@
 package com.anxops.bkn.data.network
 
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.model.ExtendedProfile
 import com.anxops.bkn.data.model.Profile
@@ -190,6 +191,15 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
             }
         }
 
+    }
+
+    suspend fun addBikeComponents(bikeId: String, newComponents: List<BikeComponent>): ApiResponse<List<BikeComponent>> {
+        return safeApiCall {
+            httpClient.post(ApiEndpoints.addComponentsEndpoint(bikeId)) {
+                header("Authorization", tokenHeader())
+                body = newComponents
+            }
+        }
     }
 
 

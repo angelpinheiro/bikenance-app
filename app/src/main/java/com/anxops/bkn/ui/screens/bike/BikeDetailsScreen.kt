@@ -20,13 +20,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -42,22 +40,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
+import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.data.model.MaintenanceConfigurations
 import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.screens.bike.components.BikeComponentListItem
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsHeader
-import com.anxops.bkn.ui.shared.BikeComponentIcon
+import com.anxops.bkn.ui.screens.bike.components.ComponentListBottomSheet
+import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
+import com.anxops.bkn.ui.screens.garage.components.OngoingMaintenanceItemV2
+import com.anxops.bkn.ui.shared.coloredShadow
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
-import com.anxops.bkn.ui.shared.resources
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -86,9 +85,10 @@ fun BikeDetailsScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    val state = viewModel.state.collectAsState()
+    val bike = viewModel.bike.collectAsState()
+    val components = viewModel.bikeComponents.collectAsState()
 
-    state.value.bike?.let { bike ->
+    bike.value?.let { bike ->
 
 
         BottomSheetScaffold(
@@ -109,6 +109,7 @@ fun BikeDetailsScreen(
                     },
                     onDone = {
                         scope.launch { scaffoldState.bottomSheetState.collapse() }
+                        viewModel.addSelectedComponentsToBike()
                     })
             },
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -133,11 +134,16 @@ fun BikeDetailsScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colors.primaryVariant)
             ) {
-                item {
-                    BikeDetailsHeader(bike = state.value.bike!!)
-                }
+//                item {
+//                    BikeDetailsHeader(bike = bike)
+//                }
+//                item {
+//                    Box(modifier = Modifier.padding(vertical = 10.dp)) {
+//                        GarageBikeCard(bike = bike, tintColor = MaterialTheme.colors.primaryVariant, elevation = 0.dp)
+//                    }
+//                }
 
-                if (viewModel.selectedComponentTypes.value.isEmpty()) {
+                if (components.value.isEmpty()) {
 
                     item {
                         Box(
@@ -150,11 +156,30 @@ fun BikeDetailsScreen(
                         }
                     }
                 } else {
-                    viewModel.selectedComponentTypes.value.forEach {
-                        item {
-                            Text(text = it.name, modifier = Modifier.padding(10.dp))
+
+                    components.value.groupBy { it.type.group }.toList()
+                        .sortedBy { it.first.order }
+                        .forEach { (group, items) ->
+                            stickyHeader {
+                                Text(
+                                    text = group.name,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .coloredShadow()
+                                        .background(MaterialTheme.colors.primary)
+                                        .padding(10.dp),
+                                    color = MaterialTheme.colors.onPrimary,
+                                    style = MaterialTheme.typography.h3
+                                )
+                            }
+                            items.forEach { c ->
+                                item {
+                                    BikeComponentListItem(component = c)
+                                }
+                            }
                         }
-                    }
+
+
                 }
             }
 
@@ -218,184 +243,6 @@ fun EmptyComponentList(onClickAction: () -> Unit = {}) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ComponentListBottomSheet(
-    selectedComponents: Set<ComponentTypes>,
-    selectable: Boolean = false,
-    onSelectionChanged: (Set<ComponentTypes>) -> Unit = {},
-    onSelectConfiguration: (MaintenanceConfigurations) -> Unit = {},
-    onDone: () -> Unit = {},
-
-    ) {
-
-    val componentTypes = remember { ComponentTypes.values() }
-    val lazyColumnState = rememberLazyListState()
-    val bottomPartSize = 60.dp
-
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.9f)
-    ) {
-
-
-        LazyColumn(
-            state = lazyColumnState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = bottomPartSize)
-                .background(MaterialTheme.colors.surface)
-        ) {
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colors.surface)
-                ) {
-
-                    Text(
-                        text = "Check the components you want to keep track, or select one of the options below to let us do it for you",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 16.dp),
-                        style = MaterialTheme.typography.h3,
-                        color = MaterialTheme.colors.primary
-                    )
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-                        MaintenanceConfigurations.values().forEach {
-                            OutlinedButton(
-                                onClick = {
-                                    onSelectConfiguration(it)
-                                },
-                                modifier = Modifier.padding(4.dp),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
-                            ) {
-                                Text(
-                                    text = it.configName,
-                                    color = MaterialTheme.colors.onSecondary,
-                                    style = MaterialTheme.typography.h5,
-                                )
-                            }
-                        }
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-                    }
-
-
-                }
-
-            }
-
-            items(count = componentTypes.size) { index ->
-                val type = componentTypes[index]
-                val selected = selectedComponents.contains(type)
-
-                ComponentListItem(type = type,
-                    selectable = selectable,
-                    selected = selected,
-                    onClick = {
-                        if (selectedComponents.contains(type))
-                            onSelectionChanged(selectedComponents.minus(type))
-                        else
-                            onSelectionChanged(selectedComponents.plus(type))
-                    })
-
-            }
-        }
-        Box(
-            Modifier
-                .fillMaxWidth()
-//                .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
-                .background(MaterialTheme.colors.primaryVariant)
-                .height(bottomPartSize)
-                .padding(0.dp)
-                .align(Alignment.BottomCenter)
-        ) {
-            OutlinedButton(onClick = { onDone() }, Modifier.align(Alignment.Center)) {
-                Text(
-                    text = "Done",
-                    color = MaterialTheme.colors.primary,
-                    style = MaterialTheme.typography.h5,
-                )
-            }
-        }
-
-    }
-}
-
-
-@Composable
-fun ComponentListItem(
-    type: ComponentTypes,
-    selectable: Boolean = false,
-    selected: Boolean = true,
-    onClick: () -> Unit = {}
-) {
-
-    val resources = type.resources()
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.surface)
-            .padding(end = 10.dp)
-            .padding(vertical = 5.dp)
-    ) {
-
-        BikeComponentIcon(
-            type = type,
-            tint = MaterialTheme.colors.onPrimary,
-            modifier = Modifier
-                .padding(10.dp)
-                .size(60.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colors.primary)
-                .padding(10.dp)
-        )
-
-        Column(
-            modifier = Modifier
-                .padding(10.dp)
-                .weight(1f), verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(resources.nameResId),
-                modifier = Modifier.padding(0.dp),
-                style = MaterialTheme.typography.h3,
-                color = MaterialTheme.colors.primary
-            )
-            Text(
-                text = stringResource(resources.descriptionResId),
-                modifier = Modifier.padding(0.dp),
-                style = MaterialTheme.typography.h4,
-                color = MaterialTheme.colors.primary
-            )
-
-        }
-        if (selectable) {
-            RadioButton(selected = selected, onClick = {
-                onClick()
-            })
-        }
-    }
-}
 
 @Composable
 fun BikeDetailsTopBar(bike: Bike, onAddComponent: () -> Unit = {}) {
