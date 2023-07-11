@@ -25,7 +25,7 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
 import com.anxops.bkn.ui.screens.maintenances.components.getColorForProgress
 import com.anxops.bkn.ui.shared.BikeComponentIcon
-import com.anxops.bkn.ui.shared.components.SlideInOutAnimatedVisibility
+import com.anxops.bkn.ui.shared.components.FadeInFadeOutAnimatedVisibility
 import com.anxops.bkn.ui.theme.statusDanger
 
 @Composable
@@ -39,7 +39,7 @@ fun UpcomingMaintenance(bike: Bike? = null, showTile: Boolean = true, titleText:
         }
     }
 
-    SlideInOutAnimatedVisibility(visible = items.isNotEmpty()) {
+    FadeInFadeOutAnimatedVisibility(visible = items.isNotEmpty()) {
 
         if (items.isNotEmpty()) {
             Column(

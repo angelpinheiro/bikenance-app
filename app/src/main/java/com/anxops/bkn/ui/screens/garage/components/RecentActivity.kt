@@ -1,25 +1,30 @@
 package com.anxops.bkn.ui.screens.garage.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.shared.components.SlideInOutAnimatedVisibility
+import com.anxops.bkn.ui.shared.components.FadeInFadeOutAnimatedVisibility
 import com.anxops.bkn.util.formatAsSimpleDate
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.anxops.bkn.util.toDate
@@ -28,7 +33,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 @Composable
 fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit = {}) {
 
-    SlideInOutAnimatedVisibility(visible = rides.isNotEmpty()) {
+    FadeInFadeOutAnimatedVisibility(visible = rides.isNotEmpty()) {
 
         if (rides.isNotEmpty()) {
 

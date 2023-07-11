@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,12 +43,14 @@ fun BikeComponentIcon(
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 ) {
 
-    val icon = remember {
-        defaultComponentIcons[type] ?: R.drawable.tire
+    val icon = remember(type) {
+        mutableStateOf (
+            defaultComponentIcons[type] ?: R.drawable.tire
+        )
     }
 
     Image(
-        imageVector = ImageVector.vectorResource(id = icon),
+        imageVector = ImageVector.vectorResource(id = icon.value),
         contentDescription = type.name,
         modifier = modifier,
         colorFilter = ColorFilter.tint(tint)

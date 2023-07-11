@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.FixedThreshold
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -211,8 +212,13 @@ fun MaintenanceItemView(item: MaintenanceItem) {
 
 }
 
+
+
 @Composable
-fun getColorForProgress(percentage: Float): Color {
+fun getColorForProgress(percentage: Float, threshold: Float = 0f): Color {
+    if(percentage <= threshold) {
+        return Color.Transparent
+    }
     return when {
         percentage >= 1 -> {
             MaterialTheme.colors.statusDanger

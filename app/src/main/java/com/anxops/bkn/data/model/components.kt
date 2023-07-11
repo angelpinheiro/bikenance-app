@@ -24,32 +24,34 @@ data class ComponentInfo(
     }
 }
 
-enum class ComponentGroup(val order: Int) {
+enum class ComponentCategory(val order: Int) {
     TRANSMISSION(1),
     SUSPENSION(2),
     BRAKES(3),
-    TIRES(4),
+    WHEELS(4),
     OTHER(10)
 }
 
+
+
 // TODO Add: Frame bearings, handlebar tape
-enum class ComponentTypes(val group: ComponentGroup = ComponentGroup.OTHER) {
-    BRAKE_LEVER(ComponentGroup.BRAKES),
+enum class ComponentTypes(val group: ComponentCategory = ComponentCategory.OTHER) {
+    BRAKE_LEVER(ComponentCategory.BRAKES),
     CABLE_HOUSING,
-    CASSETTE(ComponentGroup.TRANSMISSION),
-    CHAIN(ComponentGroup.TRANSMISSION),
-    DISC_BRAKE(ComponentGroup.BRAKES),
-    DISC_PAD(ComponentGroup.BRAKES),
+    CASSETTE(ComponentCategory.TRANSMISSION),
+    CHAIN(ComponentCategory.TRANSMISSION),
+    DISC_BRAKE(ComponentCategory.BRAKES),
+    DISC_PAD(ComponentCategory.BRAKES),
     DROPER_POST,
-    FORK(ComponentGroup.SUSPENSION),
-    FRONT_HUB(ComponentGroup.TIRES),
+    FORK(ComponentCategory.SUSPENSION),
+    FRONT_HUB(ComponentCategory.WHEELS),
     PEDAL_CLIPLESS,
-    REAR_DERAUILLEURS(ComponentGroup.TRANSMISSION),
-    REAR_HUB(ComponentGroup.TIRES),
-    REAR_SUSPENSION(ComponentGroup.SUSPENSION),
-    THRU_AXLE(ComponentGroup.TIRES),
-    TIRE(ComponentGroup.TIRES),
-    WHEELSET(ComponentGroup.TIRES),
+    REAR_DERAUILLEURS(ComponentCategory.TRANSMISSION),
+    REAR_HUB(ComponentCategory.WHEELS),
+    REAR_SUSPENSION(ComponentCategory.SUSPENSION),
+    THRU_AXLE(ComponentCategory.WHEELS),
+    TIRE(ComponentCategory.WHEELS),
+    WHEELSET(ComponentCategory.WHEELS),
     CUSTOM,
     UNKNOWN
 }

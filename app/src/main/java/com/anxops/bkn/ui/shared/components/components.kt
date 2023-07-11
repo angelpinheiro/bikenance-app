@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -114,7 +112,7 @@ fun BknLabelTopTextField(
 }
 
 @Composable
-fun SlideInOutAnimatedVisibility(
+fun FadeInFadeOutAnimatedVisibility(
     visible: Boolean,
     content: @Composable() AnimatedVisibilityScope.() -> Unit
 ) {
