@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,8 +36,10 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.ui.screens.bike.components.PulsatingCircles
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.theme.statusWarning
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
@@ -127,7 +130,16 @@ fun GarageBikeCard(
                     color = MaterialTheme.colors.secondary
                 )
 
+            }
 
+            Box(modifier = Modifier
+                .padding(10.dp)
+                .size(40.dp)
+                .align(Alignment.TopEnd)
+                .aspectRatio(1f)) {
+                Box(modifier = Modifier.align(Alignment.Center)) {
+                    PulsatingCircles(size = 40.dp, color = MaterialTheme.colors.statusWarning)
+                }
             }
 
         }

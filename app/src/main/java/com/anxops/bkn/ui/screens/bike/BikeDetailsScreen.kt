@@ -6,9 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,11 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.screens.bike.components.BikeComponentTabs
+import com.anxops.bkn.ui.screens.bike.components.BikeComponentTabsV2
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsTopBar
-import com.anxops.bkn.ui.screens.bike.components.BikeStats
 import com.anxops.bkn.ui.screens.bike.components.BikeStatusMap
 import com.anxops.bkn.ui.screens.bike.components.ComponentListBottomSheet
+import com.anxops.bkn.ui.screens.bike.components.ComponentTabHeaders
 import com.anxops.bkn.ui.screens.bike.components.EmptyComponentList
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
@@ -66,7 +66,9 @@ fun BikeDetailsScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    val selectedComponentGroup = remember { mutableStateOf<ComponentCategory?>(null) }
+    val selectedComponentCategory = remember { mutableStateOf<ComponentCategory?>(null) }
+    val selectedTab = remember { mutableStateOf(ComponentTabHeaders.GENERAL) }
+    val highlightCategories = remember { mutableStateOf(true) }
 
     val bike = viewModel.bike.collectAsState()
     val components = viewModel.bikeComponents.collectAsState()
@@ -99,8 +101,8 @@ fun BikeDetailsScreen(
                             viewModel.addSelectedComponentsToBike()
                         })
                 },
-                backgroundColor = MaterialTheme.colors.primary,
-            sheetBackgroundColor = MaterialTheme.colors.surface,
+                backgroundColor = MaterialTheme.colors.primaryVariant,
+                sheetBackgroundColor = MaterialTheme.colors.surface,
                 scaffoldState = scaffoldState,
                 sheetShape = RoundedCornerShape(
                     topStart = 24.dp,
@@ -115,52 +117,70 @@ fun BikeDetailsScreen(
                     })
                 },
             ) {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary)) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier
+                            .padding(it)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
 
-                    ) {
-                    item {
-                        Column(
-                        Modifier.background(MaterialTheme.colors.primaryVariant)
                         ) {
-                            BikeStats(bike)
+                        item {
                             Column(
-                                Modifier
-                                    .padding(horizontal = 10.dp),
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                BikeStatusMap(
-                                    highlightedGroup = selectedComponentGroup.value,
-                                    bikeType = bike.type,
-                                    showComponentGroups = false
-                                )
-                            }
-                        }
-                    }
-                    if (components.value.isEmpty()) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                            ) {
-                                EmptyComponentList(onClickAction = {
-                                    scope.launch { scaffoldState.bottomSheetState.expand() }
-                                })
-                            }
-                        }
-                    } else {
 
-                        item {
-                            BikeComponentTabs(components = components.value, onGroupChange = {
-                                selectedComponentGroup.value = it
-                            })
+                            ) {
+//                            BikeStats(bike)
+                                Column(
+                                    Modifier
+                                        .background(MaterialTheme.colors.primaryVariant)
+                                        .padding(horizontal = 10.dp),
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    BikeStatusMap(
+                                        highlightedGroup = selectedComponentCategory.value,
+                                        bikeType = bike.type,
+                                        highlightCategories = highlightCategories.value,
+                                        onCategorySelected = {
+                                            highlightCategories.value = false
+                                            selectedComponentCategory.value = it
+                                            ComponentTabHeaders.values()
+                                                .firstOrNull { h -> h.category == it }?.let { th ->
+                                                    selectedTab.value = th
+                                                }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        if (components.value.isEmpty()) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                ) {
+                                    EmptyComponentList(onClickAction = {
+                                        scope.launch { scaffoldState.bottomSheetState.expand() }
+                                    })
+                                }
+                            }
+                        } else {
+
+                            item {
+                                BikeComponentTabsV2(
+                                    bike = bike,
+                                    selectedTab = selectedTab.value,
+                                    components = components.value,
+                                    onTabChange = { tab ->
+                                        selectedTab.value = tab
+                                        tab.category?.let { selectedComponentCategory.value = it }
+                                        highlightCategories.value = tab.category == null
+
+                                    })
+                            }
                         }
                     }
                 }
-
             }
         }
     }

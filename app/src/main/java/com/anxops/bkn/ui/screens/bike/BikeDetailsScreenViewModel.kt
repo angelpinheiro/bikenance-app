@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.MaintenanceConfigurations
 import com.anxops.bkn.data.network.Api
@@ -76,17 +77,19 @@ class BikeDetailsScreenViewModel @Inject constructor(
                 val newComponents = selectedComponentTypes.value.map {
 
                     var alias = it.name
-
-                    if (it.virtualComponent != null) {
+                    val cs = listOf(ComponentTypes.DISC_BRAKE, ComponentTypes.THRU_AXLE, ComponentTypes.DISC_PAD)
+                    if (cs.contains(it)) {
                         listOf(
                             BikeComponent(
                                 bikeId = currentBike._id,
-                                alias = "Front $alias",
+                                modifier = ComponentModifier.FRONT,
+                                alias = alias,
                                 type = it
                             ),
                             BikeComponent(
                                 bikeId = currentBike._id,
-                                alias = "Rear $alias",
+                                modifier = ComponentModifier.REAR,
+                                alias = alias,
                                 type = it
                             )
                         )

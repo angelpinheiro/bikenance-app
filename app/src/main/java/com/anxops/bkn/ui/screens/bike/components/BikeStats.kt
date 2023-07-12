@@ -32,7 +32,7 @@ fun BikeStats(bike: Bike) {
             .fillMaxWidth()
             .padding(10.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colors.primary),
+            .background(MaterialTheme.colors.primaryVariant),
         verticalAlignment = Alignment.CenterVertically
     ) {
         BikeStat(
@@ -45,7 +45,7 @@ fun BikeStats(bike: Bike) {
             Modifier
                 .height(50.dp)
                 .width(1.dp),
-            color = MaterialTheme.colors.primaryVariant
+            color = MaterialTheme.colors.primary
         )
         BikeStat(
             title = "Ascent",
@@ -57,7 +57,7 @@ fun BikeStats(bike: Bike) {
             Modifier
                 .height(50.dp)
                 .width(1.dp),
-            color = MaterialTheme.colors.primaryVariant
+            color = MaterialTheme.colors.primary
         )
         BikeStat(
             title = "Last ride",

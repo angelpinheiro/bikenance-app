@@ -12,14 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.screens.bike.components.PulsatingCircles
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
 import com.anxops.bkn.ui.shared.components.bgGradient
+import com.anxops.bkn.ui.theme.statusWarning
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -74,7 +78,8 @@ fun Garage(
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             BikesPager(
@@ -93,6 +98,10 @@ fun Garage(
             }
 
             selectedBike.value?.let {
+
+
+
+
                 UpcomingMaintenance(it)
             }
 

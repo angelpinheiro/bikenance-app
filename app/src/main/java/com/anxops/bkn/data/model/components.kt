@@ -29,24 +29,17 @@ enum class ComponentCategory(val order: Int) {
     SUSPENSION(2),
     BRAKES(3),
     WHEELS(4),
-    OTHER(10)
-}
-
-enum class VirtualComponent(val description: String) {
-    BRAKE_PADS("Brake pads"),
-    DISC_BRAKES("Disc brakes"),
-    TIRES("Tires")
+    MISC(10)
 }
 
 // TODO Add: Frame bearings, handlebar tape
 enum class ComponentTypes(
-    val group: ComponentCategory = ComponentCategory.OTHER,
-    val virtualComponent: VirtualComponent? = null
+    val category: ComponentCategory = ComponentCategory.MISC
 ) {
     CASSETTE(ComponentCategory.TRANSMISSION),
     CHAIN(ComponentCategory.TRANSMISSION),
-    DISC_BRAKE(ComponentCategory.BRAKES, VirtualComponent.DISC_BRAKES),
-    DISC_PAD(ComponentCategory.BRAKES,  VirtualComponent.BRAKE_PADS),
+    DISC_BRAKE(ComponentCategory.BRAKES),
+    DISC_PAD(ComponentCategory.BRAKES),
     DROPER_POST,
     FORK(ComponentCategory.SUSPENSION),
     FRONT_HUB(ComponentCategory.WHEELS),
@@ -55,7 +48,7 @@ enum class ComponentTypes(
     REAR_HUB(ComponentCategory.WHEELS),
     REAR_SUSPENSION(ComponentCategory.SUSPENSION),
     THRU_AXLE(ComponentCategory.WHEELS),
-    TIRE(ComponentCategory.WHEELS, VirtualComponent.TIRES),
+    TIRE(ComponentCategory.WHEELS),
     WHEELSET(ComponentCategory.WHEELS),
     BRAKE_LEVER(ComponentCategory.BRAKES),
     CABLE_HOUSING,
@@ -106,6 +99,11 @@ enum class MaintenanceConfigurations(val configName: String, val types: Set<Comp
     )
 }
 
+
+enum class ComponentModifier {
+    REAR,
+    FRONT
+}
 
 enum class MaintenanceTypes {
     BRAKE_MAINTENANCE,
@@ -188,6 +186,8 @@ data class BikeComponent(
     val alias: String? = null,
     @SerialName("type")
     val type: ComponentTypes,
+    @SerialName("midifier")
+    val modifier: ComponentModifier? = null,
     @SerialName("usage")
     var usage: Usage = Usage(0.0, 0.0)
 )
