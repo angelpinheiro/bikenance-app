@@ -19,6 +19,7 @@ import com.anxops.bkn.ui.screens.maintenances.components.getColorForProgress
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
+
 @Composable
 fun BikeComponentTabs(
     components: List<BikeComponent>,
@@ -37,7 +38,19 @@ fun BikeComponentTabs(
 
     val tabs = grouped.value.map { it.first.name }
     val items = grouped.value.map { it.second }
-    val status = items.map { cs -> cs.map { c -> FakeData.maintenances.firstOrNull  {c.type == it.componentType} }.filterNotNull().maxBy { it.percentage }}
+    val status = items.map { cs ->
+        cs.mapNotNull { c -> FakeData.maintenances.firstOrNull { c.type == it.componentType } }
+            .maxBy { it.percentage }
+    }
+
+    val virtualComponents = items.map { sameCategory ->
+        val grouped = sameCategory.groupBy { it.type.virtualComponent }
+        val nonVirtual = grouped[null] ?: emptyList()
+        val virtual = grouped.filter { it.key != null }
+            .map { (k, v) -> k?.let { VirtualComponentData(it, v) } }
+
+        nonVirtual.plus(virtual)
+    }
 
     LaunchedEffect(tabIndex.value) {
         onGroupChange(grouped.value[tabIndex.value].first)
@@ -54,7 +67,10 @@ fun BikeComponentTabs(
                 icon = {
                     BknIcon(
                         icon = CommunityMaterial.Icon.cmd_bell_circle,
-                        getColorForProgress(percentage = status.getOrNull(index)?.percentage ?: 0f, 0.6f),
+                        getColorForProgress(
+                            percentage = status.getOrNull(index)?.percentage ?: 0f,
+                            0.6f
+                        ),
                         modifier = Modifier
                             .size(18.dp)
                     )
@@ -70,10 +86,17 @@ fun BikeComponentTabs(
     }
 
     Column {
-        items[tabIndex.value].forEach { c ->
-            BikeComponentListItem(component = c)
+
+
+        virtualComponents[tabIndex.value].forEach { c ->
+            when (c) {
+                is BikeComponent -> BikeComponentListItem(component = c)
+                is VirtualComponentData -> VirtualComponentListItem(data = c)
+            }
+
         }
+
     }
 
-
 }
+

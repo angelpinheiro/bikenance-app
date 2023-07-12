@@ -38,10 +38,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,9 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.anxops.bkn.R
+import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.ui.shared.components.bgGradient
+import com.anxops.bkn.ui.shared.resources
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.anxops.bkn.ui.theme.statusGood
 import com.anxops.bkn.ui.theme.statusOk
@@ -61,21 +66,31 @@ import com.anxops.bkn.ui.theme.statusWarning
 import kotlinx.coroutines.delay
 
 @Composable
-fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = true, highlightedGroup: ComponentCategory? = null) {
+fun BikeStatusMap(
+    modifier: Modifier = Modifier,
+    bikeType: BikeType = BikeType.FULL_MTB,
+    showComponentGroups: Boolean = false,
+    highlightedGroup: ComponentCategory? = ComponentCategory.WHEELS
+) {
 
     val showComponentGroupsFlag = remember {
-        mutableStateOf(true)
+        mutableStateOf(showComponentGroups)
     }
 
     LaunchedEffect(Unit) {
-        delay(1000)
-        showComponentGroupsFlag.value = true
+        delay(500)
+        showComponentGroupsFlag.value = showComponentGroups
     }
 
-    val vector = R.drawable.bike_full_mtb
+    val vector = if (bikeType == BikeType.FULL_MTB) {
+        R.drawable.bike_full_mtb
+    } else if (bikeType == BikeType.ROAD) {
+        R.drawable.bike_road
+    } else {
+        R.drawable.bike_mtb
+    }
     BoxWithConstraints(
         modifier = Modifier
-            .background(bgGradient())
             .padding(horizontal = 20.dp)
             .fillMaxWidth()
             .aspectRatio(1.4f)
@@ -85,15 +100,27 @@ fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = 
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 3.dp, start = 3.dp)
+                .blur(3.dp)
+                .align(Alignment.Center)
+                .alpha(0.1f),
+            colorFilter = ColorFilter.tint(Color.Black)
+        )
+        Image(
+            imageVector = ImageVector.vectorResource(id = vector),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(5.dp)
                 .align(Alignment.Center),
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.surface)
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
 
         HotSpotAnimatedVisibility(visible = showComponentGroupsFlag.value) {
             HotSpot(
                 text = "Transmission",
                 color = MaterialTheme.colors.statusWarning,
-                size =  45.dp,
+                size = 45.dp,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.4f,
@@ -105,7 +132,7 @@ fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = 
             HotSpot(
                 text = "Other",
                 color = MaterialTheme.colors.statusGood,
-                size =  45.dp,
+                size = 45.dp,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.4f,
@@ -117,7 +144,7 @@ fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = 
             HotSpot(
                 text = "Brakes",
                 color = MaterialTheme.colors.statusGood,
-                size =  45.dp,
+                size = 45.dp,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.16f,
@@ -129,7 +156,7 @@ fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = 
             HotSpot(
                 text = "Suspension",
                 color = MaterialTheme.colors.statusGood,
-                size =  45.dp,
+                size = 45.dp,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.75f,
@@ -141,7 +168,7 @@ fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = 
             HotSpot(
                 text = "Tires",
                 color = MaterialTheme.colors.statusOk,
-                size =  45.dp,
+                size = 45.dp,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.65f,
@@ -149,30 +176,105 @@ fun BikeStatusMap(modifier: Modifier = Modifier, showComponentGroups: Boolean = 
                 textAlignment = Alignment.BottomEnd
             )
         }
-        
-        ComponentTypes.values().forEach { 
-            when(it) {
-                ComponentTypes.BRAKE_LEVER -> {}
-                ComponentTypes.CABLE_HOUSING -> {}
-                ComponentTypes.CASSETTE -> {}
-                ComponentTypes.CHAIN -> {}
-                ComponentTypes.DISC_BRAKE -> {}
-                ComponentTypes.DISC_PAD -> {}
-                ComponentTypes.DROPER_POST -> {}
-                ComponentTypes.FORK -> {}
-                ComponentTypes.FRONT_HUB -> {}
-                ComponentTypes.PEDAL_CLIPLESS -> {}
-                ComponentTypes.REAR_DERAUILLEURS -> {}
-                ComponentTypes.REAR_HUB -> {}
-                ComponentTypes.REAR_SUSPENSION -> {}
-                ComponentTypes.THRU_AXLE -> {}
-                ComponentTypes.TIRE -> {}
-                ComponentTypes.WHEELSET -> {}
-                ComponentTypes.CUSTOM -> {}
-                ComponentTypes.UNKNOWN -> {}
+
+        ComponentTypes.values().toList()
+            .minus(listOf(ComponentTypes.CUSTOM, ComponentTypes.UNKNOWN, ComponentTypes.THRU_AXLE))
+            .forEach {
+                val offsets: List<Offset> = when (it) {
+                    ComponentTypes.BRAKE_LEVER -> {
+                        listOf(Offset(0.7f, 0.15f))
+                    }
+
+                    ComponentTypes.CABLE_HOUSING -> {
+                        listOf(Offset(0.5f, 0.32f))
+                    }
+
+                    ComponentTypes.CASSETTE -> {
+                        listOf(Offset(0.2f, 0.6f))
+                    }
+
+                    ComponentTypes.CHAIN -> {
+                        listOf(Offset(0.45f, 0.65f))
+                    }
+
+                    ComponentTypes.DISC_BRAKE -> {
+                        listOf(Offset(0.15f, 0.6f))
+                    }
+
+                    ComponentTypes.DISC_PAD -> {
+                        listOf(Offset(0.25f, 0.65f))
+                    }
+
+                    ComponentTypes.DROPER_POST -> {
+                        listOf(Offset(0.35f, 0.2f))
+                    }
+
+                    ComponentTypes.FORK -> {
+                        listOf(Offset(0.77f, 0.5f))
+                    }
+
+                    ComponentTypes.FRONT_HUB -> {
+                        listOf(Offset(0.8f, 0.61f))
+                    }
+
+                    ComponentTypes.PEDAL_CLIPLESS -> {
+                        listOf(Offset(0.5f, 0.7f))
+                    }
+
+                    ComponentTypes.REAR_DERAUILLEURS -> {
+                        listOf(Offset(0.25f, 0.72f))
+                    }
+
+                    ComponentTypes.REAR_HUB -> {
+                        listOf(Offset(0.2f, 0.61f))
+                    }
+
+                    ComponentTypes.REAR_SUSPENSION -> {
+                        listOf(Offset(0.45f, 0.45f))
+                    }
+
+                    ComponentTypes.THRU_AXLE -> {
+                        listOf(
+                            Offset(0.2f, 0.62f), Offset(0.8f, 0.62f)
+                        )
+                    }
+
+                    ComponentTypes.TIRE -> {
+                        listOf(
+                            Offset(0.2f, 0.35f), Offset(0.8f, 0.35f)
+                        )
+
+                    }
+
+                    ComponentTypes.WHEELSET -> {
+                        listOf(
+                            Offset(0.2f, 0.35f), Offset(0.8f, 0.35f)
+                        )
+                    }
+//                ComponentTypes.CUSTOM -> {}
+//                ComponentTypes.UNKNOWN -> {}
+                    else -> {
+                        listOf(Offset(0.5f, 0.5f))
+                    }
+                }
+
+                offsets.forEach { offset ->
+                    HotSpotAnimatedVisibility(highlightedGroup == it.group) {
+                        HotSpot(
+                            text = stringResource(id = it.resources().nameResId),
+                            color = MaterialTheme.colors.statusOk,
+                            size = 45.dp,
+                            maxHeight = maxHeight,
+                            maxWidth = maxWidth,
+                            xOffset = offset.x,
+                            yOffset = offset.y,
+                            textAlignment = Alignment.TopCenter
+                        )
+                    }
+                }
+
             }
-        }
-        
+
     }
 
 }
@@ -193,8 +295,8 @@ fun HotSpot(
 
     val boxSize = max(80.dp, size)
 
-    val top = maxHeight * yOffset - boxSize / 2
-    val start = maxWidth * xOffset - boxSize / 2
+    val top = max(maxHeight * yOffset - boxSize / 2, 0.dp)
+    val start = max(maxWidth * xOffset - boxSize / 2, 0.dp)
 
     Box(
         modifier
@@ -230,8 +332,7 @@ fun HotSpot(
 fun DefaultPreview() {
     BikenanceAndroidTheme(useSystemUIController = false, darkTheme = false) {
         BikeStatusMap(
-            Modifier
-                .fillMaxWidth(0.9f)
+            Modifier.fillMaxWidth(0.9f)
 
         )
     }
@@ -241,8 +342,7 @@ fun DefaultPreview() {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HotSpotAnimatedVisibility(
-    visible: Boolean,
-    content: @Composable() AnimatedVisibilityScope.() -> Unit
+    visible: Boolean, content: @Composable() AnimatedVisibilityScope.() -> Unit
 ) {
 
     AnimatedVisibility(
@@ -263,8 +363,7 @@ fun SimpleCircleShape2(
     borderColor: Color = Color.LightGray.copy(alpha = 0.0f)
 ) {
     Column(
-        modifier = Modifier
-            .wrapContentSize(Alignment.Center)
+        modifier = Modifier.wrapContentSize(Alignment.Center)
     ) {
         Box(
             modifier = Modifier
@@ -285,8 +384,8 @@ fun PulsatingCircles(size: Dp, color: Color = Color.White) {
 
         val alpha by infiniteTransition.animateValue(
             label = "",
-            initialValue = 0.5f,
-            targetValue = 0.2f,
+            initialValue = 0.3f,
+            targetValue = 0.1f,
             typeConverter = Float.VectorConverter,
             animationSpec = infiniteRepeatable(
                 animation = tween(2000, easing = FastOutLinearInEasing),
@@ -311,7 +410,8 @@ fun PulsatingCircles(size: Dp, color: Color = Color.White) {
             animationSpec = infiniteRepeatable(
                 animation = tween(2000, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
-            ), label = ""
+            ),
+            label = ""
         )
         Box(
             modifier = Modifier
@@ -320,16 +420,13 @@ fun PulsatingCircles(size: Dp, color: Color = Color.White) {
             contentAlignment = Alignment.Center,
         ) {
             SimpleCircleShape2(
-                size = size,
-                color = color.copy(alpha = alpha)
+                size = size, color = color.copy(alpha = alpha)
             )
             SimpleCircleShape2(
-                size = smallCircle,
-                color = color.copy(alpha = alpha)
+                size = smallCircle, color = color.copy(alpha = alpha)
             )
             SimpleCircleShape2(
-                size = size * .4f,
-                color = color.copy(alpha = 0.9f)
+                size = size * .4f, color = color.copy(alpha = 0.9f)
             )
         }
     }

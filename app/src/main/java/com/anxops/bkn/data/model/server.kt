@@ -10,6 +10,7 @@ enum class BikeType(
 ) {
     UNKNOWN("UNKNOWN", "Unknown bike type"),
     MTB("MTB", "Mountain Bike"),
+    FULL_MTB("Full-MTB", "Full Suspension Mountain Bike"),
     ROAD("Road", "Road Bike"),
     E_BIKE("E-Bike","Electric Bike"),
     GRAVEL("Gravel", "Gravel Bike"),

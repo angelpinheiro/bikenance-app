@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -72,86 +73,95 @@ fun BikeDetailsScreen(
 
     bike.value?.let { bike ->
 
-
-        BottomSheetScaffold(
-            topBar = {
-                BikeDetailsTopBar(bike = bike, onAddComponent = {
-                    scope.launch { scaffoldState.bottomSheetState.expand() }
-                })
-            },
-            sheetContent = {
-                ComponentListBottomSheet(
-                    selectedComponents = viewModel.selectedComponentTypes.value,
-                    selectable = true,
-                    onSelectConfiguration = {
-                        viewModel.onSelectConfiguration(it)
-                    },
-                    onSelectionChanged = {
-                        viewModel.onComponentTypeSelectionChange(it)
-                    },
-                    onDone = {
-                        scope.launch { scaffoldState.bottomSheetState.collapse() }
-                        viewModel.addSelectedComponentsToBike()
-                    })
-            },
-            backgroundColor = MaterialTheme.colors.primary,
-            sheetBackgroundColor = MaterialTheme.colors.surface,
-            scaffoldState = scaffoldState,
-            sheetShape = RoundedCornerShape(
-                topStart = 24.dp,
-                topEnd = 24.dp,
-                bottomStart = 0.dp,
-                bottomEnd = 0.dp
-            ),
-            sheetPeekHeight = 0.dp,
-            floatingActionButton = {
-                fab(visible = scaffoldState.bottomSheetState.isCollapsed, click = {
-                    scope.launch { scaffoldState.bottomSheetState.expand() }
-                })
-            },
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(bgGradient())
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            BottomSheetScaffold(
+                topBar = {
+                    BikeDetailsTopBar(bike = bike, onAddComponent = {
+                        scope.launch { scaffoldState.bottomSheetState.expand() }
+                    })
+                },
+                sheetContent = {
+                    ComponentListBottomSheet(
+                        selectedComponents = viewModel.selectedComponentTypes.value,
+                        selectable = true,
+                        onSelectConfiguration = {
+                            viewModel.onSelectConfiguration(it)
+                        },
+                        onSelectionChanged = {
+                            viewModel.onComponentTypeSelectionChange(it)
+                        },
+                        onDone = {
+                            scope.launch { scaffoldState.bottomSheetState.collapse() }
+                            viewModel.addSelectedComponentsToBike()
+                        })
+                },
+                backgroundColor = MaterialTheme.colors.primary,
+            sheetBackgroundColor = MaterialTheme.colors.surface,
+                scaffoldState = scaffoldState,
+                sheetShape = RoundedCornerShape(
+                    topStart = 24.dp,
+                    topEnd = 24.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                ),
+                sheetPeekHeight = 0.dp,
+                floatingActionButton = {
+                    fab(visible = scaffoldState.bottomSheetState.isCollapsed, click = {
+                        scope.launch { scaffoldState.bottomSheetState.expand() }
+                    })
+                },
             ) {
-                item {
-                    Column(
-                        Modifier
-                            .background(MaterialTheme.colors.primaryVariant)
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
                     ) {
-                        BikeStats(bike)
+                    item {
                         Column(
-                            Modifier
-                                .padding(horizontal = 10.dp),
-                            verticalArrangement = Arrangement.Center
+                        Modifier.background(MaterialTheme.colors.primaryVariant)
                         ) {
-                            BikeStatusMap(highlightedGroup = selectedComponentGroup.value)
+                            BikeStats(bike)
+                            Column(
+                                Modifier
+                                    .padding(horizontal = 10.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                BikeStatusMap(
+                                    highlightedGroup = selectedComponentGroup.value,
+                                    bikeType = bike.type,
+                                    showComponentGroups = false
+                                )
+                            }
                         }
                     }
-                }
-                if (components.value.isEmpty()) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                        ) {
-                            EmptyComponentList(onClickAction = {
-                                scope.launch { scaffoldState.bottomSheetState.expand() }
+                    if (components.value.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                            ) {
+                                EmptyComponentList(onClickAction = {
+                                    scope.launch { scaffoldState.bottomSheetState.expand() }
+                                })
+                            }
+                        }
+                    } else {
+
+                        item {
+                            BikeComponentTabs(components = components.value, onGroupChange = {
+                                selectedComponentGroup.value = it
                             })
                         }
                     }
-                } else {
-
-                    item {
-                        BikeComponentTabs(components = components.value, onGroupChange = {
-                            selectedComponentGroup.value = it
-                        })
-                    }
                 }
-            }
 
+            }
         }
     }
 }

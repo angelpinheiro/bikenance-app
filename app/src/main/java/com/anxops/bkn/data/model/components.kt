@@ -32,16 +32,21 @@ enum class ComponentCategory(val order: Int) {
     OTHER(10)
 }
 
-
+enum class VirtualComponent(val description: String) {
+    BRAKE_PADS("Brake pads"),
+    DISC_BRAKES("Disc brakes"),
+    TIRES("Tires")
+}
 
 // TODO Add: Frame bearings, handlebar tape
-enum class ComponentTypes(val group: ComponentCategory = ComponentCategory.OTHER) {
-    BRAKE_LEVER(ComponentCategory.BRAKES),
-    CABLE_HOUSING,
+enum class ComponentTypes(
+    val group: ComponentCategory = ComponentCategory.OTHER,
+    val virtualComponent: VirtualComponent? = null
+) {
     CASSETTE(ComponentCategory.TRANSMISSION),
     CHAIN(ComponentCategory.TRANSMISSION),
-    DISC_BRAKE(ComponentCategory.BRAKES),
-    DISC_PAD(ComponentCategory.BRAKES),
+    DISC_BRAKE(ComponentCategory.BRAKES, VirtualComponent.DISC_BRAKES),
+    DISC_PAD(ComponentCategory.BRAKES,  VirtualComponent.BRAKE_PADS),
     DROPER_POST,
     FORK(ComponentCategory.SUSPENSION),
     FRONT_HUB(ComponentCategory.WHEELS),
@@ -50,8 +55,10 @@ enum class ComponentTypes(val group: ComponentCategory = ComponentCategory.OTHER
     REAR_HUB(ComponentCategory.WHEELS),
     REAR_SUSPENSION(ComponentCategory.SUSPENSION),
     THRU_AXLE(ComponentCategory.WHEELS),
-    TIRE(ComponentCategory.WHEELS),
+    TIRE(ComponentCategory.WHEELS, VirtualComponent.TIRES),
     WHEELSET(ComponentCategory.WHEELS),
+    BRAKE_LEVER(ComponentCategory.BRAKES),
+    CABLE_HOUSING,
     CUSTOM,
     UNKNOWN
 }
