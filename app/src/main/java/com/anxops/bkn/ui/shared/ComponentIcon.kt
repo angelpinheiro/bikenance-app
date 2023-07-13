@@ -18,6 +18,7 @@ import com.anxops.bkn.data.model.ComponentTypes
 
 
 val defaultComponentIcons = mapOf(
+    ComponentTypes.FRAME_BEARINGS to R.drawable.bike_bearing,
     ComponentTypes.BRAKE_LEVER to R.drawable.brake_lever,
     ComponentTypes.CASSETTE to R.drawable.cassette,
     ComponentTypes.DISC_BRAKE to R.drawable.disc_brake,
@@ -33,7 +34,8 @@ val defaultComponentIcons = mapOf(
     ComponentTypes.FRONT_HUB to R.drawable.front_hub,
     ComponentTypes.REAR_DERAUILLEURS to R.drawable.rear_derauilleurs,
     ComponentTypes.REAR_SUSPENSION to R.drawable.rear_suspension,
-    ComponentTypes.TIRE to R.drawable.tire
+    ComponentTypes.HANDLEBAR_TAPE to R.drawable.bike_handlebar_tape,
+    ComponentTypes.TIRE to R.drawable.tire,
 )
 
 @Composable

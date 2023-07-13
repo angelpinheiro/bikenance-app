@@ -47,57 +47,100 @@ enum class ComponentTypes(
     REAR_DERAUILLEURS(ComponentCategory.TRANSMISSION),
     REAR_HUB(ComponentCategory.WHEELS),
     REAR_SUSPENSION(ComponentCategory.SUSPENSION),
-    THRU_AXLE(ComponentCategory.WHEELS),
+    THRU_AXLE,
     TIRE(ComponentCategory.WHEELS),
     WHEELSET(ComponentCategory.WHEELS),
     BRAKE_LEVER(ComponentCategory.BRAKES),
-    CABLE_HOUSING,
+    CABLE_HOUSING(ComponentCategory.TRANSMISSION),
+    FRAME_BEARINGS,
+    HANDLEBAR_TAPE,
     CUSTOM,
-    UNKNOWN
 }
 
-enum class MaintenanceConfigurations(val configName: String, val types: Set<ComponentTypes>) {
-    MTB(
-        "MTB", ComponentTypes.values().toSet().minus(
-            setOf(
-                ComponentTypes.CUSTOM,
-                ComponentTypes.UNKNOWN,
-                ComponentTypes.DROPER_POST,
-                ComponentTypes.FORK,
-            )
-        )
-    ),
-    FULL_MTB(
-        "Full MTB", ComponentTypes.values().toSet().minus(
-            setOf(
-                ComponentTypes.CUSTOM,
-                ComponentTypes.UNKNOWN,
-            )
-        )
-    ),
-    ROAD(
-        "Road", ComponentTypes.values().toSet().minus(
-            setOf(
-                ComponentTypes.CUSTOM,
-                ComponentTypes.UNKNOWN,
-                ComponentTypes.REAR_SUSPENSION,
-                ComponentTypes.DROPER_POST,
-                ComponentTypes.FORK,
-            )
-        )
-    ),
-    GRAVEL(
-        "Gravel", ComponentTypes.values().toSet().minus(
-            setOf(
-                ComponentTypes.CUSTOM,
-                ComponentTypes.UNKNOWN,
-                ComponentTypes.REAR_SUSPENSION,
-                ComponentTypes.DROPER_POST,
-                ComponentTypes.FORK,
-            )
-        )
-    )
+
+fun getDefaultComponents(bikeType: BikeType) : Set<ComponentTypes> {
+    return maintenanceConfigurations[bikeType] ?: ComponentTypes.values().toSet()
 }
+
+val maintenanceConfigurations = mapOf(
+    BikeType.MTB to ComponentTypes.values().toSet().minus(
+        setOf(
+            ComponentTypes.CUSTOM,
+            ComponentTypes.DROPER_POST,
+            ComponentTypes.REAR_SUSPENSION,
+            ComponentTypes.FRAME_BEARINGS,
+            ComponentTypes.HANDLEBAR_TAPE,
+        )
+    ),
+    BikeType.FULL_MTB to ComponentTypes.values().toSet().minus(
+        setOf(
+            ComponentTypes.CUSTOM,
+            ComponentTypes.HANDLEBAR_TAPE,
+        )
+    ),
+    BikeType.ROAD to ComponentTypes.values().toSet().minus(
+        setOf(
+            ComponentTypes.CUSTOM,
+            ComponentTypes.DROPER_POST,
+            ComponentTypes.REAR_SUSPENSION,
+            ComponentTypes.FRAME_BEARINGS,
+            ComponentTypes.FORK
+        )
+    ),
+    BikeType.GRAVEL to ComponentTypes.values().toSet().minus(
+        setOf(
+            ComponentTypes.CUSTOM,
+            ComponentTypes.DROPER_POST,
+            ComponentTypes.REAR_SUSPENSION,
+            ComponentTypes.FRAME_BEARINGS,
+            ComponentTypes.FORK
+        )
+    ),
+    BikeType.STATIONARY to setOf()
+)
+
+//
+//enum class MaintenanceConfigurations(val configName: String, val types: Set<ComponentTypes>) {
+//    MTB(
+//        "MTB", ComponentTypes.values().toSet().minus(
+//            setOf(
+//                ComponentTypes.CUSTOM,
+//                ComponentTypes.DROPER_POST,
+//                ComponentTypes.FRAME_BEARINGS,
+//                ComponentTypes.FORK,
+//            )
+//        )
+//    ),
+//    FULL_MTB(
+//        "Full MTB", ComponentTypes.values().toSet().minus(
+//            setOf(
+//                ComponentTypes.CUSTOM,
+//            )
+//        )
+//    ),
+//    ROAD(
+//        "Road", ComponentTypes.values().toSet().minus(
+//            setOf(
+//                ComponentTypes.CUSTOM,
+//                ComponentTypes.REAR_SUSPENSION,
+//                ComponentTypes.DROPER_POST,
+//                ComponentTypes.FRAME_BEARINGS,
+//                ComponentTypes.FORK,
+//            )
+//        )
+//    ),
+//    GRAVEL(
+//        "Gravel", ComponentTypes.values().toSet().minus(
+//            setOf(
+//                ComponentTypes.CUSTOM,
+//                ComponentTypes.REAR_SUSPENSION,
+//                ComponentTypes.DROPER_POST,
+//                ComponentTypes.FRAME_BEARINGS,
+//                ComponentTypes.FORK,
+//            )
+//        )
+//    )
+//}
 
 
 enum class ComponentModifier {
@@ -186,7 +229,7 @@ data class BikeComponent(
     val alias: String? = null,
     @SerialName("type")
     val type: ComponentTypes,
-    @SerialName("midifier")
+    @SerialName("modifier")
     val modifier: ComponentModifier? = null,
     @SerialName("usage")
     var usage: Usage = Usage(0.0, 0.0)

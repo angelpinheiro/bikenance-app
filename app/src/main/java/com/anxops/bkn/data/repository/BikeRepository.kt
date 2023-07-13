@@ -58,7 +58,12 @@ class BikeRepository(
     }
 
     override suspend fun getBike(id: String): Bike? = withContext(defaultDispatcher) {
-        db.bikeDao().getById(id)?.toDomain()
+
+        db.bikeDao().getById(id)?.let {
+            it.toDomain().copy(
+                components = db.bikeComponentDao().bike(id).map { c -> c.toDomain() }
+            )
+        }
     }
 
 

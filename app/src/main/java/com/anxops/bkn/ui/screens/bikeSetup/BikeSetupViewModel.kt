@@ -1,4 +1,4 @@
-package com.anxops.bkn.ui.screens.bike
+package com.anxops.bkn.ui.screens.bikeSetup
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,13 +15,19 @@ import com.anxops.bkn.data.repository.ComponentRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class BikeSetupData(
+    val bikeType: BikeType = BikeType.UNKNOWN,
+    val componentTypes: List<ComponentTypes> = emptyList()
+)
+
 @HiltViewModel
-class BikeDetailsScreenViewModel @Inject constructor(
+class BikeSetupViewModel @Inject constructor(
     private val bikeComponentRepository: ComponentRepositoryFacade,
     private val bikesRepository: BikeRepositoryFacade,
     val db: AppDb,
@@ -32,22 +38,16 @@ class BikeDetailsScreenViewModel @Inject constructor(
 
     val selectedComponentTypes = mutableStateOf<Set<ComponentTypes>>(emptySet())
 
+    private val _setupData = MutableStateFlow(BikeSetupData())
+    val setupData: StateFlow<BikeSetupData> = _setupData
+
     private val selectedBikeId = MutableStateFlow<String?>(null)
 
     private val bikeFlow = selectedBikeId.mapLatest {
         it?.let { id -> bikesRepository.getBike(id) } ?: null
     }
 
-//    private val bikeComponentsFlow = bikeFlow.distinctUntilChanged().filterNotNull().map {
-//        bikeComponentRepository.getBikeComponentsFlow(bikeId = it._id)
-//    }.flattenConcat().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-
     val bike = bikeFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-//    val bikeComponents = bikeComponentsFlow.stateIn(
-//        viewModelScope, SharingStarted.Eagerly,
-//        emptyList()
-//    )
 
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
@@ -109,6 +109,12 @@ class BikeDetailsScreenViewModel @Inject constructor(
 
                 bikeComponentRepository.createComponents(currentBike._id, newComponents)
             }
+        }
+    }
+
+    fun onBikeTypeSelected(it: BikeType) {
+        viewModelScope.launch {
+            _setupData.value = _setupData.value.copy(bikeType = it)
         }
     }
 

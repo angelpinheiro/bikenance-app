@@ -10,6 +10,7 @@
     <string name="componentType_REAR_HUB">Rear Hub</string>
     <string name="componentType_THRU_AXLE">Thru Axle</string>
     <string name="componentType_WHEELSET">Wheelset</string>
+    <string name="componentType_FRAME_BEARINGS">Frame bearings</string>
     <string name="componentType_CABLE_HOUSING">Cable Housing &amp; Cables</string>
     <string name="componentType_CHAIN">Chain</string>
     <string name="componentType_DISC_PAD">Disc Pads</string>
@@ -18,10 +19,13 @@
     <string name="componentType_REAR_DERAUILLEURS">Rear Derailleur</string>
     <string name="componentType_REAR_SUSPENSION">Rear Shock</string>
     <string name="componentType_TIRE">Tires</string>
+    <string name="componentType_HANDLEBAR_TAPE">Handlebar tape</string>
     <string name="componentType_CUSTOM">Custom</string>
     <string name="componentType_UNKNOWN">Unknown</string>
 
     <!-- Component Descriptions -->
+    <string name="componentType_HANDLEBAR_TAPE_description">Provides grip, comfort, and a stylish finish to the handlebars.</string>
+    <string name="componentType_FRAME_BEARINGS_description">Allow smooth movement and rotation of the rear suspension pivot</string>
     <string name="componentType_BRAKE_LEVER_description">Controls the bike\'s braking system.</string>
     <string name="componentType_CASSETTE_description">Gears on the rear wheel hub.</string>
     <string name="componentType_DISC_BRAKE_description">Braking system using disc rotor and caliper.</string>

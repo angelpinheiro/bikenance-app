@@ -18,6 +18,8 @@ interface ComponentRepositoryFacade {
 
     suspend fun getBikeComponentsFlow(bikeId: String): Flow<List<BikeComponent>>
 
+    suspend fun getBikeComponents(bikeId: String): List<BikeComponent>
+
     suspend fun createComponent(component: BikeComponent)
 
     suspend fun createComponents(bikeId: String, components: List<BikeComponent>)
@@ -38,11 +40,20 @@ class BikeComponentRepository(
         withContext(defaultDispatcher) {
 
             db.bikeComponentDao().bikeFlow(bikeId).map { items ->
-                Log.d("createComponents", " getBikeComponentsFlow(bikeId: $bikeId) -> ${items.size} items")
+                Log.d(
+                    "createComponents",
+                    " getBikeComponentsFlow(bikeId: $bikeId) -> ${items.size} items"
+                )
                 items.map { it.toDomain() }
             }
         }
 
+    override suspend fun getBikeComponents(bikeId: String): List<BikeComponent> =
+        withContext(defaultDispatcher) {
+            db.bikeComponentDao().bike(bikeId).map {
+                it.toDomain()
+            }
+        }
 
     override suspend fun createComponent(component: BikeComponent) =
         withContext(defaultDispatcher) {

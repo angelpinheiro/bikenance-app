@@ -59,6 +59,7 @@ fun HomeScreen(
 
     val nav = BknNavigator(navigator)
     Scaffold(
+        backgroundColor = MaterialTheme.colors.primaryVariant,
         topBar = {
             TopAppBar(
                 elevation = 6.dp,

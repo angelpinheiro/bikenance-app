@@ -68,7 +68,7 @@ fun buildComponentCategoryTabData(components: List<BikeComponent>): SortedMap<Co
 
         val status =
             comp.mapNotNull { c -> FakeData.maintenances.firstOrNull { it.componentType == c.type } }
-                .maxBy { it.percentage }
+                .maxByOrNull { it.percentage }
 
 
         ComponentCategoryTabData(

@@ -21,15 +21,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.data.model.MaintenanceConfigurations
 
 @Composable
 fun ComponentListBottomSheet(
     selectedComponents: Set<ComponentTypes>,
     selectable: Boolean = false,
     onSelectionChanged: (Set<ComponentTypes>) -> Unit = {},
-    onSelectConfiguration: (MaintenanceConfigurations) -> Unit = {},
+    onSelectConfiguration: (BikeType) -> Unit = {},
     onDone: () -> Unit = {},
 
     ) {
@@ -76,7 +76,7 @@ fun ComponentListBottomSheet(
                         horizontalArrangement = Arrangement.Center
                     ) {
 
-                        MaintenanceConfigurations.values().forEach {
+                        BikeType.values().forEach {
                             OutlinedButton(
                                 onClick = {
                                     onSelectConfiguration(it)
@@ -85,7 +85,7 @@ fun ComponentListBottomSheet(
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
                             ) {
                                 Text(
-                                    text = it.configName,
+                                    text = it.type,
                                     color = MaterialTheme.colors.onSecondary,
                                     style = MaterialTheme.typography.h5,
                                 )

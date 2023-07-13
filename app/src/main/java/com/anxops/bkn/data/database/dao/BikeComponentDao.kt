@@ -17,6 +17,9 @@ interface BikeComponentDao {
     @Query("SELECT * FROM component WHERE bike_id = :bikeId")
     fun bikeFlow(bikeId: String): Flow<List<ComponentEntity>>
 
+    @Query("SELECT * FROM component WHERE bike_id = :bikeId")
+    fun bike(bikeId: String): List<ComponentEntity>
+
     @Insert
     suspend fun insert(component: ComponentEntity)
 

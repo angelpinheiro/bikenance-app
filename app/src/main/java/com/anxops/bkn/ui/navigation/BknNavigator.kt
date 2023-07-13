@@ -4,6 +4,7 @@ package com.anxops.bkn.ui.navigation
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
 import com.anxops.bkn.ui.screens.destinations.BikeDetailsScreenDestination
+import com.anxops.bkn.ui.screens.destinations.BikeSetupScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
@@ -44,6 +45,10 @@ class BknNavigator(var navigator: DestinationsNavigator) {
 
     fun navigateToBike(id: String) {
         navigator.navigate(NewBikeScreenDestination.invoke(id))
+    }
+
+    fun navigateToBikeSetup(id: String) {
+        navigator.navigate(BikeSetupScreenDestination.invoke(id))
     }
 
     fun navigateToBikeDetails(id: String) {

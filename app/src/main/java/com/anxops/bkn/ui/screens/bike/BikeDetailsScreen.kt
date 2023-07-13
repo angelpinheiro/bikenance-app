@@ -6,14 +6,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -25,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -65,13 +63,14 @@ fun BikeDetailsScreen(
     val gradient = bgGradient()
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
+    val scrollState = rememberScrollState()
 
     val selectedComponentCategory = remember { mutableStateOf<ComponentCategory?>(null) }
     val selectedTab = remember { mutableStateOf(ComponentTabHeaders.GENERAL) }
     val highlightCategories = remember { mutableStateOf(true) }
 
     val bike = viewModel.bike.collectAsState()
-    val components = viewModel.bikeComponents.collectAsState()
+    val components = bike.value?.components ?: emptyList()
 
     bike.value?.let { bike ->
 
@@ -117,69 +116,92 @@ fun BikeDetailsScreen(
                     })
                 },
             ) {
-                Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary)) {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .padding(it)
-                            .weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colors.primary)
+                ) {
 
+
+                    if (components.isEmpty()) {
+                        EmptyComponentList(onClickAction = {
+                            scope.launch {
+                                bknNav.navigateToBikeSetup(bike._id)
+                            }
+                        })
+                    } else {
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.verticalScroll(scrollState)
                         ) {
-                        item {
-                            Column(
-
+                            Box(
+                                Modifier
+                                    .background(MaterialTheme.colors.primaryVariant)
+                                    .padding(horizontal = 20.dp)
                             ) {
-//                            BikeStats(bike)
-                                Column(
-                                    Modifier
-                                        .background(MaterialTheme.colors.primaryVariant)
-                                        .padding(horizontal = 10.dp),
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    BikeStatusMap(
-                                        highlightedGroup = selectedComponentCategory.value,
-                                        bikeType = bike.type,
-                                        highlightCategories = highlightCategories.value,
-                                        onCategorySelected = {
-                                            highlightCategories.value = false
-                                            selectedComponentCategory.value = it
-                                            ComponentTabHeaders.values()
-                                                .firstOrNull { h -> h.category == it }?.let { th ->
-                                                    selectedTab.value = th
-                                                }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        if (components.value.isEmpty()) {
-                            item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                ) {
-                                    EmptyComponentList(onClickAction = {
-                                        scope.launch { scaffoldState.bottomSheetState.expand() }
-                                    })
-                                }
-                            }
-                        } else {
-
-                            item {
-                                BikeComponentTabsV2(
+                                BikeStatusMap(
+                                    highlightedGroup = selectedComponentCategory.value,
                                     bike = bike,
-                                    selectedTab = selectedTab.value,
-                                    components = components.value,
-                                    onTabChange = { tab ->
-                                        selectedTab.value = tab
-                                        tab.category?.let { selectedComponentCategory.value = it }
-                                        highlightCategories.value = tab.category == null
-
-                                    })
+                                    highlightCategories = highlightCategories.value,
+                                    onCategorySelected = {
+                                        highlightCategories.value = false
+                                        selectedComponentCategory.value = it
+                                        ComponentTabHeaders.values()
+                                            .firstOrNull { h -> h.category == it }?.let { th ->
+                                                selectedTab.value = th
+                                            }
+                                    }
+                                )
                             }
+                            BikeComponentTabsV2(
+                                bike = bike,
+                                selectedTab = selectedTab.value,
+                                components = components,
+                                onTabChange = { tab ->
+                                    selectedTab.value = tab
+                                    tab.category?.let { selectedComponentCategory.value = it }
+                                    highlightCategories.value = tab.category == null
+
+                                })
                         }
+
                     }
+
+
+//                    LazyColumn(
+//                        state = listState,
+//                        modifier = Modifier
+//                            .padding(it)
+//                            .weight(1f),
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//
+//                        ) {
+//                        if (components.value.isEmpty()) {
+//                            item {
+//
+//
+//
+//                            }
+//
+//                            item {
+////                                Box(
+////                                    modifier = Modifier
+////                                        .fillMaxHeight()
+////                                ) {
+////                                    EmptyComponentList(onClickAction = {
+////                                        scope.launch { scaffoldState.bottomSheetState.expand() }
+////                                    })
+////                                }
+//                                BikeSetup()
+//                            }
+//                        } else {
+//
+//                            item {
+//
+//                            }
+//                        }
+//                    }
                 }
             }
         }

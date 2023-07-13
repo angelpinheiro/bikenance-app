@@ -16,7 +16,7 @@ data class MaintenanceResources(
 
 
 fun ComponentTypes.resources(): ComponentResources =
-    componentResourcesMap[this] ?: componentResourcesMap[ComponentTypes.UNKNOWN]!!
+    componentResourcesMap[this] ?: componentResourcesMap[ComponentTypes.CUSTOM]!!
 
 
 val componentResourcesMap = mapOf(
@@ -84,13 +84,17 @@ val componentResourcesMap = mapOf(
         R.string.componentType_WHEELSET,
         R.string.componentType_WHEELSET_description
     ),
+    ComponentTypes.FRAME_BEARINGS to ComponentResources(
+        R.string.componentType_FRAME_BEARINGS,
+        R.string.componentType_FRAME_BEARINGS_description
+    ),
     ComponentTypes.CUSTOM to ComponentResources(
         R.string.componentType_CUSTOM,
         R.string.componentType_CUSTOM_description
     ),
-    ComponentTypes.UNKNOWN to ComponentResources(
-        R.string.componentType_UNKNOWN,
-        R.string.componentType_UNKNOWN_description
+    ComponentTypes.HANDLEBAR_TAPE to ComponentResources(
+        R.string.componentType_HANDLEBAR_TAPE,
+        R.string.componentType_HANDLEBAR_TAPE_description
     ),
 )
 

@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.anxops.bkn.R
+import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentTypes
@@ -71,7 +72,7 @@ data class OffsetAndAlign(val x: Float, val y: Float, val align: Alignment = Ali
 @Composable
 fun BikeStatusMap(
     modifier: Modifier = Modifier,
-    bikeType: BikeType = BikeType.FULL_MTB,
+    bike: Bike,
     highlightCategories: Boolean = false,
     highlightedGroup: ComponentCategory? = ComponentCategory.WHEELS,
     onCategorySelected: (ComponentCategory) -> Unit = {}
@@ -86,10 +87,12 @@ fun BikeStatusMap(
         showComponentGroupsFlag.value = true
     }
 
-    val vector = if (bikeType == BikeType.FULL_MTB) {
+    val vector = if (bike.type == BikeType.FULL_MTB) {
         R.drawable.bike_full_mtb
-    } else if (bikeType == BikeType.ROAD) {
+    } else if (bike.type == BikeType.ROAD || bike.type == BikeType.GRAVEL) {
         R.drawable.bike_road
+    } else if (bike.type == BikeType.MTB) {
+        R.drawable.bike_mtb
     } else {
         R.drawable.bike_mtb
     }
@@ -121,180 +124,173 @@ fun BikeStatusMap(
         )
 
 
-            HotSpotAnimatedVisibility(visible =
+        HotSpotAnimatedVisibility(
+            visible =
             showComponentGroupsFlag.value
-                    && highlightCategories) {
-                HotSpot(
-                    text = "Transmission",
-                    color = MaterialTheme.colors.statusWarning,
-                    size = 50.dp,
-                    maxHeight = maxHeight,
-                    maxWidth = maxWidth,
-                    xOffset = 0.4f,
-                    yOffset = 0.65f,
-                    textAlignment = Alignment.BottomCenter,
-                    onSelected = {onCategorySelected(ComponentCategory.TRANSMISSION)}
-                )
+                    && highlightCategories
+        ) {
+            HotSpot(
+                text = "Transmission",
+                color = MaterialTheme.colors.statusWarning,
+                size = 35.dp,
+                maxHeight = maxHeight,
+                maxWidth = maxWidth,
+                xOffset = 0.4f,
+                yOffset = 0.65f,
+                textAlignment = Alignment.BottomCenter,
+                onSelected = { onCategorySelected(ComponentCategory.TRANSMISSION) }
+            )
 
-                HotSpot(
-                    text = "Other",
-                    color = MaterialTheme.colors.statusGood,
-                    size = 50.dp,
-                    maxHeight = maxHeight,
-                    maxWidth = maxWidth,
-                    xOffset = 0.4f,
-                    yOffset = 0.2f,
-                    textAlignment = Alignment.TopEnd,
-                    onSelected = {onCategorySelected(ComponentCategory.MISC)}
-                )
+            HotSpot(
+                text = "Other",
+                color = MaterialTheme.colors.statusGood,
+                size = 35.dp,
+                maxHeight = maxHeight,
+                maxWidth = maxWidth,
+                xOffset = 0.4f,
+                yOffset = 0.2f,
+                textAlignment = Alignment.TopEnd,
+                onSelected = { onCategorySelected(ComponentCategory.MISC) }
+            )
 
-                HotSpot(
-                    text = "Brakes",
-                    color = MaterialTheme.colors.statusGood,
-                    size = 50.dp,
-                    maxHeight = maxHeight,
-                    maxWidth = maxWidth,
-                    xOffset = 0.16f,
-                    yOffset = 0.57f,
-                    textAlignment = Alignment.TopStart,
-                    onSelected = {onCategorySelected(ComponentCategory.BRAKES)}
-                )
-
-
-                HotSpot(
-                    text = "Suspension",
-                    color = MaterialTheme.colors.statusGood,
-                    size = 50.dp,
-                    maxHeight = maxHeight,
-                    maxWidth = maxWidth,
-                    xOffset = 0.75f,
-                    yOffset = 0.40f,
-                    onSelected = {onCategorySelected(ComponentCategory.SUSPENSION)}
-                )
+            HotSpot(
+                text = "Brakes",
+                color = MaterialTheme.colors.statusGood,
+                size = 35.dp,
+                maxHeight = maxHeight,
+                maxWidth = maxWidth,
+                xOffset = 0.16f,
+                yOffset = 0.57f,
+                textAlignment = Alignment.TopStart,
+                onSelected = { onCategorySelected(ComponentCategory.BRAKES) }
+            )
 
 
+            HotSpot(
+                text = "Suspension",
+                color = MaterialTheme.colors.statusGood,
+                size = 35.dp,
+                maxHeight = maxHeight,
+                maxWidth = maxWidth,
+                xOffset = 0.75f,
+                yOffset = 0.40f,
+                onSelected = { onCategorySelected(ComponentCategory.SUSPENSION) }
+            )
 
-                HotSpot(
-                    text = "Tires",
-                    color = MaterialTheme.colors.statusOk,
-                    size = 50.dp,
-                    maxHeight = maxHeight,
-                    maxWidth = maxWidth,
-                    xOffset = 0.65f,
-                    yOffset = 0.70f,
-                    textAlignment = Alignment.BottomEnd,
-                    onSelected = {onCategorySelected(ComponentCategory.WHEELS)}
-                )
-            }
 
-        if(!highlightCategories) {
 
-            ComponentTypes.values().toList()
-                .minus(
-                    listOf(
-                        ComponentTypes.CUSTOM,
-                        ComponentTypes.UNKNOWN,
-                        ComponentTypes.THRU_AXLE
-                    )
-                )
-                .forEach {
-                    val offsets: List<OffsetAndAlign> = when (it) {
-                        ComponentTypes.BRAKE_LEVER -> {
-                            listOf(OffsetAndAlign(0.7f, 0.15f))
-                        }
-
-                        ComponentTypes.CABLE_HOUSING -> {
-                            listOf(OffsetAndAlign(0.5f, 0.32f, Alignment.TopEnd))
-                        }
-
-                        ComponentTypes.CASSETTE -> {
-                            listOf(OffsetAndAlign(0.2f, 0.6f))
-                        }
-
-                        ComponentTypes.CHAIN -> {
-                            listOf(OffsetAndAlign(0.45f, 0.65f))
-                        }
-
-                        ComponentTypes.DISC_BRAKE -> {
-                            listOf(OffsetAndAlign(0.15f, 0.6f))
-                        }
-
-                        ComponentTypes.DISC_PAD -> {
-                            listOf(OffsetAndAlign(0.25f, 0.65f, Alignment.BottomCenter))
-                        }
-
-                        ComponentTypes.DROPER_POST -> {
-                            listOf(OffsetAndAlign(0.35f, 0.2f))
-                        }
-
-                        ComponentTypes.FORK -> {
-                            listOf(OffsetAndAlign(0.77f, 0.5f))
-                        }
-
-                        ComponentTypes.FRONT_HUB -> {
-                            listOf(OffsetAndAlign(0.8f, 0.61f, Alignment.CenterEnd))
-                        }
-
-                        ComponentTypes.PEDAL_CLIPLESS -> {
-                            listOf(OffsetAndAlign(0.5f, 0.7f, Alignment.BottomCenter))
-                        }
-
-                        ComponentTypes.REAR_DERAUILLEURS -> {
-                            listOf(OffsetAndAlign(0.25f, 0.72f, Alignment.BottomCenter))
-                        }
-
-                        ComponentTypes.REAR_HUB -> {
-                            listOf(OffsetAndAlign(0.2f, 0.61f, Alignment.CenterStart))
-                        }
-
-                        ComponentTypes.REAR_SUSPENSION -> {
-                            listOf(OffsetAndAlign(0.45f, 0.45f))
-                        }
-
-                        ComponentTypes.THRU_AXLE -> {
-                            listOf(
-                                OffsetAndAlign(0.2f, 0.62f), OffsetAndAlign(0.8f, 0.62f)
-                            )
-                        }
-
-                        ComponentTypes.TIRE -> {
-                            listOf(
-                                OffsetAndAlign(0.2f, 0.35f),
-                                OffsetAndAlign(0.8f, 0.35f)
-                            )
-
-                        }
-
-                        ComponentTypes.WHEELSET -> {
-                            listOf(
-                                OffsetAndAlign(0.35f, 0.75f, Alignment.BottomStart),
-                                OffsetAndAlign(0.65f, 0.75f, Alignment.BottomEnd)
-                            )
-                        }
-
-                        else -> {
-                            listOf(OffsetAndAlign(0.5f, 0.5f))
-                        }
-                    }
-
-                    offsets.forEach { offset ->
-                        HotSpotAnimatedVisibility(highlightedGroup == it.category) {
-                            SmallHotSpot(
-                                text = stringResource(id = it.resources().nameResId),
-                                color = MaterialTheme.colors.statusGood,
-                                size = 25.dp,
-                                maxHeight = maxHeight,
-                                maxWidth = maxWidth,
-                                xOffset = offset.x,
-                                yOffset = offset.y,
-                                textAlignment = offset.align
-                            )
-                        }
-                    }
-
-                }
+            HotSpot(
+                text = "Tires",
+                color = MaterialTheme.colors.statusOk,
+                size = 35.dp,
+                maxHeight = maxHeight,
+                maxWidth = maxWidth,
+                xOffset = 0.65f,
+                yOffset = 0.70f,
+                textAlignment = Alignment.BottomEnd,
+                onSelected = { onCategorySelected(ComponentCategory.WHEELS) }
+            )
         }
 
+        if (!highlightCategories) {
+
+        }
+
+        bike.components?.forEach {
+                val offsets: List<OffsetAndAlign> = when (it.type) {
+                    ComponentTypes.BRAKE_LEVER -> {
+                        listOf(OffsetAndAlign(0.7f, 0.15f))
+                    }
+
+                    ComponentTypes.CABLE_HOUSING -> {
+                        listOf(OffsetAndAlign(0.5f, 0.32f, Alignment.TopEnd))
+                    }
+
+                    ComponentTypes.CASSETTE -> {
+                        listOf(OffsetAndAlign(0.2f, 0.6f))
+                    }
+
+                    ComponentTypes.CHAIN -> {
+                        listOf(OffsetAndAlign(0.45f, 0.65f))
+                    }
+
+                    ComponentTypes.DISC_BRAKE -> {
+                        listOf(OffsetAndAlign(0.15f, 0.6f))
+                    }
+
+                    ComponentTypes.DISC_PAD -> {
+                        listOf(OffsetAndAlign(0.25f, 0.65f, Alignment.BottomCenter))
+                    }
+
+                    ComponentTypes.DROPER_POST -> {
+                        listOf(OffsetAndAlign(0.35f, 0.2f))
+                    }
+
+                    ComponentTypes.FORK -> {
+                        listOf(OffsetAndAlign(0.77f, 0.5f))
+                    }
+
+                    ComponentTypes.FRONT_HUB -> {
+                        listOf(OffsetAndAlign(0.8f, 0.61f, Alignment.CenterEnd))
+                    }
+
+                    ComponentTypes.PEDAL_CLIPLESS -> {
+                        listOf(OffsetAndAlign(0.5f, 0.7f, Alignment.BottomCenter))
+                    }
+
+                    ComponentTypes.REAR_DERAUILLEURS -> {
+                        listOf(OffsetAndAlign(0.25f, 0.72f, Alignment.BottomCenter))
+                    }
+
+                    ComponentTypes.REAR_HUB -> {
+                        listOf(OffsetAndAlign(0.2f, 0.61f, Alignment.CenterStart))
+                    }
+
+                    ComponentTypes.REAR_SUSPENSION -> {
+                        listOf(OffsetAndAlign(0.45f, 0.45f))
+                    }
+
+                    ComponentTypes.THRU_AXLE -> {
+                        listOf(
+                            OffsetAndAlign(0.2f, 0.62f), OffsetAndAlign(0.8f, 0.62f)
+                        )
+                    }
+
+                    ComponentTypes.TIRE -> {
+                        listOf(
+                            OffsetAndAlign(0.2f, 0.35f),
+                            OffsetAndAlign(0.8f, 0.35f)
+                        )
+                    }
+
+                    ComponentTypes.WHEELSET -> {
+                        listOf(
+                            OffsetAndAlign(0.35f, 0.75f, Alignment.BottomStart),
+                            OffsetAndAlign(0.65f, 0.75f, Alignment.BottomEnd)
+                        )
+                    }
+
+                    else -> {
+                        listOf(OffsetAndAlign(0.5f, 0.5f))
+                    }
+                }
+
+                offsets.forEach { offset ->
+                    HotSpotAnimatedVisibility(highlightedGroup == it.type.category) {
+                        SmallHotSpot(
+                            text = stringResource(id = it.type.resources().nameResId),
+                            color = MaterialTheme.colors.statusGood,
+                            size = 25.dp,
+                            maxHeight = maxHeight,
+                            maxWidth = maxWidth,
+                            xOffset = offset.x,
+                            yOffset = offset.y,
+                            textAlignment = offset.align
+                        )
+                    }
+                }
+
+            }
     }
 
 }
@@ -371,7 +367,7 @@ fun SmallHotSpot(
     Box(
         modifier
             .padding(top = top, start = start)
-            .width(boxSize*2)
+            .width(boxSize * 2)
             .height(boxSize),
         contentAlignment = Alignment.Center
 
@@ -399,8 +395,21 @@ fun SmallHotSpot(
 fun DefaultPreview() {
     BikenanceAndroidTheme(useSystemUIController = false, darkTheme = false) {
         BikeStatusMap(
-            Modifier.fillMaxWidth(0.9f)
-
+            bike = Bike(
+                "",
+                "",
+                brandName = "Scott",
+                configDone = false,
+                name = "MySpark",
+                distance = 10000,
+                draft = false,
+                modelName = "Spark",
+                electric = false,
+                photoUrl = null,
+                stravaId = "",
+                type = BikeType.FULL_MTB
+            ),
+            modifier = Modifier.fillMaxWidth(0.9f)
         )
     }
 }

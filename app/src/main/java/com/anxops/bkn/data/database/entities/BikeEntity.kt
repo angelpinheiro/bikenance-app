@@ -17,6 +17,8 @@ data class BikeEntity(
     @ColumnInfo(name = "distance") val distance: Long?,
     @ColumnInfo(name = "photo_url") val photoUrl: String?,
     @ColumnInfo(name = "draft") val draft: Boolean = false,
+    @ColumnInfo(name = "electric") val electric: Boolean = false,
+    @ColumnInfo(name = "configDOne") val configDone: Boolean = false,
     @ColumnInfo(name = "type") val type: String,
 ) {
     fun toDomain(): Bike {
@@ -28,6 +30,8 @@ data class BikeEntity(
             brandName = brandName,
             modelName = modelName,
             distance = distance,
+            configDone = configDone,
+            electric = electric,
             photoUrl = photoUrl,
             draft = draft,
             type = BikeType.valueOf(type)

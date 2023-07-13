@@ -49,7 +49,12 @@ data class Bike(
     @SerialName("distance") var distance: Long? = null,
     @SerialName("photo_url") var photoUrl: String? = null,
     @SerialName("draft") var draft: Boolean = false,
+    @SerialName("electric") val electric: Boolean = false,
+    @SerialName("configDone") val configDone: Boolean = false,
     @SerialName("bike_type") var type: BikeType = BikeType.UNKNOWN,
+
+    val components: List<BikeComponent>? = emptyList()
+
 ) {
     fun km(): Long? {
         return distance?.div(1000)
@@ -65,6 +70,8 @@ data class Bike(
             distance,
             photoUrl,
             draft,
+            electric,
+            configDone,
             type
         )
     }
@@ -84,6 +91,8 @@ data class BikeUpdate(
     @SerialName("distance") var distance: Long? = null,
     @SerialName("photo_url") var photoUrl: String? = null,
     @SerialName("draft") var draft: Boolean = false,
+    @SerialName("electric") val electric: Boolean,
+    @SerialName("configDone") val configDone: Boolean,
     @SerialName("bike_type") var type: BikeType = BikeType.UNKNOWN,
 )
 
