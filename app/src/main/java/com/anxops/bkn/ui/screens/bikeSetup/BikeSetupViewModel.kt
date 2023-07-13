@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
+import com.anxops.bkn.data.model.AthleteStats
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentModifier
@@ -12,6 +13,7 @@ import com.anxops.bkn.data.model.getDefaultComponents
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ComponentRepositoryFacade
+import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,15 +23,17 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class BikeSetupData(
+data class BikeSetupState(
     val bikeType: BikeType = BikeType.UNKNOWN,
-    val componentTypes: List<ComponentTypes> = emptyList()
+    val componentTypes: List<ComponentTypes> = emptyList(),
+    val stats: AthleteStats? = null
 )
 
 @HiltViewModel
 class BikeSetupViewModel @Inject constructor(
     private val bikeComponentRepository: ComponentRepositoryFacade,
     private val bikesRepository: BikeRepositoryFacade,
+    private val profileRepository: ProfileRepositoryFacade,
     val db: AppDb,
     val api: Api,
 
@@ -38,8 +42,8 @@ class BikeSetupViewModel @Inject constructor(
 
     val selectedComponentTypes = mutableStateOf<Set<ComponentTypes>>(emptySet())
 
-    private val _setupData = MutableStateFlow(BikeSetupData())
-    val setupData: StateFlow<BikeSetupData> = _setupData
+    private val _state = MutableStateFlow(BikeSetupState())
+    val state: StateFlow<BikeSetupState> = _state
 
     private val selectedBikeId = MutableStateFlow<String?>(null)
 
@@ -52,6 +56,9 @@ class BikeSetupViewModel @Inject constructor(
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
             selectedBikeId.value = bikeId
+            profileRepository.getProfileStats()?.let {
+                _state.value = _state.value.copy(stats = it)
+            }
         }
     }
 
@@ -114,7 +121,7 @@ class BikeSetupViewModel @Inject constructor(
 
     fun onBikeTypeSelected(it: BikeType) {
         viewModelScope.launch {
-            _setupData.value = _setupData.value.copy(bikeType = it)
+            _state.value = _state.value.copy(bikeType = it)
         }
     }
 

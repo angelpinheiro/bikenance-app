@@ -2,6 +2,7 @@ package com.anxops.bkn.data.repository
 
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.toEntity
+import com.anxops.bkn.data.model.AthleteStats
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
@@ -18,6 +19,8 @@ interface ProfileRepositoryFacade {
     suspend fun reloadData(): Boolean
 
     suspend fun getProfile(): Profile?
+
+    suspend fun getProfileStats(): AthleteStats?
 
     suspend fun updateProfile(profile: Profile): RepositoryResult<Profile>
 
@@ -48,6 +51,16 @@ class ProfileRepository(
 
     override suspend fun getProfile(): Profile? {
         return db.profileDao().getProfile()?.toDomain()
+    }
+
+    override suspend fun getProfileStats(): AthleteStats? = withContext(defaultDispatcher) {
+        when (val profile = api.profile()) {
+            is ApiResponse.Success -> {
+                profile.data.stats
+
+            }
+            else -> null
+        }
     }
 
     override fun getProfileFlow(): Flow<Profile?> {

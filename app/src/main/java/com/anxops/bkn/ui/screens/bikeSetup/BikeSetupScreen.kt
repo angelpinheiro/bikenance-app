@@ -53,7 +53,7 @@ fun BikeSetupScreen(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
 
-    val data = viewModel.setupData.collectAsState()
+    val state = viewModel.state.collectAsState()
 
     Column(
         Modifier
@@ -80,13 +80,13 @@ fun BikeSetupScreen(
                     Box {
                         when (pagerState.currentPage) {
                             0 -> {
-                                FirstPage(data = data.value, onBikeTypeSelected = {
+                                FirstPage(state = state.value, onBikeTypeSelected = {
                                     viewModel.onBikeTypeSelected(it)
                                 })
                             }
 
                             1 -> {
-                                SecondPage()
+                                SecondPage(state.value)
                             }
 
                             2 -> {
@@ -169,7 +169,7 @@ fun BikeSetupDivider(size: Dp) {
 
 
 @Composable
-fun FirstPage(data: BikeSetupData, onBikeTypeSelected: (bikeType: BikeType) -> Unit = {}) {
+fun FirstPage(state: BikeSetupState, onBikeTypeSelected: (bikeType: BikeType) -> Unit = {}) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         BikeSetupTitle(text = "Bike type")
         BikeSetupDescription(text = "To provide you with accurate maintenance tracking, we need a few details about your bike and riding habits")
@@ -192,7 +192,7 @@ fun FirstPage(data: BikeSetupData, onBikeTypeSelected: (bikeType: BikeType) -> U
                     modifier = Modifier
                         .padding(4.dp)
                         .fillMaxWidth(0.5f),
-                    colors = if (data.bikeType == it.key) {
+                    colors = if (state.bikeType == it.key) {
                         ButtonDefaults.buttonColors(
                             backgroundColor = MaterialTheme.colors.secondary,
                         )
@@ -218,10 +218,12 @@ fun FirstPage(data: BikeSetupData, onBikeTypeSelected: (bikeType: BikeType) -> U
 
 
 @Composable
-fun SecondPage() {
+fun SecondPage(state: BikeSetupState) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         BikeSetupTitle(text = "Weekly Mileage")
         BikeSetupDescription(text = "Approximately, how many kilometers do you ride per week?")
+        BikeSetupDivider(20.dp)
+        BikeSetupDescription(text = "Your strava data: ${state.stats.toString()}")
     }
 }
 

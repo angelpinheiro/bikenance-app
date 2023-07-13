@@ -18,7 +18,15 @@ fun Profile.toEntity(): ProfileEntity {
         firstName = firstname,
         lastName = lastname,
         profilePhoto = profilePhotoUrl,
-        createdAt = createdAt
+        createdAt = createdAt,
+//        biggestRideDistance = biggestRideDistance,
+//        biggestClimbElevationGain = biggestClimbElevationGain,
+//        recentRideTotalDistance = recentRideTotalDistance,
+//        recentRideTotalDuration = recentRideTotalDuration,
+//        ytdRideTotalDistance = ytdRideTotalDistance,
+//        ytdRideTotalDuration = ytdRideTotalDuration,
+//        allRideTotalDistance = allRideTotalDistance,
+//        allRideTotalDuration = allRideTotalDuration
     )
 }
 

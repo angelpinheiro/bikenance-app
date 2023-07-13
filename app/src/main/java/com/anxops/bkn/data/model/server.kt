@@ -1,5 +1,6 @@
 package com.anxops.bkn.data.model
 
+import androidx.room.ColumnInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,11 +19,23 @@ enum class BikeType(
 }
 
 @Serializable
-data class ExtendedProfile(
-    val profile: Profile?,
-    val bikes: List<Bike>? = null,
-    val rides: List<BikeRide>? = null
+data class AthleteStats(
+    @SerialName("biggest_ride_distance") val biggestRideDistance: Double,
+    @SerialName("biggest_climb_elevation_gain") val biggestClimbElevationGain: Double,
+    @SerialName("recent_ride_totals") val recentRideTotals: ActivityTotal,
+    @SerialName("ytd_ride_totals") val ytdRideTotals: ActivityTotal,
+    @SerialName("all_ride_totals") val allRideTotals: ActivityTotal,
 )
+
+@Serializable
+data class ActivityTotal(
+    @SerialName("count") val count: Double,
+    @SerialName("distance") val distance: Double,
+    @SerialName("elapsed_time") val duration: Double,
+    @SerialName("moving_time") val movingTime: Double,
+    @SerialName("elevation_gain") val elevationGain: Double,
+)
+
 
 @Serializable
 data class Profile(
@@ -35,6 +48,17 @@ data class Profile(
     @SerialName("sex") var sex: String? = null,
     @SerialName("weight") var weight: Int? = null,
     @SerialName("created_at") var createdAt: String? = null,
+    @SerialName("stats") var stats: AthleteStats? = null
+
+//
+//    @SerialName("biggest_ride_distance") val biggestRideDistance: Double = 0.0,
+//    @SerialName("biggest_climb_elevation_gain") val biggestClimbElevationGain: Double = 0.0,
+//    @SerialName("recent_ride_total_distance") val recentRideTotalDistance: Double = 0.0,
+//    @SerialName("recent_ride_total_duration") val recentRideTotalDuration: Double = 0.0,
+//    @SerialName("ytd_ride_total_distance") val ytdRideTotalDistance: Double = 0.0,
+//    @SerialName("ytd_ride_totals_duration") val ytdRideTotalDuration: Double = 0.0,
+//    @SerialName("all_ride_totals_distance") val allRideTotalDistance: Double = 0.0,
+//    @SerialName("all_ride_total_duration") val allRideTotalDuration: Double = 0.0,
 
     )
 

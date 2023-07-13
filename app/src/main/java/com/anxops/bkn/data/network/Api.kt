@@ -3,7 +3,6 @@ package com.anxops.bkn.data.network
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeRide
-import com.anxops.bkn.data.model.ExtendedProfile
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.google.firebase.storage.FirebaseStorage
@@ -32,14 +31,6 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
     suspend fun profile(): ApiResponse<Profile> {
         return safeApiCall {
             httpClient.get(ApiEndpoints.profileEndpoint()) {
-                header("Authorization", tokenHeader())
-            }
-        }
-    }
-
-    suspend fun extendedProfile(includeDraftBikes: Boolean = false): ApiResponse<ExtendedProfile> {
-        return safeApiCall {
-            httpClient.get(ApiEndpoints.extendedProfileEndpoint(includeDraftBikes)) {
                 header("Authorization", tokenHeader())
             }
         }
@@ -193,7 +184,10 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
 
     }
 
-    suspend fun addBikeComponents(bikeId: String, newComponents: List<BikeComponent>): ApiResponse<List<BikeComponent>> {
+    suspend fun addBikeComponents(
+        bikeId: String,
+        newComponents: List<BikeComponent>
+    ): ApiResponse<List<BikeComponent>> {
         return safeApiCall {
             httpClient.post(ApiEndpoints.addComponentsEndpoint(bikeId)) {
                 header("Authorization", tokenHeader())
