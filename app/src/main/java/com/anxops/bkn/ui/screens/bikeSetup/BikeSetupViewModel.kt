@@ -35,12 +35,16 @@ sealed class BikeSetupScreenState {
 }
 
 data class SetupDetails(
-    val selectedBikeType: BikeType = BikeType.UNKNOWN,
+    val selectedBikeType: BikeType = BikeType.MTB,
     val hasDropperPost: Boolean? = false,
     val hasTubeless: Boolean? = true,
     val hasCliplessPedals: Boolean? = true,
     val wearLevel: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
-        .minus(ComponentCategory.MISC).associateWith { 0.5f }
+        .minus(ComponentCategory.MISC).associateWith { 0.5f },
+
+    val lastMaintenances: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
+        .minus(ComponentCategory.MISC).associateWith { 0f }
+
 )
 
 @HiltViewModel
@@ -99,6 +103,62 @@ class BikeSetupViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: BikeSetupScreenEvent) {
+
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+
+                _state.update {
+                    when (event) {
+                        is BikeSetupScreenEvent.BikeTypeSelected -> {
+                            currentState.copy(
+                                details = currentState.details.copy(
+                                    selectedBikeType = event.type
+                                )
+                            )
+                        }
+
+                        is BikeSetupScreenEvent.WearLevelUpdate -> {
+                            currentState.copy(
+                                details = currentState.details.copy(
+                                    wearLevel = currentState.details.wearLevel.plus(event.category to event.value)
+                                )
+                            )
+                        }
+
+                        is BikeSetupScreenEvent.CliplessPedalsSelectionChange -> {
+                            currentState.copy(
+                                details = currentState.details.copy(
+                                    hasCliplessPedals = event.value
+                                )
+                            )
+                        }
+
+                        is BikeSetupScreenEvent.DropperSelectionChange -> {
+                            currentState.copy(
+                                details = currentState.details.copy(
+                                    hasDropperPost = event.value
+                                )
+                            )
+                        }
+
+                        is BikeSetupScreenEvent.TubelessSelectionChange -> {
+                            currentState.copy(
+                                details = currentState.details.copy(
+                                    hasTubeless = event.value
+                                )
+                            )
+                        }
+
+                        else -> {
+                            currentState
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun onBikeTypeSelected(bikeType: BikeType) {
         _state.value.let { currentState ->
             if (currentState is BikeSetupScreenState.SetupInProgress) {
@@ -128,10 +188,23 @@ class BikeSetupViewModel @Inject constructor(
         }
     }
 
+    fun onLastMaintenanceUpdate(c: ComponentCategory, months: Float) {
+
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+                _state.update {
+                    currentState.copy(
+                        details = currentState.details.copy(
+                            lastMaintenances = currentState.details.lastMaintenances.plus(c to months)
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     private fun getNewComponentsForBike(
-        bike: Bike,
-        includeDropper: Boolean,
-        includePedals: Boolean
+        bike: Bike, includeDropper: Boolean, includePedals: Boolean
     ): List<BikeComponent> {
 
         val componentTypes = maintenanceConfigurations[bike.type]!!.toMutableList()

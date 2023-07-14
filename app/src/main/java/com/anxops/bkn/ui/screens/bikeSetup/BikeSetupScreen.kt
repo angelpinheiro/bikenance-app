@@ -22,9 +22,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.anxops.bkn.data.model.BikeType
+import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.bikeSetup.components.BikeDetailsPage
-import com.anxops.bkn.ui.screens.bikeSetup.components.BikeStatusPage
+import com.anxops.bkn.ui.screens.bikeSetup.components.BikeStatusPageV2
 import com.anxops.bkn.ui.screens.bikeSetup.components.BikeTypePage
 import com.anxops.bkn.ui.screens.bikeSetup.components.InfoPage
 import com.anxops.bkn.ui.screens.bikeSetup.components.RidingHabitsPage
@@ -34,6 +36,18 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+
+sealed class BikeSetupScreenEvent {
+    data class BikeTypeSelected(val type: BikeType) : BikeSetupScreenEvent()
+    data class WearLevelUpdate(val category: ComponentCategory, val value: Float) :
+        BikeSetupScreenEvent()
+
+    data class CliplessPedalsSelectionChange(val value: Boolean) : BikeSetupScreenEvent()
+    data class TubelessSelectionChange(val value: Boolean) : BikeSetupScreenEvent()
+    data class DropperSelectionChange(val value: Boolean) : BikeSetupScreenEvent()
+    object Finish : BikeSetupScreenEvent()
+}
 
 
 @Composable
@@ -130,10 +144,10 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                             scrollToNext(delayMs = 300)
                         })
 
-                    2 -> BikeStatusPage(state.details, onContinue = {
+                    2 -> BikeStatusPageV2(state.details, onContinue = {
                         scrollToNext()
-                    }, onWearLevelUpdate = { category, value ->
-                        viewModel.onWearLevelUpdate(category, value)
+                    }, onLastMaintenanceUpdate = { category, value ->
+                        viewModel.onLastMaintenanceUpdate(category, value)
                     })
 
                     3 -> BikeDetailsPage(state.details,
