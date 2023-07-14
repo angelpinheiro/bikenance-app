@@ -58,7 +58,7 @@ enum class ComponentTypes(
 }
 
 
-fun getDefaultComponents(bikeType: BikeType) : Set<ComponentTypes> {
+fun getDefaultComponents(bikeType: BikeType): Set<ComponentTypes> {
     return maintenanceConfigurations[bikeType] ?: ComponentTypes.values().toSet()
 }
 
@@ -69,12 +69,15 @@ val maintenanceConfigurations = mapOf(
             ComponentTypes.DROPER_POST,
             ComponentTypes.REAR_SUSPENSION,
             ComponentTypes.FRAME_BEARINGS,
+            ComponentTypes.PEDAL_CLIPLESS,
             ComponentTypes.HANDLEBAR_TAPE,
         )
     ),
     BikeType.FULL_MTB to ComponentTypes.values().toSet().minus(
         setOf(
             ComponentTypes.CUSTOM,
+            ComponentTypes.DROPER_POST,
+            ComponentTypes.PEDAL_CLIPLESS,
             ComponentTypes.HANDLEBAR_TAPE,
         )
     ),
@@ -84,6 +87,7 @@ val maintenanceConfigurations = mapOf(
             ComponentTypes.DROPER_POST,
             ComponentTypes.REAR_SUSPENSION,
             ComponentTypes.FRAME_BEARINGS,
+            ComponentTypes.PEDAL_CLIPLESS,
             ComponentTypes.FORK
         )
     ),
@@ -93,6 +97,7 @@ val maintenanceConfigurations = mapOf(
             ComponentTypes.DROPER_POST,
             ComponentTypes.REAR_SUSPENSION,
             ComponentTypes.FRAME_BEARINGS,
+            ComponentTypes.PEDAL_CLIPLESS,
             ComponentTypes.FORK
         )
     ),
@@ -214,10 +219,10 @@ data class Maintenance(
 
 @Serializable
 data class Usage(
-    @SerialName("hours")
-    val hours: Double,
-    @SerialName("km")
-    val km: Double
+    @SerialName("duration")
+    val duration: Double,
+    @SerialName("distance")
+    val distance: Double
 )
 
 @Serializable

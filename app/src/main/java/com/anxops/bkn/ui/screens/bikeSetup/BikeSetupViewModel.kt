@@ -1,32 +1,46 @@
 package com.anxops.bkn.ui.screens.bikeSetup
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.model.AthleteStats
+import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeType
+import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.data.model.getDefaultComponents
+import com.anxops.bkn.data.model.maintenanceConfigurations
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ComponentRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class BikeSetupState(
-    val bikeType: BikeType = BikeType.UNKNOWN,
-    val componentTypes: List<ComponentTypes> = emptyList(),
-    val stats: AthleteStats? = null
+
+sealed class BikeSetupScreenState {
+    object Loading : BikeSetupScreenState()
+    object SavingSetup : BikeSetupScreenState()
+    data class SetupDone(val bike: Bike) : BikeSetupScreenState()
+    data class SetupInProgress(
+        val bike: Bike, val stats: AthleteStats, val details: SetupDetails = SetupDetails()
+    ) : BikeSetupScreenState()
+
+    class Error(val text: String) : BikeSetupScreenState()
+}
+
+data class SetupDetails(
+    val selectedBikeType: BikeType = BikeType.UNKNOWN,
+    val hasDropperPost: Boolean? = false,
+    val hasTubeless: Boolean? = true,
+    val hasCliplessPedals: Boolean? = true,
+    val wearLevel: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
+        .minus(ComponentCategory.MISC).associateWith { 0.5f }
 )
 
 @HiltViewModel
@@ -40,88 +54,168 @@ class BikeSetupViewModel @Inject constructor(
     ) : ViewModel() {
 
 
-    val selectedComponentTypes = mutableStateOf<Set<ComponentTypes>>(emptySet())
+    val _state = MutableStateFlow<BikeSetupScreenState>(BikeSetupScreenState.Loading)
+    val state: StateFlow<BikeSetupScreenState> = _state
 
-    private val _state = MutableStateFlow(BikeSetupState())
-    val state: StateFlow<BikeSetupState> = _state
-
-    private val selectedBikeId = MutableStateFlow<String?>(null)
-
-    private val bikeFlow = selectedBikeId.mapLatest {
-        it?.let { id -> bikesRepository.getBike(id) } ?: null
-    }
-
-    val bike = bikeFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
-            selectedBikeId.value = bikeId
-            profileRepository.getProfileStats()?.let {
-                _state.value = _state.value.copy(stats = it)
+            val bike = bikesRepository.getBike(bikeId)
+            val stats = profileRepository.getProfileStats()
+
+            if (bike != null && stats != null) {
+                _state.value = BikeSetupScreenState.SetupInProgress(
+                    bike = bike, stats = stats
+                )
+            } else {
+                _state.value = BikeSetupScreenState.Error("Could not load data. Try again later.")
             }
         }
     }
 
-    fun onSelectConfiguration(t: BikeType) {
-        viewModelScope.launch {
-            selectedComponentTypes.value = getDefaultComponents(t)
-        }
-    }
+    fun finishBikeSetup() = viewModelScope.launch {
+        state.value.let {
+            when (it) {
+                is BikeSetupScreenState.SetupInProgress -> {
 
-    fun onComponentTypeSelectionChange(it: Set<ComponentTypes>) {
-        viewModelScope.launch {
-            selectedComponentTypes.value = it
-        }
-    }
+                    _state.value = BikeSetupScreenState.SavingSetup
 
-    fun addSelectedComponentsToBike() {
-        viewModelScope.launch {
-
-            bike.value?.let { currentBike ->
-                val newComponents = selectedComponentTypes.value.map {
-
-                    var alias = it.name
-                    val cs = listOf(
-                        ComponentTypes.DISC_BRAKE,
-                        ComponentTypes.THRU_AXLE,
-                        ComponentTypes.DISC_PAD,
-                        ComponentTypes.TIRE
+                    val bike = it.bike.copy(type = it.details.selectedBikeType, configDone = true)
+                    val newComponents = getNewComponentsForBike(
+                        bike,
+                        it.details.hasDropperPost ?: false,
+                        it.details.hasCliplessPedals ?: false
                     )
-                    if (cs.contains(it)) {
-                        listOf(
-                            BikeComponent(
-                                bikeId = currentBike._id,
-                                modifier = ComponentModifier.FRONT,
-                                alias = alias,
-                                type = it
-                            ),
-                            BikeComponent(
-                                bikeId = currentBike._id,
-                                modifier = ComponentModifier.REAR,
-                                alias = alias,
-                                type = it
-                            )
-                        )
-                    } else {
-                        listOf(
-                            BikeComponent(
-                                bikeId = currentBike._id,
-                                alias = alias,
-                                type = it
-                            )
-                        )
-                    }
+                    bikeComponentRepository.createComponents(bike._id, newComponents)
+                    bikesRepository.updateBike(bike)
 
-                }.flatten()
+                    _state.value = BikeSetupScreenState.SetupDone(bike)
+                }
 
-                bikeComponentRepository.createComponents(currentBike._id, newComponents)
+                else -> {
+                    // do nothing
+                }
             }
         }
     }
 
-    fun onBikeTypeSelected(it: BikeType) {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(bikeType = it)
+    fun onBikeTypeSelected(bikeType: BikeType) {
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+                _state.update {
+                    currentState.copy(
+                        details = currentState.details.copy(
+                            selectedBikeType = bikeType
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun onWearLevelUpdate(c: ComponentCategory, value: Float) {
+
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+                _state.update {
+                    currentState.copy(
+                        details = currentState.details.copy(
+                            wearLevel = currentState.details.wearLevel.plus(c to value)
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getNewComponentsForBike(
+        bike: Bike,
+        includeDropper: Boolean,
+        includePedals: Boolean
+    ): List<BikeComponent> {
+
+        val componentTypes = maintenanceConfigurations[bike.type]!!.toMutableList()
+
+        if (includeDropper) {
+            componentTypes.add(ComponentTypes.DROPER_POST)
+        }
+        if (includePedals) {
+            componentTypes.add(ComponentTypes.PEDAL_CLIPLESS)
+        }
+
+        return componentTypes.map {
+
+            var alias = it.name
+            val duplicatedComponents = listOf(
+                ComponentTypes.DISC_BRAKE,
+                ComponentTypes.THRU_AXLE,
+                ComponentTypes.DISC_PAD,
+                ComponentTypes.TIRE
+            )
+            if (duplicatedComponents.contains(it)) {
+                listOf(
+                    BikeComponent(
+                        bikeId = bike._id,
+                        modifier = ComponentModifier.FRONT,
+                        alias = alias,
+                        type = it
+                    ), BikeComponent(
+                        bikeId = bike._id,
+                        modifier = ComponentModifier.REAR,
+                        alias = alias,
+                        type = it
+                    )
+                )
+            } else {
+                listOf(
+                    BikeComponent(
+                        bikeId = bike._id, alias = alias, type = it
+                    )
+                )
+            }
+
+        }.flatten()
+    }
+
+    fun onCliplessPedalsSelectionChange(selection: Boolean) {
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+                _state.update {
+                    currentState.copy(
+                        details = currentState.details.copy(
+                            hasCliplessPedals = selection
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun onDropperSelectionChange(selection: Boolean) {
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+                _state.update {
+                    currentState.copy(
+                        details = currentState.details.copy(
+                            hasDropperPost = selection
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun onTubelessSelectionChange(selection: Boolean) {
+        _state.value.let { currentState ->
+            if (currentState is BikeSetupScreenState.SetupInProgress) {
+                _state.update {
+                    currentState.copy(
+                        details = currentState.details.copy(
+                            hasTubeless = selection
+                        )
+                    )
+                }
+            }
         }
     }
 

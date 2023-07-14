@@ -1,8 +1,10 @@
 package com.anxops.bkn.data.model
 
-import androidx.room.ColumnInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.Calendar
+import java.util.Date
+import kotlin.math.round
 
 @Serializable(with = BikeTypeSerializer::class)
 enum class BikeType(
@@ -10,10 +12,10 @@ enum class BikeType(
     val extendedType: String
 ) {
     UNKNOWN("UNKNOWN", "Unknown bike type"),
-    MTB("MTB", "Mountain Bike"),
-    FULL_MTB("Full-MTB", "Full Suspension Mountain Bike"),
+    MTB("MTB", "MTB Hardtail"),
+    FULL_MTB("Full MTB", "MTB Full Suspension" ),
     ROAD("Road", "Road Bike"),
-    E_BIKE("E-Bike","Electric Bike"),
+    E_BIKE("E-Bike", "Electric Bike"),
     GRAVEL("Gravel", "Gravel Bike"),
     STATIONARY("Stationary", "Stationary Bike")
 }
@@ -25,7 +27,66 @@ data class AthleteStats(
     @SerialName("recent_ride_totals") val recentRideTotals: ActivityTotal,
     @SerialName("ytd_ride_totals") val ytdRideTotals: ActivityTotal,
     @SerialName("all_ride_totals") val allRideTotals: ActivityTotal,
-)
+) {
+    fun recentAverageActivity(): ActivityTotal {
+        return ActivityTotal(
+            count = recentRideTotals.count,
+            duration = recentRideTotals.duration / recentRideTotals.count,
+            distance = recentRideTotals.distance / recentRideTotals.count,
+            elevationGain = recentRideTotals.elevationGain / recentRideTotals.count,
+            movingTime = recentRideTotals.movingTime / recentRideTotals.count
+        )
+    }
+
+    fun totalsAverageActivity(): ActivityTotal {
+        return ActivityTotal(
+            count = allRideTotals.count,
+            duration = allRideTotals.duration / allRideTotals.count,
+            distance = allRideTotals.distance / allRideTotals.count,
+            elevationGain = allRideTotals.elevationGain / allRideTotals.count,
+            movingTime = allRideTotals.movingTime / allRideTotals.count
+        )
+    }
+
+    fun ytdAverageActivity(): ActivityTotal {
+        return ActivityTotal(
+            count = ytdRideTotals.count,
+            duration = ytdRideTotals.duration / ytdRideTotals.count,
+            distance = ytdRideTotals.distance / ytdRideTotals.count,
+            elevationGain = ytdRideTotals.elevationGain / ytdRideTotals.count,
+            movingTime = ytdRideTotals.movingTime / ytdRideTotals.count
+        )
+    }
+
+    fun ridesPerYear(): Double {
+        val calendar = Calendar.getInstance()
+        calendar.time = Date()
+        val daysFromStartOfYear = calendar.get(Calendar.DAY_OF_YEAR)
+        return 365f * ytdRideTotals.count / daysFromStartOfYear
+    }
+
+    fun monthlyEstimationBasedOnYTD(): Pair<Usage, ActivityTotal> {
+
+        val ridesPerYear = 365f * ytdRideTotals.count / ridesPerYear()
+        val ridesPerMonth = ridesPerYear / 12
+
+        val avgDistance = ytdRideTotals.distance / ytdRideTotals.count
+        val avgDuration = ytdRideTotals.duration / ytdRideTotals.count
+        val avgElevation = ytdRideTotals.elevationGain / ytdRideTotals.count
+        val avgMovingTime = ytdRideTotals.movingTime / ytdRideTotals.count
+
+        val monthlyDistance = ridesPerMonth * avgDistance
+        val monthlyDurationHours = ridesPerMonth * avgDuration / 3600
+
+        return Usage(monthlyDurationHours, monthlyDistance) to ActivityTotal(
+            count = ridesPerMonth,
+            duration = avgDuration,
+            distance = avgDistance,
+            elevationGain = avgElevation,
+            movingTime = avgMovingTime
+        )
+    }
+}
 
 @Serializable
 data class ActivityTotal(
@@ -34,7 +95,11 @@ data class ActivityTotal(
     @SerialName("elapsed_time") val duration: Double,
     @SerialName("moving_time") val movingTime: Double,
     @SerialName("elevation_gain") val elevationGain: Double,
-)
+) {
+    fun hours(): Double {
+        return round(duration / 3600 * 10) / 10
+    }
+}
 
 
 @Serializable
@@ -60,7 +125,7 @@ data class Profile(
 //    @SerialName("all_ride_totals_distance") val allRideTotalDistance: Double = 0.0,
 //    @SerialName("all_ride_total_duration") val allRideTotalDuration: Double = 0.0,
 
-    )
+)
 
 @Serializable
 data class Bike(

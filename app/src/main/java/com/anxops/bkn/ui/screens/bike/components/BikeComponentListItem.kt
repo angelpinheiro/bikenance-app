@@ -1,7 +1,6 @@
 package com.anxops.bkn.ui.screens.bike.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,11 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -86,7 +82,7 @@ fun BikeComponentListItem(component: BikeComponent) {
 
 
             Text(
-                text = "Usage: ${formatDistanceAsKm(component.usage.km.toInt())} / ${component.usage.hours.toInt()} hours",
+                text = "Usage: ${formatDistanceAsKm(component.usage.distance.toInt())} / ${component.usage.duration.toInt()} hours",
                 color = MaterialTheme.colors.background,
                 style = MaterialTheme.typography.h4,
             )
