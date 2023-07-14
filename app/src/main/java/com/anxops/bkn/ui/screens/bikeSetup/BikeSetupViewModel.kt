@@ -18,10 +18,18 @@ import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed class BSSEvent {
+    data class BikeTypeSelected(val type: BikeType) : BSSEvent()
+    data class LastMaintenanceUpdate(val category: ComponentCategory, val value: Float) :
+        BSSEvent()
+
+    data class CliplessPedalsSelectionChange(val value: Boolean) : BSSEvent()
+    data class TubelessSelectionChange(val value: Boolean) : BSSEvent()
+    data class DropperSelectionChange(val value: Boolean) : BSSEvent()
+}
 
 sealed class BikeSetupScreenState {
     object Loading : BikeSetupScreenState()
@@ -39,9 +47,6 @@ data class SetupDetails(
     val hasDropperPost: Boolean? = false,
     val hasTubeless: Boolean? = true,
     val hasCliplessPedals: Boolean? = true,
-    val wearLevel: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
-        .minus(ComponentCategory.MISC).associateWith { 0.5f },
-
     val lastMaintenances: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
         .minus(ComponentCategory.MISC).associateWith { 0f }
 
@@ -77,18 +82,18 @@ class BikeSetupViewModel @Inject constructor(
         }
     }
 
-    fun finishBikeSetup() = viewModelScope.launch {
-        state.value.let {
-            when (it) {
+    fun onFinishBikeSetup() = viewModelScope.launch {
+        state.value.let { currentState ->
+            when (currentState) {
                 is BikeSetupScreenState.SetupInProgress -> {
 
                     _state.value = BikeSetupScreenState.SavingSetup
 
-                    val bike = it.bike.copy(type = it.details.selectedBikeType, configDone = true)
+                    val bike = currentState.bike.copy(type = currentState.details.selectedBikeType, configDone = true)
                     val newComponents = getNewComponentsForBike(
                         bike,
-                        it.details.hasDropperPost ?: false,
-                        it.details.hasCliplessPedals ?: false
+                        currentState.details.hasDropperPost ?: false,
+                        currentState.details.hasCliplessPedals ?: false
                     )
                     bikeComponentRepository.createComponents(bike._id, newComponents)
                     bikesRepository.updateBike(bike)
@@ -103,104 +108,50 @@ class BikeSetupViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: BikeSetupScreenEvent) {
+    fun onSetupDetailsEvent(event: BSSEvent) {
 
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-
-                _state.update {
-                    when (event) {
-                        is BikeSetupScreenEvent.BikeTypeSelected -> {
-                            currentState.copy(
-                                details = currentState.details.copy(
-                                    selectedBikeType = event.type
-                                )
+        _state.value = when (val currentState = _state.value) {
+            is BikeSetupScreenState.SetupInProgress -> {
+                currentState.copy(
+                    details = when (event) {
+                        is BSSEvent.BikeTypeSelected -> {
+                            currentState.details.copy(
+                                selectedBikeType = event.type
                             )
                         }
 
-                        is BikeSetupScreenEvent.WearLevelUpdate -> {
-                            currentState.copy(
-                                details = currentState.details.copy(
-                                    wearLevel = currentState.details.wearLevel.plus(event.category to event.value)
-                                )
+                        is BSSEvent.CliplessPedalsSelectionChange -> {
+                            currentState.details.copy(
+                                hasCliplessPedals = event.value
+                            )
+
+                        }
+
+                        is BSSEvent.DropperSelectionChange -> {
+                            currentState.details.copy(
+                                hasDropperPost = event.value
+                            )
+
+                        }
+
+                        is BSSEvent.TubelessSelectionChange -> {
+                            currentState.details.copy(
+                                hasTubeless = event.value
                             )
                         }
 
-                        is BikeSetupScreenEvent.CliplessPedalsSelectionChange -> {
-                            currentState.copy(
-                                details = currentState.details.copy(
-                                    hasCliplessPedals = event.value
-                                )
-                            )
-                        }
-
-                        is BikeSetupScreenEvent.DropperSelectionChange -> {
-                            currentState.copy(
-                                details = currentState.details.copy(
-                                    hasDropperPost = event.value
-                                )
-                            )
-                        }
-
-                        is BikeSetupScreenEvent.TubelessSelectionChange -> {
-                            currentState.copy(
-                                details = currentState.details.copy(
-                                    hasTubeless = event.value
-                                )
-                            )
-                        }
-
-                        else -> {
-                            currentState
-                        }
+                        is BSSEvent.LastMaintenanceUpdate -> currentState.details.copy(
+                            lastMaintenances = currentState.details.lastMaintenances.plus(event.category to event.value)
+                        )
                     }
-                }
+                )
+            }
+
+            else -> {
+                currentState
             }
         }
-    }
 
-    fun onBikeTypeSelected(bikeType: BikeType) {
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-                _state.update {
-                    currentState.copy(
-                        details = currentState.details.copy(
-                            selectedBikeType = bikeType
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    fun onWearLevelUpdate(c: ComponentCategory, value: Float) {
-
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-                _state.update {
-                    currentState.copy(
-                        details = currentState.details.copy(
-                            wearLevel = currentState.details.wearLevel.plus(c to value)
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    fun onLastMaintenanceUpdate(c: ComponentCategory, months: Float) {
-
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-                _state.update {
-                    currentState.copy(
-                        details = currentState.details.copy(
-                            lastMaintenances = currentState.details.lastMaintenances.plus(c to months)
-                        )
-                    )
-                }
-            }
-        }
     }
 
     private fun getNewComponentsForBike(
@@ -249,47 +200,4 @@ class BikeSetupViewModel @Inject constructor(
 
         }.flatten()
     }
-
-    fun onCliplessPedalsSelectionChange(selection: Boolean) {
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-                _state.update {
-                    currentState.copy(
-                        details = currentState.details.copy(
-                            hasCliplessPedals = selection
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    fun onDropperSelectionChange(selection: Boolean) {
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-                _state.update {
-                    currentState.copy(
-                        details = currentState.details.copy(
-                            hasDropperPost = selection
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    fun onTubelessSelectionChange(selection: Boolean) {
-        _state.value.let { currentState ->
-            if (currentState is BikeSetupScreenState.SetupInProgress) {
-                _state.update {
-                    currentState.copy(
-                        details = currentState.details.copy(
-                            hasTubeless = selection
-                        )
-                    )
-                }
-            }
-        }
-    }
-
 }
