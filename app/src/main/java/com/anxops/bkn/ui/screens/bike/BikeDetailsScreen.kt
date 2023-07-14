@@ -137,8 +137,7 @@ fun BikeDetailsScreen(
                         ) {
                             Box(
                                 Modifier
-                                    .background(MaterialTheme.colors.primaryVariant)
-                                    .padding(horizontal = 20.dp)
+                                    .background(MaterialTheme.colors.primaryVariant)                                 
                             ) {
                                 BikeStatusMap(
                                     highlightedGroup = selectedComponentCategory.value,
