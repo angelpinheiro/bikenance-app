@@ -22,9 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.util.formatAsSimpleDateTime
+import com.anxops.bkn.util.formatAsDayMonth
 import com.anxops.bkn.util.formatDistanceAsKm
-import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.util.concurrent.TimeUnit
 
@@ -122,7 +121,7 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
             }
 
             Text(
-                text = item.dateTime.toDate()?.formatAsSimpleDateTime() ?: "",
+                text = item.dateTime?.formatAsDayMonth() ?: "",
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3,
                 overflow = TextOverflow.Ellipsis,

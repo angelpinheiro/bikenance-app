@@ -22,6 +22,8 @@ interface BikeRepositoryFacade {
 
     suspend fun updateBike(bike: Bike)
 
+    suspend fun setupBike(bike: Bike)
+
     suspend fun deleteBike(bike: Bike)
 
     suspend fun createBike(bike: Bike)
@@ -37,6 +39,7 @@ class BikeRepository(
     val api: Api,
     val db: AppDb,
     val ridesRepository: RidesRepositoryFacade,
+    val componentRepository: ComponentRepositoryFacade,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BikeRepositoryFacade {
@@ -90,6 +93,18 @@ class BikeRepository(
     override suspend fun updateBike(bike: Bike) {
         db.bikeDao().update(bike.toEntity())
         api.updateBike(bike)
+    }
+
+    override suspend fun setupBike(bike: Bike) {
+        when (val response = api.setupBike(bike)) {
+            is ApiResponse.Error -> TODO()
+            is ApiResponse.Success -> {
+                db.bikeDao().update(response.data.toEntity())
+                response.data.components?.let {
+                    componentRepository.createComponents(response.data._id, it)
+                }
+            }
+        }
     }
 
     override suspend fun deleteBike(bike: Bike) {

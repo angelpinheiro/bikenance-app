@@ -19,7 +19,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.math.floor
 
 sealed class BSSEvent {
     data class BikeTypeSelected(val type: BikeType) : BSSEvent()
@@ -82,27 +84,31 @@ class BikeSetupViewModel @Inject constructor(
         }
     }
 
-    fun onFinishBikeSetup() = viewModelScope.launch {
-        state.value.let { currentState ->
-            when (currentState) {
-                is BikeSetupScreenState.SetupInProgress -> {
+    fun onFinishBikeSetup() {
+        viewModelScope.launch {
+            state.value.let { currentState ->
+                when (currentState) {
+                    is BikeSetupScreenState.SetupInProgress -> {
 
-                    _state.value = BikeSetupScreenState.SavingSetup
+                        _state.value = BikeSetupScreenState.SavingSetup
 
-                    val bike = currentState.bike.copy(type = currentState.details.selectedBikeType, configDone = true)
-                    val newComponents = getNewComponentsForBike(
-                        bike,
-                        currentState.details.hasDropperPost ?: false,
-                        currentState.details.hasCliplessPedals ?: false
-                    )
-                    bikeComponentRepository.createComponents(bike._id, newComponents)
-                    bikesRepository.updateBike(bike)
+                        val newComponents = getNewComponentsForBike(
+                            currentState.bike,
+                            currentState.details
+                        )
 
-                    _state.value = BikeSetupScreenState.SetupDone(bike)
-                }
+                        val bike = currentState.bike.copy(
+                            type = currentState.details.selectedBikeType,
+                            components = newComponents,
+                            configDone = false
+                        )
+                        bikesRepository.setupBike(bike)
+                        _state.value = BikeSetupScreenState.SetupDone(bike)
+                    }
 
-                else -> {
-                    // do nothing
+                    else -> {
+                        throw Exception("This should not happen")
+                    }
                 }
             }
         }
@@ -154,20 +160,33 @@ class BikeSetupViewModel @Inject constructor(
 
     }
 
+
+    private fun getFromLocalDateTime(
+        componentTypes: ComponentTypes,
+        lastMaintenances: Map<ComponentCategory, Float>
+    ): LocalDateTime {
+        val monthsSinceLastMaintenance = lastMaintenances.getOrDefault(componentTypes.category, 0f)
+        return LocalDateTime.now().minusMonths(floor(monthsSinceLastMaintenance).toLong());
+    }
+
     private fun getNewComponentsForBike(
-        bike: Bike, includeDropper: Boolean, includePedals: Boolean
+        bike: Bike,
+        details: SetupDetails
     ): List<BikeComponent> {
 
         val componentTypes = maintenanceConfigurations[bike.type]!!.toMutableList()
 
-        if (includeDropper) {
+        if (details.hasDropperPost == true) {
             componentTypes.add(ComponentTypes.DROPER_POST)
         }
-        if (includePedals) {
+        if (details.hasCliplessPedals == true) {
             componentTypes.add(ComponentTypes.PEDAL_CLIPLESS)
         }
 
         return componentTypes.map {
+
+
+            val date = getFromLocalDateTime(it, details.lastMaintenances)
 
             var alias = it.name
             val duplicatedComponents = listOf(
@@ -182,18 +201,20 @@ class BikeSetupViewModel @Inject constructor(
                         bikeId = bike._id,
                         modifier = ComponentModifier.FRONT,
                         alias = alias,
-                        type = it
+                        type = it,
+                        from = date
                     ), BikeComponent(
                         bikeId = bike._id,
                         modifier = ComponentModifier.REAR,
                         alias = alias,
-                        type = it
+                        type = it,
+                        from = date
                     )
                 )
             } else {
                 listOf(
                     BikeComponent(
-                        bikeId = bike._id, alias = alias, type = it
+                        bikeId = bike._id, alias = alias, type = it, from = date
                     )
                 )
             }

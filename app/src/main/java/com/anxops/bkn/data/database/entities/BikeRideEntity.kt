@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.util.toLocalDateTime
 import kotlinx.serialization.SerialName
 
 
@@ -36,7 +37,7 @@ data class BikeRideEntity(
             movingTime = movingTime,
             elapsedTime = elapsedTime,
             totalElevationGain = elevationGain,
-            dateTime = dateTime,
+            dateTime = dateTime?.toLocalDateTime(),
             mapSummaryPolyline = mapSummaryPolyline
         )
     }

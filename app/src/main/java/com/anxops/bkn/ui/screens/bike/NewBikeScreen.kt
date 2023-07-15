@@ -248,7 +248,7 @@ fun NewBikeScreen(
                     ) {
 
 
-                        BikeType.values().filter { it != BikeType.UNKNOWN }.forEach { type ->
+                        BikeType.values().forEach { type ->
                             val selected = type == state.value.bike.type
                             Button(
                                 modifier = Modifier.padding(horizontal = 5.dp).weight(1f),

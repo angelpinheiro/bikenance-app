@@ -30,6 +30,7 @@ class KtorClient {
                 isLenient = true
                 ignoreUnknownKeys = true
             })
+
         }
         // Timeout
         install(HttpTimeout) {

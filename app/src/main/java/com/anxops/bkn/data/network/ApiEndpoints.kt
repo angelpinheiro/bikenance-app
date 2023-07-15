@@ -21,6 +21,8 @@ object ApiEndpoints {
         "$baseApiUrl/profile/extended?draft=$draft"
 
     fun profileBikeEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId"
+
+    fun profileBikeSetupEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId/setup"
     fun profileRideEndpoint(rideId: String) = "$baseApiUrl/profile/rides/$rideId"
     fun addComponentsEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId/components"
 

@@ -1,7 +1,10 @@
 package com.anxops.bkn.data.model
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Serializable
@@ -104,49 +107,6 @@ val maintenanceConfigurations = mapOf(
     BikeType.STATIONARY to setOf()
 )
 
-//
-//enum class MaintenanceConfigurations(val configName: String, val types: Set<ComponentTypes>) {
-//    MTB(
-//        "MTB", ComponentTypes.values().toSet().minus(
-//            setOf(
-//                ComponentTypes.CUSTOM,
-//                ComponentTypes.DROPER_POST,
-//                ComponentTypes.FRAME_BEARINGS,
-//                ComponentTypes.FORK,
-//            )
-//        )
-//    ),
-//    FULL_MTB(
-//        "Full MTB", ComponentTypes.values().toSet().minus(
-//            setOf(
-//                ComponentTypes.CUSTOM,
-//            )
-//        )
-//    ),
-//    ROAD(
-//        "Road", ComponentTypes.values().toSet().minus(
-//            setOf(
-//                ComponentTypes.CUSTOM,
-//                ComponentTypes.REAR_SUSPENSION,
-//                ComponentTypes.DROPER_POST,
-//                ComponentTypes.FRAME_BEARINGS,
-//                ComponentTypes.FORK,
-//            )
-//        )
-//    ),
-//    GRAVEL(
-//        "Gravel", ComponentTypes.values().toSet().minus(
-//            setOf(
-//                ComponentTypes.CUSTOM,
-//                ComponentTypes.REAR_SUSPENSION,
-//                ComponentTypes.DROPER_POST,
-//                ComponentTypes.FRAME_BEARINGS,
-//                ComponentTypes.FORK,
-//            )
-//        )
-//    )
-//}
-
 
 enum class ComponentModifier {
     REAR,
@@ -212,7 +172,7 @@ data class Maintenance(
     @SerialName("type")
     val type: MaintenanceInfo,
     @SerialName("usage")
-    var usageSinceLastMaintenance: Usage = Usage(0.0, 0.0),
+    var usageSinceLastMaintenance: Usage?,
     @SerialName("dueDate")
     var dateTime: String? = null,
 )
@@ -237,5 +197,9 @@ data class BikeComponent(
     @SerialName("modifier")
     val modifier: ComponentModifier? = null,
     @SerialName("usage")
-    var usage: Usage = Usage(0.0, 0.0)
+    var usage: Usage? = null,
+
+    @Serializable(with = LocalDateSerializer::class)
+    @SerialName("from")
+    val from: LocalDateTime? = null,
 )

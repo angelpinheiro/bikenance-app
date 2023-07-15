@@ -2,16 +2,16 @@ package com.anxops.bkn.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 import kotlin.math.round
 
-@Serializable(with = BikeTypeSerializer::class)
 enum class BikeType(
     val type: String,
     val extendedType: String
 ) {
-    UNKNOWN("UNKNOWN", "Unknown bike type"),
     MTB("MTB", "MTB Hardtail"),
     FULL_MTB("Full MTB", "MTB Full Suspension" ),
     ROAD("Road", "Road Bike"),
@@ -140,7 +140,7 @@ data class Bike(
     @SerialName("draft") var draft: Boolean = false,
     @SerialName("electric") val electric: Boolean = false,
     @SerialName("configDone") val configDone: Boolean = false,
-    @SerialName("bike_type") var type: BikeType = BikeType.UNKNOWN,
+    @SerialName("bike_type") var type: BikeType = BikeType.MTB,
 
     val components: List<BikeComponent>? = emptyList()
 
@@ -182,8 +182,9 @@ data class BikeUpdate(
     @SerialName("draft") var draft: Boolean = false,
     @SerialName("electric") val electric: Boolean,
     @SerialName("configDone") val configDone: Boolean,
-    @SerialName("bike_type") var type: BikeType = BikeType.UNKNOWN,
+    @SerialName("bike_type") var type: BikeType = BikeType.MTB,
 )
+
 
 @Serializable
 data class BikeRide(
@@ -198,7 +199,8 @@ data class BikeRide(
     @SerialName("moving_time") var movingTime: Int? = null,
     @SerialName("elapsed_time") var elapsedTime: Int? = null,
     @SerialName("total_elevation_gain") var totalElevationGain: Int? = null,
-    @SerialName("date_time") var dateTime: String? = null,
+    @Serializable(with = LocalDateSerializer::class)
+    @SerialName("date_time") var dateTime: LocalDateTime? = null,
     @SerialName("map_summary_polyline") var mapSummaryPolyline: String? = null,
 )
 

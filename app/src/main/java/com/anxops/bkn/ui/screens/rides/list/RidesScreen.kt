@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,14 +33,12 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
-import com.anxops.bkn.ui.shared.coloredShadow
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
-import com.anxops.bkn.util.formatAsYearMonth
-import com.anxops.bkn.util.simpleLocalTimeFormat
-import com.anxops.bkn.util.toDate
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -64,7 +61,7 @@ fun RidesScreen(
     val lastUpdated = viewModel.lastUpdatedFlow.collectAsState(null)
 
     val at =
-        lastUpdated.value?.let { simpleLocalTimeFormat.format(Date(it.lastRidesUpdate)) } ?: "Never"
+        lastUpdated.value?.let { it.lastRidesUpdate } ?: "Never"
 
     val isRefreshing =
         pagedRides.loadState.refresh == LoadState.Loading || pagedRides.loadState.append == LoadState.Loading
@@ -169,53 +166,6 @@ fun PagedRideList(
         }
     }
 
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun RideList(
-    rides: List<BikeRide>,
-    bikes: List<Bike>,
-    onClickRide: (id: String) -> Unit = {},
-    onClickOpenStrava: (stravaId: String) -> Unit = {}
-) {
-
-    val loadedRides = rides.groupBy { it.dateTime?.substring(0, 7) ?: "" }?.toList()
-        ?.sortedByDescending { it.first }
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(0.dp),
-        modifier = Modifier.background(MaterialTheme.colors.primary)
-    ) {
-
-        loadedRides?.forEach { item ->
-
-            val gRides = item.second.sortedByDescending { it.dateTime }
-            val date = gRides.first().dateTime.toDate()?.formatAsYearMonth() ?: "Other"
-
-            stickyHeader {
-                Text(
-                    text = date.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .coloredShadow()
-                        .background(MaterialTheme.colors.primaryVariant)
-                        .padding(6.dp),
-                    color = MaterialTheme.colors.onPrimary,
-                    style = MaterialTheme.typography.h3
-                )
-            }
-            items(items = gRides, itemContent = {
-                Ride(ride = it, bikes, onClickOpenOnStrava = {
-                    it.stravaId?.let { id ->
-                        onClickOpenStrava(id)
-                    }
-                }, onClick = {
-                    onClickRide(it._id)
-                })
-            })
-        }
-    }
 }
 
 

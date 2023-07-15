@@ -8,6 +8,7 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.Profile
+import com.anxops.bkn.util.formatAsIso8061
 
 
 fun Profile.toEntity(): ProfileEntity {
@@ -60,7 +61,7 @@ fun BikeRide.toEntity(): BikeRideEntity {
         movingTime = movingTime,
         elapsedTime = elapsedTime,
         elevationGain = totalElevationGain,
-        dateTime = dateTime,
+        dateTime = dateTime?.formatAsIso8061(),
         mapSummaryPolyline = mapSummaryPolyline
     )
 }
@@ -71,8 +72,9 @@ fun BikeComponent.toEntity(): ComponentEntity {
         bikeId = bikeId,
         description = alias,
         type = type.name,
-        usageDistance = usage.distance,
-        usageHours = usage.duration
+        usageDistance = usage?.distance ?: 0.0,
+        usageHours = usage?.duration ?: 0.0,
+        from = from?.formatAsIso8061()
     )
 }
 

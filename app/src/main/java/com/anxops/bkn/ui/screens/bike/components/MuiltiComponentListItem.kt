@@ -88,7 +88,7 @@ fun MultiComponentListItem(data: GroupedComponents) {
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Usage: ${formatDistanceAsKm(component.usage.distance.toInt())} / ${component.usage.duration.toInt()} hours",
+                            text = "Usage: ${formatDistanceAsKm(component.usage?.distance?.toInt())} / ${component.usage?.duration?.toInt()} hours",
                             color = MaterialTheme.colors.background,
                             style = MaterialTheme.typography.h4,
                         )

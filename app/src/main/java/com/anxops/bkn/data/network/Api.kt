@@ -196,6 +196,15 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
+    suspend fun setupBike(bike: Bike) : ApiResponse<Bike> {
+        return safeApiCall {
+            httpClient.put(ApiEndpoints.profileBikeSetupEndpoint(bike._id)) {
+                header("Authorization", tokenHeader())
+                body = bike
+            }
+        }
+    }
+
 
 }
 

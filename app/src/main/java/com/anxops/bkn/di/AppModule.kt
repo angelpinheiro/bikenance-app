@@ -49,8 +49,9 @@ class AppModule {
     fun providesBikesRepository(
         api: Api,
         db: AppDb,
-        rf: RidesRepositoryFacade
-    ): BikeRepositoryFacade = BikeRepository(api, db, rf)
+        rf: RidesRepositoryFacade,
+        cf: ComponentRepositoryFacade
+    ): BikeRepositoryFacade = BikeRepository(api, db, rf, cf)
 
     @Provides
     @Singleton

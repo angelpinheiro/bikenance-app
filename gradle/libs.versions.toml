@@ -6,6 +6,7 @@ composeNavigationHilt = "1.0.0"
 composeTest = "1.4.3"
 activity = "1.10.1"
 kotlin = "1.8.10"
+kotlinx-datetime="0.3.2"
 ksp = "1.8.10-1.0.9"
 hilt = "2.46.1"
 hilt-work = "1.0.0"
@@ -75,6 +76,7 @@ hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-datetime = {module =  "org.jetbrains.kotlinx:kotlinx-datetime", version.ref="kotlinx-datetime" }
 google-gradle = { module = 'com.google.gms:google-services', version.ref = 'gms-google-services' }
 
 ktor-client-core= { module = 'io.ktor:ktor-client-core', version.ref = 'ktor'}

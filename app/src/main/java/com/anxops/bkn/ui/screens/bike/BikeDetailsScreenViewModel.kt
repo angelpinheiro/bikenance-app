@@ -68,48 +68,48 @@ class BikeDetailsScreenViewModel @Inject constructor(
     }
 
     fun addSelectedComponentsToBike() {
-        viewModelScope.launch {
-
-            bike.value?.let { currentBike ->
-                val newComponents = selectedComponentTypes.value.map {
-
-                    var alias = it.name
-                    val cs = listOf(
-                        ComponentTypes.DISC_BRAKE,
-                        ComponentTypes.THRU_AXLE,
-                        ComponentTypes.DISC_PAD,
-                        ComponentTypes.TIRE
-                    )
-                    if (cs.contains(it)) {
-                        listOf(
-                            BikeComponent(
-                                bikeId = currentBike._id,
-                                modifier = ComponentModifier.FRONT,
-                                alias = alias,
-                                type = it
-                            ),
-                            BikeComponent(
-                                bikeId = currentBike._id,
-                                modifier = ComponentModifier.REAR,
-                                alias = alias,
-                                type = it
-                            )
-                        )
-                    } else {
-                        listOf(
-                            BikeComponent(
-                                bikeId = currentBike._id,
-                                alias = alias,
-                                type = it
-                            )
-                        )
-                    }
-
-                }.flatten()
-
-                bikeComponentRepository.createComponents(currentBike._id, newComponents)
-            }
+//        viewModelScope.launch {
+//
+//            bike.value?.let { currentBike ->
+//                val newComponents = selectedComponentTypes.value.map {
+//
+//                    var alias = it.name
+//                    val cs = listOf(
+//                        ComponentTypes.DISC_BRAKE,
+//                        ComponentTypes.THRU_AXLE,
+//                        ComponentTypes.DISC_PAD,
+//                        ComponentTypes.TIRE
+//                    )
+//                    if (cs.contains(it)) {
+//                        listOf(
+//                            BikeComponent(
+//                                bikeId = currentBike._id,
+//                                modifier = ComponentModifier.FRONT,
+//                                alias = alias,
+//                                type = it
+//                            ),
+//                            BikeComponent(
+//                                bikeId = currentBike._id,
+//                                modifier = ComponentModifier.REAR,
+//                                alias = alias,
+//                                type = it
+//                            )
+//                        )
+//                    } else {
+//                        listOf(
+//                            BikeComponent(
+//                                bikeId = currentBike._id,
+//                                alias = alias,
+//                                type = it
+//                            )
+//                        )
+//                    }
+//
+//                }.flatten()
+//
+//                bikeComponentRepository.createComponents(currentBike._id, newComponents)
+//            }
         }
-    }
+//    }
 
 }
