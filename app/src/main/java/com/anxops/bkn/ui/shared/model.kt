@@ -103,6 +103,10 @@ val maintenanceResourcesMap = mapOf(
         nameResId = R.string.brake_maintenance,
         descriptionResId = R.string.brake_maintenance_description
     ),
+    MaintenanceTypes.DISC_PAD_MAINTENANCE to MaintenanceResources(
+        nameResId = R.string.disc_brake_maintenance,
+        descriptionResId = R.string.disc_pads_maintenance_description
+    ),
     MaintenanceTypes.CABLES_AND_HOUSING_MAINTENANCE to MaintenanceResources(
         nameResId = R.string.cables_and_housing_maintenance,
         descriptionResId = R.string.cables_and_housing_maintenance_description
@@ -151,10 +155,6 @@ val maintenanceResourcesMap = mapOf(
         nameResId = R.string.wheelset_wheels_and_spokes_maintenance,
         descriptionResId = R.string.wheelset_wheels_and_spokes_maintenance_description
     ),
-    MaintenanceTypes.WHEELSET_TREAD_WEAR_MAINTENANCE to MaintenanceResources(
-        nameResId = R.string.wheelset_tread_wear_maintenance,
-        descriptionResId = R.string.wheelset_tread_wear_maintenance_description
-    )
 )
 
 

@@ -1,4 +1,4 @@
-package com.anxops.bkn.data.model
+package com.anxops.bkn.data.model.util
 
 import android.util.Log
 import com.anxops.bkn.util.formatAsIso8061

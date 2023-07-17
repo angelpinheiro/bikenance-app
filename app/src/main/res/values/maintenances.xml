@@ -4,6 +4,7 @@
 
     <!-- Maintenance Types -->
     <string name="brake_maintenance">Maintenance of Brakes</string>
+    <string name="disc_pads_maintenance">Maintenance of Disc Pads</string>
     <string name="cables_and_housing_maintenance">Maintenance of Cables and Housings</string>
     <string name="cassette_maintenance">Maintenance of Cassette</string>
     <string name="chain_maintenance">Maintenance of Chain</string>
@@ -20,6 +21,7 @@
 
     <!-- Maintenance Descriptions -->
     <string name="brake_maintenance_description">Hydraulic circuit purging and piston maintenance.</string>
+    <string name="disc_pads_maintenance_description">Visual inspection of disc pads for wear or damage. Replace if necessary..</string>
     <string name="cables_and_housing_maintenance_description">Visual inspection of cable housings for wear or damage. Replace if necessary.</string>
     <string name="cassette_maintenance_description">Check the wear of the cassette. Consider replacing if it shows excessive wear or hinders gear shifting.</string>
     <string name="chain_maintenance_description">Replace the chain.</string>
