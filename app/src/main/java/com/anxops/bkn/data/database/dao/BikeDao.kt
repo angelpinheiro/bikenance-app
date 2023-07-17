@@ -23,10 +23,10 @@ interface BikeDao {
     suspend fun unSyncAllBikes()
 
     @Query("UPDATE bike SET draft = 0 WHERE _id IN (:ids)")
-    suspend fun syncSelectedBikes(ids: List<String>)
+    suspend fun syncSelectedBikes(ids: Set<String>)
 
     @Transaction
-    suspend fun syncBikes(ids: List<String>) {
+    suspend fun syncBikes(ids: Set<String>) {
         unSyncAllBikes()
         syncSelectedBikes(ids)
     }

@@ -119,7 +119,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun syncBikes(ids: List<String>): ApiResponse<Boolean> {
+    suspend fun syncBikes(ids: Map<String, Boolean>): ApiResponse<Boolean> {
         return safeApiCall {
             httpClient.put(ApiEndpoints.profileSyncBikesEndpoint()) {
                 header("Authorization", tokenHeader())
@@ -228,5 +228,5 @@ data class LoginResult(
 
 @Serializable
 data class SyncBikes(
-    @SerialName("synchronizedBikesIds") val synchronizedBikesIds: List<String>
+    @SerialName("syncData") val syncData: Map<String, Boolean>
 )

@@ -131,8 +131,7 @@ class SetupProfileScreenViewModel @Inject constructor(
 
                     when (r) {
                         is RepositoryResult.Success -> {
-                            bikeRepository.updateSynchronizedBikes(state.value.bikes.filter { !it.draft }
-                                .map { it._id })
+                            bikeRepository.updateSynchronizedBikes(state.value.bikes.associate { it._id to !it.draft })
                             updateEvent.emit(true)
                         }
 

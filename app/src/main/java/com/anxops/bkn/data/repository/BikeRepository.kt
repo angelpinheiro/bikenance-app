@@ -28,7 +28,7 @@ interface BikeRepositoryFacade {
 
     suspend fun createBike(bike: Bike)
 
-    suspend fun updateSynchronizedBikes(ids: List<String>)
+    suspend fun updateSynchronizedBikes(ids: Map<String, Boolean>)
 
     fun getBikesFlow(draft: Boolean = false): Flow<List<Bike>>
 
@@ -117,11 +117,11 @@ class BikeRepository(
         api.createBike(bike)
     }
 
-    override suspend fun updateSynchronizedBikes(ids: List<String>) {
-        println("updateSynchronizedBikes: " + ids.joinToString(", "))
-        db.bikeDao().syncBikes(ids)
+    override suspend fun updateSynchronizedBikes(ids: Map<String, Boolean>) {
+
         when (val result = api.syncBikes(ids)) {
             is ApiResponse.Success -> {
+                db.bikeDao().syncBikes(ids.filter { it.value }.keys)
                 Log.d("updateSynchronizedBikes", "Result OK: ${result.message}")
             }
 
