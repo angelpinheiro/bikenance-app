@@ -81,14 +81,14 @@ fun MultiComponentListItem(data: GroupedComponents) {
                     Column(Modifier.padding(start = 6.dp)) {
 
                         Text(
-                            text = component.alias ?: "",
+                            text = component.modifier?.displayName ?: component.alias ?: "",
                             color = MaterialTheme.colors.background,
                             style = MaterialTheme.typography.h4,
                             modifier = Modifier.padding(start = 0.dp),
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Usage: ${formatDistanceAsKm(component.usage?.distance?.toInt())} / ${component.usage?.duration?.toInt()} hours",
+                            text = "Usage: ${component.displayDistance()} / ${component.displayDuration()}",
                             color = MaterialTheme.colors.background,
                             style = MaterialTheme.typography.h4,
                         )

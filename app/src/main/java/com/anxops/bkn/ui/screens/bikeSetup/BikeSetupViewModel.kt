@@ -188,7 +188,6 @@ class BikeSetupViewModel @Inject constructor(
 
             val date = getFromLocalDateTime(it, details.lastMaintenances)
 
-            var alias = it.name
             val duplicatedComponents = listOf(
                 ComponentTypes.DISC_BRAKE,
                 ComponentTypes.THRU_AXLE,
@@ -200,13 +199,13 @@ class BikeSetupViewModel @Inject constructor(
                     BikeComponent(
                         bikeId = bike._id,
                         modifier = ComponentModifier.FRONT,
-                        alias = alias,
+                        alias = ComponentModifier.FRONT.displayName + " ${it.name.lowercase()}",
                         type = it,
                         from = date
                     ), BikeComponent(
                         bikeId = bike._id,
                         modifier = ComponentModifier.REAR,
-                        alias = alias,
+                        alias = ComponentModifier.REAR.displayName + " ${it.name.lowercase()}",
                         type = it,
                         from = date
                     )
@@ -214,7 +213,7 @@ class BikeSetupViewModel @Inject constructor(
             } else {
                 listOf(
                     BikeComponent(
-                        bikeId = bike._id, alias = alias, type = it, from = date
+                        bikeId = bike._id, alias = it.name, type = it, from = date
                     )
                 )
             }

@@ -74,6 +74,7 @@ fun BikeComponent.toEntity(): ComponentEntity {
         type = type.name,
         usageDistance = usage?.distance ?: 0.0,
         usageHours = usage?.duration ?: 0.0,
+        modifier = modifier?.name,
         from = from?.formatAsIso8061()
     )
 }

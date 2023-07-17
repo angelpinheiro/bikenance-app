@@ -23,6 +23,8 @@ interface ComponentRepositoryFacade {
     suspend fun createComponent(component: BikeComponent)
 
     suspend fun createComponents(bikeId: String, components: List<BikeComponent>)
+
+    suspend fun removeAllFor(bikeId: String)
     suspend fun updateComponent(component: BikeComponent)
 
     suspend fun reloadData(): Boolean
@@ -54,6 +56,12 @@ class BikeComponentRepository(
                 it.toDomain()
             }
         }
+
+    override suspend fun removeAllFor(bikeId: String) {
+        withContext(defaultDispatcher) {
+            db.bikeComponentDao().clearBike(bikeId)
+        }
+    }
 
     override suspend fun createComponent(component: BikeComponent) =
         withContext(defaultDispatcher) {

@@ -48,9 +48,14 @@ class BikeRepository(
         when (val bikes = api.getBikes()) {
             is ApiResponse.Success -> {
                 db.bikeDao().clear()
+                db.bikeComponentDao().clear()
                 bikes.data.let {
                     it.forEach { b ->
                         db.bikeDao().insert(b.toEntity())
+                        b.components?.forEach { component ->
+                            Log.d("createComponents", "Inserting ${component.alias} in db")
+                            db.bikeComponentDao().insert(component.toEntity())
+                        }
                     }
                 }
                 true
@@ -97,11 +102,12 @@ class BikeRepository(
 
     override suspend fun setupBike(bike: Bike) {
         when (val response = api.setupBike(bike)) {
-            is ApiResponse.Error -> TODO()
+            is ApiResponse.Error -> TODO(response.message ?: "ApiResponse.Error")
             is ApiResponse.Success -> {
                 db.bikeDao().update(response.data.toEntity())
                 response.data.components?.let {
-                    componentRepository.createComponents(response.data._id, it)
+                    componentRepository.removeAllFor(bike._id)
+                    componentRepository.createComponents(bike._id, it)
                 }
             }
         }

@@ -1,9 +1,8 @@
 package com.anxops.bkn.data.model
 
-import kotlinx.serialization.Contextual
+import com.anxops.bkn.util.formatDistanceAsKm
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -108,9 +107,9 @@ val maintenanceConfigurations = mapOf(
 )
 
 
-enum class ComponentModifier {
-    REAR,
-    FRONT
+enum class ComponentModifier(val displayName: String) {
+    REAR("Rear"),
+    FRONT("Front")
 }
 
 enum class MaintenanceTypes {
@@ -198,8 +197,13 @@ data class BikeComponent(
     val modifier: ComponentModifier? = null,
     @SerialName("usage")
     var usage: Usage? = null,
-
     @Serializable(with = LocalDateSerializer::class)
     @SerialName("from")
     val from: LocalDateTime? = null,
-)
+) {
+    fun displayDuration(): String {
+        return "${usage?.duration?.let { (it / 3600).toInt() } ?: "--"} hours"
+    }
+
+    fun displayDistance() = formatDistanceAsKm((usage?.distance ?: 0).toInt())
+}

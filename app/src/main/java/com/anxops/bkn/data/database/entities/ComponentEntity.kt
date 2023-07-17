@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.Usage
 import com.anxops.bkn.util.toLocalDateTime
@@ -16,6 +17,7 @@ data class ComponentEntity(
     @ColumnInfo(name = "usage_hours") val usageHours: Double = 0.0,
     @ColumnInfo(name = "usage_distance") val usageDistance: Double = 0.0,
     @ColumnInfo(name = "component_type") val type: String,
+    @ColumnInfo(name = "modifier") val modifier: String? = null,
     @ColumnInfo(name = "from") val from: String?,
 ) {
     fun toDomain(): BikeComponent {
@@ -24,7 +26,9 @@ data class ComponentEntity(
             bikeId = bikeId,
             alias = description,
             type = ComponentTypes.valueOf(type),
+            modifier = modifier?.let { ComponentModifier.valueOf(it) },
             usage = Usage(usageHours, usageDistance),
+
             from = from?.toLocalDateTime()
         )
     }

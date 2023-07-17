@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
@@ -68,9 +69,12 @@ fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit
                                     text = ride.name ?: "",
                                     color = MaterialTheme.colors.onPrimary,
                                     style = MaterialTheme.typography.h3,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1,
                                     modifier = Modifier
                                         .padding(horizontal = 10.dp)
-                                        .weight(1f)
+                                        .weight(1f),
+
                                 )
                                 Text(
                                     text = formatDistanceAsKm(ride.distance ?: 0),

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -81,8 +80,9 @@ fun BikeDetailsScreen(
         ) {
             BottomSheetScaffold(
                 topBar = {
-                    BikeDetailsTopBar(bike = bike, onAddComponent = {
-                        scope.launch { scaffoldState.bottomSheetState.expand() }
+                    BikeDetailsTopBar(bike = bike, onBikeSetup = {
+                        // scope.launch { scaffoldState.bottomSheetState.expand() }
+                        bknNav.navigateToBikeSetup(bike._id)
                     })
                 },
                 sheetContent = {
@@ -137,7 +137,7 @@ fun BikeDetailsScreen(
                         ) {
                             Box(
                                 Modifier
-                                    .background(MaterialTheme.colors.primaryVariant)                                 
+                                    .background(MaterialTheme.colors.primaryVariant)
                             ) {
                                 BikeStatusMap(
                                     highlightedGroup = selectedComponentCategory.value,
@@ -166,41 +166,6 @@ fun BikeDetailsScreen(
                         }
 
                     }
-
-
-//                    LazyColumn(
-//                        state = listState,
-//                        modifier = Modifier
-//                            .padding(it)
-//                            .weight(1f),
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//
-//                        ) {
-//                        if (components.value.isEmpty()) {
-//                            item {
-//
-//
-//
-//                            }
-//
-//                            item {
-////                                Box(
-////                                    modifier = Modifier
-////                                        .fillMaxHeight()
-////                                ) {
-////                                    EmptyComponentList(onClickAction = {
-////                                        scope.launch { scaffoldState.bottomSheetState.expand() }
-////                                    })
-////                                }
-//                                BikeSetup()
-//                            }
-//                        } else {
-//
-//                            item {
-//
-//                            }
-//                        }
-//                    }
                 }
             }
         }

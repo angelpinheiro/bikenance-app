@@ -29,6 +29,9 @@ interface BikeComponentDao {
     @Insert
     fun insertAll(vararg components: ComponentEntity)
 
+    @Query("DELETE FROM component WHERE bike_id = :bikeId")
+    suspend fun clearBike(bikeId: String)
+
     @Query("DELETE FROM component")
     suspend fun clear()
 

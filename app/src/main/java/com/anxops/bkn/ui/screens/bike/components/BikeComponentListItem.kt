@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.resources
-import com.anxops.bkn.util.formatDistanceAsKm
+import com.anxops.bkn.util.formatAsDayMonth
 
 
 @Composable
@@ -73,7 +73,7 @@ fun BikeComponentListItem(component: BikeComponent) {
 
 
                 Text(
-                    text = "Last maintenance: 3 months ago",
+                    text = "Last maintenance: ${component.from?.formatAsDayMonth() ?: "--"}",
                     color = MaterialTheme.colors.background,
                     style = MaterialTheme.typography.h4,
                     modifier = Modifier.padding(start = 0.dp)
@@ -82,7 +82,7 @@ fun BikeComponentListItem(component: BikeComponent) {
 
 
             Text(
-                text = "Usage: ${formatDistanceAsKm(component.usage?.distance?.toInt())} / ${component.usage?.duration?.toInt()} hours",
+                text = "Usage: ${component.displayDistance()} / ${component.displayDuration()}",
                 color = MaterialTheme.colors.background,
                 style = MaterialTheme.typography.h4,
             )

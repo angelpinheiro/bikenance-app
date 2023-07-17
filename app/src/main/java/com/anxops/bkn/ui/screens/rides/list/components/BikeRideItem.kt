@@ -208,6 +208,11 @@ fun formatDuration(seconds: Int): String {
     }
 }
 
+fun secondsToHours(seconds: Int): Long {
+    return TimeUnit.SECONDS.toHours(seconds.toLong()) % 24
+
+}
+
 fun getRideBike(ride: BikeRide, bikes: List<Bike>): Bike? {
     return bikes.firstOrNull {
         it._id == ride.bikeId

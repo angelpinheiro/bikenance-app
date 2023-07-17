@@ -27,7 +27,7 @@ import com.anxops.bkn.ui.shared.components.BknIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
-fun BikeDetailsTopBar(bike: Bike, onAddComponent: () -> Unit = {}) {
+fun BikeDetailsTopBar(bike: Bike, onBikeSetup: () -> Unit = {}) {
 
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
@@ -60,10 +60,25 @@ fun BikeDetailsTopBar(bike: Bike, onAddComponent: () -> Unit = {}) {
                 }
                 if (bike.stravaId != null) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
+
                         IconButton(onClick = {
+
+                            onBikeSetup()
 
                         }) {
 
+                            BknIcon(
+                                CommunityMaterial.Icon.cmd_account_sync,
+                                MaterialTheme.colors.surface,
+                                modifier = Modifier
+                                    .padding(end = 10.dp)
+                                    .size(16.dp)
+                            )
+                        }
+
+                        IconButton(onClick = {
+
+                        }) {
 
                             Image(
                                 painter = painterResource(id = R.drawable.ic_strava_logo),
