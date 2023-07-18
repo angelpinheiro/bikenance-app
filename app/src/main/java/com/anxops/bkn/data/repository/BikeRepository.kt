@@ -6,6 +6,7 @@ import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,6 +34,10 @@ interface BikeRepositoryFacade {
 
     fun getBikesFlow(draft: Boolean = false): Flow<List<Bike>>
 
+    suspend fun createBikeComponents(bikeId: String, components: List<BikeComponent>)
+
+    suspend fun removeAllBikeComponents(bikeId: String)
+
     suspend fun reloadData(): Boolean
 }
 
@@ -40,13 +45,13 @@ class BikeRepository(
     val api: Api,
     val db: AppDb,
     val ridesRepository: RidesRepositoryFacade,
-    private val componentRepository: ComponentRepositoryFacade,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BikeRepositoryFacade {
 
     override suspend fun reloadData(): Boolean = withContext(defaultDispatcher) {
         when (val apiResponse = api.getBikes()) {
+
             is ApiResponse.Success -> {
 
                 db.database().withTransaction {
@@ -115,8 +120,8 @@ class BikeRepository(
             is ApiResponse.Success -> {
                 db.bikeDao().update(response.data.toEntity())
                 response.data.components?.let {
-                    componentRepository.removeAllFor(bike._id)
-                    componentRepository.createComponents(bike._id, it)
+                    removeAllBikeComponents(bike._id)
+                    createBikeComponents(bike._id, it)
                 }
             }
         }
@@ -146,4 +151,32 @@ class BikeRepository(
         }
     }
 
+    override suspend fun removeAllBikeComponents(bikeId: String) {
+        withContext(defaultDispatcher) {
+            db.bikeComponentDao().clearBike(bikeId)
+        }
+    }
+
+    override suspend fun createBikeComponents(bikeId: String, components: List<BikeComponent>) =
+        withContext(defaultDispatcher) {
+            // Save to remote
+            when (val result = api.addBikeComponents(bikeId, components)) {
+                is ApiResponse.Success -> {
+                    // save to local db
+                    Log.d("createComponents", "Created ${components.size} comp.")
+                    result.data.forEach { component ->
+                        Log.d("createComponents", "Inserting ${component.alias} in db")
+                        db.bikeComponentDao().insert(component.toEntity())
+                        component.maintenances?.forEach {
+                            db.maintenanceDao().insert(it.toEntity())
+                        }
+                    }
+                }
+
+                else -> {
+                    TODO("HANDLE createBikeComponents ERROR: ${result.message}")
+                }
+            }
+
+        }
 }

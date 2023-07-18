@@ -11,7 +11,6 @@ import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.getDefaultComponents
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
-import com.anxops.bkn.data.repository.ComponentRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,7 +26,6 @@ data class BikeWithStatus(
 
 @HiltViewModel
 class BikeDetailsScreenViewModel @Inject constructor(
-    private val bikeComponentRepository: ComponentRepositoryFacade,
     private val bikesRepository: BikeRepositoryFacade,
     val db: AppDb,
     val api: Api,

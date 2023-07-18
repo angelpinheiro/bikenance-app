@@ -13,7 +13,6 @@ import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.maintenanceConfigurations
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
-import com.anxops.bkn.data.repository.ComponentRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +55,6 @@ data class SetupDetails(
 
 @HiltViewModel
 class BikeSetupViewModel @Inject constructor(
-    private val bikeComponentRepository: ComponentRepositoryFacade,
     private val bikesRepository: BikeRepositoryFacade,
     private val profileRepository: ProfileRepositoryFacade,
     val db: AppDb,
