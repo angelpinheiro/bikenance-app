@@ -15,9 +15,12 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.StatusLevel
 import com.anxops.bkn.ui.screens.maintenances.getColorForProgress
+import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.util.SortedMap
@@ -35,21 +38,21 @@ enum class ComponentTabHeaders(val category: ComponentCategory? = null, order: I
 data class ComponentCategoryTabData(
     val tabHeader: ComponentTabHeaders,
     val components: List<GroupedComponents>,
-    val status: Float,
+    val status: StatusLevel,
 )
 
 data class GroupedComponents(
     val type: ComponentTypes, val items: List<BikeComponent>
 )
 
-fun buildComponentCategoryTabData(components: List<BikeComponent>): SortedMap<ComponentTabHeaders, ComponentCategoryTabData> {
-    // group bvy category
+fun buildComponentCategoryTabData(components: List<BikeComponent>, bikeStatus: BikeStatus): SortedMap<ComponentTabHeaders, ComponentCategoryTabData> {
+    // group by category
     val groupedByCat = components.groupBy { it.type.category }
 
     // add general tab
     var catGroupedComponents = listOf(
         ComponentCategoryTabData(
-            ComponentTabHeaders.GENERAL, emptyList(), 0f
+            ComponentTabHeaders.GENERAL, emptyList(), StatusLevel.UNKNOWN
         )
     )
 
@@ -66,13 +69,10 @@ fun buildComponentCategoryTabData(components: List<BikeComponent>): SortedMap<Co
             it.category == cat
         }
 
-        val status =
-            comp.mapNotNull { c -> FakeData.maintenances.firstOrNull { it.componentType == c.type } }
-                .maxByOrNull { it.percentage }
-
+        val status = bikeStatus.componentCategoryStatus[cat.category] ?: StatusLevel.UNKNOWN
 
         ComponentCategoryTabData(
-            components = items, status = status?.percentage ?: 0f, tabHeader = cat
+            components = items, status = status, tabHeader = cat
         )
     })
 
@@ -83,11 +83,12 @@ fun buildComponentCategoryTabData(components: List<BikeComponent>): SortedMap<Co
 fun BikeComponentTabsV2(
     components: List<BikeComponent>, onTabChange: (ComponentTabHeaders) -> Unit = {},
     selectedTab: ComponentTabHeaders = ComponentTabHeaders.GENERAL,
-    bike: Bike
+    bike: Bike,
+    status: BikeStatus
 ) {
 
     val data = remember(components) {
-        mutableStateOf(buildComponentCategoryTabData(components))
+        mutableStateOf(buildComponentCategoryTabData(components, status))
     }
 
     var tabHeaderIndex = data.value.keys.indexOf(selectedTab)
@@ -136,11 +137,13 @@ fun BikeComponentTabsV2(
 fun CategoryTab(d: ComponentCategoryTabData, selected: Boolean, onSelected: () -> Unit = {}) {
     Tab(
         icon = {
-            BknIcon(
-                icon = CommunityMaterial.Icon.cmd_bell_circle, getColorForProgress(
-                    percentage = d.status, 0.6f
-                ), modifier = Modifier.size(18.dp)
-            )
+            if(d.status > StatusLevel.GOOD) {
+                BknIcon(
+                    icon = CommunityMaterial.Icon.cmd_bell_circle, getColorForStatus(
+                        d.status
+                    ), modifier = Modifier.size(18.dp)
+                )
+            }
         },
         text = {
             Text(d.tabHeader.name, style = MaterialTheme.typography.h5)

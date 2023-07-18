@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -52,14 +51,10 @@ fun BikeDetailsScreen(
     bikeId: String = ""
 ) {
     val bknNav = BknNavigator(navigator)
-    val isRefreshing = remember { mutableStateOf(false) }
-
     LaunchedEffect(bikeId) {
         viewModel.loadBike(bikeId)
     }
 
-    val listState = rememberLazyListState()
-    val gradient = bgGradient()
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scrollState = rememberScrollState()
@@ -156,6 +151,7 @@ fun BikeDetailsScreen(
                             }
                             BikeComponentTabsV2(
                                 bike = bikeWithStatus.bike,
+                                status = bikeWithStatus.status,
                                 selectedTab = selectedTab.value,
                                 components = components,
                                 onTabChange = { tab ->

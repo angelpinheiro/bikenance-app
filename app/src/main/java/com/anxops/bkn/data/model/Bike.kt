@@ -83,7 +83,7 @@ data class Bike(
 
 enum class StatusLevel {
 
-    GOOD, OK, WARN, DANGER;
+    UNKNOWN, GOOD, OK, WARN, DANGER;
 
     companion object {
 
@@ -96,12 +96,12 @@ enum class StatusLevel {
                 WARN
             }
 
-//            status > 0.5 -> {
-//                GOOD
-//            }
+            status in 0.0..0.7 -> {
+                GOOD
+            }
 
             else -> {
-                GOOD
+                UNKNOWN
             }
         }
     }

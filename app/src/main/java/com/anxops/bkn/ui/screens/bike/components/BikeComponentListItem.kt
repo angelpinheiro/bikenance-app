@@ -69,22 +69,22 @@ fun BikeComponentListItem(component: BikeComponent) {
 
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-
-
-                Text(
-                    text = "Last maintenance: ${component.from?.formatAsDayMonth() ?: "--"}",
-                    color = MaterialTheme.colors.background,
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier.padding(start = 0.dp)
-                )
-            }
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//
+//
+//                Text(
+//                    text = "Last maintenance: ${component.from?.formatAsDayMonth() ?: "--"}",
+//                    color = MaterialTheme.colors.background,
+//                    style = MaterialTheme.typography.h4,
+//                    modifier = Modifier.padding(start = 0.dp)
+//                )
+//            }
 
 
             Text(
-                text = "Usage: ${component.displayDistance()} / ${component.displayDuration()}",
+                text = "${component.displayDistance()} / ${component.displayDuration()}",
                 color = MaterialTheme.colors.background,
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.h3,
             )
 
             component.maintenances?.forEach {

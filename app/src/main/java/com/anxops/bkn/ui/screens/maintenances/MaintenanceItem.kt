@@ -244,7 +244,7 @@ fun getColorForStatus(statusLevel: StatusLevel?): Color {
         StatusLevel.WARN -> MaterialTheme.colors.statusWarning
         StatusLevel.OK -> MaterialTheme.colors.statusOk
         StatusLevel.GOOD -> MaterialTheme.colors.statusGood
-        else -> MaterialTheme.colors.statusGood
+        else -> MaterialTheme.colors.primary
     }
 }
 
