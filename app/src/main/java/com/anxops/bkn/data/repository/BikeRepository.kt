@@ -1,6 +1,7 @@
 package com.anxops.bkn.data.repository
 
 import android.util.Log
+import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.toEntity
@@ -10,7 +11,7 @@ import com.anxops.bkn.data.network.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 
@@ -45,15 +46,16 @@ class BikeRepository(
     BikeRepositoryFacade {
 
     override suspend fun reloadData(): Boolean = withContext(defaultDispatcher) {
-        when (val bikes = api.getBikes()) {
+        when (val apiResponse = api.getBikes()) {
             is ApiResponse.Success -> {
 
-                db.bikeDao().clear()
-                db.bikeComponentDao().clear()
-                db.maintenanceDao().clear()
+                db.database().withTransaction {
+                    val bikes = apiResponse.data
+                    db.bikeDao().clear()
+                    db.bikeComponentDao().clear()
+                    db.maintenanceDao().clear()
 
-                bikes.data.let {
-                    it.forEach { b ->
+                    bikes.forEach { b ->
                         db.bikeDao().insert(b.toEntity())
                         b.components?.forEach { component ->
                             Log.d("createComponents", "Inserting ${component.alias} in db")
@@ -81,9 +83,10 @@ class BikeRepository(
                         "getBikeComponents",
                         "Component: ${c.component.type} (${c.maintenances?.size} maintenances)"
                     )
-                    val maintenances = db.maintenanceDao().getByComponentId(c.component._id).map { m ->
+                    val maintenances =
+                        db.maintenanceDao().getByComponentId(c.component._id).map { m ->
                             m.toDomain()
-                    }
+                        }
                     c.toDomain().copy(maintenances = maintenances)
                 }
             )
@@ -96,18 +99,8 @@ class BikeRepository(
     }
 
     override fun getBikesFlow(draft: Boolean): Flow<List<Bike>> {
-        return db.bikeDao().flow().mapNotNull { list ->
-            if (draft) {
-                list.map {
-                    it.toDomain()
-                }
-            } else {
-                list.filter {
-                    !it.draft
-                }.map { it.toDomain() }
-            }
-
-
+        return db.bikeDao().flow().map { bikes ->
+            bikes.map { it.toDomain() }
         }
     }
 

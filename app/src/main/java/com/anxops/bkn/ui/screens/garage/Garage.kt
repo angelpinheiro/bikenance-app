@@ -12,15 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
+import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.bgGradient
+import com.anxops.bkn.ui.theme.strava
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -35,12 +38,6 @@ fun Garage(
 ) {
     val nav = BknNavigator(navigator)
     val state = viewModel.screenState.collectAsState()
-//    val rides = viewModel.selectedBikeRides
-//    val bikes = viewModel.bikes.collectAsState()
-//
-//
-//
-//    var selectedBike = viewModel.selectedBike.collectAsState()
 
     updateBikeResult.onNavResult {
         when (it) {
@@ -73,45 +70,54 @@ fun Garage(
             .background(gradientBackground)
             .pullRefresh(pullRefreshState)
     ) {
+        when (val currentState = state.value) {
+            is GarageScreenState.ShowingGarage -> {
 
-        Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+                if (currentState.showSync) {
+                    SyncBikes(currentState, viewModel)
+                } else {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-            when (val currentState = state.value) {
-                is GarageScreenState.ShowingGarage -> {
-                    BikesPager(
-                        bikes = currentState.bikes,
-                        onBikeChanged = {
-                            viewModel.setSelectedBike(it)
-                        },
-                        onEditBike = {
-                            nav.navigateToBike(it._id)
-                        }, onBikeDetails = {
-                            if (it.configDone)
-                                nav.navigateToBikeDetails(it._id)
-                            else
-                                nav.navigateToBikeSetup(it._id)
-                        })
+                        BikesPager(
+                            bikes = currentState.bikes,
+                            onBikeChanged = {
+                                viewModel.setSelectedBike(it)
+                            },
+                            onEditBike = {
+                                nav.navigateToBike(it._id)
+                            },
+                            onBikeDetails = {
+                                if (it.configDone)
+                                    nav.navigateToBikeDetails(it._id)
+                                else
+                                    nav.navigateToBikeSetup(it._id)
+                            },
+                            onClickSync = {
+                                viewModel.onShowOrHideSync(true)
+                            }
+                        )
 
-                    RecentActivity(rides = currentState.lastRides) {
-                        nav.navigateToRide(it._id)
+                        currentState.lastRides?.let { rides ->
+                            RecentActivity(rides = rides) {
+                                nav.navigateToRide(it._id)
+                            }
+                        }
+
+                        UpcomingMaintenance(currentState.selectedBike)
                     }
+                }
 
-                    UpcomingMaintenance(currentState.selectedBike)
-                }
-                is GarageScreenState.Loading -> {
 
-//                    Loading()
-                }
-                else -> {
-//                    Text(text = "Sync bikes!")
-                }
             }
 
+            is GarageScreenState.Loading -> {
+                Loading()
+            }
 
         }
 
@@ -120,6 +126,82 @@ fun Garage(
             pullRefreshState,
             Modifier.align(Alignment.TopCenter)
         )
+    }
+}
+
+@Composable
+private fun SyncBikes(
+    state: GarageScreenState.ShowingGarage,
+    viewModel: GarageViewModel
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+
+            Text(
+                text = "STRAVA bike tracking",
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onPrimary
+            )
+
+            Text(
+                text = "We found ${state.allBikes.size} bikes on Strava. Check the ones you want to track to receive maintenance recommendations.",
+                style = MaterialTheme.typography.h3,
+                color = MaterialTheme.colors.onPrimary
+            )
+        }
+
+        Divider(
+            Modifier
+                .fillMaxWidth()
+                .padding(6.dp)
+                .height(0.dp)
+        )
+
+        state.allBikes.forEach { bike ->
+
+            GarageBikeCard(bike = bike, topLeftSlot = {
+                Switch(
+                    checked = !bike.draft,
+                    onCheckedChange = { viewModel.syncBike(bike, it) },
+                    colors = SwitchDefaults.colors(
+
+                        checkedThumbColor = MaterialTheme.colors.strava,
+                        uncheckedTrackColor = MaterialTheme.colors.primaryVariant,
+                        uncheckedThumbColor = MaterialTheme.colors.onPrimary.copy(
+                            alpha = 0.8f
+                        )
+                    )
+                )
+            }, isLast = true)
+
+            Divider(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp)
+                    .height(0.dp)
+            )
+        }
+
+        OutlinedButton(
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.strava),
+            onClick = { viewModel.finishBikeSync() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+
+        ) {
+            Text(text = "Let's go!", Modifier.padding(5.dp))
+        }
+
     }
 }
 

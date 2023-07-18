@@ -51,7 +51,9 @@ fun GarageBikeCard(
     elevation: Dp = 5.dp,
     tintColor: Color = MaterialTheme.colors.primary,
     onEdit: () -> Unit = {},
-    onDetail: () -> Unit = {}
+    onDetail: () -> Unit = {},
+    topLeftSlot: @Composable () -> Unit = {},
+    isLast: Boolean
 ) {
 
 
@@ -67,12 +69,7 @@ fun GarageBikeCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .padding(horizontal = 10.dp)
-            .combinedClickable(
-                onClick = { onDetail() },
-                onLongClick = { onEdit() },
-            ),
-
+            .padding(start = 16.dp, end = if(isLast) 16.dp else 0.dp),
         elevation = elevation,
         backgroundColor = tintColor
     ) {
@@ -80,7 +77,11 @@ fun GarageBikeCard(
         Box(
             modifier = Modifier
                 .padding(0.dp)
-                .clip(MaterialTheme.shapes.medium),
+                .clip(MaterialTheme.shapes.medium)
+                .combinedClickable(
+                    onClick = { onDetail() },
+                    onLongClick = { onEdit() },
+                ),
         ) {
 
             AsyncImage(
@@ -132,14 +133,16 @@ fun GarageBikeCard(
 
             }
 
-            Box(modifier = Modifier
-                .padding(10.dp)
-                .size(40.dp)
-                .align(Alignment.TopEnd)
-                .aspectRatio(1f)) {
-                Box(modifier = Modifier.align(Alignment.Center)) {
-                    PulsatingCircles(size = 40.dp, color = MaterialTheme.colors.statusWarning)
-                }
+            Column(
+                modifier = Modifier
+                    .padding(top = 10.dp, end = 16.dp)
+                    .size(40.dp)
+                    .align(Alignment.TopEnd)
+                    .aspectRatio(1f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.End
+            ) {
+                topLeftSlot()
             }
 
         }
