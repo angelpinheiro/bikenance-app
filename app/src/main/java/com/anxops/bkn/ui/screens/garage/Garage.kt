@@ -22,8 +22,10 @@ import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
 import com.anxops.bkn.ui.shared.Loading
+import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
 import com.anxops.bkn.ui.theme.strava
+import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -102,14 +104,24 @@ fun Garage(
                             }
                         )
 
-                        currentState.lastRides?.let { rides ->
-                            RecentActivity(rides = rides) {
-                                nav.navigateToRide(it._id)
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 6.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            currentState.lastRides?.let { rides ->
+                                RecentActivity(rides = rides) {
+                                    nav.navigateToRide(it._id)
+                                }
                             }
+
+                            UpcomingMaintenance(currentState.selectedBike)
                         }
 
-                        UpcomingMaintenance(currentState.selectedBike)
                     }
+
                 }
 
 
@@ -137,13 +149,13 @@ private fun SyncBikes(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(10.dp)
     ) {
 
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(16.dp)
         ) {
 
             Text(
@@ -168,7 +180,7 @@ private fun SyncBikes(
 
         state.allBikes.forEach { bike ->
 
-            GarageBikeCard(bike = bike, topLeftSlot = {
+            GarageBikeCard(bike = bike, elevation = 2.dp, topLeftSlot = {
                 Switch(
                     checked = !bike.draft,
                     onCheckedChange = { viewModel.syncBike(bike, it) },
@@ -191,8 +203,11 @@ private fun SyncBikes(
             )
         }
 
+
+
+
         OutlinedButton(
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.strava),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
             onClick = { viewModel.finishBikeSync() },
             modifier = Modifier
                 .fillMaxWidth()
@@ -202,6 +217,29 @@ private fun SyncBikes(
             Text(text = "Let's go!", Modifier.padding(5.dp))
         }
 
+        if (state.allBikes.any { !it.draft }) {
+
+            TextButton(
+                onClick = { viewModel.onShowOrHideSync(false) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+
+            ) {
+                BknIcon(
+                    icon = CommunityMaterial.Icon.cmd_arrow_left,
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Text(
+                    text = "Back",
+                    Modifier.padding(5.dp),
+                    style = MaterialTheme.typography.h3,
+                    color = MaterialTheme.colors.onPrimary
+                )
+            }
+        }
     }
 }
 

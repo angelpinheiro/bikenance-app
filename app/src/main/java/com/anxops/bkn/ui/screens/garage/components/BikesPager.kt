@@ -74,7 +74,7 @@ fun BikesPager(
 
         Row(
             Modifier
-                .padding(start = 10.dp, top = 6.dp, bottom = 6.dp),
+                .padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 0.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
