@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.StatusLevel
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
@@ -212,10 +213,9 @@ fun MaintenanceItemView(item: MaintenanceItem) {
 }
 
 
-
 @Composable
 fun getColorForProgress(percentage: Float, threshold: Float = 0f): Color {
-    if(percentage <= threshold) {
+    if (percentage <= threshold) {
         return Color.Transparent
     }
     return when {
@@ -234,6 +234,17 @@ fun getColorForProgress(percentage: Float, threshold: Float = 0f): Color {
         else -> {
             MaterialTheme.colors.statusGood
         }
+    }
+}
+
+@Composable
+fun getColorForStatus(statusLevel: StatusLevel?): Color {
+    return when (statusLevel) {
+        StatusLevel.DANGER -> MaterialTheme.colors.statusDanger
+        StatusLevel.WARN -> MaterialTheme.colors.statusWarning
+        StatusLevel.OK -> MaterialTheme.colors.statusOk
+        StatusLevel.GOOD -> MaterialTheme.colors.statusGood
+        else -> MaterialTheme.colors.statusGood
     }
 }
 

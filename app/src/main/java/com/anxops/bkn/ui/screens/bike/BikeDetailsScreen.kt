@@ -69,9 +69,9 @@ fun BikeDetailsScreen(
     val highlightCategories = remember { mutableStateOf(true) }
 
     val bike = viewModel.bike.collectAsState()
-    val components = bike.value?.components ?: emptyList()
+    val components = bike.value?.bike?.components ?: emptyList()
 
-    bike.value?.let { bike ->
+    bike.value?.let { bikeWithStatus ->
 
         Box(
             modifier = Modifier
@@ -80,9 +80,9 @@ fun BikeDetailsScreen(
         ) {
             BottomSheetScaffold(
                 topBar = {
-                    BikeDetailsTopBar(bike = bike, onBikeSetup = {
+                    BikeDetailsTopBar(bike = bikeWithStatus.bike, onBikeSetup = {
                         // scope.launch { scaffoldState.bottomSheetState.expand() }
-                        bknNav.navigateToBikeSetup(bike._id)
+                        bknNav.navigateToBikeSetup(bikeWithStatus.bike._id)
                     })
                 },
                 sheetContent = {
@@ -126,7 +126,7 @@ fun BikeDetailsScreen(
                     if (components.isEmpty()) {
                         EmptyComponentList(onClickAction = {
                             scope.launch {
-                                bknNav.navigateToBikeSetup(bike._id)
+                                bknNav.navigateToBikeSetup(bikeWithStatus.bike._id)
                             }
                         })
                     } else {
@@ -141,7 +141,8 @@ fun BikeDetailsScreen(
                             ) {
                                 BikeStatusMap(
                                     highlightedGroup = selectedComponentCategory.value,
-                                    bike = bike,
+                                    bike = bikeWithStatus.bike,
+                                    bikeStatus = bikeWithStatus.status,
                                     highlightCategories = highlightCategories.value,
                                     onCategorySelected = {
                                         highlightCategories.value = false
@@ -154,7 +155,7 @@ fun BikeDetailsScreen(
                                 )
                             }
                             BikeComponentTabsV2(
-                                bike = bike,
+                                bike = bikeWithStatus.bike,
                                 selectedTab = selectedTab.value,
                                 components = components,
                                 onTabChange = { tab ->

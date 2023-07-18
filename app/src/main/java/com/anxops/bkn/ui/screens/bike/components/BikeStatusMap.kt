@@ -57,9 +57,11 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
 import com.anxops.bkn.ui.shared.resources
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.anxops.bkn.ui.theme.statusGood
@@ -73,6 +75,7 @@ data class OffsetAndAlign(val x: Float, val y: Float, val align: Alignment = Ali
 fun BikeStatusMap(
     modifier: Modifier = Modifier,
     bike: Bike,
+    bikeStatus: BikeStatus,
     highlightCategories: Boolean = false,
     highlightedGroup: ComponentCategory? = ComponentCategory.WHEELS,
     onCategorySelected: (ComponentCategory) -> Unit = {}
@@ -81,6 +84,8 @@ fun BikeStatusMap(
     val showComponentGroupsFlag = remember {
         mutableStateOf(false)
     }
+
+
 
     LaunchedEffect(Unit) {
         delay(500)
@@ -138,7 +143,7 @@ fun BikeStatusMap(
                 visible = showComponentGroupsFlag.value && highlightCategories
             ) {
                 HotSpot(text = "Transmission",
-                    color = MaterialTheme.colors.statusWarning,
+                    color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.TRANSMISSION]),
                     size = 35.dp,
                     maxHeight = maxHeight,
                     maxWidth = maxWidth,
@@ -148,7 +153,7 @@ fun BikeStatusMap(
                     onSelected = { onCategorySelected(ComponentCategory.TRANSMISSION) })
 
                 HotSpot(text = "Misc",
-                    color = MaterialTheme.colors.statusGood,
+                    color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.MISC]),
                     size = 35.dp,
                     maxHeight = maxHeight,
                     maxWidth = maxWidth,
@@ -158,7 +163,7 @@ fun BikeStatusMap(
                     onSelected = { onCategorySelected(ComponentCategory.MISC) })
 
                 HotSpot(text = "Brakes",
-                    color = MaterialTheme.colors.statusGood,
+                    color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.BRAKES]),
                     size = 35.dp,
                     maxHeight = maxHeight,
                     maxWidth = maxWidth,
@@ -180,7 +185,7 @@ fun BikeStatusMap(
 
 
                 HotSpot(text = "Tires",
-                    color = MaterialTheme.colors.statusOk,
+                    color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.WHEELS]),
                     size = 35.dp,
                     maxHeight = maxHeight,
                     maxWidth = maxWidth,
@@ -274,7 +279,7 @@ fun BikeStatusMap(
                         HotSpotAnimatedVisibility(highlightedGroup == it.type.category) {
                             SmallHotSpot(
                                 text = stringResource(id = it.type.resources().nameResId),
-                                color = MaterialTheme.colors.statusGood,
+                                color = getColorForStatus(bikeStatus.componentTypeStatus[it.type]),
                                 size = 25.dp,
                                 maxHeight = maxHeight,
                                 maxWidth = maxWidth,
@@ -387,28 +392,28 @@ fun SmallHotSpot(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    BikenanceAndroidTheme(useSystemUIController = false, darkTheme = false) {
-        BikeStatusMap(
-            bike = Bike(
-                "",
-                "",
-                brandName = "Scott",
-                configDone = false,
-                name = "MySpark",
-                distance = 10000,
-                draft = false,
-                modelName = "Spark",
-                electric = false,
-                photoUrl = null,
-                stravaId = "",
-                type = BikeType.FULL_MTB
-            ), modifier = Modifier.fillMaxWidth(0.9f)
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    BikenanceAndroidTheme(useSystemUIController = false, darkTheme = false) {
+//        BikeStatusMap(
+//            bike = Bike(
+//                "",
+//                "",
+//                brandName = "Scott",
+//                configDone = false,
+//                name = "MySpark",
+//                distance = 10000,
+//                draft = false,
+//                modelName = "Spark",
+//                electric = false,
+//                photoUrl = null,
+//                stravaId = "",
+//                type = BikeType.FULL_MTB
+//            ), modifier = Modifier.fillMaxWidth(0.9f)
+//        )
+//    }
+//}
 
 
 @OptIn(ExperimentalAnimationApi::class)

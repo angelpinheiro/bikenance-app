@@ -31,10 +31,14 @@ data class BikeComponent(
     @SerialName("maintenances")
     val maintenances: List<Maintenance>? = null,
 
-) {
+    ) {
     fun displayDuration(): String {
         return "${usage?.duration?.let { (it / 3600).toInt() } ?: "--"} hours"
     }
 
     fun displayDistance() = formatDistanceAsKm((usage?.distance ?: 0).toInt())
+
+    fun status(): StatusLevel {
+        return StatusLevel.from(maintenances?.maxByOrNull { it.status }?.status ?: 0.0)
+    }
 }

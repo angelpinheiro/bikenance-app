@@ -19,6 +19,11 @@ fun ComponentTypes.resources(): ComponentResources =
     componentResourcesMap[this] ?: componentResourcesMap[ComponentTypes.CUSTOM]!!
 
 
+fun MaintenanceTypes.resources(): MaintenanceResources =
+    maintenanceResourcesMap[this]
+        ?: maintenanceResourcesMap[MaintenanceTypes.DISC_PAD_MAINTENANCE]!!
+
+
 val componentResourcesMap = mapOf(
     ComponentTypes.BRAKE_LEVER to ComponentResources(
         R.string.componentType_BRAKE_LEVER,

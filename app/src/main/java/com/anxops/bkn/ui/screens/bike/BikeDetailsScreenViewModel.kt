@@ -4,9 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
-import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.BikeType
-import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.getDefaultComponents
 import com.anxops.bkn.data.network.Api
@@ -19,6 +19,11 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
+data class BikeWithStatus(
+    val bike: Bike, val status: BikeStatus
+)
 
 @HiltViewModel
 class BikeDetailsScreenViewModel @Inject constructor(
@@ -35,7 +40,9 @@ class BikeDetailsScreenViewModel @Inject constructor(
     private val selectedBikeId = MutableStateFlow<String?>(null)
 
     private val bikeFlow = selectedBikeId.mapLatest {
-        it?.let { id -> bikesRepository.getBike(id) } ?: null
+        it?.let { id ->
+            bikesRepository.getBike(id)?.let { bike -> BikeWithStatus(bike, bike.status()) }
+        } ?: null
     }
 
     val bike = bikeFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)

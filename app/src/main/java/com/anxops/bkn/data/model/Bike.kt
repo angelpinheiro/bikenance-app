@@ -4,15 +4,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 enum class BikeType(
-    val type: String,
-    val extendedType: String
+    val type: String, val extendedType: String
 ) {
-    MTB("MTB", "MTB Hardtail"),
-    FULL_MTB("Full MTB", "MTB Full Suspension" ),
-    ROAD("Road", "Road Bike"),
-    E_BIKE("E-Bike", "Electric Bike"),
-    GRAVEL("Gravel", "Gravel Bike"),
-    STATIONARY("Stationary", "Stationary Bike")
+    MTB("MTB", "MTB Hardtail"), FULL_MTB("Full MTB", "MTB Full Suspension"), ROAD(
+        "Road", "Road Bike"
+    ),
+    E_BIKE("E-Bike", "Electric Bike"), GRAVEL("Gravel", "Gravel Bike"), STATIONARY(
+        "Stationary", "Stationary Bike"
+    )
 }
 
 @Serializable
@@ -56,4 +55,61 @@ data class Bike(
     fun displayName(): String {
         return name ?: (brandName ?: "") + " " + (modelName ?: "")
     }
+
+    fun status(): BikeStatus {
+        val componentStatus = components?.map { it to it.status() } ?: listOf()
+
+        val componentTypeStatus = componentStatus.groupBy {
+            it.first.type
+        }.map {
+            it.key to it.value.maxBy { cs -> cs.second }.second
+        }.toMap()
+
+        val categoryStatus = componentStatus.groupBy {
+            it.first.type.category
+        }.map {
+            it.key to it.value.maxBy { cs -> cs.second }.second
+        }.toMap()
+
+        val generalStatus = categoryStatus.maxBy { it.value }.value
+
+        return BikeStatus(generalStatus,
+            categoryStatus,
+            componentTypeStatus,
+            componentStatus.associate { it.first to it.second })
+
+    }
 }
+
+enum class StatusLevel {
+
+    GOOD, OK, WARN, DANGER;
+
+    companion object {
+
+        fun from(status: Double) = when {
+            status >= 1 -> {
+                DANGER
+            }
+
+            status > 0.7 -> {
+                WARN
+            }
+
+//            status > 0.5 -> {
+//                GOOD
+//            }
+
+            else -> {
+                GOOD
+            }
+        }
+    }
+}
+
+data class BikeStatus(
+    val globalStatus: StatusLevel,
+    val componentCategoryStatus: Map<ComponentCategory, StatusLevel>,
+    val componentTypeStatus: Map<ComponentTypes, StatusLevel>,
+    val componentStatus: Map<BikeComponent, StatusLevel>
+)
