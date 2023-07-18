@@ -21,50 +21,99 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
+import com.anxops.bkn.util.formatAsDayMonth
 import com.anxops.bkn.util.formatDistanceAsKm
+import com.anxops.bkn.util.formatDistanceAsShortKm
+import com.anxops.bkn.util.formatElevation
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
 fun BikeStats(bike: Bike) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colors.primaryVariant),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BikeStat(
-            title = "Distance",
-            value = formatDistanceAsKm(bike.distance?.toInt() ?: 0),
-            icon = CommunityMaterial.Icon3.cmd_map_marker_distance,
-            modifier = Modifier.weight(1f)
-        )
-        Divider(
+
+    bike.stats?.let { bikeStats ->
+
+        Column(
             Modifier
-                .height(50.dp)
-                .width(1.dp),
-            color = MaterialTheme.colors.primary
-        )
-        BikeStat(
-            title = "Ascent",
-            value = "150.000 m",
-            modifier = Modifier.weight(1f),
-            icon = CommunityMaterial.Icon2.cmd_image_filter_hdr,
-        )
-        Divider(
-            Modifier
-                .height(50.dp)
-                .width(1.dp),
-            color = MaterialTheme.colors.primary
-        )
-        BikeStat(
-            title = "Last ride",
-            value = "Yesterday",
-            modifier = Modifier.weight(1f),
-            icon = CommunityMaterial.Icon.cmd_bike_fast
-        )
+                .padding(10.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colors.primaryVariant),
+        ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BikeStat(
+                    title = "Rides",
+                    value = "${bikeStats.rideCount}",
+                    icon = CommunityMaterial.Icon3.cmd_map_marker_distance,
+                    modifier = Modifier.weight(1f)
+                )
+                Divider(
+                    Modifier
+                        .height(50.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colors.primary
+                )
+                BikeStat(
+                    title = "Distance",
+                    value = formatDistanceAsShortKm(bikeStats.distance.toInt()),
+                    icon = CommunityMaterial.Icon3.cmd_map_marker_distance,
+                    modifier = Modifier.weight(1f)
+                )
+                Divider(
+                    Modifier
+                        .height(50.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colors.primary
+                )
+                BikeStat(
+                    title = "Ascent",
+                    value = "${formatElevation(bikeStats.elevationGain?.toInt())}",
+                    modifier = Modifier.weight(1f),
+                    icon = CommunityMaterial.Icon2.cmd_image_filter_hdr,
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BikeStat(
+                    title = "AVG Speed",
+                    value = "${bikeStats.averageSpeed?.toInt()}",
+                    icon = CommunityMaterial.Icon3.cmd_map_marker_distance,
+                    modifier = Modifier.weight(1f)
+                )
+                Divider(
+                    Modifier
+                        .height(50.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colors.primary
+                )
+                BikeStat(
+                    title = "Max Speed",
+                    value = "${bikeStats.maxSpeed?.toInt()} kmh",
+                    modifier = Modifier.weight(1f),
+                    icon = CommunityMaterial.Icon2.cmd_image_filter_hdr,
+                )
+                Divider(
+                    Modifier
+                        .height(50.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colors.primary
+                )
+                BikeStat(
+                    title = "Last ride",
+                    value = "${bikeStats.lastRideDate?.formatAsDayMonth()}",
+                    modifier = Modifier.weight(1f),
+                    icon = CommunityMaterial.Icon.cmd_bike_fast
+                )
+            }
+        }
     }
 }
 

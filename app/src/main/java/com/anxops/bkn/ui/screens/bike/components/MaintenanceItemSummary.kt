@@ -19,6 +19,7 @@ import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.resources
 import com.anxops.bkn.util.formatAsDayMonth
+import com.anxops.bkn.util.formatAsRelativeTime
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
@@ -71,7 +72,7 @@ fun MaintenanceItemSummary(item: Maintenance) {
             )
 
             Text(
-                text = "Estimated maintenance ${item.estimatedDate?.formatAsDayMonth()}",
+                text = "Estimated maintenance ${item.estimatedDate?.formatAsRelativeTime()}",
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier

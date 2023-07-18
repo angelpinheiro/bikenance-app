@@ -1,10 +1,14 @@
 package com.anxops.bkn.data.database.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeStats
 import com.anxops.bkn.data.model.BikeType
+import com.anxops.bkn.util.toLocalDateTime
+import java.time.LocalDateTime
 
 @Entity(tableName = "bike")
 data class BikeEntity(
@@ -20,6 +24,7 @@ data class BikeEntity(
     @ColumnInfo(name = "electric") val electric: Boolean = false,
     @ColumnInfo(name = "configDOne") val configDone: Boolean = false,
     @ColumnInfo(name = "type") val type: String,
+    @Embedded val stats : BikeStatsEntity? = null
 ) {
     fun toDomain(): Bike {
         return Bike(
@@ -34,7 +39,37 @@ data class BikeEntity(
             electric = electric,
             photoUrl = photoUrl,
             draft = draft,
-            type = BikeType.valueOf(type)
+            type = BikeType.valueOf(type),
+            stats = stats?.toDomain()
+        )
+    }
+}
+
+data class BikeStatsEntity(
+    @ColumnInfo("ride_count")
+    val rideCount: Double? = null,
+    @ColumnInfo("total_duration")
+    val duration: Double = 0.0,
+    @ColumnInfo("total_distance")
+    val distance: Double = 0.0,
+    @ColumnInfo("total_elevationGain")
+    val elevationGain: Double = 0.0,
+    @ColumnInfo("average_speed")
+    val averageSpeed: Double? = null,
+    @ColumnInfo("max_speed")
+    val maxSpeed: Double? = null,
+    @ColumnInfo("last_ride_date")
+    val lastRideDate: String? = null,
+) {
+    fun toDomain(): BikeStats {
+        return BikeStats(
+            rideCount = rideCount,
+            elevationGain = elevationGain,
+            distance = distance,
+            duration = duration,
+            averageSpeed = averageSpeed,
+            maxSpeed = maxSpeed,
+            lastRideDate = lastRideDate?.toLocalDateTime()
         )
     }
 }

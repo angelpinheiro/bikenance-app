@@ -2,6 +2,7 @@ package com.anxops.bkn.data.database
 
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.entities.BikeRideEntity
+import com.anxops.bkn.data.database.entities.BikeStatsEntity
 import com.anxops.bkn.data.database.entities.ComponentEntity
 import com.anxops.bkn.data.database.entities.MaintenanceEntity
 import com.anxops.bkn.data.database.entities.ProfileEntity
@@ -9,6 +10,7 @@ import com.anxops.bkn.data.database.entities.UsageEntity
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.data.model.BikeStats
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.model.Usage
@@ -48,7 +50,8 @@ fun Bike.toEntity(): BikeEntity {
         electric = electric,
         configDone = configDone,
         draft = draft,
-        type = type.toString()
+        type = type.toString(),
+        stats = stats?.toEntity()
     )
 }
 
@@ -103,6 +106,17 @@ fun Usage.toEntity(): UsageEntity {
     return UsageEntity(duration, distance)
 }
 
+fun BikeStats.toEntity(): BikeStatsEntity {
+    return BikeStatsEntity(
+        rideCount = rideCount,
+        elevationGain = elevationGain,
+        distance = distance,
+        duration = duration,
+        averageSpeed = averageSpeed,
+        maxSpeed = maxSpeed,
+        lastRideDate = lastRideDate?.formatAsIso8061()
+    )
+}
 
 
 

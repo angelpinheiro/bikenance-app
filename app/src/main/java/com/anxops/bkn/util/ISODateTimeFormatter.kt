@@ -1,6 +1,8 @@
 package com.anxops.bkn.util
 
+import android.text.format.DateUtils
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
@@ -20,6 +22,12 @@ fun TemporalAccessor.formatAsIso8061(): String {
 
 fun TemporalAccessor.formatAsDayMonth(): String {
     return DateTimeFormatters.dayMonth.format(this)
+}
+
+fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
+    val millis = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    return DateUtils.getRelativeTimeSpanString(millis, from, 0,
+        DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY).toString();
 }
 
 fun TemporalAccessor.formatAsTime(): String {

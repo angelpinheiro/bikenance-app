@@ -1,7 +1,9 @@
 package com.anxops.bkn.data.model
 
+import com.anxops.bkn.data.model.util.LocalDateSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 enum class BikeType(
     val type: String, val extendedType: String
@@ -28,7 +30,7 @@ data class Bike(
     @SerialName("electric") val electric: Boolean = false,
     @SerialName("configDone") val configDone: Boolean = false,
     @SerialName("bike_type") var type: BikeType = BikeType.MTB,
-
+    @SerialName("stats") var stats: BikeStats? = null,
     val components: List<BikeComponent>? = emptyList()
 
 ) {
@@ -112,4 +114,24 @@ data class BikeStatus(
     val componentCategoryStatus: Map<ComponentCategory, StatusLevel>,
     val componentTypeStatus: Map<ComponentTypes, StatusLevel>,
     val componentStatus: Map<BikeComponent, StatusLevel>
+)
+
+
+@Serializable
+data class BikeStats(
+    @SerialName("ride_count")
+    val rideCount: Double? = null,
+    @SerialName("duration")
+    val duration: Double = 0.0,
+    @SerialName("distance")
+    val distance: Double = 0.0,
+    @SerialName("elevationGain")
+    val elevationGain: Double = 0.0,
+    @SerialName("average_speed")
+    val averageSpeed: Double? = null,
+    @SerialName("max_speed")
+    val maxSpeed: Double? = null,
+    @Serializable(with = LocalDateSerializer::class)
+    @SerialName("last_ride_date")
+    val lastRideDate: LocalDateTime? = null,
 )

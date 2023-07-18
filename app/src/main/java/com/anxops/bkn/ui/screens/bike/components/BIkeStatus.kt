@@ -22,30 +22,30 @@ fun BikeStatus(bike: Bike) {
     ) {
         BikeStats(bike)
 
-        Box(modifier = Modifier
-            .padding(vertical = 10.dp)
-            .fillMaxWidth(0.3f)
-            .aspectRatio(1f)) {
-            Box(modifier = Modifier.align(Alignment.Center)) {
-                PulsatingCircles(size = 120.dp, color = MaterialTheme.colors.statusWarning)
-            }
-        }
-
-        Text(
-            text = "Overall status: Warning",
-            color = MaterialTheme.colors.onPrimary,
-            style = MaterialTheme.typography.h2,
-            modifier = Modifier.fillMaxWidth(0.8f),
-            textAlign = TextAlign.Center
-        )
-
-        Text(
-            text = "Some components of your ${bike.displayName()} need some love and care!",
-            color = MaterialTheme.colors.onPrimary,
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.fillMaxWidth(0.8f),
-            textAlign = TextAlign.Center
-        )
+//        Box(modifier = Modifier
+//            .padding(vertical = 10.dp)
+//            .fillMaxWidth(0.3f)
+//            .aspectRatio(1f)) {
+//            Box(modifier = Modifier.align(Alignment.Center)) {
+//                PulsatingCircles(size = 120.dp, color = MaterialTheme.colors.statusWarning)
+//            }
+//        }
+//
+//        Text(
+//            text = "Overall status: Warning",
+//            color = MaterialTheme.colors.onPrimary,
+//            style = MaterialTheme.typography.h2,
+//            modifier = Modifier.fillMaxWidth(0.8f),
+//            textAlign = TextAlign.Center
+//        )
+//
+//        Text(
+//            text = "Some components of your ${bike.displayName()} need some love and care!",
+//            color = MaterialTheme.colors.onPrimary,
+//            style = MaterialTheme.typography.h3,
+//            modifier = Modifier.fillMaxWidth(0.8f),
+//            textAlign = TextAlign.Center
+//        )
 
     }
 
