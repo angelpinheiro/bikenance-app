@@ -12,18 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.screens.bike.components.PulsatingCircles
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
-import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
+import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
+import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.bgGradient
-import com.anxops.bkn.ui.theme.statusWarning
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -37,11 +34,13 @@ fun Garage(
     viewModel: GarageViewModel = hiltViewModel()
 ) {
     val nav = BknNavigator(navigator)
-    val state = viewModel.state.collectAsState()
-    val rides = viewModel.selectedBikeRides
-    val bikes = viewModel.bikes.collectAsState()
-
-    var selectedBike = viewModel.selectedBike.collectAsState()
+    val state = viewModel.screenState.collectAsState()
+//    val rides = viewModel.selectedBikeRides
+//    val bikes = viewModel.bikes.collectAsState()
+//
+//
+//
+//    var selectedBike = viewModel.selectedBike.collectAsState()
 
     updateBikeResult.onNavResult {
         when (it) {
@@ -66,8 +65,8 @@ fun Garage(
     val gradientBackground = bgGradient()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.value.refreshing,
-        onRefresh = { viewModel.reload() })
+        refreshing = state.value is GarageScreenState.Loading,
+        onRefresh = { viewModel.loadData() })
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -82,38 +81,42 @@ fun Garage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            BikesPager(
-                bikes = bikes.value,
-                onBikeChanged = {
-                    viewModel.setSelectedBike(it)
-                },
-                onEditBike = {
-                    nav.navigateToBike(it._id)
-                }, onBikeDetails = {
-                    if(it.configDone)
-                        nav.navigateToBikeDetails(it._id)
-                    else
-                        nav.navigateToBikeSetup(it._id)
-                })
+            when (val currentState = state.value) {
+                is GarageScreenState.ShowingGarage -> {
+                    BikesPager(
+                        bikes = currentState.bikes,
+                        onBikeChanged = {
+                            viewModel.setSelectedBike(it)
+                        },
+                        onEditBike = {
+                            nav.navigateToBike(it._id)
+                        }, onBikeDetails = {
+                            if (it.configDone)
+                                nav.navigateToBikeDetails(it._id)
+                            else
+                                nav.navigateToBikeSetup(it._id)
+                        })
 
-            RecentActivity(rides = rides.value) {
-                nav.navigateToRide(it._id)
+                    RecentActivity(rides = currentState.lastRides) {
+                        nav.navigateToRide(it._id)
+                    }
+
+                    UpcomingMaintenance(currentState.selectedBike)
+                }
+                is GarageScreenState.Loading -> {
+
+//                    Loading()
+                }
+                else -> {
+//                    Text(text = "Sync bikes!")
+                }
             }
-
-            selectedBike.value?.let {
-
-
-
-
-                UpcomingMaintenance(it)
-            }
-
 
 
         }
 
         PullRefreshIndicator(
-            state.value.refreshing,
+            state.value is GarageScreenState.Loading,
             pullRefreshState,
             Modifier.align(Alignment.TopCenter)
         )

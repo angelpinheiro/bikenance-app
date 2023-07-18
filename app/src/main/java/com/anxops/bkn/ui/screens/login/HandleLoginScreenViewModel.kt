@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.DBSynchronizer
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +32,8 @@ sealed class LoadProfileEvent {
 class HandleLoginScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
     private val repository: ProfileRepositoryFacade,
+    private val bikeRepository: BikeRepositoryFacade,
+    private val ridesRepository: RidesRepositoryFacade,
     private val dbSync: DBSynchronizer
 ) :
     ViewModel() {
@@ -61,6 +65,10 @@ class HandleLoginScreenViewModel @Inject constructor(
                         profile = profile,
                         isNewAccount = isNewAccount
                     )
+
+                    bikeRepository.reloadData()
+                    ridesRepository.reloadData()
+
                     if (isNewAccount) {
                         delay(1000)
                         loadProfileEvent.emit(LoadProfileEvent.NewAccount)

@@ -1,7 +1,5 @@
 package com.anxops.bkn.ui.screens.garage
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
@@ -10,8 +8,8 @@ import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.util.mutableStateIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,41 +22,77 @@ data class HomeScreenState(
     val refreshing: Boolean = false
 )
 
+
+sealed class GarageScreenState {
+    object Loading : GarageScreenState()
+    data class ShowingGarage(
+        val bikes: List<Bike>, val selectedBike: Bike, val lastRides: List<BikeRide>
+    ) : GarageScreenState()
+
+    data class NoBikesSync(val allBikes: List<Bike>) : GarageScreenState()
+
+}
+
+
 @HiltViewModel
 class GarageViewModel @Inject constructor(
-    private val db: AppDb,
-    private val api: Api,
     private val bikeRepository: BikeRepositoryFacade,
     private val ridesRepository: RidesRepositoryFacade
-) :
-    ViewModel() {
+) : ViewModel() {
 
-    private var _state = MutableStateFlow(HomeScreenState())
+    private val _screenState : MutableStateFlow<GarageScreenState> = bikeRepository.getBikesFlow(true).map { allBikes ->
 
-    val state: StateFlow<HomeScreenState> = _state
+        if (allBikes.any { !it.draft }) {
+            val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
+            val selectedBike = bikes[0]
+            val rides = ridesRepository.getLastBikeRides(selectedBike._id)
+            GarageScreenState.ShowingGarage(
+                bikes, selectedBike, rides
+            )
+        } else {
+            GarageScreenState.NoBikesSync(
+                allBikes
+            )
+        }
 
-    val bikes: StateFlow<List<Bike>> = bikeRepository.getBikesFlow().map { bikes ->
-        bikes.sortedByDescending { it.distance }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }.mutableStateIn(viewModelScope, GarageScreenState.Loading)
 
-    val selectedBike: MutableStateFlow<Bike?> = MutableStateFlow(null)
+    val screenState: StateFlow<GarageScreenState> = _screenState
 
-    val selectedBikeRides = mutableStateOf<List<BikeRide>>(emptyList())
-
-
-    fun reload() {
+    fun loadData() {
         viewModelScope.launch {
-            _state.value = state.value.copy(refreshing = true)
+
+            _screenState.value = GarageScreenState.Loading
             bikeRepository.reloadData()
-            _state.value = state.value.copy(refreshing = false)
+//
+//
+//
+//            val allBikes = bikeRepository.getBikes()
+//
+//            if (allBikes.any { !it.draft }) {
+//                val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
+//                val selectedBike = bikes[0]
+//                val rides = ridesRepository.getLastBikeRides(selectedBike._id)
+//                _screenState.value = GarageScreenState.ShowingGarage(
+//                    bikes, selectedBike, rides
+//                )
+//            } else {
+//                _screenState.value = GarageScreenState.NoBikesSync(
+//                    allBikes
+//                )
+//            }
         }
     }
 
     fun setSelectedBike(bike: Bike) {
         viewModelScope.launch {
-            val rides = ridesRepository.getLastBikeRides(bike._id)
-            selectedBikeRides.value = rides
-            selectedBike.value = bike
+            _screenState.value.let { currentState ->
+                if (currentState is GarageScreenState.ShowingGarage) {
+                    _screenState.value = currentState.copy(
+                        selectedBike = bike, lastRides = ridesRepository.getLastBikeRides(bike._id)
+                    )
+                }
+            }
         }
 
     }
