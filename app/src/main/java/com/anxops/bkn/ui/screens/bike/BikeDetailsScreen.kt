@@ -97,7 +97,7 @@ fun BikeDetailsScreen(
                         },
                         onDone = {
                             scope.launch { scaffoldState.bottomSheetState.collapse() }
-                            viewModel.addSelectedComponentsToBike()
+//                            viewModel.addSelectedComponentsToBike()
                         })
                 },
                 backgroundColor = MaterialTheme.colors.primaryVariant,

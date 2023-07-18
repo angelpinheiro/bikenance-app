@@ -38,16 +38,7 @@ class BikeDetailsScreenViewModel @Inject constructor(
         it?.let { id -> bikesRepository.getBike(id) } ?: null
     }
 
-//    private val bikeComponentsFlow = bikeFlow.distinctUntilChanged().filterNotNull().map {
-//        bikeComponentRepository.getBikeComponentsFlow(bikeId = it._id)
-//    }.flattenConcat().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-
     val bike = bikeFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-//    val bikeComponents = bikeComponentsFlow.stateIn(
-//        viewModelScope, SharingStarted.Eagerly,
-//        emptyList()
-//    )
 
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
@@ -66,50 +57,4 @@ class BikeDetailsScreenViewModel @Inject constructor(
             selectedComponentTypes.value = it
         }
     }
-
-    fun addSelectedComponentsToBike() {
-//        viewModelScope.launch {
-//
-//            bike.value?.let { currentBike ->
-//                val newComponents = selectedComponentTypes.value.map {
-//
-//                    var alias = it.name
-//                    val cs = listOf(
-//                        ComponentTypes.DISC_BRAKE,
-//                        ComponentTypes.THRU_AXLE,
-//                        ComponentTypes.DISC_PAD,
-//                        ComponentTypes.TIRE
-//                    )
-//                    if (cs.contains(it)) {
-//                        listOf(
-//                            BikeComponent(
-//                                bikeId = currentBike._id,
-//                                modifier = ComponentModifier.FRONT,
-//                                alias = alias,
-//                                type = it
-//                            ),
-//                            BikeComponent(
-//                                bikeId = currentBike._id,
-//                                modifier = ComponentModifier.REAR,
-//                                alias = alias,
-//                                type = it
-//                            )
-//                        )
-//                    } else {
-//                        listOf(
-//                            BikeComponent(
-//                                bikeId = currentBike._id,
-//                                alias = alias,
-//                                type = it
-//                            )
-//                        )
-//                    }
-//
-//                }.flatten()
-//
-//                bikeComponentRepository.createComponents(currentBike._id, newComponents)
-//            }
-        }
-//    }
-
 }

@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
-import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
 import com.anxops.bkn.ui.screens.rides.list.RidesScreenViewModel
 import com.anxops.bkn.ui.shared.components.bgGradient
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

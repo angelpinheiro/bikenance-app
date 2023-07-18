@@ -53,6 +53,9 @@ class BikeComponentRepository(
     override suspend fun getBikeComponents(bikeId: String): List<BikeComponent> =
         withContext(defaultDispatcher) {
             db.bikeComponentDao().bike(bikeId).map {
+
+                Log.d("getBikeComponents", "Component: ${it.component.type} (${it.maintenances?.size} maintenances)")
+
                 it.toDomain()
             }
         }
@@ -79,11 +82,14 @@ class BikeComponentRepository(
                     result.data.forEach { component ->
                         Log.d("createComponents", "Inserting ${component.alias} in db")
                         db.bikeComponentDao().insert(component.toEntity())
+                        component.maintenances?.forEach {
+                            db.maintenanceDao().insert(it.toEntity())
+                        }
                     }
                 }
 
                 else -> {
-                    TODO("HANDLE createComponents ERROR")
+                    TODO("HANDLE createComponents ERROR: ${result.message}")
                 }
             }
 

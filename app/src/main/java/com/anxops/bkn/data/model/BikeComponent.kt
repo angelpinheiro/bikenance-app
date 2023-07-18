@@ -28,6 +28,9 @@ data class BikeComponent(
     @Serializable(with = LocalDateSerializer::class)
     @SerialName("from")
     val from: LocalDateTime? = null,
+    @SerialName("maintenances")
+    val maintenances: List<Maintenance>? = null,
+
 ) {
     fun displayDuration(): String {
         return "${usage?.duration?.let { (it / 3600).toInt() } ?: "--"} hours"

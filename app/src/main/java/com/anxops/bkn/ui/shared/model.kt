@@ -155,6 +155,18 @@ val maintenanceResourcesMap = mapOf(
         nameResId = R.string.wheelset_wheels_and_spokes_maintenance,
         descriptionResId = R.string.wheelset_wheels_and_spokes_maintenance_description
     ),
+    MaintenanceTypes.FRAME_BEARINGS_MAINTENANCE to MaintenanceResources(
+        nameResId = R.string.frame_bearings_maintenance,
+        descriptionResId = R.string.frame_bearings_maintenance_description
+    ),
+    MaintenanceTypes.REAR_HUB_MAINTENANCE to MaintenanceResources(
+        nameResId = R.string.rear_hub_maintenance,
+        descriptionResId = R.string.rear_hub_maintenance_description
+    ),
+    MaintenanceTypes.REAR_DERAILLEUR_MAINTENANCE to MaintenanceResources(
+        nameResId = R.string.rear_derailleur_maintenance,
+        descriptionResId = R.string.rear_derailleur_maintenance_description
+    ),
 )
 
 

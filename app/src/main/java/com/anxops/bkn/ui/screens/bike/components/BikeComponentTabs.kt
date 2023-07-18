@@ -17,7 +17,7 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.ui.screens.maintenances.components.getColorForProgress
+import com.anxops.bkn.ui.screens.maintenances.getColorForProgress
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.util.SortedMap

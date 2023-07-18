@@ -3,11 +3,15 @@ package com.anxops.bkn.data.database
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.database.entities.ComponentEntity
+import com.anxops.bkn.data.database.entities.MaintenanceEntity
 import com.anxops.bkn.data.database.entities.ProfileEntity
+import com.anxops.bkn.data.database.entities.UsageEntity
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.Profile
+import com.anxops.bkn.data.model.Usage
 import com.anxops.bkn.util.formatAsIso8061
 
 
@@ -78,5 +82,27 @@ fun BikeComponent.toEntity(): ComponentEntity {
         from = from?.formatAsIso8061()
     )
 }
+
+fun Maintenance.toEntity(): MaintenanceEntity {
+    return MaintenanceEntity(
+        _id = _id,
+        componentId = componentId,
+        usageSinceLast = usageSinceLast?.toEntity(),
+        estimatedDate = estimatedDate?.formatAsIso8061(),
+        description = description,
+        lastMaintenanceDate = lastMaintenanceDate?.formatAsIso8061(),
+        componentType = componentType.name,
+        type = type.name,
+        status = status,
+        defaultFrequencyEvery = defaultFrequency.every,
+        defaultFrequencyUnit = defaultFrequency.unit.name,
+    )
+}
+
+fun Usage.toEntity(): UsageEntity {
+    return UsageEntity(duration, distance)
+}
+
+
 
 

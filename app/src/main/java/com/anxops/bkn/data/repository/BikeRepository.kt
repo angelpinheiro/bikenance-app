@@ -39,7 +39,7 @@ class BikeRepository(
     val api: Api,
     val db: AppDb,
     val ridesRepository: RidesRepositoryFacade,
-    val componentRepository: ComponentRepositoryFacade,
+    private val componentRepository: ComponentRepositoryFacade,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BikeRepositoryFacade {
@@ -47,14 +47,21 @@ class BikeRepository(
     override suspend fun reloadData(): Boolean = withContext(defaultDispatcher) {
         when (val bikes = api.getBikes()) {
             is ApiResponse.Success -> {
+
                 db.bikeDao().clear()
                 db.bikeComponentDao().clear()
+                db.maintenanceDao().clear()
+
                 bikes.data.let {
                     it.forEach { b ->
                         db.bikeDao().insert(b.toEntity())
                         b.components?.forEach { component ->
                             Log.d("createComponents", "Inserting ${component.alias} in db")
                             db.bikeComponentDao().insert(component.toEntity())
+                            component.maintenances?.forEach { m ->
+                                Log.d("createComponents", "Inserting ${m.type.name} in db")
+                                db.maintenanceDao().insert(m.toEntity())
+                            }
                         }
                     }
                 }
@@ -69,7 +76,16 @@ class BikeRepository(
 
         db.bikeDao().getById(id)?.let {
             it.toDomain().copy(
-                components = db.bikeComponentDao().bike(id).map { c -> c.toDomain() }
+                components = db.bikeComponentDao().bike(id).map { c ->
+                    Log.d(
+                        "getBikeComponents",
+                        "Component: ${c.component.type} (${c.maintenances?.size} maintenances)"
+                    )
+                    val maintenances = db.maintenanceDao().getByComponentId(c.component._id).map { m ->
+                            m.toDomain()
+                    }
+                    c.toDomain().copy(maintenances = maintenances)
+                }
             )
         }
     }

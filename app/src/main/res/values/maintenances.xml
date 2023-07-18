@@ -8,6 +8,9 @@
     <string name="cables_and_housing_maintenance">Maintenance of Cables and Housings</string>
     <string name="cassette_maintenance">Maintenance of Cassette</string>
     <string name="chain_maintenance">Maintenance of Chain</string>
+    <string name="rear_derailleur_maintenance">Maintenance of Rear Derailleur</string>
+    <string name="frame_bearings_maintenance">Maintenance of Frame Bearings</string>
+    <string name="rear_hub_maintenance">Maintenance of Rear Hub</string>
     <string name="disc_brake_maintenance">Maintenance of Disc Brakes</string>
     <string name="dropper_post_maintenance">Maintenance of Dropper Post</string>
     <string name="fork_maintenance">Maintenance of Fork</string>
@@ -25,6 +28,9 @@
     <string name="cables_and_housing_maintenance_description">Visual inspection of cable housings for wear or damage. Replace if necessary.</string>
     <string name="cassette_maintenance_description">Check the wear of the cassette. Consider replacing if it shows excessive wear or hinders gear shifting.</string>
     <string name="chain_maintenance_description">Replace the chain.</string>
+    <string name="rear_derailleur_maintenance_description">Clean and lubricate the rear derailleur mechanism.</string>
+    <string name="frame_bearings_maintenance_description">Check the condition and lubrication of the frame bearings. Replace if necessary.</string>
+    <string name="rear_hub_maintenance_description">Check the condition and lubrication of the rear hub</string>
     <string name="disc_brake_maintenance_description">Check the wear of the disc brakes. Consider replacing if they are worn or deformed.</string>
     <string name="dropper_post_maintenance_description">Check and lubricate the adjustable seatpost. Ensure proper functioning without play or lockout.</string>
     <string name="fork_maintenance_description">"Check and maintain the fork according to the manufacturer\'s recommendations.</string>

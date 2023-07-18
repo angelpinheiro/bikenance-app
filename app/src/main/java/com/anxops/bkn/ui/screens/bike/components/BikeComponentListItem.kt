@@ -86,6 +86,11 @@ fun BikeComponentListItem(component: BikeComponent) {
                 color = MaterialTheme.colors.background,
                 style = MaterialTheme.typography.h4,
             )
+
+            component.maintenances?.forEach {
+                MaintenanceItemSummary(item = it)
+            }
+
         }
 
 

@@ -2,6 +2,7 @@ package com.anxops.bkn.data.database.dao
 
 import androidx.room.*
 import com.anxops.bkn.data.database.entities.ComponentEntity
+import com.anxops.bkn.data.database.entities.ComponentWithMaintenancesEntity
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,8 +18,9 @@ interface BikeComponentDao {
     @Query("SELECT * FROM component WHERE bike_id = :bikeId")
     fun bikeFlow(bikeId: String): Flow<List<ComponentEntity>>
 
+    @Transaction
     @Query("SELECT * FROM component WHERE bike_id = :bikeId")
-    fun bike(bikeId: String): List<ComponentEntity>
+    fun bike(bikeId: String): List<ComponentWithMaintenancesEntity>
 
     @Insert
     suspend fun insert(component: ComponentEntity)

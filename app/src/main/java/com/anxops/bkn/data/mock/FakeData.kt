@@ -2,7 +2,7 @@ package com.anxops.bkn.data.mock
 
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.ui.screens.maintenances.components.MaintenanceItem
+import com.anxops.bkn.ui.screens.maintenances.MaintenanceItem
 
 object FakeData {
 

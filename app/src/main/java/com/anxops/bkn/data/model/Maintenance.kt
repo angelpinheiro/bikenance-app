@@ -23,6 +23,10 @@ data class RevisionFrequency(
 
 @Serializable
 data class Maintenance(
+    @SerialName("_id")
+    val _id: String,
+    @SerialName("componentId")
+    val componentId: String,
     @SerialName("type")
     val type: MaintenanceTypes,
     @SerialName("defaultFrequency")

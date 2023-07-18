@@ -8,16 +8,25 @@ import com.anxops.bkn.data.database.dao.AppInfoDao
 import com.anxops.bkn.data.database.dao.BikeComponentDao
 import com.anxops.bkn.data.database.dao.BikeDao
 import com.anxops.bkn.data.database.dao.BikeRideDao
+import com.anxops.bkn.data.database.dao.MaintenanceDao
 import com.anxops.bkn.data.database.dao.ProfileDao
 import com.anxops.bkn.data.database.entities.AppInfo
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.database.entities.ComponentEntity
+import com.anxops.bkn.data.database.entities.MaintenanceEntity
 import com.anxops.bkn.data.database.entities.ProfileEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Database(
-    entities = [ProfileEntity::class, BikeEntity::class, BikeRideEntity::class, AppInfo::class, ComponentEntity::class],
+    entities = [
+        ProfileEntity::class,
+        BikeEntity::class,
+        BikeRideEntity::class,
+        AppInfo::class,
+        ComponentEntity::class,
+        MaintenanceEntity::class
+    ],
     version = 1,
     exportSchema = false
 )
@@ -27,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun bikeRideDao(): BikeRideDao
     abstract fun bikeComponentDao(): BikeComponentDao
     abstract fun appInfoDao(): AppInfoDao
+    abstract fun maintenanceDao(): MaintenanceDao
 }
 
 
@@ -39,13 +49,13 @@ class AppDb(@ApplicationContext context: Context) {
     fun bikeRideDao() = db.bikeRideDao()
     fun bikeComponentDao() = db.bikeComponentDao()
     fun appInfoDao() = db.appInfoDao()
+    fun maintenanceDao() = db.maintenanceDao()
 
     fun database() = db
 
     private fun createRoomDatabase(context: Context): AppDatabase {
         return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "bikenance-db"
+            context, AppDatabase::class.java, "bikenance-db"
         ).build()
     }
 
