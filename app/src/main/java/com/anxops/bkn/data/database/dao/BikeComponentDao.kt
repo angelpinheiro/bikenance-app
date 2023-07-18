@@ -1,6 +1,7 @@
 package com.anxops.bkn.data.database.dao
 
 import androidx.room.*
+import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.entities.ComponentEntity
 import com.anxops.bkn.data.database.entities.ComponentWithMaintenancesEntity
 import kotlinx.coroutines.flow.Flow
@@ -28,8 +29,9 @@ interface BikeComponentDao {
     @Update
     suspend fun update(component: ComponentEntity)
 
-    @Insert
-    fun insertAll(vararg components: ComponentEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    suspend fun insertAll(components: List<ComponentEntity>)
 
     @Query("DELETE FROM component WHERE bike_id = :bikeId")
     suspend fun clearBike(bikeId: String)

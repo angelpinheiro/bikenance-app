@@ -34,8 +34,9 @@ interface BikeDao {
     @Insert
     suspend fun insert(bike: BikeEntity)
 
-    @Insert
-    suspend fun insertAll(vararg bikes: BikeEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    suspend fun insertAll(bikes: List<BikeEntity>)
 
     @Delete
     suspend fun delete(bike: BikeEntity)

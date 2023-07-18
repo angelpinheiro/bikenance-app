@@ -65,7 +65,7 @@ class GarageViewModel @Inject constructor(
         viewModelScope.launch {
 
             _screenState.value = GarageScreenState.Loading
-            bikeRepository.reloadData()
+            bikeRepository.refreshBikes()
         }
     }
 
@@ -106,7 +106,7 @@ class GarageViewModel @Inject constructor(
                     if (currentState is GarageScreenState.ShowingGarage) {
                         _screenState.value = GarageScreenState.Loading
                         bikeRepository.updateSynchronizedBikes(currentState.allBikes.associate { it._id to !it.draft })
-                        bikeRepository.reloadData()
+                        bikeRepository.refreshBikes()
                     }
                 }
             }

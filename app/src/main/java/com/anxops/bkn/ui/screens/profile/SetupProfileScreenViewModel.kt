@@ -100,7 +100,7 @@ class SetupProfileScreenViewModel @Inject constructor(
 
     private fun loadUserProfile() {
         viewModelScope.launch {
-            bikeRepository.reloadData()
+            bikeRepository.refreshBikes()
 //            val profile = profileRepository.getProfile()
 //            val bikes = bikeRepository.getBikes()
 //

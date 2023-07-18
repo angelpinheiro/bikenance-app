@@ -1,7 +1,6 @@
 package com.anxops.bkn.di
 
 import android.content.Context
-import com.anxops.bkn.data.DBSynchronizer
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.KtorClient
@@ -54,16 +53,6 @@ class AppModule {
     @Singleton
     fun providesRidesRepository(api: Api, db: AppDb): RidesRepositoryFacade =
         BikeRidesRepository(api, db)
-
-    @Provides
-    @Singleton
-    fun providesSynchronizer(
-        pf: ProfileRepositoryFacade,
-        bf: BikeRepositoryFacade,
-        rf: RidesRepositoryFacade,
-        db: AppDb
-    ):
-            DBSynchronizer = DBSynchronizer(db, pf, bf, rf)
 
     @Provides
     @Singleton

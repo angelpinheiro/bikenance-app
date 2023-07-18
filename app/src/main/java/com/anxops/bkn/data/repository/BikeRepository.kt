@@ -38,7 +38,7 @@ interface BikeRepositoryFacade {
 
     suspend fun removeAllBikeComponents(bikeId: String)
 
-    suspend fun reloadData(): Boolean
+    suspend fun refreshBikes(): Boolean
 }
 
 class BikeRepository(
@@ -46,31 +46,31 @@ class BikeRepository(
     val db: AppDb,
     val ridesRepository: RidesRepositoryFacade,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) :
-    BikeRepositoryFacade {
+) : BikeRepositoryFacade {
 
-    override suspend fun reloadData(): Boolean = withContext(defaultDispatcher) {
+    override suspend fun refreshBikes(): Boolean = withContext(defaultDispatcher) {
+
         when (val apiResponse = api.getBikes()) {
-
             is ApiResponse.Success -> {
-
                 db.database().withTransaction {
                     val bikes = apiResponse.data
+                    val bikeEntities = bikes.map { it.toEntity() }
+                    val componentEntities = bikes.flatMap { bike ->
+                        bike.components?.map { it.toEntity() } ?: listOf()
+                    }
+                    val maintenanceEntities = bikes.flatMap { bike ->
+                        bike.components?.flatMap {
+                            it.maintenances?.map { m -> m.toEntity() } ?: listOf()
+                        } ?: listOf()
+                    }
+
                     db.bikeDao().clear()
                     db.bikeComponentDao().clear()
                     db.maintenanceDao().clear()
 
-                    bikes.forEach { b ->
-                        db.bikeDao().insert(b.toEntity())
-                        b.components?.forEach { component ->
-                            Log.d("createComponents", "Inserting ${component.alias} in db")
-                            db.bikeComponentDao().insert(component.toEntity())
-                            component.maintenances?.forEach { m ->
-                                Log.d("createComponents", "Inserting ${m.type.name} in db")
-                                db.maintenanceDao().insert(m.toEntity())
-                            }
-                        }
-                    }
+                    db.bikeDao().insertAll(bikeEntities)
+                    db.bikeComponentDao().insertAll(componentEntities)
+                    db.maintenanceDao().insertAll(maintenanceEntities)
                 }
                 true
             }
@@ -82,19 +82,12 @@ class BikeRepository(
     override suspend fun getBike(id: String): Bike? = withContext(defaultDispatcher) {
 
         db.bikeDao().getById(id)?.let {
-            it.toDomain().copy(
-                components = db.bikeComponentDao().bike(id).map { c ->
-                    Log.d(
-                        "getBikeComponents",
-                        "Component: ${c.component.type} (${c.maintenances?.size} maintenances)"
-                    )
-                    val maintenances =
-                        db.maintenanceDao().getByComponentId(c.component._id).map { m ->
-                            m.toDomain()
-                        }
-                    c.toDomain().copy(maintenances = maintenances)
+            it.toDomain().copy(components = db.bikeComponentDao().bike(id).map { c ->
+                val maintenances = db.maintenanceDao().getByComponentId(c.component._id).map { m ->
+                    m.toDomain()
                 }
-            )
+                c.toDomain().copy(maintenances = maintenances)
+            })
         }
     }
 

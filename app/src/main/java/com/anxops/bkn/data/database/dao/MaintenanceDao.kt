@@ -15,6 +15,10 @@ interface MaintenanceDao {
     @Insert
     suspend fun insert(maintenanceEntity: MaintenanceEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    suspend fun insertAll(maintenances: List<MaintenanceEntity>)
+
     @Query("DELETE FROM maintenance")
     suspend fun clear()
 

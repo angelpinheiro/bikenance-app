@@ -3,7 +3,6 @@ package com.anxops.bkn
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.anxops.bkn.data.DBSynchronizer
 import com.anxops.bkn.data.network.tokenRefresh.RefreshTokenHelper
 import com.anxops.bkn.ui.Notifier
 import dagger.hilt.android.HiltAndroidApp
@@ -14,9 +13,6 @@ class BknApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
-
-    @Inject
-    lateinit var dbSynchronizer: DBSynchronizer
 
     @Inject
     lateinit var notifier: Notifier

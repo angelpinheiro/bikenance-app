@@ -2,7 +2,6 @@ package com.anxops.bkn.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anxops.bkn.data.DBSynchronizer
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
@@ -33,8 +32,7 @@ class HandleLoginScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
     private val repository: ProfileRepositoryFacade,
     private val bikeRepository: BikeRepositoryFacade,
-    private val ridesRepository: RidesRepositoryFacade,
-    private val dbSync: DBSynchronizer
+    private val ridesRepository: RidesRepositoryFacade
 ) :
     ViewModel() {
 
@@ -66,7 +64,7 @@ class HandleLoginScreenViewModel @Inject constructor(
                         isNewAccount = isNewAccount
                     )
 
-                    bikeRepository.reloadData()
+                    bikeRepository.refreshBikes()
                     ridesRepository.reloadData()
 
                     if (isNewAccount) {
