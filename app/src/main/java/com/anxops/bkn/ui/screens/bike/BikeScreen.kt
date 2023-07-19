@@ -50,6 +50,8 @@ fun BikeScreen(
             Scaffold(backgroundColor = MaterialTheme.colors.primaryVariant, topBar = {
                 BikeDetailsTopBar(bike = currentState.bike, onBikeSetup = {
                     bknNavigator.navigateToBikeSetup(currentState.bike._id)
+                }, onClickBack = {
+                    bknNavigator.popBackStack()
                 })
             }, bottomBar = {
                 BikeScreenBottomBar(selectedItem = currentSection, onItemSelected = {

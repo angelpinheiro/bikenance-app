@@ -27,7 +27,7 @@ import com.anxops.bkn.ui.shared.components.BknIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
-fun BikeDetailsTopBar(bike: Bike, onBikeSetup: () -> Unit = {}) {
+fun BikeDetailsTopBar(bike: Bike, onBikeSetup: () -> Unit = {}, onClickBack: () -> Unit = {}) {
 
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
@@ -43,13 +43,17 @@ fun BikeDetailsTopBar(bike: Bike, onBikeSetup: () -> Unit = {}) {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
-                    BknIcon(
-                        icon = CommunityMaterial.Icon.cmd_bike,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .size(20.dp)
-                    )
+                    IconButton(
+                        modifier = Modifier.padding(start = 6.dp),
+                        onClick = { onClickBack() }) {
+                        BknIcon(
+                            icon = CommunityMaterial.Icon.cmd_arrow_left,
+                            color = Color.White,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                    }
+
 
                     Text(
                         text = bike.name ?: bike.displayName(),

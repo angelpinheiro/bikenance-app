@@ -40,114 +40,71 @@ fun HomeScreen(
 
     var selectedItem by rememberSaveable { mutableStateOf(HomeSections.Home) }
 
-
-    println("Garage section: $section")
-
-    LaunchedEffect(true) {
-        if (section?.isNotBlank() == true) {
-            HomeSections.values().firstOrNull {
-                it.id == section
-            }?.let { selectedItem = it }
-        }
-    }
-
-    if (section?.isNotBlank() == true) {
-        HomeSections.values().firstOrNull {
-            it.id == section
-        }?.let { selectedItem = it }
+    LaunchedEffect(section) {
+        HomeSections.values().firstOrNull { it.id == section }?.let { selectedItem = it }
     }
 
     val nav = BknNavigator(navigator)
-    Scaffold(
-        backgroundColor = MaterialTheme.colors.primaryVariant,
-        topBar = {
-            TopAppBar(
-                elevation = 6.dp,
-                contentPadding = PaddingValues(5.dp),
-                backgroundColor = MaterialTheme.colors.primaryVariant
-            )
-            {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+    Scaffold(backgroundColor = MaterialTheme.colors.primaryVariant, topBar = {
+        TopAppBar(
+            elevation = 6.dp,
+            contentPadding = PaddingValues(5.dp),
+            backgroundColor = MaterialTheme.colors.primaryVariant
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
 
+                    BknIcon(
+                        icon = selectedItem.icon,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(20.dp)
+                    )
+                    Text(
+                        text = selectedItem.title,
+                        color = MaterialTheme.colors.onPrimary,
+                        style = MaterialTheme.typography.h2,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = {
+                        nav.navigateToProfile()
+                    }) {
                         BknIcon(
-                            icon = selectedItem.icon,
+                            icon = CommunityMaterial.Icon.cmd_account,
                             color = Color.White,
                             modifier = Modifier
-                                .padding(start = 12.dp)
+                                .padding(horizontal = 6.dp)
                                 .size(20.dp)
                         )
-                        Text(
-                            text = selectedItem.title,
-                            color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.h2,
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        )
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-//                        IconButton(onClick = {
-//                            nav.navigateToNewBike()
-//                        }) {
-//                            BknIcon(
-//                                icon = CommunityMaterial.Icon3.cmd_plus,
-//                                color = Color.White,
-//                                modifier = Modifier
-//                                    .padding(horizontal = 6.dp)
-//                                    .size(20.dp)
-//                            )
-//                        }
-                        IconButton(onClick = {
-                            nav.navigateToProfile()
-                        }) {
-                            BknIcon(
-                                icon = CommunityMaterial.Icon.cmd_account,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .size(20.dp)
-                            )
-                        }
-                        IconButton(onClick = {
-                            viewModel.logout()
-                            nav.popBackStack()
-                            nav.navigateToSplash()
-                        }) {
-                            BknIcon(
-                                icon = CommunityMaterial.Icon.cmd_exit_to_app,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .size(20.dp)
-                            )
-                        }
-//                        IconButton(onClick = {
-//                            viewModel.refreshToken()
-//                        }) {
-//                            BknIcon(
-//                                icon = CommunityMaterial.Icon.cmd_cloud_refresh,
-//                                color = Color.White,
-//                                modifier = Modifier
-//                                    .padding(horizontal = 6.dp)
-//                                    .size(20.dp)
-//                            )
-//                        }
+                    IconButton(onClick = {
+                        viewModel.logout()
+                        nav.popBackStack()
+                        nav.navigateToSplash()
+                    }) {
+                        BknIcon(
+                            icon = CommunityMaterial.Icon.cmd_exit_to_app,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .size(20.dp)
+                        )
                     }
                 }
             }
-        },
-        bottomBar = {
-            HomeBottomBar(
-                selectedItem = selectedItem,
-                onItemSelected = {
-                    selectedItem = it
-                }
-            )
         }
-    ) {
+    }, bottomBar = {
+        HomeBottomBar(selectedItem = selectedItem, onItemSelected = {
+            selectedItem = it
+        })
+    }) {
         Box(
             Modifier
                 .padding(it)

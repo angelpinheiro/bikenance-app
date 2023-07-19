@@ -32,7 +32,7 @@ fun BikeStats(bike: Bike) {
 
         Card(
             elevation = 6.dp,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(10.dp),
             backgroundColor = MaterialTheme.colors.primary,
 
 

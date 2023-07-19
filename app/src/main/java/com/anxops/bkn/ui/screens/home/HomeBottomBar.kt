@@ -43,30 +43,30 @@ fun HomeBottomBar(
 
 
                     BadgedBox(badge = {
-                        if (destination.title.contains("Maintenance")) {
-                            Badge {
-                                Text("$critical")
-                            }
-                        }
+//                        if (destination.title.contains("Maintenance")) {
+//                            Badge {
+//                                Text("$critical")
+//                            }
+//                        }
                     }) {
                         BknIcon(
                             destination.icon,
                             MaterialTheme.colors.onPrimary,
                             modifier = Modifier
-                                .size(18.dp)
+                                .size(22.dp).alpha(if (isCurrent) 1f else 0.5f)
                         )
                     }
                 },
-                label = {
-
-                    Text(
-                        destination.title,
-                        color = MaterialTheme.colors.onPrimary,
-                        style = MaterialTheme.typography.h4,
-                        fontWeight = if (isCurrent) FontWeight.ExtraBold else FontWeight.Normal,
-                        modifier = Modifier.alpha(if (isCurrent) 1f else 0.5f)
-                    )
-                },
+//                label = {
+//
+//                    Text(
+//                        destination.title,
+//                        color = MaterialTheme.colors.onPrimary,
+//                        style = MaterialTheme.typography.h4,
+//                        fontWeight = if (isCurrent) FontWeight.ExtraBold else FontWeight.Normal,
+//                        modifier = Modifier.alpha(if (isCurrent) 1f else 0.5f)
+//                    )
+//                },
 
                 )
         }
@@ -79,11 +79,11 @@ enum class HomeSections(
     val icon: IIcon,
     val title: String
 ) {
-    Home("HomeScreenDestination", CommunityMaterial.Icon.cmd_bike, "Garage"),
+    Home("HomeScreenDestination", CommunityMaterial.Icon2.cmd_home_variant_outline, "Garage"),
     Rides("RidesScreenDestination", CommunityMaterial.Icon.cmd_bike_fast, "Rides"),
     Maintenances(
         "MaintenancesScreenDestination",
-        CommunityMaterial.Icon.cmd_cog,
+        CommunityMaterial.Icon3.cmd_tools,
         "Maintenance"
     ),
 }

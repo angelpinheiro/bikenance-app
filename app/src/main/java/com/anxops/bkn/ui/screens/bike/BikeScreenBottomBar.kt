@@ -19,11 +19,11 @@ enum class BikeSections(
     val id: String, val icon: IIcon, val title: String
 ) {
     Status(
-        id = "BikeStatusScreenDestination", icon = CommunityMaterial.Icon.cmd_bike, title = "Status"
+        id = "BikeStatusScreenDestination", icon = CommunityMaterial.Icon3.cmd_progress_wrench, title = "Status"
     ),
     Components(
         id = "BikeComponentsDestination",
-        icon = CommunityMaterial.Icon.cmd_bike_fast,
+        icon = CommunityMaterial.Icon2.cmd_hexagon_multiple,
         title = "Components"
     ),
 }
