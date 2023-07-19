@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 enum class BikeType(
     val type: String, val extendedType: String
 ) {
-    MTB("MTB", "MTB Hardtail"), FULL_MTB("Full MTB", "MTB Full Suspension"), ROAD(
+    MTB("MTB", "Hardtail MTB"), FULL_MTB("Full MTB", "Full Suspension MTB"), ROAD(
         "Road", "Road Bike"
     ),
     E_BIKE("E-Bike", "Electric Bike"), GRAVEL("Gravel", "Gravel Bike"), STATIONARY(
@@ -56,6 +56,10 @@ data class Bike(
 
     fun displayName(): String {
         return name ?: (brandName ?: "") + " " + (modelName ?: "")
+    }
+
+    fun fullDisplayName(): String {
+        return (brandName ?: "") + " " + (modelName ?: "") + " (${type.extendedType})"
     }
 
     fun status(): BikeStatus {

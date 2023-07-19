@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -37,7 +38,7 @@ fun onSurfaceTextFieldColors(): TextFieldColors =
 fun BknIcon(
     icon: IIcon,
     color: Color = MaterialTheme.colors.onPrimary,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.size(26.dp)
 ) {
 
     com.mikepenz.iconics.compose.Image(

@@ -17,11 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.ComponentCategory
+import com.anxops.bkn.ui.screens.bike.components.BikeComponentListItem
 import com.anxops.bkn.ui.screens.bike.components.BikeStats
 import com.anxops.bkn.ui.screens.bike.components.BikeStatusMap
-import com.anxops.bkn.ui.screens.bike.components.ComponentTabHeaders
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -31,8 +32,8 @@ fun BikeScreenStatusView(
 ) {
 
     val scrollState = rememberLazyListState()
-    val selectedComponentCategory = remember { mutableStateOf<ComponentCategory?>(null) }
-    val selectedTab = remember { mutableStateOf(ComponentTabHeaders.TRANSMISSION) }
+    val selectedCategory = remember { mutableStateOf<ComponentCategory?>(null) }
+    val selectedComponent = remember { mutableStateOf<BikeComponent?>(null) }
     val highlightCategories = remember { mutableStateOf(true) }
 
     LazyColumn(
@@ -42,7 +43,7 @@ fun BikeScreenStatusView(
     ) {
         item {
             Text(
-                text = "Bike statistics",
+                text = "${bike.fullDisplayName()}",
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 0.dp),
                 style = MaterialTheme.typography.h2,
                 color = MaterialTheme.colors.onPrimary
@@ -66,24 +67,38 @@ fun BikeScreenStatusView(
                     .padding(horizontal = 10.dp)
                     .padding(bottom = 10.dp)
             ) {
-                BikeStatusMap(highlightedGroup = selectedComponentCategory.value,
+                BikeStatusMap(
                     bike = bike,
                     bikeStatus = bikeStatus,
+                    selectedCategory = selectedCategory.value,
                     highlightCategories = highlightCategories.value,
                     onCategorySelected = {
                         highlightCategories.value = false
-                        selectedComponentCategory.value = it
-                        ComponentTabHeaders.values().firstOrNull { h -> h.category == it }
-                            ?.let { th ->
-                                selectedTab.value = th
-                            }
+                        selectedCategory.value = it
                     },
                     onCategoryUnselected = {
-                        selectedComponentCategory.value = null
+                        selectedCategory.value = null
+                        selectedComponent.value = null
                         highlightCategories.value = true
-                    })
+                    },
+                    onComponentSelected = {
+                        if (it == selectedComponent.value) {
+                            selectedComponent.value = null
+                        } else {
+                            selectedComponent.value = it
+                        }
+
+                    }
+                )
             }
         }
+        selectedComponent.value?.let {
+            item {
+                BikeComponentListItem(component = it)
+            }
+
+        }
+
     }
 }
 

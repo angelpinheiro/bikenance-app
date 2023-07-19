@@ -22,6 +22,7 @@ import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.anxops.bkn.util.formatAsDayMonth
 import com.anxops.bkn.util.formatDistanceAsShortKm
 import com.anxops.bkn.util.formatElevation
+import com.anxops.bkn.util.formatElevationShort
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
@@ -48,7 +49,7 @@ fun BikeStats(bike: Bike) {
                 ) {
                     BikeStat(
                         title = "Rides",
-                        value = "${bikeStats.rideCount}",
+                        value = "${bikeStats.rideCount?.toInt() ?: 0}",
                         icon = CommunityMaterial.Icon.cmd_bike_fast,
                         modifier = Modifier.weight(1f)
                     )
@@ -60,7 +61,7 @@ fun BikeStats(bike: Bike) {
                     )
                     BikeStat(
                         title = "Distance",
-                        value = formatDistanceAsShortKm(bikeStats.distance.toInt()),
+                        value = "${formatDistanceAsShortKm(bikeStats.distance.toInt())}",
                         icon = CommunityMaterial.Icon3.cmd_map_marker_distance,
                         modifier = Modifier.weight(1f)
                     )
@@ -72,7 +73,7 @@ fun BikeStats(bike: Bike) {
                     )
                     BikeStat(
                         title = "Ascent",
-                        value = "${formatElevation(bikeStats.elevationGain?.toInt())}",
+                        value = "${formatElevationShort(bikeStats.elevationGain?.toInt())}",
                         modifier = Modifier.weight(1f),
                         icon = CommunityMaterial.Icon2.cmd_image_filter_hdr,
                     )
@@ -85,7 +86,7 @@ fun BikeStats(bike: Bike) {
                 ) {
                     BikeStat(
                         title = "AVG Speed",
-                        value = "${bikeStats.averageSpeed?.toInt()}",
+                        value = "${bikeStats.averageSpeed?.toInt()} kmh",
                         icon = CommunityMaterial.Icon.cmd_clock_fast,
                         modifier = Modifier.weight(1f)
                     )

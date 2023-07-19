@@ -4,7 +4,7 @@
     <!-- Component Types -->
     <string name="componentType_BRAKE_LEVER">Brake Levers</string>
     <string name="componentType_CASSETTE">Cassette</string>
-    <string name="componentType_DISC_BRAKE">Disc brakes</string>
+    <string name="componentType_DISC_BRAKE">Brake Discs</string>
     <string name="componentType_FORK">Fork</string>
     <string name="componentType_PEDAL_CLIPLESS">Clipless Pedals</string>
     <string name="componentType_REAR_HUB">Rear Hub</string>
