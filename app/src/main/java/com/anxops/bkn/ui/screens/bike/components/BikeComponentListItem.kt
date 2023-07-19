@@ -28,7 +28,6 @@ fun BikeComponentListItem(component: BikeComponent) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.primary)
             .padding(10.dp),
         verticalAlignment = Alignment.Top
     ) {

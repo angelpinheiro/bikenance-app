@@ -1,5 +1,6 @@
 package com.anxops.bkn.ui.shared
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -13,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Loading(text: String? = null) {
-    Box(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant)) {
         CircularProgressIndicator(
             color = MaterialTheme.colors.secondary,
             strokeWidth = 5.dp,

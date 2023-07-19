@@ -29,7 +29,6 @@ fun MultiComponentListItem(data: GroupedComponents) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.primary)
             .padding(10.dp),
         verticalAlignment = Alignment.Top
     ) {

@@ -3,7 +3,8 @@ package com.anxops.bkn.ui.navigation
 
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
-import com.anxops.bkn.ui.screens.destinations.BikeDetailsScreenDestination
+import com.anxops.bkn.ui.screens.bike.BikeSections
+import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeSetupScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
@@ -51,8 +52,8 @@ class BknNavigator(var navigator: DestinationsNavigator) {
         navigator.navigate(BikeSetupScreenDestination.invoke(id))
     }
 
-    fun navigateToBikeDetails(id: String) {
-        navigator.navigate(BikeDetailsScreenDestination.invoke(id))
+    fun navigateToBikeDetails(id: String, section: String = BikeSections.Status.id) {
+        navigator.navigate(BikeScreenDestination.invoke(id, section))
     }
 
     fun navigateToRide(id: String) {

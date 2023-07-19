@@ -66,11 +66,11 @@ fun MaintenanceList(maintenances: List<MaintenanceItem>) {
 }
 
 @Composable fun AllUpcomingMaintenances(filter: Float = 0f) {
-    val scrollState = rememberScrollState()
+//    val scrollState = rememberScrollState()
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+//            .verticalScroll(scrollState)
             .background(bgGradient())
     ) {
         UpcomingMaintenance(filter = filter)

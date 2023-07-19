@@ -56,7 +56,7 @@ fun bgGradient() : Brush {
 
     val gradient = remember {
         Brush.verticalGradient(
-            0f to color1.copy(alpha = 0.9f),
+            0f to color1.copy(alpha = 0.97f),
             0.3f to color2.copy(alpha = 0.98f),
             1f to color2.copy(alpha = 0.98f),
         )

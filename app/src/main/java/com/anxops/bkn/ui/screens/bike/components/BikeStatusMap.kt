@@ -18,6 +18,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -78,14 +79,15 @@ fun BikeStatusMap(
     bikeStatus: BikeStatus,
     highlightCategories: Boolean = false,
     highlightedGroup: ComponentCategory? = ComponentCategory.WHEELS,
-    onCategorySelected: (ComponentCategory) -> Unit = {}
+    onCategorySelected: (ComponentCategory) -> Unit = {},
+    onCategoryUnselected: () -> Unit = {}
 ) {
 
     val showComponentGroupsFlag = remember {
         mutableStateOf(false)
     }
 
-
+    val interactionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(Unit) {
         delay(500)
@@ -113,6 +115,11 @@ fun BikeStatusMap(
                 .padding(20.dp)
                 .fillMaxWidth()
                 .aspectRatio(1.5f)
+                .clickable (
+                    interactionSource = interactionSource,
+                    indication = null
+
+                ){ onCategoryUnselected() }
         ) {
 
             Image(
