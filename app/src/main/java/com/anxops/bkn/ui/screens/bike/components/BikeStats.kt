@@ -110,7 +110,7 @@ fun BikeStats(bikeStats: BikeStats) {
 fun BikeStat(
     title: String,
     value: String,
-    icon: IIcon = CommunityMaterial.Icon.cmd_bike,
+    icon: IIcon? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -123,9 +123,11 @@ fun BikeStat(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BknIcon(
-                icon, MaterialTheme.colors.onPrimary, modifier = Modifier.size(16.dp)
-            )
+            icon?.let {
+                BknIcon(
+                    it, MaterialTheme.colors.onPrimary, modifier = Modifier.size(16.dp)
+                )
+            }
             Text(
                 modifier = Modifier.padding(start = 10.dp),
                 color = MaterialTheme.colors.onPrimary,

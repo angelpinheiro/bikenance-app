@@ -9,6 +9,7 @@ import java.time.temporal.TemporalAccessor
 object DateTimeFormatters {
     val iso8061: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val dayMonth: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM")
+    val monthYear: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/YYYY")
     val localTime: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 }
 
@@ -22,6 +23,10 @@ fun TemporalAccessor.formatAsIso8061(): String {
 
 fun TemporalAccessor.formatAsDayMonth(): String {
     return DateTimeFormatters.dayMonth.format(this)
+}
+
+fun TemporalAccessor.formatAsMonthYear(): String {
+    return DateTimeFormatters.monthYear.format(this)
 }
 
 fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {

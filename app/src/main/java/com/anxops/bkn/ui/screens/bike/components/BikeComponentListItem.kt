@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.resources
-import com.anxops.bkn.util.formatAsDayMonth
 
 
 @Composable
@@ -95,3 +94,6 @@ fun BikeComponentListItem(component: BikeComponent) {
 
     }
 }
+
+
+
