@@ -3,8 +3,9 @@ package com.anxops.bkn.ui.screens.bike
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,6 +25,7 @@ import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.ui.screens.bike.components.BikeComponentListItem
 import com.anxops.bkn.ui.screens.bike.components.BikeStats
 import com.anxops.bkn.ui.screens.bike.components.BikeStatusMap
+import com.anxops.bkn.ui.screens.bike.components.ComponentCategoryCarousel
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -30,28 +33,38 @@ import com.anxops.bkn.ui.screens.bike.components.BikeStatusMap
 fun BikeScreenStatusView(
     bike: Bike, bikeStatus: BikeStatus
 ) {
-
     val scrollState = rememberLazyListState()
-    val selectedCategory = remember { mutableStateOf<ComponentCategory?>(null) }
-    val selectedComponent = remember { mutableStateOf<BikeComponent?>(null) }
-    val highlightCategories = remember { mutableStateOf(true) }
+    val selectedCategory = rememberSaveable { mutableStateOf<ComponentCategory?>(null) }
+    val selectedComponent = rememberSaveable { mutableStateOf<BikeComponent?>(null) }
+    val highlightCategories = rememberSaveable { mutableStateOf(true) }
 
     LazyColumn(
         state = scrollState,
         horizontalAlignment = Alignment.Start,
-        modifier = Modifier.fillMaxSize()
+
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primaryVariant)
     ) {
-        item {
+
+        stickyHeader {
             Text(
                 text = "${bike.fullDisplayName()}",
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 0.dp),
-                style = MaterialTheme.typography.h2,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.primary)
+                    .padding(10.dp),
+                style = MaterialTheme.typography.h5,
                 color = MaterialTheme.colors.onPrimary
             )
         }
-        item {
-            BikeStats(bike = bike)
+
+        bike.stats?.let {
+            item {
+                BikeStats(bikeStats = it)
+            }
         }
+
         item {
             Text(
                 text = "Bike status",
@@ -61,20 +74,37 @@ fun BikeScreenStatusView(
             )
         }
         stickyHeader {
-            Box(
+            Column(
                 Modifier
                     .background(MaterialTheme.colors.primaryVariant)
-                    .padding(horizontal = 10.dp)
                     .padding(bottom = 10.dp)
             ) {
+
+                ComponentCategoryCarousel(selectedCategory.value) {
+                    if (it == selectedCategory.value) {
+                        selectedCategory.value = null
+                        selectedComponent.value = null
+                        highlightCategories.value = true
+                    } else {
+                        selectedCategory.value = it
+                        highlightCategories.value = false
+                    }
+                }
+
                 BikeStatusMap(
                     bike = bike,
                     bikeStatus = bikeStatus,
                     selectedCategory = selectedCategory.value,
                     highlightCategories = highlightCategories.value,
                     onCategorySelected = {
-                        highlightCategories.value = false
-                        selectedCategory.value = it
+                        if (it == selectedCategory.value) {
+                            selectedCategory.value = null
+                            selectedComponent.value = null
+                            highlightCategories.value = true
+                        } else {
+                            selectedCategory.value = it
+                            highlightCategories.value = false
+                        }
                     },
                     onCategoryUnselected = {
                         selectedCategory.value = null
@@ -87,18 +117,14 @@ fun BikeScreenStatusView(
                         } else {
                             selectedComponent.value = it
                         }
-
                     }
                 )
+
+                selectedComponent.value?.let {
+                    BikeComponentListItem(component = it)
+                }
             }
         }
-        selectedComponent.value?.let {
-            item {
-                BikeComponentListItem(component = it)
-            }
-
-        }
-
     }
 }
 

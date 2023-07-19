@@ -18,10 +18,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +31,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -71,6 +78,7 @@ import com.anxops.bkn.ui.theme.statusGood
 import com.anxops.bkn.ui.theme.statusWarning
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import kotlinx.coroutines.delay
+import java.util.Locale
 
 data class OffsetAndAlign(val x: Float, val y: Float, val align: Alignment = Alignment.TopStart)
 
@@ -91,6 +99,12 @@ fun BikeStatusMap(
     }
 
     val interactionSource = remember { MutableInteractionSource() }
+
+    val topTitle = if (selectedCategory != null) {
+        "Bike status > ${selectedCategory.name}"
+    } else {
+        "Bike status"
+    }
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -115,10 +129,8 @@ fun BikeStatusMap(
         }
     }
 
-
-
     BoxWithConstraints(modifier = Modifier
-        .padding(20.dp)
+        .padding(horizontal = 26.dp)
         .fillMaxWidth()
         .aspectRatio(1.5f)
         .clickable(
@@ -148,12 +160,12 @@ fun BikeStatusMap(
         )
 
 
-        if (selectedCategory != null) {
-            IconButton(modifier = Modifier.align(Alignment.TopEnd),
-                onClick = { onCategoryUnselected()  }) {
-                BknIcon(icon = CommunityMaterial.Icon.cmd_close)
-            }
-        }
+//        if (selectedCategory != null) {
+//            IconButton(modifier = Modifier.align(Alignment.TopEnd),
+//                onClick = { onCategoryUnselected() }) {
+//                BknIcon(icon = CommunityMaterial.Icon3.cmd_transfer_up)
+//            }
+//        }
 
         HotSpotAnimatedVisibility(
             visible = showComponentGroupsFlag.value && highlightCategories
@@ -326,8 +338,72 @@ fun BikeStatusMap(
 
         }
     }
+}
 
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ComponentCategoryCarousel(
+    selectedCategory: ComponentCategory?, onCategorySelected: (ComponentCategory) -> Unit
+) {
+
+    val categoryScroll = rememberScrollState()
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .horizontalScroll(categoryScroll)
+            .padding(10.dp)
+    ) {
+        ComponentCategory.values().forEach { category ->
+
+            val isSelected = selectedCategory == category
+
+            Chip(
+                modifier = Modifier
+                    .widthIn(60.dp, 180.dp)
+                    .padding(horizontal = 3.dp),
+                onClick = { onCategorySelected(category) },
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
+                    contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
+                )
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 4.dp),
+                    textAlign = TextAlign.Center,
+                    text = category.name.lowercase()
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                BknIcon(
+                    icon = CommunityMaterial.Icon.cmd_close, modifier = Modifier.size(16.dp),
+                    color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
+
+                )
+            }
+//
+//            Text(
+//                modifier = Modifier
+//                    .padding(horizontal = 5.dp, vertical = 2.dp)
+//                    .width(100.dp)
+//                    .clip(
+//                        RoundedCornerShape(12.dp)
+//                    )
+//                    .clickable { onCategorySelected(category) }
+//                    .background(color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface)
+//                    .padding(4.dp),
+//                textAlign = TextAlign.Center,
+//                color = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface,
+//                text = category.name.lowercase()
+//                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+//                style = MaterialTheme.typography.h5,
+//            )
+
+        }
+    }
 }
 
 
