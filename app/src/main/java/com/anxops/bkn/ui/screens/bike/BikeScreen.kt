@@ -67,11 +67,11 @@ fun BikeScreen(
                 ) {
                     when (currentSection) {
                         BikeSections.Status -> {
-                            BikeScreenStatusView(currentState.bike, currentState.bikeStatus)
+                            BikeScreenStatusView(currentState.bike)
                         }
 
                         BikeSections.Components -> {
-                            BikeScreenComponentsView(currentState.bike, currentState.bikeStatus)
+                            BikeScreenComponentsView(currentState.bike)
                         }
                     }
                 }

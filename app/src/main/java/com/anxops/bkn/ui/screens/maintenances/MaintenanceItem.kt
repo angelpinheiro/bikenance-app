@@ -37,6 +37,7 @@ import com.anxops.bkn.ui.theme.statusDanger
 import com.anxops.bkn.ui.theme.statusGood
 import com.anxops.bkn.ui.theme.statusOk
 import com.anxops.bkn.ui.theme.statusWarning
+import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 
@@ -245,6 +246,17 @@ fun getColorForStatus(statusLevel: StatusLevel?): Color {
         StatusLevel.OK -> MaterialTheme.colors.statusOk
         StatusLevel.GOOD -> MaterialTheme.colors.statusGood
         else -> MaterialTheme.colors.primary
+    }
+}
+
+@Composable
+fun getIconResForStatus(statusLevel: StatusLevel?): IIcon {
+    return when (statusLevel) {
+        StatusLevel.DANGER -> CommunityMaterial.Icon3.cmd_progress_wrench
+        StatusLevel.WARN ->CommunityMaterial.Icon3.cmd_progress_alert
+        StatusLevel.OK -> CommunityMaterial.Icon3.cmd_progress_check
+        StatusLevel.GOOD -> CommunityMaterial.Icon3.cmd_progress_check
+        else -> CommunityMaterial.Icon3.cmd_progress_question
     }
 }
 

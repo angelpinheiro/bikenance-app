@@ -1,8 +1,14 @@
 package com.anxops.bkn.ui.shared
 
 import com.anxops.bkn.R
+import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentTypes
 import com.anxops.bkn.data.model.MaintenanceTypes
+
+data class ComponentCategoryResources(
+    val nameResId: Int
+)
+
 
 data class ComponentResources(
     val nameResId: Int,
@@ -23,6 +29,18 @@ fun MaintenanceTypes.resources(): MaintenanceResources =
     maintenanceResourcesMap[this]
         ?: maintenanceResourcesMap[MaintenanceTypes.DISC_PAD_MAINTENANCE]!!
 
+fun ComponentCategory.resources(): ComponentCategoryResources =
+    categoryResourcesMap[this]!!
+
+
+val categoryResourcesMap = mapOf(
+    ComponentCategory.SUSPENSION to ComponentCategoryResources(R.string.component_category_suspension),
+    ComponentCategory.TRANSMISSION to ComponentCategoryResources(R.string.component_category_transmission),
+    ComponentCategory.BRAKES to ComponentCategoryResources(R.string.component_category_brakes),
+    ComponentCategory.WHEELS to ComponentCategoryResources(R.string.component_category_wheels),
+    ComponentCategory.MISC to ComponentCategoryResources(R.string.component_category_misc),
+
+    )
 
 val componentResourcesMap = mapOf(
     ComponentTypes.BRAKE_LEVER to ComponentResources(

@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.bike.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -19,13 +18,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,11 +34,11 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -69,12 +66,13 @@ import androidx.compose.ui.unit.sp
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
-import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.StatusLevel
 import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
+import com.anxops.bkn.ui.screens.maintenances.getIconResForStatus
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.resources
@@ -82,17 +80,15 @@ import com.anxops.bkn.ui.theme.statusGood
 import com.anxops.bkn.ui.theme.statusWarning
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import kotlinx.coroutines.delay
-import java.util.Locale
 
 data class OffsetAndAlign(val x: Float, val y: Float, val align: Alignment = Alignment.TopStart)
 
 @Composable
 fun BikeStatusMap(
-    modifier: Modifier = Modifier,
     bike: Bike,
-    bikeStatus: BikeStatus,
     highlightCategories: Boolean = false,
     selectedCategory: ComponentCategory? = ComponentCategory.WHEELS,
+    selectedComponent: BikeComponent? = null,
     onCategorySelected: (ComponentCategory) -> Unit = {},
     onComponentSelected: (BikeComponent) -> Unit = {},
     onCategoryUnselected: () -> Unit = {}
@@ -103,12 +99,6 @@ fun BikeStatusMap(
     }
 
     val interactionSource = remember { MutableInteractionSource() }
-
-    val topTitle = if (selectedCategory != null) {
-        "Bike status > ${selectedCategory.name}"
-    } else {
-        "Bike status"
-    }
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -147,10 +137,10 @@ fun BikeStatusMap(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
+                .blur(5.dp)
                 .padding(5.dp)
-                .blur(10.dp)
                 .align(Alignment.Center)
-                .alpha(0.3f),
+                .alpha(0.5f),
             colorFilter = ColorFilter.tint(Color.Black)
         )
         Image(
@@ -158,24 +148,16 @@ fun BikeStatusMap(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(2.dp)
+                .padding(5.dp)
                 .align(Alignment.Center),
             colorFilter = ColorFilter.tint(Color.hsl(227f, 0.24f, 0.29f))
         )
 
-
-//        if (selectedCategory != null) {
-//            IconButton(modifier = Modifier.align(Alignment.TopEnd),
-//                onClick = { onCategoryUnselected() }) {
-//                BknIcon(icon = CommunityMaterial.Icon3.cmd_transfer_up)
-//            }
-//        }
-
         HotSpotAnimatedVisibility(
             visible = showComponentGroupsFlag.value && highlightCategories
         ) {
-            HotSpot(text = "Transmission",
-                color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.TRANSMISSION]),
+            HotSpot(text = stringResource(id = ComponentCategory.TRANSMISSION.resources().nameResId),
+                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.TRANSMISSION]),
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.4f,
@@ -183,8 +165,8 @@ fun BikeStatusMap(
                 textAlignment = Alignment.BottomCenter,
                 onSelected = { onCategorySelected(ComponentCategory.TRANSMISSION) })
 
-            HotSpot(text = "Misc",
-                color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.MISC]),
+            HotSpot(text = stringResource(id = ComponentCategory.MISC.resources().nameResId),
+                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.MISC]),
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.4f,
@@ -192,8 +174,8 @@ fun BikeStatusMap(
                 textAlignment = Alignment.TopEnd,
                 onSelected = { onCategorySelected(ComponentCategory.MISC) })
 
-            HotSpot(text = "Brakes",
-                color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.BRAKES]),
+            HotSpot(text = stringResource(id = ComponentCategory.BRAKES.resources().nameResId),
+                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.BRAKES]),
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.16f,
@@ -202,18 +184,16 @@ fun BikeStatusMap(
                 onSelected = { onCategorySelected(ComponentCategory.BRAKES) })
 
 
-            HotSpot(text = "Suspension",
+            HotSpot(text = stringResource(id = ComponentCategory.SUSPENSION.resources().nameResId),
                 color = MaterialTheme.colors.statusGood,
-                size = 35.dp,
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.75f,
                 yOffset = 0.40f,
                 onSelected = { onCategorySelected(ComponentCategory.SUSPENSION) })
 
-            HotSpot(text = "Tires",
-                color = getColorForStatus(bikeStatus.componentCategoryStatus[ComponentCategory.WHEELS]),
-                size = 35.dp,
+            HotSpot(text = stringResource(id = ComponentCategory.WHEELS.resources().nameResId),
+                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.WHEELS]),
                 maxHeight = maxHeight,
                 maxWidth = maxWidth,
                 xOffset = 0.65f,
@@ -225,6 +205,8 @@ fun BikeStatusMap(
         if (!highlightCategories) {
 
             bike.components?.forEach { component ->
+
+                val isSelected = component._id == selectedComponent?._id
 
                 val offset: OffsetAndAlign = when (component.type) {
                     ComponentTypes.BRAKE_LEVER -> {
@@ -240,23 +222,23 @@ fun BikeStatusMap(
                     }
 
                     ComponentTypes.CHAIN -> {
-                        OffsetAndAlign(0.45f, 0.65f)
+                        OffsetAndAlign(0.37f, 0.55f)
                     }
 
                     ComponentTypes.DISC_BRAKE -> {
 
                         if (component.modifier == ComponentModifier.REAR) {
-                            OffsetAndAlign(0.25f, 0.65f, Alignment.BottomCenter)
+                            OffsetAndAlign(0.2f, 0.6f, Alignment.BottomCenter)
                         } else {
-                            OffsetAndAlign(0.75f, 0.65f)
+                            OffsetAndAlign(0.8f, 0.6f)
                         }
                     }
 
                     ComponentTypes.DISC_PAD -> {
                         if (component.modifier == ComponentModifier.REAR) {
-                            OffsetAndAlign(0.17f, 0.55f)
+                            OffsetAndAlign(0.3f, 0.48f)
                         } else {
-                            OffsetAndAlign(0.82f, 0.55f, Alignment.BottomEnd)
+                            OffsetAndAlign(0.7f, 0.48f, Alignment.BottomEnd)
                         }
                     }
 
@@ -277,7 +259,7 @@ fun BikeStatusMap(
                     }
 
                     ComponentTypes.REAR_DERAUILLEURS -> {
-                        OffsetAndAlign(0.25f, 0.72f, Alignment.BottomCenter)
+                        OffsetAndAlign(0.28f, 0.74f, Alignment.BottomCenter)
                     }
 
                     ComponentTypes.REAR_HUB -> {
@@ -325,14 +307,15 @@ fun BikeStatusMap(
 
 
                 HotSpotAnimatedVisibility(selectedCategory == component.type.category) {
-                    SmallHotSpot(text = stringResource(id = component.type.resources().nameResId),
-                        color = getColorForStatus(bikeStatus.componentTypeStatus[component.type]),
+                    StatusMapComponent(
+                        isSelected = isSelected,
                         size = 25.dp,
                         maxHeight = maxHeight,
                         maxWidth = maxWidth,
                         xOffset = offset.x,
                         yOffset = offset.y,
-                        textAlignment = offset.align,
+                        component = component,
+                        status = bike.status.componentTypeStatus[component.type],
                         onSelected = {
                             onComponentSelected(component)
                         })
@@ -351,46 +334,55 @@ fun ComponentCategoryCarousel(
     selectedCategory: ComponentCategory?, onCategorySelected: (ComponentCategory) -> Unit
 ) {
 
-    val categoryScroll = rememberScrollState()
+    val categoryScroll = rememberLazyListState()
+    val categories = remember {
+        ComponentCategory.values()
+    }
 
-    Row(
+    LaunchedEffect(selectedCategory) {
+        val index = categories.indexOf(selectedCategory)
+        if (index > 0) categoryScroll.animateScrollToItem(index)
+    }
+
+    LazyRow(
         Modifier
             .fillMaxWidth()
-            .horizontalScroll(categoryScroll)
-            .padding(horizontal = 10.dp)
+            .padding(horizontal = 0.dp),
+        state = categoryScroll,
+        horizontalArrangement = Arrangement.Center
     ) {
-        ComponentCategory.values().forEach { category ->
+        categories.forEach { category ->
 
             val isSelected = selectedCategory == category
+            item {
+                Chip(
+                    modifier = Modifier
+                        .widthIn(80.dp, 180.dp)
+                        .padding(horizontal = 3.dp),
+                    onClick = { onCategorySelected(category) },
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
+                        contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
+                    ),
+                    leadingIcon = {
+                        BknIcon(
+                            icon = CommunityMaterial.Icon.cmd_close,
+                            modifier = Modifier
+                                .padding(start = 6.dp)
+                                .size(10.dp),
+                            color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
 
-            Chip(
-                modifier = Modifier
-                    .widthIn(80.dp, 180.dp)
-                    .padding(horizontal = 3.dp),
-                onClick = { onCategorySelected(category) },
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
-                    contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
-                ),
-                leadingIcon = {
-                    BknIcon(
-                        icon = CommunityMaterial.Icon.cmd_close,
-                        modifier = Modifier
-                            .padding(start = 6.dp)
-                            .size(10.dp),
-                        color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
-
+                        )
+                    },
+                ) {
+                    Text(
+                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 16.dp),
+                        textAlign = TextAlign.Center,
+                        text = stringResource(id = category.resources().nameResId),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                },
-            ) {
-                Text(
-                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 16.dp),
-                    textAlign = TextAlign.Center,
-                    text = category.name.lowercase()
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                }
             }
         }
     }
@@ -408,7 +400,7 @@ fun ComponentCarousel(
 
     LaunchedEffect(selectedComponent) {
         val index = components.indexOf(selectedComponent)
-        if(index > 0) categoryScroll.animateScrollToItem(index)
+        if (index > 0) categoryScroll.animateScrollToItem(index)
     }
 
     LazyRow(
@@ -434,7 +426,9 @@ fun ComponentCarousel(
                     ),
                     leadingIcon = {
                         BikeComponentIcon(
-                            type = component.type, modifier = Modifier
+                            type = component.type,
+                            tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
+                            modifier = Modifier
                                 .padding(start = 6.dp)
                                 .size(16.dp)
                         )
@@ -446,7 +440,7 @@ fun ComponentCarousel(
                         text = (component.modifier?.displayName?.plus(" ") ?: "") + stringResource(
                             id = component.type.resources().nameResId
                         ),
-                        color =if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface ,
+                        color = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h4,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -463,7 +457,7 @@ fun HotSpot(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.statusWarning,
-    size: Dp = 35.dp,
+    size: Dp = 45.dp,
     xOffset: Float,
     yOffset: Float,
     maxWidth: Dp,
@@ -487,6 +481,7 @@ fun HotSpot(
     ) {
 
         PulsatingCircles(size, color = color)
+
         Text(
             text = text,
             Modifier
@@ -509,16 +504,16 @@ fun HotSpot(
 
 
 @Composable
-fun SmallHotSpot(
-    text: String,
+fun StatusMapComponent(
+    component: BikeComponent,
+    isSelected: Boolean = false,
+    status: StatusLevel? = StatusLevel.UNKNOWN,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.statusWarning,
     size: Dp,
     xOffset: Float,
     yOffset: Float,
     maxWidth: Dp,
     maxHeight: Dp,
-    textAlignment: Alignment = Alignment.TopEnd,
     onSelected: () -> Unit = {}
 ) {
 
@@ -526,30 +521,36 @@ fun SmallHotSpot(
     val boxSize = max(50.dp, size)
 
     val top = max(maxHeight * yOffset - boxSize / 2, 0.dp)
-    val start = max(maxWidth * xOffset - boxSize, 0.dp)
+    val start = max(maxWidth * xOffset - boxSize / 2, 0.dp)
+
+
+    val color = getColorForStatus(status ?: StatusLevel.UNKNOWN)
+    val icon = getIconResForStatus(status ?: StatusLevel.UNKNOWN)
 
     Box(
         modifier
             .padding(top = top, start = start)
-            .width(boxSize * 2)
+            .width(boxSize)
             .height(boxSize)
             .clickable(interactionSource, indication = null) { onSelected() },
         contentAlignment = Alignment.Center
 
     ) {
 
-        PulsatingCircles(size, color = color, alpha = 0.2f)
-        Text(
-            text = text,
-            Modifier
-                .align(textAlignment)
-                .padding(horizontal = 6.dp, vertical = 1.dp),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.onPrimary,
-            style = MaterialTheme.typography.h4,
-            fontSize = 12.sp
+        BikeComponentIcon(
+            type = component.type,
+            tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
+            modifier = Modifier
+                .size(34.dp)
+                .clip(CircleShape)
+                .background(if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface)
+                .padding(5.dp)
+        )
+
+        CircularProgressIndicator(
+            modifier = Modifier.size(42.dp),
+            color = color,
+            progress = component.status.toFloat()
         )
     }
 
@@ -601,7 +602,7 @@ fun PulsatingCircles(size: Dp, color: Color = Color.White, alpha: Float = 0.3f) 
         val alpha by infiniteTransition.animateValue(
             label = "",
             initialValue = alpha,
-            targetValue = 0.1f,
+            targetValue = 0.3f,
             typeConverter = Float.VectorConverter,
             animationSpec = infiniteRepeatable(
                 animation = tween(2000, easing = FastOutLinearInEasing),

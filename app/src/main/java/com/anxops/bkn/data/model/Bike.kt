@@ -34,6 +34,11 @@ data class Bike(
     val components: List<BikeComponent> = emptyList()
 
 ) {
+
+    val status by lazy {
+        buildStatus()
+    }
+
     fun km(): Long? {
         return distance?.div(1000)
     }
@@ -62,8 +67,8 @@ data class Bike(
         return (brandName ?: "") + " " + (modelName ?: "") + " (${type.extendedType})"
     }
 
-    fun status(): BikeStatus {
-        val componentStatus = components?.map { it to it.status() } ?: listOf()
+    private fun buildStatus(): BikeStatus {
+        val componentStatus = components?.map { it to it.statusLevel } ?: listOf()
 
         val componentTypeStatus = componentStatus.groupBy {
             it.first.type

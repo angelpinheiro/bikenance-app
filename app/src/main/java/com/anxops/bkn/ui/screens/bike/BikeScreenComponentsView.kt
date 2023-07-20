@@ -10,7 +10,7 @@ import com.anxops.bkn.ui.screens.bike.components.BikeComponentTabsV2
 import com.anxops.bkn.ui.screens.bike.components.ComponentTabHeaders
 
 @Composable
-fun BikeScreenComponentsView(bike: Bike, bikeStatus: BikeStatus) {
+fun BikeScreenComponentsView(bike: Bike) {
 
     val selectedTab =
         remember { mutableStateOf(ComponentTabHeaders.TRANSMISSION) }
@@ -19,7 +19,7 @@ fun BikeScreenComponentsView(bike: Bike, bikeStatus: BikeStatus) {
     val highlightCategories = remember { mutableStateOf(true) }
 
     BikeComponentTabsV2(bike = bike,
-        status = bikeStatus,
+        status = bike.status,
         selectedTab = selectedTab.value,
         onTabChange = { tab ->
             selectedTab.value = tab

@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.ui.screens.bikeSetup.BikeSetupTitle
 import com.anxops.bkn.ui.screens.bikeSetup.SetupDetails
+import com.anxops.bkn.ui.shared.resources
 import kotlin.math.floor
 
 
@@ -87,7 +89,7 @@ fun BikeStatusPage(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${category.name}",
+                            text = stringResource(id = category.resources().nameResId),
                             color = MaterialTheme.colors.onPrimary,
                             style = MaterialTheme.typography.h3,
                             fontWeight = FontWeight.Normal,

@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Component Categories -->
+    <string name="component_category_suspension">Suspension</string>
+    <string name="component_category_brakes">Brakes</string>
+    <string name="component_category_wheels">Wheels</string>
+    <string name="component_category_misc">Frame</string>
+    <string name="component_category_transmission">Transmission</string>
+
     <!-- Component Types -->
     <string name="componentType_BRAKE_LEVER">Brake Levers</string>
     <string name="componentType_CASSETTE">Cassette</string>
-    <string name="componentType_DISC_BRAKE">Brake Discs</string>
+    <string name="componentType_DISC_BRAKE">Brake Disc</string>
     <string name="componentType_FORK">Fork</string>
     <string name="componentType_PEDAL_CLIPLESS">Clipless Pedals</string>
     <string name="componentType_REAR_HUB">Rear Hub</string>
@@ -13,15 +20,14 @@
     <string name="componentType_FRAME_BEARINGS">Frame bearings</string>
     <string name="componentType_CABLE_HOUSING">Cable Housing &amp; Cables</string>
     <string name="componentType_CHAIN">Chain</string>
-    <string name="componentType_DISC_PAD">Disc Pads</string>
+    <string name="componentType_DISC_PAD">Disc Pad</string>
     <string name="componentType_DROPER_POST">Dropper Post</string>
     <string name="componentType_FRONT_HUB">Front Hub</string>
     <string name="componentType_REAR_DERAUILLEURS">Rear Derailleur</string>
     <string name="componentType_REAR_SUSPENSION">Rear Shock</string>
-    <string name="componentType_TIRE">Tires</string>
+    <string name="componentType_TIRE">Tire</string>
     <string name="componentType_HANDLEBAR_TAPE">Handlebar tape</string>
     <string name="componentType_CUSTOM">Custom</string>
-    <string name="componentType_UNKNOWN">Unknown</string>
 
     <!-- Component Descriptions -->
     <string name="componentType_HANDLEBAR_TAPE_description">Provides grip, comfort, and a stylish finish to the handlebars.</string>
@@ -43,6 +49,5 @@
     <string name="componentType_REAR_SUSPENSION_description">Provides suspension at the rear wheel.</string>
     <string name="componentType_TIRE_description">Rubber outer layer for the wheels.</string>
     <string name="componentType_CUSTOM_description">Custom component</string>
-    <string name="componentType_UNKNOWN_description">Unknown component</string>
 
 </resources>

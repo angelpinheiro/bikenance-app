@@ -21,8 +21,7 @@ sealed class BikeScreenEvent {
 sealed class BikeScreenState {
     object Loading : BikeScreenState()
     data class Loaded(
-        val bike: Bike,
-        val bikeStatus: BikeStatus
+        val bike: Bike
     ) : BikeScreenState()
 }
 
@@ -47,7 +46,7 @@ class BikeScreenViewModel @Inject constructor(
 
     private suspend fun loadBike(bikeId: String): BikeScreenState? {
         return bikesRepository.getBike(bikeId)?.let { bike ->
-            BikeScreenState.Loaded(bike = bike, bikeStatus = bike.status())
+            BikeScreenState.Loaded(bike = bike)
         }
     }
 
