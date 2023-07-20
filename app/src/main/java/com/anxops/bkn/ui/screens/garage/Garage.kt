@@ -63,7 +63,7 @@ fun Garage(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.value is GarageScreenState.Loading,
         onRefresh = { viewModel.loadData() })
-    BackgroundBox(
+    Box(
         modifier = Modifier
             .pullRefresh(pullRefreshState)
     ) {

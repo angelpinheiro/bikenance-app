@@ -1,13 +1,8 @@
 package com.anxops.bkn.ui.screens.maintenances
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -19,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
 import com.anxops.bkn.ui.screens.rides.list.RidesScreenViewModel
-import com.anxops.bkn.ui.shared.components.bgGradient
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 //@GarageNavGraph
@@ -43,7 +37,8 @@ fun MaintenanceList(maintenances: List<MaintenanceItem>) {
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex.value) {
             tabs.forEachIndexed { index, title ->
-                Tab(text = { Text(title) },
+                Tab(
+                    text = { Text(title) },
                     selected = tabIndex.value == index,
                     onClick = { tabIndex.value = index },
 //                    icon = {
@@ -65,14 +60,9 @@ fun MaintenanceList(maintenances: List<MaintenanceItem>) {
 
 }
 
-@Composable fun AllUpcomingMaintenances(filter: Float = 0f) {
-//    val scrollState = rememberScrollState()
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-//            .verticalScroll(scrollState)
-            .background(bgGradient())
-    ) {
-        UpcomingMaintenance(filter = filter)
-    }
+@Composable
+fun AllUpcomingMaintenances(filter: Float = 0f) {
+
+    UpcomingMaintenance(filter = filter)
+
 }

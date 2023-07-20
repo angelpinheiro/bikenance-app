@@ -1,7 +1,6 @@
 package com.anxops.bkn.ui.screens.bike.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
@@ -32,14 +29,12 @@ import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.ui.screens.maintenances.getColorForProgress
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.shared.components.FadeInFadeOutAnimatedVisibility
-import com.anxops.bkn.ui.shared.resources
 import com.anxops.bkn.util.formatAsMonthYear
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 
 @Composable
-fun BikeComponentDetailBg() : Brush {
+fun BikeComponentDetailBg(): Brush {
 
     val color1 = MaterialTheme.colors.primary
     val color2 = MaterialTheme.colors.primaryVariant
@@ -106,7 +101,7 @@ fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}) {
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colors.primaryVariant),
+                .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
 
@@ -218,6 +213,41 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
                 style = MaterialTheme.typography.h3,
             )
         }
+
+        Column(
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f))
+                .padding(10.dp)
+        ) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+            ) {
+                BknIcon(
+                    icon = CommunityMaterial.Icon3.cmd_wrench_check,
+                    modifier = Modifier.padding(end = 10.dp).size(20.dp)
+                )
+                Text(
+                    text = "Instructions",
+                    color = MaterialTheme.colors.onPrimary,
+                    style = MaterialTheme.typography.h3,
+                )
+            }
+
+            Text(
+                text = stringResource(id = item.type.resources().descriptionResId),
+                color = MaterialTheme.colors.onPrimary,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier
+            )
+        }
+
+
 
 
     }

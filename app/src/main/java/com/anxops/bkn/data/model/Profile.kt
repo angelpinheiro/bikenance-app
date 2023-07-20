@@ -15,4 +15,8 @@ data class Profile(
     @SerialName("weight") var weight: Int? = null,
     @SerialName("created_at") var createdAt: String? = null,
     @SerialName("stats") var stats: AthleteStats? = null
-)
+) {
+    companion object {
+        val Empty : Profile = Profile(_id = "", userId = "")
+    }
+}

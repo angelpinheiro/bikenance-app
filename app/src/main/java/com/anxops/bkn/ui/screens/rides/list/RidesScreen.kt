@@ -33,6 +33,7 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
+import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.bgGradient
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -71,7 +72,6 @@ fun RidesScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bgGradient())
             .pullRefresh(pullRefreshState)
     ) {
 

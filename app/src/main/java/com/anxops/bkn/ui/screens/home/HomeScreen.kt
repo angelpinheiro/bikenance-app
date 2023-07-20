@@ -16,6 +16,7 @@ import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.Garage
 import com.anxops.bkn.ui.screens.maintenances.MaintenancesScreen
 import com.anxops.bkn.ui.screens.rides.list.RidesScreen
+import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
@@ -105,10 +106,11 @@ fun HomeScreen(
             selectedItem = it
         })
     }) {
-        Box(
+        BackgroundBox(
             Modifier
                 .padding(it)
-                .fillMaxSize()
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
 
             when (selectedItem) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -15,15 +16,24 @@ import androidx.compose.ui.res.vectorResource
 import com.anxops.bkn.R
 
 @Composable
-fun BackgroundBox(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
+fun BackgroundBox(
+    modifier: Modifier = Modifier,
+    contentAlignment: Alignment = Alignment.Center,
+    content: @Composable BoxScope.() -> Unit
+) {
     Box(
-        modifier = modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant)
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primaryVariant),
+        contentAlignment = contentAlignment
     ) {
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.polygons_background),
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier.fillMaxSize().alpha(0.25f)
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.25f)
         )
         content()
     }
