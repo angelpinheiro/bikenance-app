@@ -58,7 +58,6 @@ fun BikeComponentDetailBg() : Brush {
 @Composable
 fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}) {
 
-
     Column(
         modifier = Modifier
             .fillMaxWidth()

@@ -86,13 +86,14 @@ data class MapOffset(val x: Float, val y: Float, val align: Alignment = Alignmen
 @Composable
 fun BikeStatusMap(
     bike: Bike,
-    highlightCategories: Boolean = false,
     selectedCategory: ComponentCategory? = ComponentCategory.WHEELS,
     selectedComponent: BikeComponent? = null,
     onCategorySelected: (ComponentCategory) -> Unit = {},
     onComponentSelected: (BikeComponent) -> Unit = {},
     onCategoryUnselected: () -> Unit = {}
 ) {
+
+    val highlightCategories = selectedCategory == null
 
     val showComponentGroupsFlag = remember {
         mutableStateOf(false)
@@ -506,19 +507,24 @@ fun StatusMapComponent(
 
     ) {
 
+        CircularProgressIndicator(
+            modifier = Modifier.size(42.dp),
+            color = color,
+            progress = component.status.toFloat(),
+            backgroundColor = MaterialTheme.colors.surface
+        )
+
         BikeComponentIcon(
             type = component.type,
             tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
             modifier = Modifier
-                .size(34.dp)
+                .size(35.dp)
                 .clip(CircleShape)
                 .background(if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface)
                 .padding(5.dp)
         )
 
-        CircularProgressIndicator(
-            modifier = Modifier.size(42.dp), color = color, progress = component.status.toFloat()
-        )
+
     }
 
 }
@@ -526,7 +532,7 @@ fun StatusMapComponent(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HotSpotAnimatedVisibility(
-    visible: Boolean, content: @Composable() AnimatedVisibilityScope.() -> Unit
+    visible: Boolean, content: @Composable AnimatedVisibilityScope.() -> Unit
 ) {
 
     AnimatedVisibility(

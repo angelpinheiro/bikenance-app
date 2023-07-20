@@ -1,14 +1,30 @@
 package com.anxops.bkn.ui.screens.bike
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.screens.bike.components.BikeComponentDetail
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsTopBar
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.bgGradient
@@ -16,9 +32,10 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 
 @Destination
-@OptIn(ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun BikeScreen(
     navigator: DestinationsNavigator,
@@ -32,53 +49,97 @@ fun BikeScreen(
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     var currentSection by rememberSaveable { mutableStateOf(BikeSections.Status) }
 
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState()
+
     navController.navigatorProvider.addNavigator(bottomSheetNavigator)
 
-    LaunchedEffect(section) {
-        BikeSections.values().firstOrNull { it.id == section }?.let { currentSection = it }
-    }
+    val state = viewModel.state.collectAsState()
 
     LaunchedEffect(bikeId) {
         viewModel.handleEvent(BikeScreenEvent.LoadBike(bikeId))
     }
 
-    val state = viewModel.state.collectAsState()
+    LaunchedEffect(section) {
+        BikeSections.values().firstOrNull { it.id == section }?.let { currentSection = it }
+    }
 
-    when (val currentState = state.value) {
-        is BikeScreenState.Loaded -> {
+    LaunchedEffect(state.value.selectedComponent) {
+        launch {
+            if (state.value.selectedComponent != null) {
+                scaffoldState.bottomSheetState.expand()
+            } else {
+                scaffoldState.bottomSheetState.collapse()
+            }
+        }
+    }
 
-            Scaffold(backgroundColor = MaterialTheme.colors.primaryVariant, topBar = {
-                BikeDetailsTopBar(bike = currentState.bike, onBikeSetup = {
-                    bknNavigator.navigateToBikeSetup(currentState.bike._id)
+    LaunchedEffect(scaffoldState.bottomSheetState.isCollapsed) {
+        if (scaffoldState.bottomSheetState.isCollapsed) {
+            viewModel.handleEvent(BikeScreenEvent.SelectComponent(null))
+        }
+    }
+
+    if (state.value.loading) {
+        Loading()
+    }
+
+    state.value.bike?.let { bike ->
+        BottomSheetScaffold(backgroundColor = MaterialTheme.colors.primaryVariant,
+            scaffoldState = scaffoldState,
+            sheetPeekHeight = 0.dp,
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetBackgroundColor = MaterialTheme.colors.primary,
+            topBar = {
+                BikeDetailsTopBar(bike = bike, onBikeSetup = {
+                    bknNavigator.navigateToBikeSetup(bike._id)
                 }, onClickBack = {
                     bknNavigator.popBackStack()
                 })
-            }, bottomBar = {
-                BikeScreenBottomBar(selectedItem = currentSection, onItemSelected = {
-                    currentSection = it
-                })
-            }, content = { paddingValues ->
-                Box(
+            },
+            sheetContent = {
+                state.value.selectedComponent?.let {
+                    BikeComponentDetail(component = it, onClose = {
+                        scope.launch { scaffoldState.bottomSheetState.collapse() }
+                    })
+                }
+            },
+            content = { paddingValues ->
+                Column(
                     Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colors.primary)
                         .background(bgGradient())
                         .padding(paddingValues)
                 ) {
-                    when (currentSection) {
-                        BikeSections.Status -> {
-                            BikeScreenStatusView(currentState.bike)
-                        }
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+                        when (currentSection) {
+                            BikeSections.Status -> {
+                                BikeScreenStatusView(
+                                    bike,
+                                    state.value.selectedComponent,
+                                    state.value.selectedCategory,
+                                    onEvent = {
+                                        viewModel.handleEvent(it)
+                                    }
+                                )
+                            }
 
-                        BikeSections.Components -> {
-                            BikeScreenComponentsView(currentState.bike)
+                            BikeSections.Components -> {
+                                BikeScreenComponentsView(bike)
+                            }
                         }
+                    }
+                    Box(Modifier.fillMaxWidth()) {
+                        BikeScreenBottomBar(selectedItem = currentSection, onItemSelected = {
+                            currentSection = it
+                        })
                     }
                 }
             })
-        }
-
-        BikeScreenState.Loading -> Loading()
     }
-
 }
