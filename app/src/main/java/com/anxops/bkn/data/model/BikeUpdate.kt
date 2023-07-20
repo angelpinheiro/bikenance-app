@@ -1,5 +1,6 @@
 package com.anxops.bkn.data.model
 
+import com.anxops.bkn.data.model.util.BikeTypeSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,7 +17,8 @@ data class BikeUpdate(
     @SerialName("draft") var draft: Boolean = false,
     @SerialName("electric") val electric: Boolean,
     @SerialName("configDone") val configDone: Boolean,
-    @SerialName("bike_type") var type: BikeType = BikeType.MTB,
+    @Serializable(with = BikeTypeSerializer::class)
+    @SerialName("bike_type") var type: BikeType = BikeType.Unknown,
 )
 
 

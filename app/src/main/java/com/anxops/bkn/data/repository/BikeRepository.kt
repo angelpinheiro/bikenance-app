@@ -109,13 +109,12 @@ class BikeRepository(
 
     override suspend fun setupBike(bike: Bike) {
         when (val response = api.setupBike(bike)) {
-            is ApiResponse.Error -> TODO(response.message ?: "ApiResponse.Error")
+            is ApiResponse.Error -> throw Exception(response.message)
             is ApiResponse.Success -> {
                 db.bikeDao().update(response.data.toEntity())
-                response.data.components?.let {
-                    removeAllBikeComponents(bike._id)
-                    createBikeComponents(bike._id, it)
-                }
+                removeAllBikeComponents(bike._id)
+                createBikeComponents(bike._id, response.data.components)
+
             }
         }
     }

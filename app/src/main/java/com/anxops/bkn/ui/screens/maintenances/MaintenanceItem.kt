@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.mock.FakeData
-import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
@@ -47,7 +47,7 @@ data class MaintenanceItem(
     val title: String,
     val time: String,
     val percentage: Float,
-    val componentType: ComponentTypes
+    val componentType: ComponentType
 ) {
     fun displayPercentage(): String =
         "${(percentage * 100).toInt()}%"
@@ -253,7 +253,7 @@ fun getColorForStatus(statusLevel: StatusLevel?): Color {
 fun getIconResForStatus(statusLevel: StatusLevel?): IIcon {
     return when (statusLevel) {
         StatusLevel.DANGER -> CommunityMaterial.Icon3.cmd_progress_wrench
-        StatusLevel.WARN ->CommunityMaterial.Icon3.cmd_progress_alert
+        StatusLevel.WARN -> CommunityMaterial.Icon3.cmd_progress_alert
         StatusLevel.OK -> CommunityMaterial.Icon3.cmd_progress_check
         StatusLevel.GOOD -> CommunityMaterial.Icon3.cmd_progress_check
         else -> CommunityMaterial.Icon3.cmd_progress_question

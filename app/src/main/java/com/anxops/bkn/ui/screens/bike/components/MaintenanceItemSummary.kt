@@ -27,41 +27,12 @@ fun MaintenanceItemSummary(item: Maintenance) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-//
 
-//
-//        Text(
-//            text = stringResource(id = item.type.resources().descriptionResId),
-//            color = MaterialTheme.colors.secondary,
-//            style = MaterialTheme.typography.h5,
-//            modifier = Modifier.padding(bottom = 5.dp)
-//        )
-//
-//        MaintenanceDetailEntry(
-//            "Last maintenance", "${item.lastMaintenanceDate?.formatAsDayMonth()}"
-//        )
-//        MaintenanceDetailEntry(
-//            "Next maintenance", "${item.estimatedDate?.formatAsDayMonth()}"
-//        )
-//        MaintenanceDetailEntry(
-//            "Usage", "${(item.status * 10000).toInt() / 100}%"
-//        )
-//        MaintenanceDetailEntry(
-//            "Recommended maintenance",
-//            "Every ${item.defaultFrequency.every} ${item.defaultFrequency.unit.name.lowercase()}"
-//        )
 
         Row(
             Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically
 
         ) {
-
-//            BknIcon(
-//                icon = CommunityMaterial.Icon3.cmd_minus_circle,
-//                color = getColorForStatus(StatusLevel.from(item.status)),
-//                modifier = Modifier
-//                    .size(16.dp)
-//            )
 
             CircularProgressIndicator(
                 progress = item.status.toFloat(),
@@ -78,27 +49,6 @@ fun MaintenanceItemSummary(item: Maintenance) {
                 modifier = Modifier
                     .weight(1f)
             )
-//
-//            LinearProgressIndicator(
-//                progress = item.status.toFloat(),
-//                modifier = Modifier
-//                    .padding(vertical = 6.dp)
-//                    .height(5.dp)
-//                    .clip(RoundedCornerShape(20.dp))
-//                    .weight(1.0f),
-//                color = getColorForStatus(StatusLevel.from(item.status)),
-//                backgroundColor = MaterialTheme.colors.primaryVariant,
-//            )
         }
     }
-}
-
-@Composable
-fun MaintenanceDetailEntry(key: String, value: String) {
-    Text(
-        text = "$key: $value",
-        color = MaterialTheme.colors.background,
-        style = MaterialTheme.typography.h4,
-        modifier = Modifier.padding(start = 0.dp)
-    )
 }

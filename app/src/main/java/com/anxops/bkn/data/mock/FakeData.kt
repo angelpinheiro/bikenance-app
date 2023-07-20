@@ -1,7 +1,7 @@
 package com.anxops.bkn.data.mock
 
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.ui.screens.maintenances.MaintenanceItem
 
 object FakeData {
@@ -21,7 +21,7 @@ object FakeData {
             title = "Check / Refill",
             time = "Two weeks ago",
             percentage = 1f,
-            componentType = ComponentTypes.TIRE
+            componentType = ComponentType.Tire
         ),
         MaintenanceItem(
             bike = "Scott Spark",
@@ -29,7 +29,7 @@ object FakeData {
             title = "Full service",
             time = "3 months left",
             percentage = 0.8f,
-            componentType = ComponentTypes.FORK
+            componentType = ComponentType.Fork
         ),
         MaintenanceItem(
             bike = "Scott Spark",
@@ -37,7 +37,7 @@ object FakeData {
             title = "Check / Replace",
             time = "2000km left",
             percentage = 0.4f,
-            componentType = ComponentTypes.CASSETTE
+            componentType = ComponentType.Cassette
         ),
         MaintenanceItem(
             bike = "Scott Spark",
@@ -45,7 +45,7 @@ object FakeData {
             title = "Replace",
             time = "1500km left",
             percentage = 0.6f,
-            componentType = ComponentTypes.CABLE_HOUSING
+            componentType = ComponentType.CableHousing
         ),
         MaintenanceItem(
             bike = "Cube Analog",
@@ -53,7 +53,7 @@ object FakeData {
             title = "Check / Replace",
             time = "2 months left",
             percentage = 0.3f,
-            componentType = ComponentTypes.DISC_PAD
+            componentType = ComponentType.DiscPad
         ),
         MaintenanceItem(
             bike = "Cube Analog",
@@ -61,7 +61,7 @@ object FakeData {
             title = "Check / Replace",
             time = "500km left",
             percentage = 0.8f,
-            componentType = ComponentTypes.CHAIN
+            componentType = ComponentType.Chain
         ),
     ).sortedByDescending { it.percentage }
 

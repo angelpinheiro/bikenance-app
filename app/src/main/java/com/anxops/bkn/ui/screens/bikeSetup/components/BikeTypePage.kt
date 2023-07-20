@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeType
-import com.anxops.bkn.data.model.maintenanceConfigurations
 import com.anxops.bkn.ui.screens.bikeSetup.BikeSetupDescription
 import com.anxops.bkn.ui.screens.bikeSetup.BikeSetupTitle
 import com.anxops.bkn.ui.screens.bikeSetup.SetupDetails
@@ -37,15 +36,15 @@ fun BikeTypePage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            maintenanceConfigurations.forEach {
+            BikeType.getAll().forEach {
                 OutlinedButton(
                     onClick = {
-                        onBikeTypeSelected(it.key)
+                        onBikeTypeSelected(it)
                     },
                     modifier = Modifier
                         .padding(4.dp)
                         .fillMaxWidth(0.8f),
-                    colors = if (details.selectedBikeType == it.key) {
+                    colors = if (details.selectedBikeType == it) {
                         ButtonDefaults.buttonColors(
                             backgroundColor = MaterialTheme.colors.secondary,
                         )
@@ -58,7 +57,7 @@ fun BikeTypePage(
                 ) {
                     Text(
                         modifier = Modifier.padding(3.dp),
-                        text = it.key.extendedType,
+                        text = it.extendedType,
                         color = MaterialTheme.colors.onSecondary,
                         style = MaterialTheme.typography.h5,
 

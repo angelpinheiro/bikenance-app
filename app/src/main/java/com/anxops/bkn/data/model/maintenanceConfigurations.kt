@@ -1,50 +1,83 @@
 package com.anxops.bkn.data.model
 
 
-fun getDefaultComponents(bikeType: BikeType): Set<ComponentTypes> {
-    return maintenanceConfigurations[bikeType] ?: ComponentTypes.values().toSet()
-}
+sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
 
-val maintenanceConfigurations = mapOf(
-    BikeType.MTB to ComponentTypes.values().toSet().minus(
-        setOf(
-            ComponentTypes.CUSTOM,
-            ComponentTypes.DROPER_POST,
-            ComponentTypes.REAR_SUSPENSION,
-            ComponentTypes.FRAME_BEARINGS,
-            ComponentTypes.PEDAL_CLIPLESS,
-            ComponentTypes.HANDLEBAR_TAPE,
+    object Mtb : MaintenanceConfiguration(
+        ComponentType.getAll().toSet().minus(
+            setOf(
+                ComponentType.Custom,
+                ComponentType.DropperPost,
+                ComponentType.RearSuspension,
+                ComponentType.FrameBearings,
+                ComponentType.PedalClipless,
+                ComponentType.HandlebarTape,
+            )
         )
-    ),
-    BikeType.FULL_MTB to ComponentTypes.values().toSet().minus(
-        setOf(
-            ComponentTypes.CUSTOM,
-            ComponentTypes.DROPER_POST,
-            ComponentTypes.PEDAL_CLIPLESS,
-            ComponentTypes.HANDLEBAR_TAPE,
+    )
+
+    object FullMtb : MaintenanceConfiguration(
+        ComponentType.getAll().toSet().minus(
+            setOf(
+                ComponentType.Custom,
+                ComponentType.DropperPost,
+                ComponentType.PedalClipless,
+                ComponentType.HandlebarTape,
+            )
         )
-    ),
-    BikeType.ROAD to ComponentTypes.values().toSet().minus(
-        setOf(
-            ComponentTypes.CUSTOM,
-            ComponentTypes.DROPER_POST,
-            ComponentTypes.REAR_SUSPENSION,
-            ComponentTypes.FRAME_BEARINGS,
-            ComponentTypes.PEDAL_CLIPLESS,
-            ComponentTypes.FORK
+    )
+
+    object Road : MaintenanceConfiguration(
+        ComponentType.getAll().toSet().minus(
+            setOf(
+
+                ComponentType.Custom,
+                ComponentType.Fork,
+                ComponentType.FrameBearings,
+                ComponentType.DropperPost,
+                ComponentType.PedalClipless,
+                ComponentType.HandlebarTape,
+            )
         )
-    ),
-    BikeType.GRAVEL to ComponentTypes.values().toSet().minus(
-        setOf(
-            ComponentTypes.CUSTOM,
-            ComponentTypes.DROPER_POST,
-            ComponentTypes.REAR_SUSPENSION,
-            ComponentTypes.FRAME_BEARINGS,
-            ComponentTypes.PEDAL_CLIPLESS,
-            ComponentTypes.FORK
+    )
+
+    object Gravel : MaintenanceConfiguration(
+        ComponentType.getAll().toSet().minus(
+            setOf(
+
+                ComponentType.Custom,
+                ComponentType.Fork,
+                ComponentType.FrameBearings,
+                ComponentType.DropperPost,
+                ComponentType.PedalClipless,
+                ComponentType.HandlebarTape,
+            )
         )
-    ),
-    BikeType.STATIONARY to setOf()
-)
+    )
+
+    object Empty : MaintenanceConfiguration(
+        setOf()
+    )
+
+    companion object {
+
+        fun getAll() = listOf(
+            Mtb, FullMtb, Road, Gravel,
+        )
+
+        fun forBikeType(bikeType: BikeType): MaintenanceConfiguration {
+            return when (bikeType) {
+                BikeType.Mtb -> Mtb
+                BikeType.Road -> Road
+                BikeType.EBike -> FullMtb
+                BikeType.Gravel -> Gravel
+                BikeType.Stationary -> Empty
+                BikeType.Unknown -> Empty
+            }
+        }
+
+
+    }
+}
 
 

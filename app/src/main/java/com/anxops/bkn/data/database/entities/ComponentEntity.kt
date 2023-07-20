@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentModifier
-import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.Maintenance
-import com.anxops.bkn.data.model.MaintenanceTypes
+import com.anxops.bkn.data.model.MaintenanceType
 import com.anxops.bkn.data.model.RevisionFrequency
 import com.anxops.bkn.data.model.RevisionUnit
 import com.anxops.bkn.data.model.Usage
@@ -31,7 +31,7 @@ data class ComponentEntity(
             _id = _id,
             bikeId = bikeId,
             alias = description,
-            type = ComponentTypes.valueOf(type),
+            type = ComponentType.getByName(type),
             modifier = modifier?.let { ComponentModifier.valueOf(it) },
             usage = Usage(usageHours, usageDistance),
 
@@ -80,9 +80,9 @@ data class MaintenanceEntity(
         return Maintenance(
             _id = _id,
             componentId = componentId,
-            type = MaintenanceTypes.valueOf(type),
+            type = MaintenanceType.getByName(type),
             status = status,
-            componentType = ComponentTypes.valueOf(componentType),
+            componentType = ComponentType.getByName(componentType),
             defaultFrequency = RevisionFrequency(
                 every = defaultFrequencyEvery,
                 unit = RevisionUnit.valueOf(defaultFrequencyUnit)

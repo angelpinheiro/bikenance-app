@@ -27,6 +27,7 @@
     <string name="componentType_REAR_SUSPENSION">Rear Shock</string>
     <string name="componentType_TIRE">Tire</string>
     <string name="componentType_HANDLEBAR_TAPE">Handlebar tape</string>
+    <string name="componentType_CHAIN_RING">Chain ring</string>
     <string name="componentType_CUSTOM">Custom</string>
 
     <!-- Component Descriptions -->
@@ -34,6 +35,7 @@
     <string name="componentType_FRAME_BEARINGS_description">Allow smooth movement and rotation of the rear suspension pivot</string>
     <string name="componentType_BRAKE_LEVER_description">Controls the bike\'s braking system.</string>
     <string name="componentType_CASSETTE_description">Gears on the rear wheel hub.</string>
+    <string name="componentType_CHAIN_RING_description">Circular toothed ring connected to the cranks, responsible for pulling the chain.</string>
     <string name="componentType_DISC_BRAKE_description">Braking system using disc rotor and caliper.</string>
     <string name="componentType_FORK_description">Front wheel holder with suspension and steering.</string>
     <string name="componentType_PEDAL_CLIPLESS_description">Securely attaches shoes to pedals.</string>
@@ -48,6 +50,6 @@
     <string name="componentType_REAR_DERAUILLEURS_description">Shifts the chain between gears at the rear wheel.</string>
     <string name="componentType_REAR_SUSPENSION_description">Provides suspension at the rear wheel.</string>
     <string name="componentType_TIRE_description">Rubber outer layer for the wheels.</string>
-    <string name="componentType_CUSTOM_description">Custom component</string>
+    <string name="componentType_CUSTOM_description">Custom</string>
 
 </resources>

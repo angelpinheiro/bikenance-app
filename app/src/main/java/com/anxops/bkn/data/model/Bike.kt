@@ -1,20 +1,10 @@
 package com.anxops.bkn.data.model
 
+import com.anxops.bkn.data.model.util.BikeTypeSerializer
 import com.anxops.bkn.data.model.util.LocalDateSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
-
-enum class BikeType(
-    val type: String, val extendedType: String
-) {
-    MTB("MTB", "Hardtail MTB"), FULL_MTB("Full MTB", "Full Suspension MTB"), ROAD(
-        "Road", "Road Bike"
-    ),
-    E_BIKE("E-Bike", "Electric Bike"), GRAVEL("Gravel", "Gravel Bike"), STATIONARY(
-        "Stationary", "Stationary Bike"
-    )
-}
 
 @Serializable
 data class Bike(
@@ -28,8 +18,10 @@ data class Bike(
     @SerialName("photo_url") var photoUrl: String? = null,
     @SerialName("draft") var draft: Boolean = false,
     @SerialName("electric") val electric: Boolean = false,
+    @SerialName("full_suspension") val fullSuspension: Boolean = false,
     @SerialName("configDone") val configDone: Boolean = false,
-    @SerialName("bike_type") var type: BikeType = BikeType.MTB,
+    @Serializable(with = BikeTypeSerializer::class)
+    @SerialName("bike_type") var type: BikeType = BikeType.Unknown,
     @SerialName("stats") var stats: BikeStats? = null,
     val components: List<BikeComponent> = emptyList()
 
@@ -121,7 +113,7 @@ enum class StatusLevel {
 data class BikeStatus(
     val globalStatus: StatusLevel,
     val componentCategoryStatus: Map<ComponentCategory, StatusLevel>,
-    val componentTypeStatus: Map<ComponentTypes, StatusLevel>,
+    val componentTypeStatus: Map<ComponentType, StatusLevel>,
     val componentStatus: Map<BikeComponent, StatusLevel>
 )
 

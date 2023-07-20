@@ -248,7 +248,7 @@ fun NewBikeScreen(
                     ) {
 
 
-                        BikeType.values().forEach { type ->
+                        BikeType.getAll().forEach { type ->
                             val selected = type == state.value.bike.type
                             Button(
                                 modifier = Modifier.padding(horizontal = 5.dp).weight(1f),
@@ -259,7 +259,7 @@ fun NewBikeScreen(
                                 onClick = { viewModel.updateBikeType(type) },
                             ) {
                                 Text(
-                                    type.type,
+                                    type.name,
                                     color = if (selected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground,
                                     style = MaterialTheme.typography.h5
                                 )

@@ -17,7 +17,7 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.ComponentCategory
-import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
 import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
 import com.anxops.bkn.ui.shared.components.BknIcon
@@ -42,7 +42,7 @@ data class ComponentCategoryTabData(
 )
 
 data class GroupedComponents(
-    val type: ComponentTypes, val items: List<BikeComponent>
+    val type: ComponentType, val items: List<BikeComponent>
 )
 
 fun buildComponentCategoryTabData(

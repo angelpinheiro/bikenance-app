@@ -69,7 +69,7 @@ import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentModifier
-import com.anxops.bkn.data.model.ComponentTypes
+import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
 import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
 import com.anxops.bkn.ui.screens.maintenances.getIconResForStatus
@@ -106,16 +106,12 @@ fun BikeStatusMap(
     }
 
     val vector = when (bike.type) {
-        BikeType.FULL_MTB -> {
-            R.drawable.bike_full_mtb
+        BikeType.Mtb -> {
+            if (bike.fullSuspension) R.drawable.bike_full_mtb else R.drawable.bike_mtb
         }
 
-        BikeType.ROAD, BikeType.GRAVEL -> {
+        BikeType.Road, BikeType.Gravel -> {
             R.drawable.bike_road
-        }
-
-        BikeType.MTB -> {
-            R.drawable.bike_mtb
         }
 
         else -> {
@@ -209,23 +205,23 @@ fun BikeStatusMap(
                 val isSelected = component._id == selectedComponent?._id
 
                 val offset: OffsetAndAlign = when (component.type) {
-                    ComponentTypes.BRAKE_LEVER -> {
+                    ComponentType.BrakeLever -> {
                         OffsetAndAlign(0.7f, 0.15f)
                     }
 
-                    ComponentTypes.CABLE_HOUSING -> {
+                    ComponentType.CableHousing -> {
                         OffsetAndAlign(0.5f, 0.32f, Alignment.TopEnd)
                     }
 
-                    ComponentTypes.CASSETTE -> {
+                    ComponentType.Cassette -> {
                         OffsetAndAlign(0.2f, 0.6f)
                     }
 
-                    ComponentTypes.CHAIN -> {
+                    ComponentType.Chain -> {
                         OffsetAndAlign(0.37f, 0.55f)
                     }
 
-                    ComponentTypes.DISC_BRAKE -> {
+                    ComponentType.DiscBrake -> {
 
                         if (component.modifier == ComponentModifier.REAR) {
                             OffsetAndAlign(0.2f, 0.6f, Alignment.BottomCenter)
@@ -234,7 +230,7 @@ fun BikeStatusMap(
                         }
                     }
 
-                    ComponentTypes.DISC_PAD -> {
+                    ComponentType.DiscPad -> {
                         if (component.modifier == ComponentModifier.REAR) {
                             OffsetAndAlign(0.3f, 0.48f)
                         } else {
@@ -242,35 +238,35 @@ fun BikeStatusMap(
                         }
                     }
 
-                    ComponentTypes.DROPER_POST -> {
+                    ComponentType.DropperPost -> {
                         OffsetAndAlign(0.35f, 0.2f)
                     }
 
-                    ComponentTypes.FORK -> {
+                    ComponentType.Fork -> {
                         OffsetAndAlign(0.77f, 0.5f)
                     }
 
-                    ComponentTypes.FRONT_HUB -> {
+                    ComponentType.FrontHub -> {
                         OffsetAndAlign(0.8f, 0.61f, Alignment.CenterEnd)
                     }
 
-                    ComponentTypes.PEDAL_CLIPLESS -> {
+                    ComponentType.PedalClipless -> {
                         OffsetAndAlign(0.5f, 0.7f, Alignment.BottomCenter)
                     }
 
-                    ComponentTypes.REAR_DERAUILLEURS -> {
+                    ComponentType.RearDerailleurs -> {
                         OffsetAndAlign(0.28f, 0.74f, Alignment.BottomCenter)
                     }
 
-                    ComponentTypes.REAR_HUB -> {
+                    ComponentType.RearHub -> {
                         OffsetAndAlign(0.2f, 0.61f, Alignment.CenterStart)
                     }
 
-                    ComponentTypes.REAR_SUSPENSION -> {
+                    ComponentType.RearSuspension -> {
                         OffsetAndAlign(0.45f, 0.45f)
                     }
 
-                    ComponentTypes.THRU_AXLE -> {
+                    ComponentType.ThruAxle -> {
                         if (component.modifier == ComponentModifier.REAR) {
 
                             OffsetAndAlign(0.2f, 0.62f)
@@ -282,7 +278,7 @@ fun BikeStatusMap(
                         }
                     }
 
-                    ComponentTypes.TIRE -> {
+                    ComponentType.Tire -> {
                         if (component.modifier == ComponentModifier.REAR) {
 
                             OffsetAndAlign(0.2f, 0.35f)
@@ -294,15 +290,20 @@ fun BikeStatusMap(
                         }
                     }
 
-                    ComponentTypes.WHEELSET -> {
+                    ComponentType.Wheel -> {
+                        if (component.modifier == ComponentModifier.REAR) {
+                            OffsetAndAlign(0.25f, 0.75f, Alignment.BottomStart)
+                        } else {
+                            OffsetAndAlign(0.65f, 0.75f, Alignment.BottomEnd)
+                        }
 
-                        OffsetAndAlign(0.65f, 0.75f, Alignment.BottomEnd)
 
                     }
 
-                    else -> {
-                        OffsetAndAlign(0.5f, 0.5f)
-                    }
+                    ComponentType.ChainRing -> OffsetAndAlign(0f, 0f)
+                    ComponentType.FrameBearings -> OffsetAndAlign(0f, 0f)
+                    ComponentType.HandlebarTape -> OffsetAndAlign(0f, 0f)
+                    ComponentType.Custom -> OffsetAndAlign(0f, 0f)
                 }
 
 

@@ -48,9 +48,10 @@ fun Bike.toEntity(): BikeEntity {
         distance = distance,
         photoUrl = photoUrl,
         electric = electric,
+        fullSuspension = fullSuspension,
         configDone = configDone,
         draft = draft,
-        type = type.toString(),
+        type = type.name,
         stats = stats?.toEntity()
     )
 }

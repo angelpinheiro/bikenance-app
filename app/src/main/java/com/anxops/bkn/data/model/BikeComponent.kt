@@ -1,5 +1,6 @@
 package com.anxops.bkn.data.model
 
+import com.anxops.bkn.data.model.util.ComponentTypeSerializer
 import com.anxops.bkn.data.model.util.LocalDateSerializer
 import com.anxops.bkn.util.formatDistanceAsKm
 import kotlinx.serialization.SerialName
@@ -20,7 +21,7 @@ data class BikeComponent(
     @SerialName("alias")
     val alias: String? = null,
     @SerialName("type")
-    val type: ComponentTypes,
+    val type: ComponentType,
     @SerialName("modifier")
     val modifier: ComponentModifier? = null,
     @SerialName("usage")

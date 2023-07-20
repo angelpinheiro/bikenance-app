@@ -1,6 +1,8 @@
 package com.anxops.bkn.data.model
 
+import com.anxops.bkn.data.model.util.ComponentTypeSerializer
 import com.anxops.bkn.data.model.util.LocalDateSerializer
+import com.anxops.bkn.data.model.util.MaintenanceTypeSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
@@ -27,14 +29,16 @@ data class Maintenance(
     val _id: String,
     @SerialName("componentId")
     val componentId: String,
+    @Serializable(with = MaintenanceTypeSerializer::class)
     @SerialName("type")
-    val type: MaintenanceTypes,
+    val type: MaintenanceType,
     @SerialName("defaultFrequency")
     val defaultFrequency: RevisionFrequency,
     @SerialName("description")
     val description: String,
+    @Serializable(with = ComponentTypeSerializer::class)
     @SerialName("componentType")
-    val componentType: ComponentTypes,
+    val componentType: ComponentType,
     @SerialName("usageSinceLast")
     var usageSinceLast: Usage?,
     @SerialName("status")

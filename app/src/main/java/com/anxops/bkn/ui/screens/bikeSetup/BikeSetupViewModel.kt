@@ -1,5 +1,6 @@
 package com.anxops.bkn.ui.screens.bikeSetup
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
@@ -9,8 +10,8 @@ import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentModifier
-import com.anxops.bkn.data.model.ComponentTypes
-import com.anxops.bkn.data.model.maintenanceConfigurations
+import com.anxops.bkn.data.model.ComponentType
+import com.anxops.bkn.data.model.MaintenanceConfiguration
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
@@ -44,7 +45,7 @@ sealed class BikeSetupScreenState {
 }
 
 data class SetupDetails(
-    val selectedBikeType: BikeType = BikeType.MTB,
+    val selectedBikeType: BikeType = BikeType.Unknown,
     val hasDropperPost: Boolean? = false,
     val hasTubeless: Boolean? = true,
     val hasCliplessPedals: Boolean? = true,
@@ -91,8 +92,7 @@ class BikeSetupViewModel @Inject constructor(
                         _state.value = BikeSetupScreenState.SavingSetup
 
                         val newComponents = getNewComponentsForBike(
-                            currentState.bike,
-                            currentState.details
+                            currentState
                         )
 
                         val bike = currentState.bike.copy(
@@ -100,6 +100,9 @@ class BikeSetupViewModel @Inject constructor(
                             components = newComponents,
                             configDone = false
                         )
+
+                        Log.d("getNewComponentsForBike", "Single ${bike.components.size}")
+
                         bikesRepository.setupBike(bike)
                         _state.value = BikeSetupScreenState.SetupDone(bike)
                     }
@@ -116,7 +119,7 @@ class BikeSetupViewModel @Inject constructor(
 
         _state.value = when (val currentState = _state.value) {
             is BikeSetupScreenState.SetupInProgress -> {
-                currentState.copy(
+                val new = currentState.copy(
                     details = when (event) {
                         is BSSEvent.BikeTypeSelected -> {
                             currentState.details.copy(
@@ -149,6 +152,8 @@ class BikeSetupViewModel @Inject constructor(
                         )
                     }
                 )
+                Log.d("getNewComponentsForBike", "${new.details}")
+                new
             }
 
             else -> {
@@ -156,11 +161,12 @@ class BikeSetupViewModel @Inject constructor(
             }
         }
 
+
     }
 
 
     private fun getFromLocalDateTime(
-        componentTypes: ComponentTypes,
+        componentTypes: ComponentType,
         lastMaintenances: Map<ComponentCategory, Float>
     ): LocalDateTime {
         val monthsSinceLastMaintenance = lastMaintenances.getOrDefault(componentTypes.category, 0f)
@@ -168,40 +174,42 @@ class BikeSetupViewModel @Inject constructor(
     }
 
     private fun getNewComponentsForBike(
-        bike: Bike,
-        details: SetupDetails
+        state: BikeSetupScreenState.SetupInProgress
     ): List<BikeComponent> {
 
-        val componentTypes = maintenanceConfigurations[bike.type]!!.toMutableList()
+        var componentTypes = MaintenanceConfiguration.forBikeType(state.bike.type).componentTypes
+        Log.d("getNewComponentsForBike", "Got ${componentTypes.size} for ${state.bike.type.name}")
 
-        if (details.hasDropperPost == true) {
-            componentTypes.add(ComponentTypes.DROPER_POST)
+        if (state.details.hasDropperPost == true) {
+            componentTypes = componentTypes.plus(ComponentType.DropperPost)
         }
-        if (details.hasCliplessPedals == true) {
-            componentTypes.add(ComponentTypes.PEDAL_CLIPLESS)
+        if (state.details.hasCliplessPedals == true) {
+            componentTypes = componentTypes.plus(ComponentType.PedalClipless)
         }
 
-        return componentTypes.map {
+        val components = componentTypes.map {
 
 
-            val date = getFromLocalDateTime(it, details.lastMaintenances)
+            val date = getFromLocalDateTime(it, state.details.lastMaintenances)
 
             val duplicatedComponents = listOf(
-                ComponentTypes.DISC_BRAKE,
-                ComponentTypes.THRU_AXLE,
-                ComponentTypes.DISC_PAD,
-                ComponentTypes.TIRE
+                ComponentType.DiscBrake,
+                ComponentType.ThruAxle,
+                ComponentType.DiscPad,
+                ComponentType.Tire,
+                ComponentType.Wheel,
             )
             if (duplicatedComponents.contains(it)) {
+                Log.d("getNewComponentsForBike", "Duplicated ${it.name}")
                 listOf(
                     BikeComponent(
-                        bikeId = bike._id,
+                        bikeId = state.bike._id,
                         modifier = ComponentModifier.FRONT,
                         alias = ComponentModifier.FRONT.displayName + " ${it.name.lowercase()}",
                         type = it,
                         from = date
                     ), BikeComponent(
-                        bikeId = bike._id,
+                        bikeId = state.bike._id,
                         modifier = ComponentModifier.REAR,
                         alias = ComponentModifier.REAR.displayName + " ${it.name.lowercase()}",
                         type = it,
@@ -209,13 +217,18 @@ class BikeSetupViewModel @Inject constructor(
                     )
                 )
             } else {
+                Log.d("getNewComponentsForBike", "Single ${it.name}")
                 listOf(
                     BikeComponent(
-                        bikeId = bike._id, alias = it.name, type = it, from = date
+                        bikeId = state.bike._id, alias = it.name, type = it, from = date
                     )
                 )
             }
 
         }.flatten()
+
+        Log.d("getNewComponentsForBike", "Total ${components.size}")
+
+        return components
     }
 }

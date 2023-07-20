@@ -22,6 +22,7 @@ data class BikeEntity(
     @ColumnInfo(name = "photo_url") val photoUrl: String?,
     @ColumnInfo(name = "draft") val draft: Boolean = false,
     @ColumnInfo(name = "electric") val electric: Boolean = false,
+    @ColumnInfo(name = "full_suspension") val fullSuspension: Boolean = false,
     @ColumnInfo(name = "configDOne") val configDone: Boolean = false,
     @ColumnInfo(name = "type") val type: String,
     @Embedded val stats : BikeStatsEntity? = null
@@ -38,8 +39,9 @@ data class BikeEntity(
             configDone = configDone,
             electric = electric,
             photoUrl = photoUrl,
+            fullSuspension = fullSuspension,
             draft = draft,
-            type = BikeType.valueOf(type),
+            type = BikeType.getByName(type),
             stats = stats?.toDomain()
         )
     }
