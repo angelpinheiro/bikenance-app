@@ -8,6 +8,7 @@
     <string name="cables_and_housing_maintenance">Maintenance of Cables and Housings</string>
     <string name="cassette_maintenance">Maintenance of Cassette</string>
     <string name="chain_maintenance">Maintenance of Chain</string>
+    <string name="chain_ring_maintenance">Maintenance of Chain Ring</string>
     <string name="rear_derailleur_maintenance">Maintenance of Rear Derailleur</string>
     <string name="frame_bearings_maintenance">Maintenance of Frame Bearings</string>
     <string name="rear_hub_maintenance">Maintenance of Rear Hub</string>
@@ -27,6 +28,7 @@
     <string name="cables_and_housing_maintenance_description">Visually inspect cable housings for wear or damage. Replace if necessary to maintain smooth gear shifting.</string>
     <string name="cassette_maintenance_description">Check the wear of the cassette. Consider replacing if it shows excessive wear or hinders gear shifting.</string>
     <string name="chain_maintenance_description">Replace the chain to maintain precise gear changes and prevent excessive wear on other components.</string>
+    <string name="chain_ring_maintenance_description">Check the wear of the chain ring. Consider replacing if it shows excessive wear.</string>
     <string name="rear_derailleur_maintenance_description">Clean and lubricate the rear derailleur mechanism for smooth and reliable shifting.</string>
     <string name="frame_bearings_maintenance_description">Check the condition and lubrication of the frame bearings. Replace if necessary to maintain frame integrity and smooth operation.</string>
     <string name="rear_hub_maintenance_description">Check the condition and lubrication of the rear hub to ensure smooth rotation and reliable performance.</string>

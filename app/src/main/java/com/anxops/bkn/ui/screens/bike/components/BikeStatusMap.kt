@@ -81,7 +81,7 @@ import com.anxops.bkn.ui.theme.statusWarning
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import kotlinx.coroutines.delay
 
-data class OffsetAndAlign(val x: Float, val y: Float, val align: Alignment = Alignment.TopStart)
+data class MapOffset(val x: Float, val y: Float, val align: Alignment = Alignment.TopStart)
 
 @Composable
 fun BikeStatusMap(
@@ -200,116 +200,84 @@ fun BikeStatusMap(
 
         if (!highlightCategories) {
 
-            bike.components?.forEach { component ->
+            bike.components.forEach { component ->
 
                 val isSelected = component._id == selectedComponent?._id
 
-                val offset: OffsetAndAlign = when (component.type) {
-                    ComponentType.BrakeLever -> {
-                        OffsetAndAlign(0.7f, 0.15f)
-                    }
+                val offset: MapOffset = when (component.type) {
+                    ComponentType.BrakeLever -> MapOffset(0.7f, 0.15f)
 
-                    ComponentType.CableHousing -> {
-                        OffsetAndAlign(0.5f, 0.32f, Alignment.TopEnd)
-                    }
+                    ComponentType.CableHousing -> MapOffset(0.5f, 0.32f, Alignment.TopEnd)
 
-                    ComponentType.Cassette -> {
-                        OffsetAndAlign(0.2f, 0.6f)
-                    }
+                    ComponentType.Cassette -> MapOffset(0.2f, 0.6f)
 
-                    ComponentType.Chain -> {
-                        OffsetAndAlign(0.37f, 0.55f)
-                    }
+                    ComponentType.Chain -> MapOffset(0.37f, 0.55f)
 
-                    ComponentType.DiscBrake -> {
+                    ComponentType.DropperPost -> MapOffset(0.35f, 0.2f)
 
-                        if (component.modifier == ComponentModifier.REAR) {
-                            OffsetAndAlign(0.2f, 0.6f, Alignment.BottomCenter)
-                        } else {
-                            OffsetAndAlign(0.8f, 0.6f)
-                        }
-                    }
+                    ComponentType.Fork -> MapOffset(0.77f, 0.5f)
 
-                    ComponentType.DiscPad -> {
-                        if (component.modifier == ComponentModifier.REAR) {
-                            OffsetAndAlign(0.3f, 0.48f)
-                        } else {
-                            OffsetAndAlign(0.7f, 0.48f, Alignment.BottomEnd)
-                        }
-                    }
+                    ComponentType.FrontHub -> MapOffset(0.8f, 0.61f, Alignment.CenterEnd)
 
-                    ComponentType.DropperPost -> {
-                        OffsetAndAlign(0.35f, 0.2f)
-                    }
+                    ComponentType.PedalClipless -> MapOffset(0.5f, 0.7f, Alignment.BottomCenter)
 
-                    ComponentType.Fork -> {
-                        OffsetAndAlign(0.77f, 0.5f)
-                    }
+                    ComponentType.RearDerailleurs -> MapOffset(0.28f, 0.74f, Alignment.BottomCenter)
 
-                    ComponentType.FrontHub -> {
-                        OffsetAndAlign(0.8f, 0.61f, Alignment.CenterEnd)
-                    }
+                    ComponentType.RearHub -> MapOffset(0.2f, 0.61f, Alignment.CenterStart)
 
-                    ComponentType.PedalClipless -> {
-                        OffsetAndAlign(0.5f, 0.7f, Alignment.BottomCenter)
-                    }
+                    ComponentType.RearSuspension -> MapOffset(0.45f, 0.45f)
 
-                    ComponentType.RearDerailleurs -> {
-                        OffsetAndAlign(0.28f, 0.74f, Alignment.BottomCenter)
-                    }
-
-                    ComponentType.RearHub -> {
-                        OffsetAndAlign(0.2f, 0.61f, Alignment.CenterStart)
-                    }
-
-                    ComponentType.RearSuspension -> {
-                        OffsetAndAlign(0.45f, 0.45f)
-                    }
+                    ComponentType.ChainRing -> MapOffset(0.5f, 0.62f)
 
                     ComponentType.ThruAxle -> {
                         if (component.modifier == ComponentModifier.REAR) {
-
-                            OffsetAndAlign(0.2f, 0.62f)
-
+                            MapOffset(0.2f, 0.62f)
                         } else {
-
-                            OffsetAndAlign(0.8f, 0.62f)
-
+                            MapOffset(0.8f, 0.62f)
                         }
                     }
 
                     ComponentType.Tire -> {
                         if (component.modifier == ComponentModifier.REAR) {
-
-                            OffsetAndAlign(0.2f, 0.35f)
-
+                            MapOffset(0.2f, 0.35f)
                         } else {
-
-                            OffsetAndAlign(0.8f, 0.35f)
-
+                            MapOffset(0.8f, 0.35f)
                         }
                     }
 
                     ComponentType.Wheel -> {
                         if (component.modifier == ComponentModifier.REAR) {
-                            OffsetAndAlign(0.25f, 0.75f, Alignment.BottomStart)
+                            MapOffset(0.25f, 0.75f, Alignment.BottomStart)
                         } else {
-                            OffsetAndAlign(0.65f, 0.75f, Alignment.BottomEnd)
+                            MapOffset(0.65f, 0.75f, Alignment.BottomEnd)
                         }
-
-
                     }
 
-                    ComponentType.ChainRing -> OffsetAndAlign(0f, 0f)
-                    ComponentType.FrameBearings -> OffsetAndAlign(0f, 0f)
-                    ComponentType.HandlebarTape -> OffsetAndAlign(0f, 0f)
-                    ComponentType.Custom -> OffsetAndAlign(0f, 0f)
+                    ComponentType.DiscPad -> {
+                        if (component.modifier == ComponentModifier.REAR) {
+                            MapOffset(0.3f, 0.48f)
+                        } else {
+                            MapOffset(0.7f, 0.48f, Alignment.BottomEnd)
+                        }
+                    }
+
+                    ComponentType.DiscBrake -> {
+                        if (component.modifier == ComponentModifier.REAR) {
+                            MapOffset(0.2f, 0.6f, Alignment.BottomCenter)
+                        } else {
+                            MapOffset(0.8f, 0.6f)
+                        }
+                    }
+
+
+                    ComponentType.FrameBearings -> MapOffset(0f, 0f)
+                    ComponentType.HandlebarTape -> MapOffset(0.5f, 0.25f)
+                    ComponentType.Custom -> MapOffset(0f, 0f)
                 }
 
 
                 HotSpotAnimatedVisibility(selectedCategory == component.type.category) {
-                    StatusMapComponent(
-                        isSelected = isSelected,
+                    StatusMapComponent(isSelected = isSelected,
                         size = 25.dp,
                         maxHeight = maxHeight,
                         maxWidth = maxWidth,
@@ -549,9 +517,7 @@ fun StatusMapComponent(
         )
 
         CircularProgressIndicator(
-            modifier = Modifier.size(42.dp),
-            color = color,
-            progress = component.status.toFloat()
+            modifier = Modifier.size(42.dp), color = color, progress = component.status.toFloat()
         )
     }
 

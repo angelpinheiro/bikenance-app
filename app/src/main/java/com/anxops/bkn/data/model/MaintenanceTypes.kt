@@ -14,6 +14,7 @@ sealed class MaintenanceType(val name: String, val componentType: ComponentType)
     object RearDerailleurMaintenance :
         MaintenanceType("REAR_DERAILLEUR_MAINTENANCE", ComponentType.RearDerailleurs)
 
+    object ChainRingMaintenance : MaintenanceType("CHAIN_RING_MAINTENANCE", ComponentType.ChainRing)
     object ChainMaintenance : MaintenanceType("CHAIN_MAINTENANCE", ComponentType.Chain)
     object DiscBrakeMaintenance : MaintenanceType("DISC_BRAKE_MAINTENANCE", ComponentType.DiscBrake)
     object DropperPostMaintenance :
@@ -47,6 +48,7 @@ sealed class MaintenanceType(val name: String, val componentType: ComponentType)
                 CassetteMaintenance,
                 RearDerailleurMaintenance,
                 ChainMaintenance,
+                ChainRingMaintenance,
                 DiscBrakeMaintenance,
                 DropperPostMaintenance,
                 ForkMaintenance,
@@ -97,6 +99,11 @@ fun maintenanceTypeResources(type: MaintenanceType): MaintenanceResources {
         MaintenanceType.ChainMaintenance -> MaintenanceResources(
             nameResId = R.string.chain_maintenance,
             descriptionResId = R.string.chain_maintenance_description
+        )
+
+        MaintenanceType.ChainRingMaintenance -> MaintenanceResources(
+            nameResId = R.string.chain_ring_maintenance,
+            descriptionResId = R.string.chain_ring_maintenance_description
         )
 
         MaintenanceType.DiscBrakeMaintenance -> MaintenanceResources(

@@ -25,8 +25,7 @@ import kotlin.math.floor
 
 sealed class BSSEvent {
     data class BikeTypeSelected(val type: BikeType) : BSSEvent()
-    data class LastMaintenanceUpdate(val category: ComponentCategory, val value: Float) :
-        BSSEvent()
+    data class LastMaintenanceUpdate(val category: ComponentCategory, val value: Float) : BSSEvent()
 
     data class FullSuspensionSelectionChange(val value: Boolean) : BSSEvent()
     data class CliplessPedalsSelectionChange(val value: Boolean) : BSSEvent()
@@ -66,7 +65,7 @@ class BikeSetupViewModel @Inject constructor(
     ) : ViewModel() {
 
 
-    val _state = MutableStateFlow<BikeSetupScreenState>(BikeSetupScreenState.Loading)
+    private val _state = MutableStateFlow<BikeSetupScreenState>(BikeSetupScreenState.Loading)
     val state: StateFlow<BikeSetupScreenState> = _state
 
 
@@ -134,14 +133,12 @@ class BikeSetupViewModel @Inject constructor(
                             currentState.details.copy(
                                 hasCliplessPedals = event.value
                             )
-
                         }
 
                         is BSSEvent.DropperSelectionChange -> {
                             currentState.details.copy(
                                 hasDropperPost = event.value
                             )
-
                         }
 
                         is BSSEvent.TubelessSelectionChange -> {
@@ -175,8 +172,7 @@ class BikeSetupViewModel @Inject constructor(
 
 
     private fun getFromLocalDateTime(
-        componentTypes: ComponentType,
-        lastMaintenances: Map<ComponentCategory, Float>
+        componentTypes: ComponentType, lastMaintenances: Map<ComponentCategory, Float>
     ): LocalDateTime {
         val monthsSinceLastMaintenance = lastMaintenances.getOrDefault(componentTypes.category, 0f)
         return LocalDateTime.now().minusMonths(floor(monthsSinceLastMaintenance).toLong());
@@ -196,11 +192,14 @@ class BikeSetupViewModel @Inject constructor(
             componentTypes = componentTypes.plus(ComponentType.PedalClipless)
         }
         if (state.details.fullSuspension == true) {
-            componentTypes = componentTypes.plus(ComponentType.RearSuspension)
+            componentTypes = componentTypes.plus(
+                listOf(
+                    ComponentType.RearSuspension, ComponentType.FrameBearings
+                )
+            )
         }
 
         val components = componentTypes.map {
-
 
             val date = getFromLocalDateTime(it, state.details.lastMaintenances)
 
