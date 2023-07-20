@@ -31,7 +31,7 @@ data class Bike(
     @SerialName("configDone") val configDone: Boolean = false,
     @SerialName("bike_type") var type: BikeType = BikeType.MTB,
     @SerialName("stats") var stats: BikeStats? = null,
-    val components: List<BikeComponent>? = emptyList()
+    val components: List<BikeComponent> = emptyList()
 
 ) {
     fun km(): Long? {
@@ -68,16 +68,16 @@ data class Bike(
         val componentTypeStatus = componentStatus.groupBy {
             it.first.type
         }.map {
-            it.key to it.value.maxBy { cs -> cs.second }.second
+            it.key to (it.value.maxByOrNull { cs -> cs.second }?.second ?: StatusLevel.UNKNOWN)
         }.toMap()
 
         val categoryStatus = componentStatus.groupBy {
             it.first.type.category
         }.map {
-            it.key to it.value.maxBy { cs -> cs.second }.second
+            it.key to (it.value.maxByOrNull { cs -> cs.second }?.second ?: StatusLevel.UNKNOWN)
         }.toMap()
 
-        val generalStatus = categoryStatus.maxBy { it.value }.value
+        val generalStatus = categoryStatus.maxByOrNull { it.value }?.value ?: StatusLevel.UNKNOWN
 
         return BikeStatus(generalStatus,
             categoryStatus,

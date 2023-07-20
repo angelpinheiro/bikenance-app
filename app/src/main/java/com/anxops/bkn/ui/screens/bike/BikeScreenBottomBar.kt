@@ -35,7 +35,7 @@ fun BikeScreenBottomBar(
 ) {
     BottomNavigation(
         elevation = 8.dp,
-        backgroundColor = MaterialTheme.colors.primaryVariant
+        backgroundColor = MaterialTheme.colors.primary
     ) {
 
         BikeSections.values().forEach { destination ->

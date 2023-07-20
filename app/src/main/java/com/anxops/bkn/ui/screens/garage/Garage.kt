@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.screens.bike.BackgroundBox
 import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
@@ -61,15 +62,11 @@ fun Garage(
         }
     }
 
-    val gradientBackground = bgGradient()
-
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.value is GarageScreenState.Loading,
         onRefresh = { viewModel.loadData() })
-    Box(
+    BackgroundBox(
         modifier = Modifier
-            .fillMaxSize()
-            .background(gradientBackground)
             .pullRefresh(pullRefreshState)
     ) {
         when (val currentState = state.value) {
