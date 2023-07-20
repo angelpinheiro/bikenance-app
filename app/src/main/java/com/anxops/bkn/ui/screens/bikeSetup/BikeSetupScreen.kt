@@ -143,6 +143,9 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                     })
 
                     3 -> BikeDetailsPage(state.details,
+                        onFullSuspensionSelectionChange = {
+                            viewModel.onSetupDetailsEvent(BSSEvent.FullSuspensionSelectionChange(it))
+                        },
                         onCliplessPedalsSelectionChange = {
                             viewModel.onSetupDetailsEvent(BSSEvent.CliplessPedalsSelectionChange(it))
                         },

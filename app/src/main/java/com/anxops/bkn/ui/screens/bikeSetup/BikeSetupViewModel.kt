@@ -28,6 +28,7 @@ sealed class BSSEvent {
     data class LastMaintenanceUpdate(val category: ComponentCategory, val value: Float) :
         BSSEvent()
 
+    data class FullSuspensionSelectionChange(val value: Boolean) : BSSEvent()
     data class CliplessPedalsSelectionChange(val value: Boolean) : BSSEvent()
     data class TubelessSelectionChange(val value: Boolean) : BSSEvent()
     data class DropperSelectionChange(val value: Boolean) : BSSEvent()
@@ -49,6 +50,7 @@ data class SetupDetails(
     val hasDropperPost: Boolean? = false,
     val hasTubeless: Boolean? = true,
     val hasCliplessPedals: Boolean? = true,
+    val fullSuspension: Boolean? = true,
     val lastMaintenances: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
         .minus(ComponentCategory.MISC).associateWith { 0f }
 
@@ -97,6 +99,7 @@ class BikeSetupViewModel @Inject constructor(
 
                         val bike = currentState.bike.copy(
                             type = currentState.details.selectedBikeType,
+                            fullSuspension = currentState.details.fullSuspension ?: false,
                             components = newComponents,
                             configDone = false
                         )
@@ -147,6 +150,12 @@ class BikeSetupViewModel @Inject constructor(
                             )
                         }
 
+                        is BSSEvent.FullSuspensionSelectionChange -> {
+                            currentState.details.copy(
+                                fullSuspension = event.value
+                            )
+                        }
+
                         is BSSEvent.LastMaintenanceUpdate -> currentState.details.copy(
                             lastMaintenances = currentState.details.lastMaintenances.plus(event.category to event.value)
                         )
@@ -185,6 +194,9 @@ class BikeSetupViewModel @Inject constructor(
         }
         if (state.details.hasCliplessPedals == true) {
             componentTypes = componentTypes.plus(ComponentType.PedalClipless)
+        }
+        if (state.details.fullSuspension == true) {
+            componentTypes = componentTypes.plus(ComponentType.RearSuspension)
         }
 
         val components = componentTypes.map {
