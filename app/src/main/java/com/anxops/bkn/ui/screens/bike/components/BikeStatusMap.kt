@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -299,10 +300,12 @@ fun ComponentCategoryCarousel(
 
     LazyRow(
         Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 0.dp),
+            .fillMaxWidth().padding(top = 6.dp),
         state = categoryScroll,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        contentPadding = PaddingValues(
+            horizontal = 6.dp
+        )
     ) {
         categories.forEach { category ->
 
@@ -361,7 +364,10 @@ fun ComponentCarousel(
             .fillMaxWidth()
             .padding(horizontal = 0.dp),
         state = categoryScroll,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        contentPadding = PaddingValues(
+            horizontal = 6.dp
+        )
     ) {
         components.forEach { component ->
 
@@ -371,7 +377,7 @@ fun ComponentCarousel(
                 Chip(
                     modifier = Modifier
                         .widthIn(80.dp, 180.dp)
-                        .padding(start = 6.dp),
+                        .padding(end = 6.dp),
                     onClick = { onComponentSelected(component) },
                     colors = ChipDefaults.chipColors(
                         backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface,
