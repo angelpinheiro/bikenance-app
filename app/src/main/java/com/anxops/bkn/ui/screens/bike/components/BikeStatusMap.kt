@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -125,12 +126,10 @@ fun BikeStatusMap(
         }
 
     BoxWithConstraints(modifier = Modifier
-        .padding(horizontal = 26.dp)
-        .fillMaxWidth()
-        .aspectRatio(1.3f)
+        .fillMaxHeight()
+        .aspectRatio(1.6f)
         .clickable(
             interactionSource = interactionSource, indication = null
-
         ) { onCategoryUnselected() }) {
 
         Image(

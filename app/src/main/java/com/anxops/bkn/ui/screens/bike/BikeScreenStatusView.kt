@@ -52,7 +52,11 @@ fun BikeScreenStatusView(
                         })
                 }
             }
-            Column(Modifier, verticalArrangement = Arrangement.Center) {
+            Column(
+                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 BikeStatusMap(bike = bike,
                     selectedCategory = selectedCategory,
                     selectedComponent = selectedComponent,
@@ -68,8 +72,7 @@ fun BikeScreenStatusView(
             }
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -83,7 +86,7 @@ fun BikeScreenStatusView(
 
                 Text(
                     text = "${bike.type.extendedType}",
-                    modifier = Modifier.padding(start = 16.dp, top = 6.dp, bottom = 0.dp),
+                    modifier = Modifier.padding(start = 6.dp, top = 0.dp, bottom = 16.dp),
                     style = MaterialTheme.typography.h3,
                     color = MaterialTheme.colors.onPrimary
                 )
