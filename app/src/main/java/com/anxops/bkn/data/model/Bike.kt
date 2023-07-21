@@ -37,15 +37,13 @@ data class Bike(
 
     fun toBikeUpdate(): BikeUpdate {
         return BikeUpdate(
-            userId,
-            stravaId,
             name,
             brandName,
             modelName,
-            distance,
             photoUrl,
             draft,
             electric,
+            fullSuspension,
             configDone,
             type
         )
@@ -135,4 +133,20 @@ data class BikeStats(
     @Serializable(with = LocalDateSerializer::class)
     @SerialName("last_ride_date")
     val lastRideDate: LocalDateTime? = null,
+)
+
+
+
+@Serializable
+data class BikeUpdate(
+    @SerialName("name") var name: String? = null,
+    @SerialName("brand_name") var brandName: String? = null,
+    @SerialName("model_name") var modelName: String? = null,
+    @SerialName("photo_url") var photoUrl: String? = null,
+    @SerialName("draft") var draft: Boolean = false,
+    @SerialName("electric") val electric: Boolean = false,
+    @SerialName("full_suspension") val fullSuspension: Boolean = false,
+    @SerialName("configDone") val configDone: Boolean = false,
+    @Serializable(with = BikeTypeSerializer::class)
+    @SerialName("bike_type") var type: BikeType = BikeType.Unknown
 )

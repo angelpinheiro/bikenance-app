@@ -35,6 +35,18 @@ fun onSurfaceTextFieldColors(): TextFieldColors =
 
 
 @Composable
+fun onBackgroundTextFieldColors(): TextFieldColors =
+    TextFieldDefaults.textFieldColors(
+        backgroundColor = MaterialTheme.colors.surface,
+        cursorColor = MaterialTheme.colors.onSurface,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        textColor = MaterialTheme.colors.onSurface,
+    )
+
+
+
+@Composable
 fun BknIcon(
     icon: IIcon,
     color: Color = MaterialTheme.colors.onPrimary,
@@ -95,6 +107,7 @@ fun BknOutlinedTextField(
 fun BknLabelTopTextField(
     value: String?,
     label: String,
+    readOnly: Boolean = false,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
@@ -105,6 +118,7 @@ fun BknLabelTopTextField(
 ) {
 
     TextField(
+        readOnly = readOnly,
         modifier = modifier,
         value = value ?: "",
         onValueChange = onValueChange,

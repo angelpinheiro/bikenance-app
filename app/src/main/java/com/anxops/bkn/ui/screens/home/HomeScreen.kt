@@ -11,8 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
-import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.Garage
 import com.anxops.bkn.ui.screens.maintenances.MaintenancesScreen
 import com.anxops.bkn.ui.screens.rides.list.RidesScreen
@@ -23,17 +21,12 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.ResultRecipient
 
 @Destination
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun HomeScreen(
-    navigator: DestinationsNavigator,
-    viewModel: HomeViewModel = hiltViewModel(),
-    bikeUpdateResult: ResultRecipient<NewBikeScreenDestination, Boolean>,
-    profileUpdateResult: ResultRecipient<ProfileScreenDestination, Boolean>,
-    section: String?
+    navigator: DestinationsNavigator, viewModel: HomeViewModel = hiltViewModel(), section: String?
 ) {
     val navController = rememberNavController()
     val bottomSheetNavigator = rememberBottomSheetNavigator()
@@ -109,13 +102,12 @@ fun HomeScreen(
         BackgroundBox(
             Modifier
                 .padding(it)
-                .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+                .fillMaxSize(), contentAlignment = Alignment.TopCenter
         ) {
 
             when (selectedItem) {
                 HomeSections.Home -> {
-                    Garage(navigator = navigator, bikeUpdateResult, profileUpdateResult)
+                    Garage(navigator = navigator)
                 }
 
                 HomeSections.Rides -> {

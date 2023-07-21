@@ -93,7 +93,10 @@ fun BikeScreen(
             topBar = {
                 BikeDetailsTopBar(bike = bike, onBikeSetup = {
                     bknNavigator.navigateToBikeSetup(bike._id)
-                }, onClickBack = {
+                }, onBikeSettings = {
+                    bknNavigator.navigateToBikeEdit(bike._id)
+                },
+                    onClickBack = {
                     bknNavigator.popBackStack()
                 })
             },

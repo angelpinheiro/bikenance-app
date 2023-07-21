@@ -19,21 +19,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-sealed class NewBikeScreenStatus {
-    object Loading : NewBikeScreenStatus()
-    object Saving : NewBikeScreenStatus()
-    object Displaying : NewBikeScreenStatus()
+sealed class BikeEditScreenStatus {
+    object Loading : BikeEditScreenStatus()
+    object Saving : BikeEditScreenStatus()
+    object Editing : BikeEditScreenStatus()
 }
 
 data class NewBikeScreenState(
     val bike: Bike = Bike(_id = ""),
-    val status: NewBikeScreenStatus = NewBikeScreenStatus.Loading,
+    val status: BikeEditScreenStatus = BikeEditScreenStatus.Loading,
     val imageUploadPercent: Float = 0F,
 //    val storageRef: StorageReference? = null
 )
 
 @HiltViewModel
-class NewBikeScreenViewModel @Inject constructor(
+class BikeEditScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
     private val api: Api,
     private val repository: BikeRepositoryFacade,
@@ -45,13 +45,11 @@ class NewBikeScreenViewModel @Inject constructor(
 
     val state: StateFlow<NewBikeScreenState> = _state
 
-    fun isNewBike(): Flow<Boolean> = state.map { it.bike._id.isBlank() }
-
     init {
         if (state.value.bike._id.isNotBlank()) {
             loadBike(state.value.bike._id)
         } else {
-            _state.value = _state.value.copy(status = NewBikeScreenStatus.Displaying)
+            _state.value = _state.value.copy(status = BikeEditScreenStatus.Editing)
         }
     }
 
@@ -65,7 +63,7 @@ class NewBikeScreenViewModel @Inject constructor(
             when (val r = api.getBike(bikeId)) {
                 is ApiResponse.Success -> {
                     _state.value = _state.value.copy(
-                        status = NewBikeScreenStatus.Displaying,
+                        status = BikeEditScreenStatus.Editing,
                         bike = r.data,
 //                        storageRef = r.data.photoUrl?.let { api.getStorageRef(it) }
                     )
@@ -169,7 +167,7 @@ class NewBikeScreenViewModel @Inject constructor(
     fun onSaveBike() {
         viewModelScope.launch {
             _state.value = _state.value.copy(
-                status = NewBikeScreenStatus.Saving
+                status = BikeEditScreenStatus.Saving
             )
             try {
                 if (state.value.bike._id.isNotBlank()) {
@@ -191,7 +189,7 @@ class NewBikeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             dataStore.getAuthToken()?.let { token ->
                 _state.value = _state.value.copy(
-                    status = NewBikeScreenStatus.Saving
+                    status = BikeEditScreenStatus.Saving
                 )
 
                 try {

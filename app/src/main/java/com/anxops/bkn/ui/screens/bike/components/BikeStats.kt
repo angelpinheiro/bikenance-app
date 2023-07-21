@@ -49,7 +49,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.onBackground
+                    .width(1.dp), color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Distance",
@@ -60,7 +60,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.onBackground
+                    .width(1.dp), color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Ascent",
@@ -82,7 +82,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.onBackground
+                    .width(1.dp), color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Max Speed",
@@ -93,7 +93,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.onBackground
+                    .width(1.dp), color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Last ride",

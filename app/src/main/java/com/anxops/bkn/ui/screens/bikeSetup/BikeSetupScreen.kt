@@ -74,7 +74,6 @@ fun BikeSetupScreen(
             is BikeSetupScreenState.SetupDone -> {
                 LaunchedEffect(state) {
                     bknNavigator.popBackStack()
-                    bknNavigator.navigateToBikeDetails(screenState.bike._id)
                 }
             }
 

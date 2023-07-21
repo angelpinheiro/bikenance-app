@@ -4,11 +4,11 @@ package com.anxops.bkn.ui.navigation
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
 import com.anxops.bkn.ui.screens.bike.BikeSections
+import com.anxops.bkn.ui.screens.destinations.BikeEditScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeSetupScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
-import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SplashScreenDestination
@@ -41,18 +41,18 @@ class BknNavigator(var navigator: DestinationsNavigator) {
     }
 
     fun navigateToNewBike() {
-        navigator.navigate(NewBikeScreenDestination.invoke())
+        navigator.navigate(BikeEditScreenDestination.invoke())
     }
 
-    fun navigateToBike(id: String) {
-        navigator.navigate(NewBikeScreenDestination.invoke(id))
+    fun navigateToBikeEdit(id: String) {
+        navigator.navigate(BikeEditScreenDestination.invoke(id))
     }
 
     fun navigateToBikeSetup(id: String) {
         navigator.navigate(BikeSetupScreenDestination.invoke(id))
     }
 
-    fun navigateToBikeDetails(id: String, section: String = BikeSections.Status.id) {
+    fun navigateToBike(id: String, section: String = BikeSections.Status.id) {
         navigator.navigate(BikeScreenDestination.invoke(id, section))
     }
 

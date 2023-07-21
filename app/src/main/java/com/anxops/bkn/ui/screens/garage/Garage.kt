@@ -14,9 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.shared.components.BackgroundBox
-import com.anxops.bkn.ui.screens.destinations.NewBikeScreenDestination
-import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
 import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
@@ -33,32 +30,10 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 @Composable
 fun Garage(
     navigator: DestinationsNavigator,
-    updateBikeResult: ResultRecipient<NewBikeScreenDestination, Boolean>,
-    updateProfileResult: ResultRecipient<ProfileScreenDestination, Boolean>,
     viewModel: GarageViewModel = hiltViewModel()
 ) {
     val nav = BknNavigator(navigator)
     val state = viewModel.screenState.collectAsState()
-
-    updateBikeResult.onNavResult {
-        when (it) {
-            is NavResult.Value -> {
-                // viewModel.reload()
-            }
-
-            else -> {}
-        }
-    }
-
-    updateProfileResult.onNavResult {
-        when (it) {
-            is NavResult.Value -> {
-                // viewModel.reload()
-            }
-
-            else -> {}
-        }
-    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.value is GarageScreenState.Loading,
@@ -86,11 +61,11 @@ fun Garage(
                                 viewModel.setSelectedBike(it)
                             },
                             onEditBike = {
-                                nav.navigateToBike(it._id)
+                                nav.navigateToBikeEdit(it._id)
                             },
                             onBikeDetails = {
                                 if (it.configDone)
-                                    nav.navigateToBikeDetails(it._id)
+                                    nav.navigateToBike(it._id)
                                 else
                                     nav.navigateToBikeSetup(it._id)
                             },
