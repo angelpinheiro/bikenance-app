@@ -54,14 +54,22 @@ class BikeRepository(
             is ApiResponse.Success -> {
                 db.database().withTransaction {
                     val bikes = apiResponse.data
+
+                    Log.d("BikeRepository", "Refresh bikes")
+
+                    bikes.forEach{
+                        Log.d("BikeRepository", "Bike ${it.name} has ${it.components.size} components")
+                    }
+
                     val bikeEntities = bikes.map { it.toEntity() }
+
                     val componentEntities = bikes.flatMap { bike ->
-                        bike.components?.map { it.toEntity() } ?: listOf()
+                        bike.components.map { it.toEntity() }
                     }
                     val maintenanceEntities = bikes.flatMap { bike ->
-                        bike.components?.flatMap {
+                        bike.components.flatMap {
                             it.maintenances?.map { m -> m.toEntity() } ?: listOf()
-                        } ?: listOf()
+                        }
                     }
 
                     db.bikeDao().clear()

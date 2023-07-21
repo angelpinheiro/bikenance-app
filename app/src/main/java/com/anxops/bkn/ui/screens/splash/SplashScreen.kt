@@ -31,6 +31,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @RootNavGraph(start = true)
@@ -63,6 +64,7 @@ fun SplashScreen(
 
     // Execute this when isLogged state changes
     LaunchedEffect(isLogged.value) {
+        delay(500)
         when (isLogged.value) {
             is CheckLoginState.LoggedIn -> {
                 SendTokenToServerWorker.launch(context)
@@ -94,7 +96,9 @@ fun SplashScreen(
             .background(MaterialTheme.colors.surface),
         contentAlignment = Alignment.Center
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.bicycle),
                 contentDescription = "Bikenance Logo",
@@ -104,6 +108,12 @@ fun SplashScreen(
                 text = "Bikenance",
                 color = MaterialTheme.colors.onSurface,
                 style = MaterialTheme.typography.h2
+            )
+            Text(
+                text = "   ",
+                color = MaterialTheme.colors.onSurface,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(top = 5.dp, bottom = 100.dp)
             )
         }
 

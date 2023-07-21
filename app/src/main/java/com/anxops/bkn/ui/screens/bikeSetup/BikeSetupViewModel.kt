@@ -26,7 +26,6 @@ import kotlin.math.floor
 sealed class BSSEvent {
     data class BikeTypeSelected(val type: BikeType) : BSSEvent()
     data class LastMaintenanceUpdate(val category: ComponentCategory, val value: Float) : BSSEvent()
-
     data class FullSuspensionSelectionChange(val value: Boolean) : BSSEvent()
     data class CliplessPedalsSelectionChange(val value: Boolean) : BSSEvent()
     data class TubelessSelectionChange(val value: Boolean) : BSSEvent()

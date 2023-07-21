@@ -44,7 +44,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
-    suspend fun getBikes(includeDraftBikes: Boolean = false): ApiResponse<List<Bike>> {
+    suspend fun getBikes(): ApiResponse<List<Bike>> {
         return safeApiCall {
             httpClient.get(ApiEndpoints.profileBikesEndpoint()) {
                 header("Authorization", tokenHeader())
