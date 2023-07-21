@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -39,23 +40,22 @@ fun Ride(
     val context = LocalContext.current
     val bike = getRideBike(ride, bikes)
 
-    Column(
+    Card(
+        backgroundColor = MaterialTheme.colors.primary,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(bottom = 5.dp)
-            .padding(horizontal = 10.dp),
-        horizontalAlignment = Alignment.Start,
+            .padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
 
         BikeRideItem(item = ride, bike = bike)
-        Divider(
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 1.dp)
-                .height(1.dp)
-        )
+//        Divider(
+//            color = MaterialTheme.colors.primary,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 1.dp)
+//                .height(1.dp)
+//        )
     }
 }
 
@@ -66,8 +66,8 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(10.dp),
+        verticalAlignment = Alignment.Top
     ) {
 
         BknIcon(
@@ -137,7 +137,7 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
                     )
                     Text(
                         text = "${formatDistanceAsKm(it)}",
-                        color = MaterialTheme.colors.background,
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h4,
                         modifier = Modifier.padding(start = 5.dp, end = 10.dp)
                     )
@@ -150,7 +150,7 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
                     )
                     Text(
                         text = "${it}m",
-                        color = MaterialTheme.colors.background,
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h4,
                         modifier = Modifier.padding(start = 5.dp, end = 10.dp)
                     )
@@ -163,7 +163,7 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
                     )
                     Text(
                         text = "${formatDuration(it)}",
-                        color = MaterialTheme.colors.background,
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h4,
                         modifier = Modifier.padding(start = 5.dp, end = 10.dp)
                     )

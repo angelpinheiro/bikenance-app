@@ -1,8 +1,10 @@
 package com.anxops.bkn.util
 
 import android.text.format.DateUtils
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
@@ -29,10 +31,15 @@ fun TemporalAccessor.formatAsMonthYear(): String {
     return DateTimeFormatters.monthYear.format(this)
 }
 
-fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
+fun Instant.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
     val millis = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    return DateUtils.getRelativeTimeSpanString(millis, from, 0,
-        DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY).toString();
+    return DateUtils.getRelativeTimeSpanString(
+        millis, from, 0, DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY
+    ).toString();
+}
+
+fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
+    return this.toInstant(ZoneOffset.of(ZoneId.systemDefault().id)).formatAsRelativeTime(from)
 }
 
 fun TemporalAccessor.formatAsTime(): String {

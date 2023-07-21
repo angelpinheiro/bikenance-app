@@ -9,7 +9,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,8 +21,12 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -33,13 +39,11 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.rides.list.components.Ride
-import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.shared.components.bgGradient
+import com.anxops.bkn.util.formatAsRelativeTime
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.time.Instant
-import java.time.LocalDateTime
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -62,7 +66,8 @@ fun RidesScreen(
     val lastUpdated = viewModel.lastUpdatedFlow.collectAsState(null)
 
     val at =
-        lastUpdated.value?.let { it.lastRidesUpdate } ?: "Never"
+        lastUpdated.value?.let { Instant.ofEpochMilli(it.lastRidesUpdate).formatAsRelativeTime() }
+            ?: "Never"
 
     val isRefreshing =
         pagedRides.loadState.refresh == LoadState.Loading || pagedRides.loadState.append == LoadState.Loading
@@ -72,28 +77,53 @@ fun RidesScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .pullRefresh(pullRefreshState)
+            .pullRefresh(pullRefreshState),
     ) {
 
-        PagedRideList(rides = pagedRides, bikes = bikes.value,
-            modifier = Modifier.padding(top = 30.dp),
-            onClickOpenStrava = {
-                viewModel.openActivity(it)
-            }, onClickRide = {
-                bknNav.navigateToRide(it)
-            })
+        PagedRideList(rides = pagedRides, bikes = bikes.value, onClickOpenStrava = {
+            viewModel.openActivity(it)
+        }, onClickRide = {
+            bknNav.navigateToRide(it)
+        })
         Text(
-            text = "Last updated $at",
+            text = "Updated $at",
             color = MaterialTheme.colors.onPrimary,
             style = MaterialTheme.typography.h6,
             modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.primary)
-                .padding(6.dp)
+                .padding(10.dp)
+                .clip(RoundedCornerShape(5.dp))
+                .background(MaterialTheme.colors.primaryVariant)
+                .padding(10.dp)
+                .align(Alignment.BottomCenter)
         )
         // EmptyRides()
         PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+
+        Divider(
+            Modifier
+                .fillMaxWidth()
+                .height(20.dp)
+                .background(rideListBottomShadow())
+                .align(Alignment.BottomCenter)
+        )
     }
+}
+
+
+@Composable
+fun rideListBottomShadow(): Brush {
+
+    val color1 = Color.Transparent
+    val color2 = MaterialTheme.colors.primaryVariant
+
+    val gradient = remember {
+        Brush.verticalGradient(
+            0f to color1,
+            1f to color2.copy(alpha = 0.3f),
+        )
+    }
+
+    return gradient
 }
 
 
@@ -149,7 +179,8 @@ fun PagedRideList(
     LazyColumn(
         state = lazyColumnState,
         verticalArrangement = Arrangement.spacedBy(0.dp),
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = PaddingValues(vertical = 10.dp)
     ) {
 
         items(count = rides.itemCount) { index ->
@@ -171,8 +202,6 @@ fun PagedRideList(
 
 fun openStravaActivity(context: Context, activityId: String) {
     val url = "https://www.strava.com/activities/$activityId"
-    val intent = CustomTabsIntent
-        .Builder()
-        .build()
+    val intent = CustomTabsIntent.Builder().build()
     intent.launchUrl(context, Uri.parse(url))
 }

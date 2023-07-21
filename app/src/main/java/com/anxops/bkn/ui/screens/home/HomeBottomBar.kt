@@ -25,7 +25,7 @@ fun HomeBottomBar(
     onItemSelected: (HomeSections) -> Unit
 ) {
     BottomNavigation(
-        elevation = 8.dp,
+        elevation = 32.dp,
         backgroundColor = MaterialTheme.colors.primary
     ) {
 
