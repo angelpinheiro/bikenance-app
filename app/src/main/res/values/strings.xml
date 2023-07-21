@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Bikenance</string>
+    <string name="powered_by_strava">Powered by Strava</string>
+    <string name="bikenance">Bikenance</string>
+    <string name="garage_section_title">Garage</string>
+    <string name="rides_section_title">Rides</string>
+    <string name="maintenance_section_title">Maintenance</string>
+    <string name="bike_section_status">Status</string>
+    <string name="bike_section_components">Components</string>
 </resources>

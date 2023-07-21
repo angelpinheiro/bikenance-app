@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -104,7 +105,7 @@ fun SplashScreen(
                 modifier = Modifier.size(80.dp)
             )
             Text(
-                text = "Bikenance",
+                text = stringResource(R.string.bikenance),
                 color = MaterialTheme.colors.onSurface,
                 style = MaterialTheme.typography.h2
             )
@@ -118,7 +119,7 @@ fun SplashScreen(
 
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.pwrdby_strava_stack),
-            contentDescription = "Powered by Strava",
+            contentDescription = stringResource(R.string.powered_by_strava),
             modifier = Modifier
                 .size(120.dp)
                 .padding(bottom = 50.dp)

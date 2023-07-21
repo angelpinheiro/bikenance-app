@@ -11,7 +11,7 @@ import java.time.temporal.TemporalAccessor
 object DateTimeFormatters {
     val iso8061: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val dayMonth: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM")
-    val monthYear: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/YYYY")
+    val monthYear: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/yyyy")
     val localTime: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 }
 
@@ -32,14 +32,17 @@ fun TemporalAccessor.formatAsMonthYear(): String {
 }
 
 fun Instant.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
-    val millis = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    return DateUtils.getRelativeTimeSpanString(
-        millis, from, 0, DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY
-    ).toString();
+    return this.toEpochMilli().formatAsRelativeTime()
 }
 
 fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
-    return this.toInstant(ZoneOffset.of(ZoneId.systemDefault().id)).formatAsRelativeTime(from)
+    return (this.atZone(ZoneId.systemDefault()).toEpochSecond()*1000).formatAsRelativeTime(from)
+}
+
+fun Long.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
+    return DateUtils.getRelativeTimeSpanString(
+        this, from, 0, DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY
+    ).toString();
 }
 
 fun TemporalAccessor.formatAsTime(): String {

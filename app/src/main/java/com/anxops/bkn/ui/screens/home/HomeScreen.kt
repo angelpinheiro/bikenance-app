@@ -7,6 +7,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
@@ -60,7 +61,7 @@ fun HomeScreen(
                             .size(20.dp)
                     )
                     Text(
-                        text = selectedItem.title,
+                        text = stringResource(id = selectedItem.titleRes),
                         color = MaterialTheme.colors.onPrimary,
                         style = MaterialTheme.typography.h2,
                         modifier = Modifier.padding(horizontal = 12.dp)
