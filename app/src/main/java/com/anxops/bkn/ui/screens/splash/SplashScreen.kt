@@ -1,20 +1,23 @@
 package com.anxops.bkn.ui.screens.splash
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,14 +35,11 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @RootNavGraph(start = true)
 @Destination(
-    deepLinks = [
-        DeepLink(
-            uriPattern = "bikenance://garage?section={section}"
-        ),
-        DeepLink(
-            uriPattern = "bikenance://notification?route={route}"
-        )
-    ]
+    deepLinks = [DeepLink(
+        uriPattern = "bikenance://garage?section={section}"
+    ), DeepLink(
+        uriPattern = "bikenance://notification?route={route}"
+    )]
 )
 @Composable
 fun SplashScreen(
@@ -67,10 +67,8 @@ fun SplashScreen(
             is CheckLoginState.LoggedIn -> {
                 SendTokenToServerWorker.launch(context)
                 nav.popBackStack()
-                if (section != null)
-                    nav.navigateToGarage(section)
-                else
-                    nav.navigateToGarage()
+                if (section != null) nav.navigateToGarage(section)
+                else nav.navigateToGarage()
             }
 
             is CheckLoginState.NotLoggedIn -> {
@@ -89,15 +87,17 @@ fun SplashScreen(
         }
     }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.surface),
+        contentAlignment = Alignment.Center
+    ) {
+        Column {
             Image(
                 painter = painterResource(id = R.drawable.bicycle),
-                contentDescription = "LocationPin",
+                contentDescription = "Bikenance Logo",
                 modifier = Modifier.size(80.dp)
             )
             Text(
@@ -106,7 +106,17 @@ fun SplashScreen(
                 style = MaterialTheme.typography.h2
             )
         }
+
+        Image(
+            imageVector = ImageVector.vectorResource(id = R.drawable.pwrdby_strava_stack),
+            contentDescription = "Powered by Strava",
+            modifier = Modifier
+                .size(120.dp)
+                .padding(bottom = 50.dp)
+                .align(Alignment.BottomCenter)
+        )
     }
+
 }
 
 
