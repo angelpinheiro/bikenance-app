@@ -110,11 +110,11 @@ fun BikeStatusMap(
     val hotSpotCoordinates = remember {
         mutableStateOf(
             listOf(
-                ComponentCategory.TRANSMISSION to MapOffset(0.4f, 0.65f),
-                ComponentCategory.BRAKES to MapOffset(0.16f, 0.57f),
-                ComponentCategory.SUSPENSION to MapOffset(0.75f, 0.40f),
-                ComponentCategory.WHEELS to MapOffset(0.65f, 0.70f),
-                ComponentCategory.MISC to MapOffset(0.4f, 0.2f),
+                ComponentCategory.TRANSMISSION to MapOffset(0.35f, 0.65f, Alignment.BottomCenter),
+                ComponentCategory.BRAKES to MapOffset(0.16f, 0.57f,Alignment.TopStart),
+                ComponentCategory.SUSPENSION to MapOffset(0.73f, 0.40f,Alignment.BottomCenter),
+                ComponentCategory.WHEELS to MapOffset(0.65f, 0.70f,Alignment.BottomEnd),
+                ComponentCategory.MISC to MapOffset(0.5f, 0.35f,Alignment.TopCenter),
             )
         )
     }
@@ -171,7 +171,7 @@ fun BikeStatusMap(
                         yOffset = offset.y,
                         textAlignment = offset.align,
                         onSelected = { onCategorySelected(category) },
-                        pulsate = true
+                        pulsate = (bike.status.componentCategoryStatus[category] ?: StatusLevel.OK) >= StatusLevel.WARN
                     )
                 }
             }
@@ -410,12 +410,12 @@ fun HotSpot(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.statusWarning,
-    size: Dp = 45.dp,
+    size: Dp = 50.dp,
     xOffset: Float,
     yOffset: Float,
     maxWidth: Dp,
     maxHeight: Dp,
-    textAlignment: Alignment = Alignment.TopEnd,
+    textAlignment: Alignment = Alignment.BottomCenter,
     onSelected: () -> Unit = {},
     pulsate: Boolean
 ) {
@@ -564,29 +564,29 @@ fun PulsatingCircles(
             targetValue = 0.1f,
             typeConverter = Float.VectorConverter,
             animationSpec = infiniteRepeatable(
-                animation = tween(2000, easing = FastOutLinearInEasing),
+                animation = tween(1000, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
             )
         ).value
 
 
-        val size: Dp = if (!pulsate) size else infiniteTransition.animateValue(
+        val size: Dp = if (!pulsate) size*0.7f else infiniteTransition.animateValue(
             label = "",
             initialValue = size,
             targetValue = size * 0.8f,
             typeConverter = Dp.VectorConverter,
             animationSpec = infiniteRepeatable(
-                animation = tween(2000, easing = FastOutLinearInEasing),
+                animation = tween(1000, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
             )
         ).value
 
-        val mediumSize: Dp = if (!pulsate) size * 0.7f else infiniteTransition.animateValue(
+        val mediumSize: Dp = if (!pulsate) size * 0.6f else infiniteTransition.animateValue(
             initialValue = size * 0.7f,
             targetValue = size * 0.5f,
             Dp.VectorConverter,
             animationSpec = infiniteRepeatable(
-                animation = tween(1500, easing = FastOutLinearInEasing),
+                animation = tween(1000, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
             ),
             label = ""
@@ -601,9 +601,11 @@ fun PulsatingCircles(
             SimpleCircleShape(
                 size = size, color = color.copy(alpha = alpha)
             )
-            SimpleCircleShape(
-                size = mediumSize, color = color.copy(alpha = alpha)
-            )
+            if(pulsate) {
+                SimpleCircleShape(
+                    size = mediumSize, color = color.copy(alpha = alpha)
+                )
+            }
             SimpleCircleShape(
                 size = size * .3f, color = color
             )
