@@ -36,7 +36,7 @@ fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit
                     text = "Recent activity (${formatDistanceAsKm(total)})",
                     modifier = Modifier.padding(start = 10.dp, top = 24.dp, bottom = 10.dp),
                     style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onPrimary
+                    color = MaterialTheme.colors.onBackground
                 )
 
 

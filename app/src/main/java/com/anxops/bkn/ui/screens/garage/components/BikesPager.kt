@@ -80,7 +80,7 @@ fun BikesPager(
             Text(
                 text = "Bikes",
                 style = MaterialTheme.typography.h2,
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.onBackground
             )
             Box(
                 modifier = Modifier
@@ -93,7 +93,7 @@ fun BikesPager(
             IconButton(onClick = { onClickSync() }) {
                 BknIcon(
                     icon = CommunityMaterial.Icon.cmd_cog_sync,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.onBackground,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -138,8 +138,8 @@ fun BikePagerIndicator(pagerState: PagerState, bikeCount: Int) {
             ) {
                 repeat(bikeCount) { iteration ->
                     val color = if (pagerState.currentPage == iteration) {
-                        MaterialTheme.colors.onPrimary
-                    } else MaterialTheme.colors.onPrimary.copy(
+                        MaterialTheme.colors.onBackground
+                    } else MaterialTheme.colors.onBackground.copy(
                         alpha = 0.2f
                     )
                     Box(

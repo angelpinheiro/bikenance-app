@@ -170,7 +170,7 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
         HorizontalPagerIndicator(
             pagerState = pagerState,
             pageCount,
-            activeColor = MaterialTheme.colors.onPrimary,
+            activeColor = MaterialTheme.colors.onBackground,
             modifier = Modifier
                 .padding(top = 20.dp)
                 .align(Alignment.TopCenter)

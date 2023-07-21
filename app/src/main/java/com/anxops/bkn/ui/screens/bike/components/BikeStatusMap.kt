@@ -44,7 +44,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,6 +53,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -76,7 +76,6 @@ import com.anxops.bkn.ui.screens.maintenances.getIconResForStatus
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.resources
-import com.anxops.bkn.ui.theme.statusGood
 import com.anxops.bkn.ui.theme.statusWarning
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import kotlinx.coroutines.delay
@@ -93,32 +92,36 @@ fun BikeStatusMap(
     onCategoryUnselected: () -> Unit = {}
 ) {
 
-    val highlightCategories = selectedCategory == null
-
-    val showComponentGroupsFlag = remember {
+    val showCategories = remember {
         mutableStateOf(false)
     }
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(selectedCategory) {
         delay(100)
-        showComponentGroupsFlag.value = true
-    }
-
-    val vector = when (bike.type) {
-        BikeType.Mtb -> {
-            if (bike.fullSuspension) R.drawable.bike_full_mtb else R.drawable.bike_mtb
-        }
-
-        BikeType.Road, BikeType.Gravel -> {
-            R.drawable.bike_road
-        }
-
-        else -> {
-            R.drawable.bike_mtb
+        if (selectedCategory == null) {
+            showCategories.value = true
         }
     }
+
+    val vector = chooseBikeVector(bike)
+
+    val hotSpotCoordinates = remember {
+        mutableStateOf(
+            listOf(
+                ComponentCategory.TRANSMISSION to MapOffset(0.4f, 0.65f),
+                ComponentCategory.BRAKES to MapOffset(0.16f, 0.57f),
+                ComponentCategory.SUSPENSION to MapOffset(0.75f, 0.40f),
+                ComponentCategory.WHEELS to MapOffset(0.65f, 0.70f),
+                ComponentCategory.MISC to MapOffset(0.4f, 0.2f),
+            )
+        )
+    }
+
+    val componentVisibility = bike.components.associate {
+            it._id to (selectedCategory == it.type.category)
+        }
 
     BoxWithConstraints(modifier = Modifier
         .padding(horizontal = 26.dp)
@@ -134,10 +137,10 @@ fun BikeStatusMap(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .blur(5.dp)
+                .blur(1.dp)
                 .padding(5.dp)
                 .align(Alignment.Center)
-                .alpha(0.5f),
+                .alpha(0.1f),
             colorFilter = ColorFilter.tint(Color.Black)
         )
         Image(
@@ -147,154 +150,134 @@ fun BikeStatusMap(
                 .fillMaxSize()
                 .padding(5.dp)
                 .align(Alignment.Center),
-            colorFilter = ColorFilter.tint(Color.hsl(227f, 0.24f, 0.29f))
+            colorFilter = ColorFilter.tint(
+                MaterialTheme.colors.surface.copy(alpha = 0.25f)
+                    .compositeOver(MaterialTheme.colors.primary)
+            )
         )
 
-        HotSpotAnimatedVisibility(
-            visible = showComponentGroupsFlag.value && highlightCategories
-        ) {
-            HotSpot(text = stringResource(id = ComponentCategory.TRANSMISSION.resources().nameResId),
-                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.TRANSMISSION]),
-                maxHeight = maxHeight,
-                maxWidth = maxWidth,
-                xOffset = 0.4f,
-                yOffset = 0.65f,
-                textAlignment = Alignment.BottomCenter,
-                onSelected = { onCategorySelected(ComponentCategory.TRANSMISSION) })
+        if (selectedCategory == null) {
 
-            HotSpot(text = stringResource(id = ComponentCategory.MISC.resources().nameResId),
-                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.MISC]),
-                maxHeight = maxHeight,
-                maxWidth = maxWidth,
-                xOffset = 0.4f,
-                yOffset = 0.2f,
-                textAlignment = Alignment.TopEnd,
-                onSelected = { onCategorySelected(ComponentCategory.MISC) })
-
-            HotSpot(text = stringResource(id = ComponentCategory.BRAKES.resources().nameResId),
-                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.BRAKES]),
-                maxHeight = maxHeight,
-                maxWidth = maxWidth,
-                xOffset = 0.16f,
-                yOffset = 0.57f,
-                textAlignment = Alignment.TopStart,
-                onSelected = { onCategorySelected(ComponentCategory.BRAKES) })
-
-
-            HotSpot(text = stringResource(id = ComponentCategory.SUSPENSION.resources().nameResId),
-                color = MaterialTheme.colors.statusGood,
-                maxHeight = maxHeight,
-                maxWidth = maxWidth,
-                xOffset = 0.75f,
-                yOffset = 0.40f,
-                onSelected = { onCategorySelected(ComponentCategory.SUSPENSION) })
-
-            HotSpot(text = stringResource(id = ComponentCategory.WHEELS.resources().nameResId),
-                color = getColorForStatus(bike.status.componentCategoryStatus[ComponentCategory.WHEELS]),
-                maxHeight = maxHeight,
-                maxWidth = maxWidth,
-                xOffset = 0.65f,
-                yOffset = 0.70f,
-                textAlignment = Alignment.BottomEnd,
-                onSelected = { onCategorySelected(ComponentCategory.WHEELS) })
-        }
-
-        if (!highlightCategories) {
-
-            bike.components.forEach { component ->
-
-                val isSelected = component._id == selectedComponent?._id
-
-                val offset: MapOffset = when (component.type) {
-                    ComponentType.BrakeLever -> MapOffset(0.7f, 0.15f)
-
-                    ComponentType.CableHousing -> MapOffset(0.5f, 0.32f, Alignment.TopEnd)
-
-                    ComponentType.Cassette -> MapOffset(0.2f, 0.6f)
-
-                    ComponentType.Chain -> MapOffset(0.37f, 0.55f)
-
-                    ComponentType.DropperPost -> MapOffset(0.35f, 0.2f)
-
-                    ComponentType.Fork -> MapOffset(0.77f, 0.5f)
-
-                    ComponentType.FrontHub -> MapOffset(0.8f, 0.61f, Alignment.CenterEnd)
-
-                    ComponentType.PedalClipless -> MapOffset(0.5f, 0.7f, Alignment.BottomCenter)
-
-                    ComponentType.RearDerailleurs -> MapOffset(0.28f, 0.74f, Alignment.BottomCenter)
-
-                    ComponentType.RearHub -> MapOffset(0.2f, 0.61f, Alignment.CenterStart)
-
-                    ComponentType.RearSuspension -> MapOffset(0.45f, 0.45f)
-
-                    ComponentType.ChainRing -> MapOffset(0.5f, 0.62f)
-
-                    ComponentType.ThruAxle -> {
-                        if (component.modifier == ComponentModifier.REAR) {
-                            MapOffset(0.2f, 0.62f)
-                        } else {
-                            MapOffset(0.8f, 0.62f)
-                        }
-                    }
-
-                    ComponentType.Tire -> {
-                        if (component.modifier == ComponentModifier.REAR) {
-                            MapOffset(0.2f, 0.35f)
-                        } else {
-                            MapOffset(0.8f, 0.35f)
-                        }
-                    }
-
-                    ComponentType.Wheel -> {
-                        if (component.modifier == ComponentModifier.REAR) {
-                            MapOffset(0.25f, 0.75f, Alignment.BottomStart)
-                        } else {
-                            MapOffset(0.65f, 0.75f, Alignment.BottomEnd)
-                        }
-                    }
-
-                    ComponentType.DiscPad -> {
-                        if (component.modifier == ComponentModifier.REAR) {
-                            MapOffset(0.3f, 0.48f)
-                        } else {
-                            MapOffset(0.7f, 0.48f, Alignment.BottomEnd)
-                        }
-                    }
-
-                    ComponentType.DiscBrake -> {
-                        if (component.modifier == ComponentModifier.REAR) {
-                            MapOffset(0.2f, 0.6f, Alignment.BottomCenter)
-                        } else {
-                            MapOffset(0.8f, 0.6f)
-                        }
-                    }
-
-
-                    ComponentType.FrameBearings -> MapOffset(0f, 0f)
-                    ComponentType.HandlebarTape -> MapOffset(0.5f, 0.25f)
-                    ComponentType.Custom -> MapOffset(0f, 0f)
-                }
-
-
-                HotSpotAnimatedVisibility(selectedCategory == component.type.category) {
-                    StatusMapComponent(isSelected = isSelected,
-                        size = 25.dp,
+            hotSpotCoordinates.value.forEach { (category, offset) ->
+                HotSpotAnimatedVisibility(
+                    visible = showCategories.value
+                ) {
+                    HotSpot(
+                        text = stringResource(id = category.resources().nameResId),
+                        color = getColorForStatus(bike.status.componentCategoryStatus[category]),
                         maxHeight = maxHeight,
                         maxWidth = maxWidth,
                         xOffset = offset.x,
                         yOffset = offset.y,
-                        component = component,
-                        status = bike.status.componentTypeStatus[component.type],
-                        onSelected = {
-                            onComponentSelected(component)
-                        })
+                        textAlignment = offset.align,
+                        onSelected = { onCategorySelected(category) },
+                        pulsate = true
+                    )
                 }
-
             }
+        }
 
+
+
+        bike.components.forEach { component ->
+
+            val isSelected = component._id == selectedComponent?._id
+            val offset: MapOffset = getComponentMapOffset(component)
+
+            HotSpotAnimatedVisibility(componentVisibility[component._id] ?: false) {
+                StatusMapComponent(isSelected = isSelected,
+                    size = 25.dp,
+                    maxHeight = maxHeight,
+                    maxWidth = maxWidth,
+                    xOffset = offset.x,
+                    yOffset = offset.y,
+                    component = component,
+                    status = bike.status.componentTypeStatus[component.type],
+                    onSelected = {
+                        onComponentSelected(component)
+                    })
+            }
         }
     }
+}
+
+@Composable
+private fun getComponentMapOffset(component: BikeComponent): MapOffset {
+    val offset: MapOffset = when (component.type) {
+        ComponentType.BrakeLever -> MapOffset(0.7f, 0.15f)
+        ComponentType.CableHousing -> MapOffset(0.5f, 0.32f, Alignment.TopEnd)
+        ComponentType.Cassette -> MapOffset(0.2f, 0.6f)
+        ComponentType.Chain -> MapOffset(0.37f, 0.55f)
+        ComponentType.DropperPost -> MapOffset(0.35f, 0.2f)
+        ComponentType.Fork -> MapOffset(0.77f, 0.5f)
+        ComponentType.FrontHub -> MapOffset(0.8f, 0.61f, Alignment.CenterEnd)
+        ComponentType.PedalClipless -> MapOffset(0.47f, 0.75f, Alignment.BottomCenter)
+        ComponentType.RearDerailleurs -> MapOffset(0.28f, 0.74f, Alignment.BottomCenter)
+        ComponentType.RearHub -> MapOffset(0.2f, 0.61f, Alignment.CenterStart)
+        ComponentType.RearSuspension -> MapOffset(0.45f, 0.45f)
+        ComponentType.ChainRing -> MapOffset(0.5f, 0.62f)
+        ComponentType.ThruAxle -> {
+            if (component.modifier == ComponentModifier.REAR) {
+                MapOffset(0.2f, 0.62f)
+            } else {
+                MapOffset(0.8f, 0.62f)
+            }
+        }
+
+        ComponentType.Tire -> {
+            if (component.modifier == ComponentModifier.REAR) {
+                MapOffset(0.2f, 0.35f)
+            } else {
+                MapOffset(0.8f, 0.35f)
+            }
+        }
+
+        ComponentType.Wheel -> {
+            if (component.modifier == ComponentModifier.REAR) {
+                MapOffset(0.25f, 0.75f, Alignment.BottomStart)
+            } else {
+                MapOffset(0.65f, 0.75f, Alignment.BottomEnd)
+            }
+        }
+
+        ComponentType.DiscPad -> {
+            if (component.modifier == ComponentModifier.REAR) {
+                MapOffset(0.3f, 0.48f)
+            } else {
+                MapOffset(0.7f, 0.48f, Alignment.BottomEnd)
+            }
+        }
+
+        ComponentType.DiscBrake -> {
+            if (component.modifier == ComponentModifier.REAR) {
+                MapOffset(0.2f, 0.6f, Alignment.BottomCenter)
+            } else {
+                MapOffset(0.8f, 0.6f)
+            }
+        }
+        ComponentType.FrameBearings -> MapOffset(0.5f, 0.45f)
+        ComponentType.HandlebarTape -> MapOffset(0.5f, 0.25f)
+        ComponentType.Custom -> MapOffset(0f, 0f)
+    }
+    return offset
+}
+
+@Composable
+private fun chooseBikeVector(bike: Bike): Int {
+    val vector = when (bike.type) {
+        BikeType.Mtb -> {
+            if (bike.fullSuspension) R.drawable.bike_full_mtb else R.drawable.bike_mtb
+        }
+
+        BikeType.Road, BikeType.Gravel -> {
+            R.drawable.bike_road
+        }
+
+        else -> {
+            R.drawable.bike_mtb
+        }
+    }
+    return vector
 }
 
 
@@ -433,7 +416,8 @@ fun HotSpot(
     maxWidth: Dp,
     maxHeight: Dp,
     textAlignment: Alignment = Alignment.TopEnd,
-    onSelected: () -> Unit = {}
+    onSelected: () -> Unit = {},
+    pulsate: Boolean
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val boxSize = max(80.dp, size)
@@ -450,7 +434,7 @@ fun HotSpot(
 
     ) {
 
-        PulsatingCircles(size, color = color)
+        PulsatingCircles(size, color = color, pulsate = pulsate)
 
         Text(
             text = text,
@@ -459,12 +443,12 @@ fun HotSpot(
                 .clip(
                     RoundedCornerShape(20.dp)
                 )
-                .background(MaterialTheme.colors.surface.copy(alpha = 0.2f))
+                .background(MaterialTheme.colors.surface)
                 .padding(horizontal = 6.dp, vertical = 1.dp),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSurface,
             style = MaterialTheme.typography.h4,
             fontSize = 13.sp
         )
@@ -568,22 +552,25 @@ fun SimpleCircleShape(
 }
 
 @Composable
-fun PulsatingCircles(size: Dp, color: Color = Color.White, alpha: Float = 0.3f) {
+fun PulsatingCircles(
+    size: Dp, color: Color = Color.White, alpha: Float = 0.5f, pulsate: Boolean = false
+) {
     Box(contentAlignment = Alignment.Center) {
         val infiniteTransition = rememberInfiniteTransition(label = "")
 
-        val alpha by infiniteTransition.animateValue(
+        val alpha: Float = if (!pulsate) 0.5f else infiniteTransition.animateValue(
             label = "",
             initialValue = alpha,
-            targetValue = 0.3f,
+            targetValue = 0.1f,
             typeConverter = Float.VectorConverter,
             animationSpec = infiniteRepeatable(
                 animation = tween(2000, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
             )
-        )
+        ).value
 
-        val size by infiniteTransition.animateValue(
+
+        val size: Dp = if (!pulsate) size else infiniteTransition.animateValue(
             label = "",
             initialValue = size,
             targetValue = size * 0.8f,
@@ -592,17 +579,19 @@ fun PulsatingCircles(size: Dp, color: Color = Color.White, alpha: Float = 0.3f) 
                 animation = tween(2000, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
             )
-        )
-        val smallCircle by infiniteTransition.animateValue(
+        ).value
+
+        val mediumSize: Dp = if (!pulsate) size * 0.7f else infiniteTransition.animateValue(
             initialValue = size * 0.7f,
-            targetValue = size * 0.4f,
+            targetValue = size * 0.5f,
             Dp.VectorConverter,
             animationSpec = infiniteRepeatable(
-                animation = tween(2000, easing = FastOutLinearInEasing),
+                animation = tween(1500, easing = FastOutLinearInEasing),
                 repeatMode = RepeatMode.Reverse
             ),
             label = ""
-        )
+        ).value
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -613,10 +602,10 @@ fun PulsatingCircles(size: Dp, color: Color = Color.White, alpha: Float = 0.3f) 
                 size = size, color = color.copy(alpha = alpha)
             )
             SimpleCircleShape(
-                size = smallCircle, color = color.copy(alpha = alpha)
+                size = mediumSize, color = color.copy(alpha = alpha)
             )
             SimpleCircleShape(
-                size = size * .4f, color = color.copy(alpha = 0.9f)
+                size = size * .3f, color = color
             )
         }
     }

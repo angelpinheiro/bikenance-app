@@ -25,7 +25,8 @@ fun HomeBottomBar(
     onItemSelected: (HomeSections) -> Unit
 ) {
     BottomNavigation(
-        elevation = 5.dp
+        elevation = 8.dp,
+        backgroundColor = MaterialTheme.colors.primary
     ) {
 
         val critical = FakeData.maintenances.filter { it.percentage >= 1 }.size

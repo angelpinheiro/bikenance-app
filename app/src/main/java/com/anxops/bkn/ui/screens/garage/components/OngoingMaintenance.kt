@@ -56,7 +56,7 @@ fun UpcomingMaintenance(bike: Bike? = null, showTile: Boolean = true, titleText:
                         modifier = Modifier.padding(bottom = 10.dp),
                         text = title,
                         style = MaterialTheme.typography.h2,
-                        color = MaterialTheme.colors.onPrimary
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
 

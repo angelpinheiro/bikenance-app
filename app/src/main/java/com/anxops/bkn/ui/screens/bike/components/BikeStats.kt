@@ -49,7 +49,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                    .width(1.dp), color = MaterialTheme.colors.onBackground
             )
             BikeStat(
                 title = "Distance",
@@ -60,7 +60,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                    .width(1.dp), color = MaterialTheme.colors.onBackground
             )
             BikeStat(
                 title = "Ascent",
@@ -82,7 +82,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                    .width(1.dp), color = MaterialTheme.colors.onBackground
             )
             BikeStat(
                 title = "Max Speed",
@@ -93,7 +93,7 @@ fun BikeStats(bikeStats: BikeStats) {
             Divider(
                 Modifier
                     .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primaryVariant
+                    .width(1.dp), color = MaterialTheme.colors.onBackground
             )
             BikeStat(
                 title = "Last ride",
@@ -125,12 +125,12 @@ fun BikeStat(
         ) {
             icon?.let {
                 BknIcon(
-                    it, MaterialTheme.colors.onPrimary, modifier = Modifier.size(16.dp)
+                    it, MaterialTheme.colors.onBackground, modifier = Modifier.size(16.dp)
                 )
             }
             Text(
                 modifier = Modifier.padding(start = 10.dp),
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colors.onBackground,
                 text = title,
                 style = MaterialTheme.typography.h4,
             )
