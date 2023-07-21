@@ -64,7 +64,6 @@ fun SplashScreen(
 
     // Execute this when isLogged state changes
     LaunchedEffect(isLogged.value) {
-        delay(500)
         when (isLogged.value) {
             is CheckLoginState.LoggedIn -> {
                 SendTokenToServerWorker.launch(context)
