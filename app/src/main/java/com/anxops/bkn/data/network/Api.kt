@@ -60,6 +60,14 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
+    suspend fun refreshLastRides(): ApiResponse<Boolean> {
+        return safeApiCall {
+            httpClient.get(ApiEndpoints.profileRefreshLastRidesEndpoint()) {
+                header("Authorization", tokenHeader())
+            }
+        }
+    }
+
     suspend fun getPaginatedRidesByDateTime(
         key: String?,
         pageSize: Int = 10

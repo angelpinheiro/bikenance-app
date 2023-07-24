@@ -23,9 +23,14 @@ data class Bike(
     @Serializable(with = BikeTypeSerializer::class)
     @SerialName("bike_type") var type: BikeType = BikeType.Unknown,
     @SerialName("stats") var stats: BikeStats? = null,
-    val components: List<BikeComponent> = emptyList()
+    @SerialName("components")
+    val components: List<BikeComponent>? = null,
 
 ) {
+
+    fun componentList() : List<BikeComponent> {
+        return components ?: emptyList()
+    }
 
     val status by lazy {
         buildStatus()

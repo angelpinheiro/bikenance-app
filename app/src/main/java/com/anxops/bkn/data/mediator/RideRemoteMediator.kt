@@ -5,6 +5,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.AppInfo
 import com.anxops.bkn.data.database.entities.BikeRideEntity
@@ -50,9 +51,14 @@ class RideRemoteMediator(
                         "Success -> LoadType: [$loadType], LoadKey: [$loadKey], [${response.data.size} items loaded]"
                     )
                     if (response.data.isEmpty()) {
+                        db.database().withTransaction {
+                            db.appInfoDao().clear()
+                            db.appInfoDao()
+                                .insert(AppInfo(lastRidesUpdate = System.currentTimeMillis()))
+                        }
                         return MediatorResult.Success(true)
                     }
-                    db.database().run {
+                    db.database().withTransaction {
                         if (loadType == LoadType.REFRESH) {
                             db.bikeRideDao().clear()
                             db.appInfoDao().clear()

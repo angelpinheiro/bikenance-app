@@ -16,6 +16,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -76,11 +77,10 @@ fun RidesScreen(
         rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { pagedRides.refresh() })
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState),
+            .fillMaxSize(),
     ) {
 
-        PagedRideList(rides = pagedRides, bikes = bikes.value, onClickOpenStrava = {
+        PagedRideList(rides = pagedRides, bikes = bikes.value, pullRefreshState = pullRefreshState ,onClickOpenStrava = {
             viewModel.openActivity(it)
         }, onClickRide = {
             bknNav.navigateToRide(it)
@@ -96,7 +96,7 @@ fun RidesScreen(
                 .padding(10.dp)
                 .align(Alignment.BottomCenter)
         )
-        // EmptyRides()
+//        EmptyRides()
         PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
 
         Divider(
@@ -164,14 +164,14 @@ fun EmptyRides(onClickNew: () -> Unit = {}) {
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PagedRideList(
     rides: LazyPagingItems<BikeRide>,
     bikes: List<Bike>,
     onClickRide: (id: String) -> Unit = {},
     onClickOpenStrava: (stravaId: String) -> Unit = {},
-    modifier: Modifier = Modifier
+    pullRefreshState: PullRefreshState,
 ) {
 
     val lazyColumnState = rememberLazyListState()
@@ -179,7 +179,7 @@ fun PagedRideList(
     LazyColumn(
         state = lazyColumnState,
         verticalArrangement = Arrangement.spacedBy(0.dp),
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize().pullRefresh(pullRefreshState),
         contentPadding = PaddingValues(vertical = 10.dp)
     ) {
 

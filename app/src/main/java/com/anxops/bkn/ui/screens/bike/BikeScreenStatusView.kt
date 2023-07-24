@@ -45,7 +45,7 @@ fun BikeScreenStatusView(
                     onEvent(BikeScreenEvent.SelectComponentCategory(it))
                 }
                 selectedCategory?.let {
-                    ComponentCarousel(bike.components.filter { c -> c.type.category == it },
+                    ComponentCarousel(bike.componentList().filter { c -> c.type.category == it },
                         selectedComponent,
                         onComponentSelected = {
                             onEvent(BikeScreenEvent.SelectComponent(it))

@@ -102,7 +102,7 @@ class BikeSetupViewModel @Inject constructor(
                             configDone = false
                         )
 
-                        Log.d("getNewComponentsForBike", "Single ${bike.components.size}")
+                        Log.d("getNewComponentsForBike", "Single ${bike.componentList().size}")
 
                         bikesRepository.setupBike(bike)
                         _state.value = BikeSetupScreenState.SetupDone(bike)

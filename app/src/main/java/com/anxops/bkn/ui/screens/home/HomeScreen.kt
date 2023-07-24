@@ -35,6 +35,8 @@ fun HomeScreen(
 
     var selectedItem by rememberSaveable { mutableStateOf(HomeSections.Home) }
 
+    val allowRefresh = viewModel.allowRefreshState.collectAsState()
+
     LaunchedEffect(section) {
         HomeSections.values().firstOrNull { it.id == section }?.let { selectedItem = it }
     }
@@ -68,29 +70,47 @@ fun HomeScreen(
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = {
-                        nav.navigateToProfile()
-                    }) {
-                        BknIcon(
-                            icon = CommunityMaterial.Icon.cmd_account,
-                            color = Color.White,
-                            modifier = Modifier
-                                .padding(horizontal = 6.dp)
-                                .size(20.dp)
-                        )
-                    }
-                    IconButton(onClick = {
-                        viewModel.logout()
-                        nav.popBackStack()
-                        nav.navigateToSplash()
-                    }) {
-                        BknIcon(
-                            icon = CommunityMaterial.Icon.cmd_exit_to_app,
-                            color = Color.White,
-                            modifier = Modifier
-                                .padding(horizontal = 6.dp)
-                                .size(20.dp)
-                        )
+
+                    if (selectedItem == HomeSections.Home) {
+
+                        IconButton(onClick = {
+                            nav.navigateToProfile()
+                        }) {
+                            BknIcon(
+                                icon = CommunityMaterial.Icon.cmd_account,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .size(20.dp)
+                            )
+                        }
+                        IconButton(onClick = {
+                            viewModel.logout()
+                            nav.popBackStack()
+                            nav.navigateToSplash()
+                        }) {
+                            BknIcon(
+                                icon = CommunityMaterial.Icon.cmd_exit_to_app,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .size(20.dp)
+                            )
+                        }
+                    } else if (selectedItem == HomeSections.Rides) {
+                        if (allowRefresh.value) {
+                            IconButton(onClick = {
+                                viewModel.refreshRides()
+                            }) {
+                                BknIcon(
+                                    icon = CommunityMaterial.Icon.cmd_cloud_refresh,
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .padding(horizontal = 6.dp)
+                                        .size(20.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }

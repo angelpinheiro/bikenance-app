@@ -58,18 +58,18 @@ class BikeRepository(
                     Log.d("BikeRepository", "Refresh bikes")
 
                     bikes.forEach{
-                        Log.d("BikeRepository", "Bike ${it.name} has ${it.components.size} components")
+                        Log.d("BikeRepository", "Bike ${it.name} has ${it.components?.size} components")
                     }
 
                     val bikeEntities = bikes.map { it.toEntity() }
 
                     val componentEntities = bikes.flatMap { bike ->
-                        bike.components.map { it.toEntity() }
+                        bike.components?.map { it.toEntity() } ?: emptyList()
                     }
                     val maintenanceEntities = bikes.flatMap { bike ->
-                        bike.components.flatMap {
+                        bike.components?.flatMap {
                             it.maintenances?.map { m -> m.toEntity() } ?: listOf()
-                        }
+                        } ?: emptyList()
                     }
 
                     db.bikeDao().clear()
@@ -121,7 +121,7 @@ class BikeRepository(
             is ApiResponse.Success -> {
                 db.bikeDao().update(response.data.toEntity())
                 removeAllBikeComponents(bike._id)
-                createBikeComponents(bike._id, response.data.components)
+                createBikeComponents(bike._id, response.data.components ?: emptyList())
 
             }
         }

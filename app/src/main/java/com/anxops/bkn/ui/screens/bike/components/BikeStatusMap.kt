@@ -121,7 +121,7 @@ fun BikeStatusMap(
         )
     }
 
-    val componentVisibility = bike.components.associate {
+    val componentVisibility = bike.componentList().associate {
             it._id to (selectedCategory == it.type.category)
         }
 
@@ -179,7 +179,7 @@ fun BikeStatusMap(
 
 
 
-        bike.components.forEach { component ->
+        bike.componentList().forEach { component ->
 
             val isSelected = component._id == selectedComponent?._id
             val offset: MapOffset = getComponentMapOffset(component)

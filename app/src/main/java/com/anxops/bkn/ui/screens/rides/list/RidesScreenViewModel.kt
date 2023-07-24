@@ -71,13 +71,10 @@ class RidesScreenViewModel @Inject constructor(
     ): Pager<Int, BikeRideEntity> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 20
-            ),
-            pagingSourceFactory = {
+                pageSize = 20, prefetchDistance = 20
+            ), pagingSourceFactory = {
                 db.bikeRideDao().pagingSource()
-            },
-            remoteMediator = RideRemoteMediator(
+            }, remoteMediator = RideRemoteMediator(
                 db, api
             )
         )

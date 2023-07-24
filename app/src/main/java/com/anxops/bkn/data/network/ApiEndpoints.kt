@@ -11,6 +11,7 @@ object ApiEndpoints {
     fun profileEndpoint() = "$baseApiUrl/profile"
     fun profileBikesEndpoint() = "$baseApiUrl/profile/bikes"
     fun profileRidesEndpoint() = "$baseApiUrl/profile/rides"
+    fun profileRefreshLastRidesEndpoint() = "$baseApiUrl/profile/rides/refresh"
     fun profileRidesByKeyEndpoint() = "$baseApiUrl/profile/pagedRides"
     fun profileSyncBikesEndpoint() = "$baseApiUrl/profile/sync"
     fun firebaseTokenEndpoint() = "$baseApiUrl/users/messagingToken"
