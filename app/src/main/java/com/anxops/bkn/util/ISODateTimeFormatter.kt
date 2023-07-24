@@ -4,7 +4,6 @@ import android.text.format.DateUtils
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
@@ -35,13 +34,22 @@ fun Instant.formatAsRelativeTime(from: Long = System.currentTimeMillis()): Strin
     return this.toEpochMilli().formatAsRelativeTime()
 }
 
-fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
-    return (this.atZone(ZoneId.systemDefault()).toEpochSecond()*1000).formatAsRelativeTime(from)
+fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis(), showDay: Boolean = false): String {
+    return (this.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000).formatAsRelativeTime(from, showDay)
 }
 
-fun Long.formatAsRelativeTime(from: Long = System.currentTimeMillis()): String {
+fun Long.formatAsRelativeTime(
+    from: Long = System.currentTimeMillis(), showDay: Boolean = false
+): String {
+
+    val flags = if (showDay) {
+        DateUtils.FORMAT_SHOW_YEAR
+    } else {
+        DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY
+    }
+
     return DateUtils.getRelativeTimeSpanString(
-        this, from, 0, DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_NO_MONTH_DAY
+        this, from, 0, flags
     ).toString();
 }
 

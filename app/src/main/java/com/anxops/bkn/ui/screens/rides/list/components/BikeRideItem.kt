@@ -2,36 +2,40 @@ package com.anxops.bkn.ui.screens.rides.list.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.util.formatAsDayMonth
+import com.anxops.bkn.util.formatAsRelativeTime
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 
 @Composable
 fun Ride(
-    ride: BikeRide, bikes: List<Bike>,
+    ride: BikeRide,
+    bikes: List<Bike>,
     onClickOpenOnStrava: () -> Unit = {},
     onClick: () -> Unit = {},
     onClickRideBike: () -> Unit = {}
@@ -40,22 +44,13 @@ fun Ride(
     val context = LocalContext.current
     val bike = getRideBike(ride, bikes)
 
-    Card(
-        backgroundColor = MaterialTheme.colors.primary,
+    Card(backgroundColor = MaterialTheme.colors.primary,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 10.dp, vertical = 5.dp)
-    ) {
+            .padding(horizontal = 10.dp, vertical = 5.dp)) {
 
         BikeRideItem(item = ride, bike = bike)
-//        Divider(
-//            color = MaterialTheme.colors.primary,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 1.dp)
-//                .height(1.dp)
-//        )
     }
 }
 
@@ -66,19 +61,16 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
-        verticalAlignment = Alignment.Top
+            .padding(10.dp), verticalAlignment = Alignment.Top
     ) {
 
         BknIcon(
             CommunityMaterial.Icon.cmd_bike_fast,
-            color = MaterialTheme.colors.primaryVariant,
+            color = MaterialTheme.colors.onPrimary,
             modifier = Modifier
-                .padding(top = 6.dp)
-                .size(46.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colors.surface)
-                .padding(10.dp)
+                .padding(top = 10.dp, start = 6.dp)
+                .size(26.dp)
+
         )
 
         Column(
@@ -88,12 +80,10 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
         ) {
 
             Row(
-                Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
 
             ) {
-//item.dateTime.toDate()?.formatAsSimpleDate()
+
                 Text(
                     text = item.name ?: "",
                     color = MaterialTheme.colors.onPrimary,
@@ -104,42 +94,23 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
-                bike?.let {
-                    Text(
-                        text = bike.displayName(),
-                        color = MaterialTheme.colors.onPrimary,
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colors.primaryVariant,
-                                shape = CircleShape
-                            )
-                            .padding(horizontal = 5.dp, vertical = 2.dp)
-                    )
-                }
+
 
             }
 
-            Text(
-                text = item.dateTime?.formatAsDayMonth() ?: "",
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
 
-            Row(Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+
+            Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
 
                 item.distance?.let {
                     BknIcon(
-                        CommunityMaterial.Icon3.cmd_map_marker,
-                        modifier = Modifier.size(14.dp)
+                        CommunityMaterial.Icon3.cmd_map_marker, modifier = Modifier.size(14.dp)
                     )
                     Text(
                         text = "${formatDistanceAsKm(it)}",
                         color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h4,
-                        modifier = Modifier.padding(start = 5.dp, end = 10.dp)
+                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
                     )
                 }
 
@@ -152,32 +123,61 @@ fun BikeRideItem(item: BikeRide, bike: Bike?) {
                         text = "${it}m",
                         color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h4,
-                        modifier = Modifier.padding(start = 5.dp, end = 10.dp)
+                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
                     )
                 }
 
                 item.movingTime?.let {
                     BknIcon(
-                        CommunityMaterial.Icon.cmd_clock_fast,
-                        modifier = Modifier.size(14.dp)
+                        CommunityMaterial.Icon.cmd_clock_fast, modifier = Modifier.size(14.dp)
                     )
                     Text(
                         text = "${formatDuration(it)}",
                         color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h4,
-                        modifier = Modifier.padding(start = 5.dp, end = 10.dp)
+                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
                     )
                 }
             }
 
             Text(
-                modifier = Modifier.padding(top = 5.dp),
-                text = "${item.sportType}",
-                color = MaterialTheme.colors.secondary,
-                style = MaterialTheme.typography.h3,
+                text = item.dateTime?.formatAsRelativeTime(showDay = true) ?: "",
+                color = MaterialTheme.colors.onPrimary,
+                style = MaterialTheme.typography.h4,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
+
+            if(item.dateTime?.isAfter(LocalDateTime.now().minusDays(10)) == true){
+            Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+
+                bike?.let {
+                    OutlinedButton(
+                        onClick = { },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+                        shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp)
+                    ) {
+                        Text(
+                            text = bike.displayName(),
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onPrimary
+                        )
+                    }
+                }
+
+                OutlinedButton(
+                    onClick = { },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+                    shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp)
+                ) {
+                    Text(
+                        text = "Confirm bike",
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
+            }
+            }
 
 
         }

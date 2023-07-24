@@ -2,12 +2,14 @@ package com.anxops.bkn.ui.screens.rides.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -116,16 +118,11 @@ fun RideView(
 
     val context = LocalContext.current
 
-    Column(
+    Box(
         Modifier
             .fillMaxSize()
             .background(bgGradient())) {
 
-        Ride(ride = state.ride, bikes = bikes, onClickOpenOnStrava = {
-            state.ride.stravaId?.let {
-                openStravaActivity(context, it)
-            }
-        }, onClickRideBike = onClickRideBike)
 
         if (state.polyline?.isNotEmpty() == true) {
 
@@ -141,7 +138,7 @@ fun RideView(
                         MapProperties(
                             maxZoomPreference = 20f,
                             minZoomPreference = 8f,
-                            mapType = MapType.HYBRID
+                            mapType = MapType.NORMAL
                         )
                     )
                 }
@@ -152,9 +149,8 @@ fun RideView(
                 }
                 GoogleMap(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp)
-                        .weight(1f),
+                        .fillMaxSize()
+                        .padding(0.dp),
                     cameraPositionState = cameraPositionState,
                     uiSettings = mapUiSettings,
                     properties = mapProperties
@@ -178,6 +174,14 @@ fun RideView(
 
                 }
             }
+        }
+
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 10.dp).align(Alignment.TopCenter)) {
+            Ride(ride = state.ride, bikes = bikes, onClickOpenOnStrava = {
+                state.ride.stravaId?.let {
+                    openStravaActivity(context, it)
+                }
+            }, onClickRideBike = onClickRideBike)
         }
 
     }
