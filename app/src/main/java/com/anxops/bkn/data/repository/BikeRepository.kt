@@ -34,10 +34,6 @@ interface BikeRepositoryFacade {
 
     fun getBikesFlow(draft: Boolean = false): Flow<List<Bike>>
 
-    suspend fun createBikeComponents(bikeId: String, components: List<BikeComponent>)
-
-    suspend fun removeAllBikeComponents(bikeId: String)
-
     suspend fun refreshBikes(): Boolean
 }
 
@@ -57,8 +53,11 @@ class BikeRepository(
 
                     Log.d("BikeRepository", "Refresh bikes")
 
-                    bikes.forEach{
-                        Log.d("BikeRepository", "Bike ${it.name} has ${it.components?.size} components")
+                    bikes.forEach {
+                        Log.d(
+                            "BikeRepository",
+                            "Bike ${it.name} has ${it.components?.size} components"
+                        )
                     }
 
                     val bikeEntities = bikes.map { it.toEntity() }
@@ -119,10 +118,17 @@ class BikeRepository(
         when (val response = api.setupBike(bike)) {
             is ApiResponse.Error -> throw Exception(response.message)
             is ApiResponse.Success -> {
-                db.bikeDao().update(response.data.toEntity())
-                removeAllBikeComponents(bike._id)
-                createBikeComponents(bike._id, response.data.components ?: emptyList())
-
+                db.database().withTransaction {
+                    db.bikeDao().update(response.data.toEntity())
+                    db.bikeComponentDao().clearBike(bike._id)
+                    response.data.components?.forEach { component ->
+                        Log.d("createComponents", "Inserting ${component.alias} in db")
+                        db.bikeComponentDao().insert(component.toEntity())
+                        component.maintenances?.forEach {
+                            db.maintenanceDao().insert(it.toEntity())
+                        }
+                    }
+                }
             }
         }
     }
@@ -150,33 +156,4 @@ class BikeRepository(
             }
         }
     }
-
-    override suspend fun removeAllBikeComponents(bikeId: String) {
-        withContext(defaultDispatcher) {
-            db.bikeComponentDao().clearBike(bikeId)
-        }
-    }
-
-    override suspend fun createBikeComponents(bikeId: String, components: List<BikeComponent>) =
-        withContext(defaultDispatcher) {
-            // Save to remote
-            when (val result = api.addBikeComponents(bikeId, components)) {
-                is ApiResponse.Success -> {
-                    // save to local db
-                    Log.d("createComponents", "Created ${components.size} comp.")
-                    result.data.forEach { component ->
-                        Log.d("createComponents", "Inserting ${component.alias} in db")
-                        db.bikeComponentDao().insert(component.toEntity())
-                        component.maintenances?.forEach {
-                            db.maintenanceDao().insert(it.toEntity())
-                        }
-                    }
-                }
-
-                else -> {
-                    TODO("HANDLE createBikeComponents ERROR: ${result.message}")
-                }
-            }
-
-        }
 }
