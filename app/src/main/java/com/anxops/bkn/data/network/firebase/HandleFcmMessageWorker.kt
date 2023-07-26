@@ -1,9 +1,12 @@
 package com.anxops.bkn.data.network.firebase
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.ui.NotificationData
 import com.anxops.bkn.ui.Notifier
@@ -18,6 +21,8 @@ class HandleFcmMessageWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ridesRepository: RidesRepositoryFacade,
+    private val profileRepository: ProfileRepositoryFacade,
+    private val bikeRepository: BikeRepositoryFacade,
     private val notifier: Notifier
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -40,6 +45,22 @@ class HandleFcmMessageWorker @AssistedInject constructor(
 
             MessageType.RIDES_DELETED.type -> {
                 ridesRepository.reloadData()
+            }
+
+            MessageType.PROFILE_SYNC.type -> {
+
+                profileRepository.reloadData()
+                bikeRepository.refreshBikes()
+                ridesRepository.reloadData()
+
+                Log.d("HandleFcmMessageWorker", "SHow profile sync notification")
+                notifier.show(
+                    applicationContext, NotificationData.DestinationDeepLink(
+                        title = "Sync complete!",
+                        text = "Profile synchronization complete",
+                        to = HomeScreenDestination.invoke(HomeSections.Home.name)
+                    )
+                )
             }
 
             MessageType.NEW_ACTIVITY.type -> {

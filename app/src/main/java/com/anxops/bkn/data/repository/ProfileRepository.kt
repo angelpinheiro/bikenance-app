@@ -42,7 +42,6 @@ class ProfileRepository(
                     }
                     true
                 }
-
                 else -> false
             }
             success

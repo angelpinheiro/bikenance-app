@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -73,8 +74,12 @@ class Notifier {
             ) {
                 return -1
             }
+            Log.d("HandleFcmMessageWorker", "Call notify")
             notify(notificationId, builder.build())
         }
+
+        Log.d("HandleFcmMessageWorker", "Notification ID $notificationId")
+
         return notificationId
     }
 

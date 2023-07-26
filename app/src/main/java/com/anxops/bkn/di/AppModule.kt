@@ -4,6 +4,7 @@ import android.content.Context
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.KtorClient
+import com.anxops.bkn.data.network.firebase.SendTokenToServerWorkerStarter
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepository
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
@@ -27,6 +28,11 @@ class AppModule {
     @Singleton
     fun providesDataStore(@ApplicationContext context: Context): BknDataStore =
         BknDataStore(context)
+
+    @Provides
+    @Singleton
+    fun providesWorkerStarter(@ApplicationContext context: Context): SendTokenToServerWorkerStarter =
+        SendTokenToServerWorkerStarter(context)
 
     @Provides
     @Singleton

@@ -14,6 +14,7 @@ data class ProfileEntity(
     @ColumnInfo(name = "last_name") val lastName: String?,
     @ColumnInfo(name = "profile_photo") val profilePhoto: String?,
     @ColumnInfo(name = "createdAt") val createdAt: String?,
+    @ColumnInfo(name = "sync") val sync: Boolean?,
 
     @ColumnInfo(name = "biggest_ride_distance") val biggestRideDistance: Double = 0.0,
     @ColumnInfo(name = "biggest_climb_elevation_gain") val biggestClimbElevationGain: Double = 0.0,
@@ -36,6 +37,7 @@ data class ProfileEntity(
             sex = null,
             weight = null,
             createdAt = createdAt,
+            sync = sync ?: false
 
 //            biggestRideDistance = biggestRideDistance,
 //            biggestClimbElevationGain = biggestClimbElevationGain,

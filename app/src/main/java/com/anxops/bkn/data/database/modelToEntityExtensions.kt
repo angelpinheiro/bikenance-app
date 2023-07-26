@@ -26,6 +26,7 @@ fun Profile.toEntity(): ProfileEntity {
         lastName = lastname,
         profilePhoto = profilePhotoUrl,
         createdAt = createdAt,
+        sync = sync
 //        biggestRideDistance = biggestRideDistance,
 //        biggestClimbElevationGain = biggestClimbElevationGain,
 //        recentRideTotalDistance = recentRideTotalDistance,

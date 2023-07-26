@@ -181,7 +181,7 @@ class BikeSetupViewModel @Inject constructor(
         state: BikeSetupScreenState.SetupInProgress
     ): List<BikeComponent> {
 
-        var componentTypes = MaintenanceConfiguration.forBikeType(state.bike.type).componentTypes
+        var componentTypes = MaintenanceConfiguration.forBikeType(state.details.selectedBikeType).componentTypes
         Log.d("getNewComponentsForBike", "Got ${componentTypes.size} for ${state.bike.type.name}")
 
         if (state.details.hasDropperPost == true) {

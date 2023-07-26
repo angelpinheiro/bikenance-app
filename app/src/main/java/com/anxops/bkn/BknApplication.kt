@@ -24,6 +24,7 @@ class BknApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         RefreshTokenHelper.startPeriodicRefreshTokenWork(this)
+        notifier.createNotificationChannel(this)
     }
 }
 

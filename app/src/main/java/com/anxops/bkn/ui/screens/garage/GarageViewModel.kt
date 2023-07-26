@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.util.mutableStateIn
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ data class HomeScreenState(
 
 sealed class GarageScreenState {
     object Loading : GarageScreenState()
+    object ProfileNotSync : GarageScreenState()
     data class ShowingGarage(
         val bikes: List<Bike>,
         val allBikes: List<Bike>,
@@ -38,6 +40,7 @@ sealed class GarageScreenState {
 
 @HiltViewModel
 class GarageViewModel @Inject constructor(
+    private val profileRepository: ProfileRepositoryFacade,
     private val bikeRepository: BikeRepositoryFacade,
     private val ridesRepository: RidesRepositoryFacade
 ) : ViewModel() {
@@ -45,16 +48,25 @@ class GarageViewModel @Inject constructor(
     private val _screenState: MutableStateFlow<GarageScreenState> =
         bikeRepository.getBikesFlow(true).map { allBikes ->
 
-            val mustShowSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
-            val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
-            val selectedBike = bikes.firstOrNull()
-            val rides = selectedBike?.let { ridesRepository.getLastBikeRides(it._id) }
+            val profileSync = profileRepository.getProfile()?.sync ?: false
 
-            Log.d("GarageViewModel", "Collected ${allBikes.size} bikes (${bikes.size} sync) (rides: ${rides?.size ?: "--"})")
+            if (profileSync) {
+                val mustShowSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
+                val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
+                val selectedBike = bikes.firstOrNull()
+                val rides = selectedBike?.let { ridesRepository.getLastBikeRides(it._id) }
 
-            GarageScreenState.ShowingGarage(
-                bikes, allBikes, selectedBike, rides, mustShowSync
-            )
+                Log.d(
+                    "GarageViewModel",
+                    "Collected ${allBikes.size} bikes (${bikes.size} sync) (rides: ${rides?.size ?: "--"})"
+                )
+
+                GarageScreenState.ShowingGarage(
+                    bikes, allBikes, selectedBike, rides, mustShowSync
+                )
+            } else {
+                GarageScreenState.ProfileNotSync
+            }
 
 
         }.mutableStateIn(viewModelScope, GarageScreenState.Loading)
@@ -63,7 +75,6 @@ class GarageViewModel @Inject constructor(
 
     fun loadData() {
         viewModelScope.launch {
-
             _screenState.value = GarageScreenState.Loading
             bikeRepository.refreshBikes()
         }

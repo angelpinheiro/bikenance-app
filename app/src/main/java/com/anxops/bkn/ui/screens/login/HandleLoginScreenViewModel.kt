@@ -3,6 +3,7 @@ package com.anxops.bkn.ui.screens.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Profile
+import com.anxops.bkn.data.network.firebase.SendTokenToServerWorkerStarter
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
@@ -32,7 +33,8 @@ class HandleLoginScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
     private val repository: ProfileRepositoryFacade,
     private val bikeRepository: BikeRepositoryFacade,
-    private val ridesRepository: RidesRepositoryFacade
+    private val ridesRepository: RidesRepositoryFacade,
+    private val sendFirebaseTokenToServer: SendTokenToServerWorkerStarter
 ) :
     ViewModel() {
 
@@ -48,6 +50,8 @@ class HandleLoginScreenViewModel @Inject constructor(
         viewModelScope.launch {
 
             dataStore.saveAuthTokens(token, refreshToken ?: "")
+            sendFirebaseTokenToServer.start()
+
             repository.reloadData()
 
             when (val profile = repository.getProfile()) {

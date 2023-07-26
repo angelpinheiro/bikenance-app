@@ -1,6 +1,7 @@
 package com.anxops.bkn
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -24,6 +25,7 @@ class MainViewModel @Inject constructor(var dataStore: BknDataStore) : ViewModel
 
     fun saveFirebaseToken(t: String) {
         viewModelScope.launch {
+            Log.d("MainViewModel", "Saving firebase token to data store")
             dataStore.saveFirebaseToken(t)
         }
     }

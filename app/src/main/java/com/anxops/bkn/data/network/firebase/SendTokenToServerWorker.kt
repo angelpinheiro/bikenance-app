@@ -13,6 +13,13 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
+
+class SendTokenToServerWorkerStarter(val context: Context) {
+    fun start() {
+        SendTokenToServerWorker.launch(context)
+    }
+}
+
 @HiltWorker
 class SendTokenToServerWorker @AssistedInject constructor(
     @Assisted appContext: Context,

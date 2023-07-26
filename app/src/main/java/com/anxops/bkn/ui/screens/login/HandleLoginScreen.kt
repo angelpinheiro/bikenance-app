@@ -51,7 +51,6 @@ fun HandleLoginScreen(
     LaunchedEffect(key1 = context) {
         viewModel.loadProfileEvent.collect { ev ->
             nav.popBackStack()
-            SendTokenToServerWorker.launch(context)
             when (ev) {
                 is LoadProfileEvent.NewAccount -> nav.navigateToProfile()
                 is LoadProfileEvent.ExistingAccount -> nav.navigateToGarage()

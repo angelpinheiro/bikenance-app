@@ -14,7 +14,8 @@ data class Profile(
     @SerialName("sex") var sex: String? = null,
     @SerialName("weight") var weight: Int? = null,
     @SerialName("created_at") var createdAt: String? = null,
-    @SerialName("stats") var stats: AthleteStats? = null
+    @SerialName("stats") var stats: AthleteStats? = null,
+    @SerialName("sync") val sync: Boolean = false
 ) {
     companion object {
         val Empty : Profile = Profile(_id = "", userId = "")

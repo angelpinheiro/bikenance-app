@@ -30,6 +30,7 @@ import com.anxops.bkn.ui.screens.bikeSetup.components.BikeStatusPage
 import com.anxops.bkn.ui.screens.bikeSetup.components.BikeTypePage
 import com.anxops.bkn.ui.screens.bikeSetup.components.InfoPage
 import com.anxops.bkn.ui.screens.bikeSetup.components.RidingHabitsPage
+import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
 import com.anxops.bkn.ui.shared.Loading
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.ramcosta.composedestinations.annotation.Destination
@@ -73,10 +74,10 @@ fun BikeSetupScreen(
 
             is BikeSetupScreenState.SetupDone -> {
                 LaunchedEffect(state) {
-                    bknNavigator.popBackStack()
+                    bknNavigator.popBackStackTo(BikeScreenDestination.route, true)
+                    bknNavigator.navigateToBike(screenState.bike._id)
                 }
             }
-
             else -> {
                 Loading()
             }
@@ -109,7 +110,8 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(top = 50.dp).align(Alignment.Center)
+                .padding(top = 50.dp)
+                .align(Alignment.Center)
         ) {
             HorizontalPager(
                 pageCount = pageCount,
@@ -123,7 +125,8 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                         scrollToNextPage()
                     })
 
-                    1 -> BikeTypePage(details = state.details,
+                    1 -> BikeTypePage(
+                        details = state.details,
                         bike = state.bike,
                         onBikeTypeSelected = {
                             viewModel.onSetupDetailsEvent(BSSEvent.BikeTypeSelected(it))
@@ -135,28 +138,22 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                     }, onLastMaintenanceUpdate = { category, value ->
                         viewModel.onSetupDetailsEvent(
                             BSSEvent.LastMaintenanceUpdate(
-                                category,
-                                value
+                                category, value
                             )
                         )
                     })
 
-                    3 -> BikeDetailsPage(state.details,
-                        onFullSuspensionSelectionChange = {
-                            viewModel.onSetupDetailsEvent(BSSEvent.FullSuspensionSelectionChange(it))
-                        },
-                        onCliplessPedalsSelectionChange = {
-                            viewModel.onSetupDetailsEvent(BSSEvent.CliplessPedalsSelectionChange(it))
-                        },
-                        onDropperSelectionChange = {
-                            viewModel.onSetupDetailsEvent(BSSEvent.DropperSelectionChange(it))
-                        },
-                        onTubelessSelectionChange = {
-                            viewModel.onSetupDetailsEvent(BSSEvent.TubelessSelectionChange(it))
-                        },
-                        onContinue = {
-                            scrollToNextPage()
-                        })
+                    3 -> BikeDetailsPage(state.details, onFullSuspensionSelectionChange = {
+                        viewModel.onSetupDetailsEvent(BSSEvent.FullSuspensionSelectionChange(it))
+                    }, onCliplessPedalsSelectionChange = {
+                        viewModel.onSetupDetailsEvent(BSSEvent.CliplessPedalsSelectionChange(it))
+                    }, onDropperSelectionChange = {
+                        viewModel.onSetupDetailsEvent(BSSEvent.DropperSelectionChange(it))
+                    }, onTubelessSelectionChange = {
+                        viewModel.onSetupDetailsEvent(BSSEvent.TubelessSelectionChange(it))
+                    }, onContinue = {
+                        scrollToNextPage()
+                    })
 
                     4 -> RidingHabitsPage(details = state.details, stats = state.stats) {
                         viewModel.onFinishBikeSetup()
