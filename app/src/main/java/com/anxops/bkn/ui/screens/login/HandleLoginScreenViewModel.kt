@@ -52,6 +52,8 @@ class HandleLoginScreenViewModel @Inject constructor(
             dataStore.saveAuthTokens(token, refreshToken ?: "")
             sendFirebaseTokenToServer.start()
 
+            profileRepository.reloadData()
+
             when (val profile = profileRepository.getProfile()) {
                 null -> {
                     dataStore.deleteAuthToken()
