@@ -31,7 +31,7 @@ sealed class LoadProfileEvent {
 @HiltViewModel
 class HandleLoginScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
-    private val repository: ProfileRepositoryFacade,
+    private val profileRepository: ProfileRepositoryFacade,
     private val bikeRepository: BikeRepositoryFacade,
     private val ridesRepository: RidesRepositoryFacade,
     private val sendFirebaseTokenToServer: SendTokenToServerWorkerStarter
@@ -52,9 +52,7 @@ class HandleLoginScreenViewModel @Inject constructor(
             dataStore.saveAuthTokens(token, refreshToken ?: "")
             sendFirebaseTokenToServer.start()
 
-            repository.reloadData()
-
-            when (val profile = repository.getProfile()) {
+            when (val profile = profileRepository.getProfile()) {
                 null -> {
                     dataStore.deleteAuthToken()
                     loadProfileEvent.emit(LoadProfileEvent.LoadFailed)
@@ -68,6 +66,7 @@ class HandleLoginScreenViewModel @Inject constructor(
                         isNewAccount = isNewAccount
                     )
 
+                    profileRepository.reloadData()
                     bikeRepository.refreshBikes()
                     ridesRepository.reloadData()
 

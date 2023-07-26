@@ -104,10 +104,6 @@ fun Garage(
             is GarageScreenState.Loading -> {
                 Loading()
             }
-
-            GarageScreenState.ProfileNotSync -> {
-                ProfileSyncInProgress()
-            }
         }
 
         PullRefreshIndicator(
@@ -220,72 +216,5 @@ private fun SyncBikes(
 }
 
 
-@Composable
-fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
-
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 0.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        val infiniteTransition = rememberInfiniteTransition(label = "")
-
-        val size: Dp = infiniteTransition.animateValue(
-            label = "",
-            initialValue = 30.dp,
-            targetValue = 40.dp,
-            typeConverter = Dp.VectorConverter,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = FastOutLinearInEasing),
-                repeatMode = RepeatMode.Reverse
-            )
-        ).value
-
-
-
-        Text(
-            text = "Building profile",
-            modifier = Modifier.padding(top = 30.dp),
-            style = MaterialTheme.typography.h2,
-        )
-
-        Text(
-            text = "We're fetching your bikes and rides from Strava. It'll be a quick process, and we'll let you know once your profile is ready!",
-            modifier = Modifier.padding(horizontal = 30.dp).padding(top = 10.dp, bottom = 50.dp),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
-            fontSize = 18.sp
-        )
-
-        Box(Modifier.size(130.dp), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize(),
-                color = MaterialTheme.colors.primary
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_strava_logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.primary)
-                    .padding(20.dp)
-                    .size(size),
-            )
-
-        }
-        Text(
-            text = "Fetching from Strava...",
-            modifier = Modifier.padding(top = 20.dp),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Thin,
-            fontSize = 13.sp,
-        )
-    }
-}
 
 

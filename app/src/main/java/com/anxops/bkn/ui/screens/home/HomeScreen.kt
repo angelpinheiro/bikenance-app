@@ -1,16 +1,33 @@
 package com.anxops.bkn.ui.screens.home
 
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.Garage
 import com.anxops.bkn.ui.screens.maintenances.MaintenancesScreen
@@ -35,7 +52,8 @@ fun HomeScreen(
 
     var selectedItem by rememberSaveable { mutableStateOf(HomeSections.Home) }
 
-    val allowRefresh = viewModel.allowRefreshState.collectAsState()
+    val allowRefresh by viewModel.allowRefreshState.collectAsState()
+    val profileSync by viewModel.profileSyncState.collectAsState()
 
     LaunchedEffect(section) {
         HomeSections.values().firstOrNull { it.id == section }?.let { selectedItem = it }
@@ -98,7 +116,7 @@ fun HomeScreen(
                             )
                         }
                     } else if (selectedItem == HomeSections.Rides) {
-                        if (allowRefresh.value) {
+                        if (allowRefresh) {
                             IconButton(onClick = {
                                 viewModel.refreshRides()
                             }) {
@@ -116,9 +134,11 @@ fun HomeScreen(
             }
         }
     }, bottomBar = {
-        HomeBottomBar(selectedItem = selectedItem, onItemSelected = {
-            selectedItem = it
-        })
+        if (profileSync == true) {
+            HomeBottomBar(selectedItem = selectedItem, onItemSelected = {
+                selectedItem = it
+            })
+        }
     }) {
         BackgroundBox(
             Modifier
@@ -126,19 +146,92 @@ fun HomeScreen(
                 .fillMaxSize(), contentAlignment = Alignment.TopCenter
         ) {
 
-            when (selectedItem) {
-                HomeSections.Home -> {
-                    Garage(navigator = navigator)
-                }
+            if (profileSync == true) {
+                when (selectedItem) {
+                    HomeSections.Home -> {
+                        Garage(navigator = navigator)
+                    }
 
-                HomeSections.Rides -> {
-                    RidesScreen(navigator = navigator)
-                }
+                    HomeSections.Rides -> {
+                        RidesScreen(navigator = navigator)
+                    }
 
-                HomeSections.Maintenances -> {
-                    MaintenancesScreen(navigator = navigator)
+                    HomeSections.Maintenances -> {
+                        MaintenancesScreen(navigator = navigator)
+                    }
                 }
+            } else if (profileSync == false) {
+                ProfileSyncInProgress()
             }
         }
+    }
+}
+
+
+@Composable
+fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(top = 0.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        val infiniteTransition = rememberInfiniteTransition(label = "")
+
+        val size: Dp = infiniteTransition.animateValue(
+            label = "",
+            initialValue = 30.dp,
+            targetValue = 40.dp,
+            typeConverter = Dp.VectorConverter,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = FastOutLinearInEasing),
+                repeatMode = RepeatMode.Reverse
+            )
+        ).value
+
+
+
+        Text(
+            text = "Building profile",
+            modifier = Modifier.padding(top = 30.dp),
+            style = MaterialTheme.typography.h2,
+        )
+
+        Text(
+            text = "We're fetching your bikes and rides from Strava. It'll be a quick process, and we'll let you know once your profile is ready!",
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .padding(top = 10.dp, bottom = 50.dp),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp
+        )
+
+        Box(Modifier.size(130.dp), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_strava_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colors.primary)
+                    .padding(20.dp)
+                    .size(size),
+            )
+
+        }
+        Text(
+            text = "Fetching from Strava...",
+            modifier = Modifier.padding(top = 20.dp),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Thin,
+            fontSize = 13.sp,
+        )
     }
 }

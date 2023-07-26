@@ -24,7 +24,6 @@ data class HomeScreenState(
 
 sealed class GarageScreenState {
     object Loading : GarageScreenState()
-    object ProfileNotSync : GarageScreenState()
     data class ShowingGarage(
         val bikes: List<Bike>,
         val allBikes: List<Bike>,
@@ -32,9 +31,6 @@ sealed class GarageScreenState {
         val lastRides: List<BikeRide>?,
         val showSync: Boolean = false
     ) : GarageScreenState()
-
-//    data class ShowingBikeSync(val allBikes: List<Bike>) : GarageScreenState()
-
 }
 
 
@@ -47,28 +43,13 @@ class GarageViewModel @Inject constructor(
 
     private val _screenState: MutableStateFlow<GarageScreenState> =
         bikeRepository.getBikesFlow(true).map { allBikes ->
-
-            val profileSync = profileRepository.getProfile()?.sync ?: false
-
-            if (profileSync) {
-                val mustShowSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
-                val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
-                val selectedBike = bikes.firstOrNull()
-                val rides = selectedBike?.let { ridesRepository.getLastBikeRides(it._id) }
-
-                Log.d(
-                    "GarageViewModel",
-                    "Collected ${allBikes.size} bikes (${bikes.size} sync) (rides: ${rides?.size ?: "--"})"
-                )
-
-                GarageScreenState.ShowingGarage(
-                    bikes, allBikes, selectedBike, rides, mustShowSync
-                )
-            } else {
-                GarageScreenState.ProfileNotSync
-            }
-
-
+            val mustShowSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
+            val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
+            val selectedBike = bikes.firstOrNull()
+            val rides = selectedBike?.let { ridesRepository.getLastBikeRides(it._id) }
+            GarageScreenState.ShowingGarage(
+                bikes, allBikes, selectedBike, rides, mustShowSync
+            )
         }.mutableStateIn(viewModelScope, GarageScreenState.Loading)
 
     val screenState: StateFlow<GarageScreenState> = _screenState
