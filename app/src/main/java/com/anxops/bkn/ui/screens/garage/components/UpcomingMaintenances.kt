@@ -1,6 +1,7 @@
 package com.anxops.bkn.ui.screens.garage.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,7 +33,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun UpcomingMaintenances(
-    bike: Bike? = null, showTile: Boolean = true, titleText: String? = null, filter: Float = 0f
+    bike: Bike? = null, onClickItem: (Maintenance) -> Unit = {}
 ) {
 
     val items =
@@ -50,17 +51,12 @@ fun UpcomingMaintenances(
                     .padding(start = 10.dp, end = 10.dp, top = 24.dp, bottom = 30.dp)
             ) {
 
-                if (showTile) {
-                    val title = titleText
-                        ?: (if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance")
-
-                    Text(
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        text = title,
-                        style = MaterialTheme.typography.h2,
-                        color = MaterialTheme.colors.onBackground
-                    )
-                }
+                Text(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    text = if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance",
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onBackground
+                )
 
                 Column(
                     modifier = Modifier.fillMaxWidth()
@@ -70,7 +66,7 @@ fun UpcomingMaintenances(
 
 //                        BikeComponentDetailMaintenance(item = item)
 
-                        UpcomingMaintenanceItem(item)
+                        UpcomingMaintenanceItem(item, onClickItem = onClickItem)
 
                         if (index != items.lastIndex) Divider(
                             color = MaterialTheme.colors.primary,
@@ -89,12 +85,12 @@ fun UpcomingMaintenances(
 
 
 @Composable
-fun UpcomingMaintenanceItem(item: Maintenance) {
+fun UpcomingMaintenanceItem(item: Maintenance, onClickItem: (Maintenance) -> Unit) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .padding(vertical = 12.dp).clickable { onClickItem(item) },
         verticalAlignment = Alignment.Top
     ) {
 

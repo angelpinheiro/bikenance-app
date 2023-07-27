@@ -48,6 +48,7 @@ fun BikeScreen(
     navigator: DestinationsNavigator,
     viewModel: BikeScreenViewModel = hiltViewModel(),
     bikeId: String,
+    componentId: String? = null,
     section: String?
 ) {
 
@@ -66,7 +67,7 @@ fun BikeScreen(
     val state = viewModel.state.collectAsState()
 
     LaunchedEffect(bikeId) {
-        viewModel.handleEvent(BikeScreenEvent.LoadBike(bikeId))
+        viewModel.handleEvent(BikeScreenEvent.LoadBike(bikeId, componentId))
     }
 
     LaunchedEffect(section) {

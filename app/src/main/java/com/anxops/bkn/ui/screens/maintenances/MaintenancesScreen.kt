@@ -63,6 +63,6 @@ fun MaintenanceList(maintenances: List<MaintenanceItem>) {
 @Composable
 fun AllUpcomingMaintenances(filter: Float = 0f) {
 
-    UpcomingMaintenances(filter = filter)
+    UpcomingMaintenances()
 
 }

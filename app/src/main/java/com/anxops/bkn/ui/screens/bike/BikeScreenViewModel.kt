@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 sealed class BikeScreenEvent {
     object ViewOnStrava : BikeScreenEvent()
-    data class LoadBike(val bikeId: String) : BikeScreenEvent()
+    data class LoadBike(val bikeId: String, val componentId: String? = null) : BikeScreenEvent()
     data class SelectComponent(val component: BikeComponent?) : BikeScreenEvent()
     data class SelectComponentCategory(val category: ComponentCategory?) : BikeScreenEvent()
 }
@@ -50,7 +50,7 @@ class BikeScreenViewModel @Inject constructor(
 
     fun handleEvent(event: BikeScreenEvent) = viewModelScope.launch {
 
-        val newState : BikeScreenState = when (event) {
+        val newState: BikeScreenState = when (event) {
             is BikeScreenEvent.SelectComponent -> {
                 state.value.copy(
                     selectedComponent = selectedComp(state.value.selectedComponent, event.component)
@@ -65,17 +65,23 @@ class BikeScreenViewModel @Inject constructor(
             }
 
             is BikeScreenEvent.LoadBike -> {
+
+                val bike = bikesRepository.getBike(event.bikeId)
+                val component = bike?.components?.find { event.componentId == it._id }
+
                 state.value.copy(
-                    bike = bikesRepository.getBike(event.bikeId)
+                    bike = bike,
+                    selectedComponent = component,
+                    selectedCategory = component?.type?.category
                 )
             }
 
             is BikeScreenEvent.ViewOnStrava -> {
-                state.value.bike?.stravaId?.let{ openBikeOnStrava(it) }
+                state.value.bike?.stravaId?.let { openBikeOnStrava(it) }
                 state.value
             }
         }
-        if(newState != state.value) {
+        if (newState != state.value) {
             stateFlow.update { newState }
         }
     }

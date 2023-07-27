@@ -53,8 +53,8 @@ class BknNavigator(var navigator: DestinationsNavigator) {
         navigator.navigate(BikeSetupScreenDestination.invoke(id))
     }
 
-    fun navigateToBike(id: String, section: String = BikeSections.Status.id) {
-        navigator.navigate(BikeScreenDestination.invoke(id, section))
+    fun navigateToBike(id: String, section: String = BikeSections.Status.id, componentId: String? = null) {
+        navigator.navigate(BikeScreenDestination.invoke(id, section, componentId))
     }
 
     fun navigateToRide(id: String) {
