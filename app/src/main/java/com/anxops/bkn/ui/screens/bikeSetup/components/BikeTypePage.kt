@@ -36,7 +36,7 @@ fun BikeTypePage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            BikeType.getAll().forEach {
+            BikeType.getAllKnown().forEach {
                 OutlinedButton(
                     onClick = {
                         onBikeTypeSelected(it)
@@ -51,12 +51,12 @@ fun BikeTypePage(
 
                     } else {
                         ButtonDefaults.buttonColors(
-                            backgroundColor = MaterialTheme.colors.primary,
+                            backgroundColor = MaterialTheme.colors.primaryVariant,
                         )
                     }
                 ) {
                     Text(
-                        modifier = Modifier.padding(3.dp),
+                        modifier = Modifier.padding(5.dp),
                         text = it.extendedType,
                         color = MaterialTheme.colors.onSecondary,
                         style = MaterialTheme.typography.h5,

@@ -56,14 +56,5 @@ fun BikeDetailsPage(
         BooleanSelector("Yes", "No", value = details.hasCliplessPedals, onOptionSelected = {
             onCliplessPedalsSelectionChange(it)
         })
-        BikeSetupDivider(30.dp)
-        OutlinedButton(
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-            onClick = { onContinue() },
-            modifier = Modifier.padding(top = 25.dp)
-
-        ) {
-            Text(text = "Continue", Modifier.padding(2.dp))
-        }
     }
 }

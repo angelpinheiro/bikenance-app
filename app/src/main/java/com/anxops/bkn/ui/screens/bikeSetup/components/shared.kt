@@ -82,7 +82,7 @@ fun BooleanSelector(
 
             } else {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary,
+                    backgroundColor = MaterialTheme.colors.primaryVariant,
                 )
             }
         ) {
@@ -107,7 +107,7 @@ fun BooleanSelector(
 
             } else {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary,
+                    backgroundColor = MaterialTheme.colors.primaryVariant,
                 )
             }
         ) {
