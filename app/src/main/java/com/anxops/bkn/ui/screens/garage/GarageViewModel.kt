@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.garage
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
@@ -29,7 +28,7 @@ sealed class GarageScreenState {
         val allBikes: List<Bike>,
         val selectedBike: Bike?,
         val lastRides: List<BikeRide>?,
-        val showSync: Boolean = false
+        val noBikesSync: Boolean = false
     ) : GarageScreenState()
 }
 
@@ -43,12 +42,12 @@ class GarageViewModel @Inject constructor(
 
     private val _screenState: MutableStateFlow<GarageScreenState> =
         bikeRepository.getBikesFlow(true).map { allBikes ->
-            val mustShowSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
+            val noBikesSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
             val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
             val selectedBike = bikes.firstOrNull()
             val rides = selectedBike?.let { ridesRepository.getLastBikeRides(it._id) }
             GarageScreenState.ShowingGarage(
-                bikes, allBikes, selectedBike, rides, mustShowSync
+                bikes, allBikes, selectedBike, rides, noBikesSync
             )
         }.mutableStateIn(viewModelScope, GarageScreenState.Loading)
 
@@ -73,50 +72,5 @@ class GarageViewModel @Inject constructor(
         }
     }
 
-    fun syncBike(bike: Bike, sync: Boolean) {
-        viewModelScope.launch {
-            _screenState.value.let { currentState ->
-                if (currentState is GarageScreenState.ShowingGarage) {
-                    _screenState.update {
-                        currentState.copy(allBikes = currentState.allBikes.map {
-                            if (it._id == bike._id) {
-                                it.copy(draft = !sync)
-                            } else {
-                                it
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    }
-
-    fun finishBikeSync() {
-        viewModelScope.launch {
-            viewModelScope.launch {
-                _screenState.value.let { currentState ->
-                    if (currentState is GarageScreenState.ShowingGarage) {
-                        _screenState.value = GarageScreenState.Loading
-                        bikeRepository.updateSynchronizedBikes(currentState.allBikes.associate { it._id to !it.draft })
-                        bikeRepository.refreshBikes()
-                    }
-                }
-            }
-        }
-
-    }
-
-    fun onShowOrHideSync(show: Boolean) {
-        viewModelScope.launch {
-            _screenState.value.let { currentState ->
-                if (currentState is GarageScreenState.ShowingGarage) {
-                    _screenState.update {
-                        currentState.copy(showSync = show)
-                    }
-                }
-            }
-        }
-
-    }
 }
 

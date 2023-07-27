@@ -1,17 +1,9 @@
 package com.anxops.bkn.ui.screens.garage
 
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateValue
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -21,16 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.screens.bike.components.EmptyComponentList
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
 import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
@@ -49,16 +41,18 @@ fun Garage(
     val nav = BknNavigator(navigator)
     val state = viewModel.screenState.collectAsState()
 
-    val pullRefreshState =
-        rememberPullRefreshState(refreshing = state.value is GarageScreenState.Loading,
-            onRefresh = { viewModel.loadData() })
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.value is GarageScreenState.Loading,
+        onRefresh = { viewModel.loadData() })
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState)
     ) {
         when (val currentState = state.value) {
             is GarageScreenState.ShowingGarage -> {
-                if (currentState.showSync) {
-                    SyncBikes(currentState, viewModel)
+                if (currentState.noBikesSync) {
+                    EmptyGarage{
+                        nav.navigateToBikeSync()
+                    }
                 } else {
                     Column(
                         Modifier
@@ -75,7 +69,7 @@ fun Garage(
                             if (it.configDone) nav.navigateToBike(it._id)
                             else nav.navigateToBikeSetup(it._id)
                         }, onClickSync = {
-                            viewModel.onShowOrHideSync(true)
+                            nav.navigateToBikeSync()
                         })
 
                         Column(
@@ -93,12 +87,8 @@ fun Garage(
 
                             UpcomingMaintenance(currentState.selectedBike)
                         }
-
                     }
-
                 }
-
-
             }
 
             is GarageScreenState.Loading -> {
@@ -114,103 +104,45 @@ fun Garage(
     }
 }
 
+
 @Composable
-private fun SyncBikes(
-    state: GarageScreenState.ShowingGarage, viewModel: GarageViewModel
-) {
+fun EmptyGarage(onClickAction: () -> Unit = {}) {
     Column(
         Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
+            .fillMaxSize()
+            .padding(top = 20.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-
-            Text(
-                text = "STRAVA bike tracking",
-                style = MaterialTheme.typography.h2,
-                color = MaterialTheme.colors.onPrimary
-            )
-
-            Text(
-                text = "We found ${state.allBikes.size} bikes on Strava. Check the ones you want to track to receive maintenance recommendations.",
-                style = MaterialTheme.typography.h3,
-                color = MaterialTheme.colors.onPrimary
-            )
-        }
-
-        Divider(
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp)
-                .height(0.dp)
+        Text(
+            text = "There are no bikes on your garage",
+            modifier = Modifier.padding(vertical = 30.dp, horizontal = 30.dp),
+            style = MaterialTheme.typography.h2
         )
 
-        state.allBikes.forEach { bike ->
+        Text(
+            text = "Get started by syncing your bikes from strava or manually create a new bike",
+            modifier = Modifier.padding(vertical = 30.dp, horizontal = 30.dp),
+            style = MaterialTheme.typography.h3,
+            textAlign = TextAlign.Center
+        )
 
-            GarageBikeCard(bike = bike, elevation = 2.dp, topLeftSlot = {
-                Switch(
-                    checked = !bike.draft,
-                    onCheckedChange = { viewModel.syncBike(bike, it) },
-                    colors = SwitchDefaults.colors(
-
-                        checkedThumbColor = MaterialTheme.colors.strava,
-                        uncheckedTrackColor = MaterialTheme.colors.primaryVariant,
-                        uncheckedThumbColor = MaterialTheme.colors.onPrimary.copy(
-                            alpha = 0.8f
-                        )
-                    )
-                )
-            }, isLast = true)
-
-            Divider(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp)
-                    .height(0.dp)
-            )
-        }
-
-
-
-
-        OutlinedButton(
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-            onClick = { viewModel.finishBikeSync() },
+        Image(
+            painter = painterResource(id = R.drawable.ic_undraw_not_found),
+            contentDescription = "Not found",
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .fillMaxWidth(0.6f)
+                .background(Color.Transparent)
+                .padding(top = 0.dp)
+        )
 
-        ) {
-            Text(text = "Let's go!", Modifier.padding(5.dp))
-        }
-
-        if (state.allBikes.any { !it.draft }) {
-
-            TextButton(
-                onClick = { viewModel.onShowOrHideSync(false) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
-
-            ) {
-                BknIcon(
-                    icon = CommunityMaterial.Icon.cmd_arrow_left,
-                    color = MaterialTheme.colors.onPrimary,
-                    modifier = Modifier.size(16.dp)
-                )
-
-                Text(
-                    text = "Back",
-                    Modifier.padding(5.dp),
-                    style = MaterialTheme.typography.h3,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+        OutlinedButton(onClick = { onClickAction() }, modifier = Modifier.padding(top = 20.dp)) {
+            Text(
+                text = "Sync bikes with Strava",
+                color = MaterialTheme.colors.primary,
+                style = MaterialTheme.typography.h3,
+            )
         }
     }
 }

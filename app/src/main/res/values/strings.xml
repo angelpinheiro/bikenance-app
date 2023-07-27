@@ -7,4 +7,5 @@
     <string name="maintenance_section_title">Maintenance</string>
     <string name="bike_section_status">Status</string>
     <string name="bike_section_components">Components</string>
+    <string name="sync">home_section_sync</string>
 </resources>

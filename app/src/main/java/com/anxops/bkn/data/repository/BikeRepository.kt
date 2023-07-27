@@ -6,7 +6,6 @@ import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
@@ -144,15 +143,12 @@ class BikeRepository(
     }
 
     override suspend fun updateSynchronizedBikes(ids: Map<String, Boolean>) {
-
-        when (val result = api.syncBikes(ids)) {
+        when (api.syncBikes(ids)) {
             is ApiResponse.Success -> {
-                db.bikeDao().syncBikes(ids.filter { it.value }.keys)
-                Log.d("updateSynchronizedBikes", "Result OK: ${result.message}")
+                refreshBikes()
             }
-
             else -> {
-                Log.d("updateSynchronizedBikes", "Result FAIL: ${result.message}")
+                throw Exception("Could not updateSynchronizedBikes")
             }
         }
     }

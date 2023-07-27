@@ -7,6 +7,7 @@ import com.anxops.bkn.ui.screens.bike.BikeSections
 import com.anxops.bkn.ui.screens.destinations.BikeEditScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeSetupScreenDestination
+import com.anxops.bkn.ui.screens.destinations.BikeSyncScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
@@ -58,6 +59,10 @@ class BknNavigator(var navigator: DestinationsNavigator) {
 
     fun navigateToRide(id: String) {
         navigator.navigate(RideScreenDestination.invoke(id))
+    }
+
+    fun navigateToBikeSync() {
+        navigator.navigate(BikeSyncScreenDestination.route)
     }
 
     fun popBackStack() {
