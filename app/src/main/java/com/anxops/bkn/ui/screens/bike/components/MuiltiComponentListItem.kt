@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -74,21 +75,22 @@ fun MultiComponentListItem(data: GroupedComponents) {
                         .fillMaxWidth()
                         .padding(6.dp)
                         .padding(start = 10.dp)
-                        .background(MaterialTheme.colors.primary)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colors.primaryVariant)
                 ) {
 
-                    Column(Modifier.padding(start = 6.dp)) {
+                    Column(Modifier.padding(10.dp)) {
 
                         Text(
                             text = component.modifier?.displayName ?: component.alias ?: "",
-                            color = MaterialTheme.colors.background,
+                            color = MaterialTheme.colors.onPrimary,
                             style = MaterialTheme.typography.h4,
                             modifier = Modifier.padding(start = 0.dp),
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "Usage: ${component.displayDistance()} / ${component.displayDuration()}",
-                            color = MaterialTheme.colors.background,
+                            color = MaterialTheme.colors.onPrimary,
                             style = MaterialTheme.typography.h4,
                         )
                     }

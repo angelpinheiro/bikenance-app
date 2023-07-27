@@ -165,7 +165,7 @@ fun OngoingMaintenanceItemV2(item: MaintenanceItem) {
 
                 Text(
                     text = "Last ${item.title}: 3 months ago",
-                    color = MaterialTheme.colors.background,
+                    color = MaterialTheme.colors.onBackground,
                     style = MaterialTheme.typography.h4,
                     modifier = Modifier.padding(start = 0.dp)
                 )
@@ -174,7 +174,7 @@ fun OngoingMaintenanceItemV2(item: MaintenanceItem) {
             if (item.percentage < 1.0) {
                 Text(
                     text = "Estimated duration: 2 months",
-                    color = MaterialTheme.colors.background,
+                    color = MaterialTheme.colors.onBackground,
                     style = MaterialTheme.typography.h4,
                 )
             } else {

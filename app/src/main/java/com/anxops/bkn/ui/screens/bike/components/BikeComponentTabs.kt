@@ -92,7 +92,6 @@ fun BikeComponentTabsV2(
     Column(
         Modifier
             .fillMaxSize()
-            .background(bgGradient())
     ) {
 
         ScrollableTabRow(

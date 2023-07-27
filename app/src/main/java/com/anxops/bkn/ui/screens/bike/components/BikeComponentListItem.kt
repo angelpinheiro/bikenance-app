@@ -22,7 +22,7 @@ import com.anxops.bkn.ui.shared.resources
 
 
 @Composable
-fun BikeComponentListItem(component: BikeComponent) {
+fun BikeComponentListItem(component: BikeComponent, showIcon: Boolean = true) {
 
     Row(
         modifier = Modifier
@@ -31,15 +31,15 @@ fun BikeComponentListItem(component: BikeComponent) {
         verticalAlignment = Alignment.Top
     ) {
 
-        BikeComponentIcon(
-            type = component.type, tint = MaterialTheme.colors.onSurface,
-            modifier = Modifier
-                .padding(top = 6.dp)
-                .size(42.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colors.surface.copy(alpha = .9f)) //getColorForProgress(percentage = item.percentage)
-                .padding(6.dp)
-        )
+        if(showIcon) {
+            BikeComponentIcon(
+                type = component.type,
+                tint = MaterialTheme.colors.onSurface,
+                modifier = Modifier.padding(top = 6.dp).size(42.dp).clip(CircleShape)
+                    .background(MaterialTheme.colors.surface.copy(alpha = .9f)) //getColorForProgress(percentage = item.percentage)
+                    .padding(6.dp)
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -81,7 +81,7 @@ fun BikeComponentListItem(component: BikeComponent) {
 
             Text(
                 text = "${component.displayDistance()} / ${component.displayDuration()}",
-                color = MaterialTheme.colors.background,
+                color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.h3,
             )
 

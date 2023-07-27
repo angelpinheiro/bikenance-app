@@ -33,6 +33,7 @@ import com.anxops.bkn.ui.screens.bike.components.BikeComponentDetail
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsTopBar
 import com.anxops.bkn.ui.screens.rides.list.openStravaActivity
 import com.anxops.bkn.ui.shared.Loading
+import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.bgGradient
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
@@ -130,7 +131,7 @@ fun BikeScreen(
                         .background(bgGradient())
                         .padding(paddingValues)
                 ) {
-                    Box(
+                    BackgroundBox(
                         Modifier
                             .fillMaxWidth()
                             .weight(1f)

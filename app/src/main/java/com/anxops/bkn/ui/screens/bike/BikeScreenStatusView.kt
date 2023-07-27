@@ -24,7 +24,6 @@ import com.anxops.bkn.ui.screens.bike.components.BikeStats
 import com.anxops.bkn.ui.screens.bike.components.BikeStatusMap
 import com.anxops.bkn.ui.screens.bike.components.ComponentCarousel
 import com.anxops.bkn.ui.screens.bike.components.ComponentCategoryCarousel
-import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.theme.strava
 
 
@@ -36,86 +35,86 @@ fun BikeScreenStatusView(
     onEvent: (BikeScreenEvent) -> Unit = {}
 ) {
 
-    BackgroundBox {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp)
 
-        ) {
+    ) {
 
-            Column(Modifier.height(100.dp)) {
-                ComponentCategoryCarousel(selectedCategory) {
-                    onEvent(BikeScreenEvent.SelectComponentCategory(it))
-                }
-                selectedCategory?.let {
-                    ComponentCarousel(bike.componentList().filter { c -> c.type.category == it },
-                        selectedComponent,
-                        onComponentSelected = {
-                            onEvent(BikeScreenEvent.SelectComponent(it))
-                        })
-                }
+        Column(Modifier.height(100.dp)) {
+            ComponentCategoryCarousel(selectedCategory) {
+                onEvent(BikeScreenEvent.SelectComponentCategory(it))
             }
-            Column(
-                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                BikeStatusMap(bike = bike,
-                    selectedCategory = selectedCategory,
-                    selectedComponent = selectedComponent,
-                    onCategorySelected = {
-                        onEvent(BikeScreenEvent.SelectComponentCategory(it))
-                    },
-                    onCategoryUnselected = {
-                        onEvent(BikeScreenEvent.SelectComponentCategory(null))
-                    },
+            selectedCategory?.let {
+                ComponentCarousel(bike.componentList().filter { c -> c.type.category == it },
+                    selectedComponent,
                     onComponentSelected = {
                         onEvent(BikeScreenEvent.SelectComponent(it))
                     })
             }
-            Column(
+        }
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            BikeStatusMap(bike = bike,
+                selectedCategory = selectedCategory,
+                selectedComponent = selectedComponent,
+                onCategorySelected = {
+                    onEvent(BikeScreenEvent.SelectComponentCategory(it))
+                },
+                onCategoryUnselected = {
+                    onEvent(BikeScreenEvent.SelectComponentCategory(null))
+                },
+                onComponentSelected = {
+                    onEvent(BikeScreenEvent.SelectComponent(it))
+                })
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+
+            Text(
+                text = "${bike.displayName()}",
+                modifier = Modifier.padding(start = 16.dp, top = 6.dp, bottom = 0.dp),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onPrimary
+            )
+
+            Text(
+                text = "${bike.type.extendedType}",
+                modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 6.dp),
+                style = MaterialTheme.typography.h3,
+                color = MaterialTheme.colors.onPrimary
+            )
+
+            Text(text = "View on Strava",
+                color = MaterialTheme.colors.strava,
+                style = MaterialTheme.typography.h3,
+                fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.End,
+                maxLines = 1,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-
-                Text(
-                    text = "${bike.displayName()}",
-                    modifier = Modifier.padding(start = 16.dp, top = 6.dp, bottom = 0.dp),
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onPrimary
-                )
-
-                Text(
-                    text = "${bike.type.extendedType}",
-                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 6.dp),
-                    style = MaterialTheme.typography.h3,
-                    color = MaterialTheme.colors.onPrimary
-                )
-
-                Text(
-                    text = "View on Strava",
-                    color = MaterialTheme.colors.strava,
-                    style = MaterialTheme.typography.h3,
-                    fontWeight = FontWeight.Bold,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.End,
-                    maxLines = 1,
-                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 16.dp).clickable { onEvent(BikeScreenEvent.ViewOnStrava) }
-                )
-
-            }
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                bike.stats?.let {
-                    BikeStats(bikeStats = it)
-                }
-            }
+                    .padding(start = 16.dp, top = 0.dp, bottom = 16.dp)
+                    .clickable { onEvent(BikeScreenEvent.ViewOnStrava) })
 
         }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            bike.stats?.let {
+                BikeStats(bikeStats = it)
+            }
+        }
+
     }
 }
 
