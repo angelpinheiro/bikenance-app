@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.mock.FakeData
-import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
+import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenances
 import com.anxops.bkn.ui.screens.rides.list.RidesScreenViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -63,6 +63,6 @@ fun MaintenanceList(maintenances: List<MaintenanceItem>) {
 @Composable
 fun AllUpcomingMaintenances(filter: Float = 0f) {
 
-    UpcomingMaintenance(filter = filter)
+    UpcomingMaintenances(filter = filter)
 
 }

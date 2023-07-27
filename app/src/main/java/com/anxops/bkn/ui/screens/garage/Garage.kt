@@ -15,22 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.screens.bike.components.EmptyComponentList
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
-import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
-import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenance
+import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenances
 import com.anxops.bkn.ui.shared.Loading
-import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.theme.strava
-import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -49,7 +42,7 @@ fun Garage(
     ) {
         when (val currentState = state.value) {
             is GarageScreenState.ShowingGarage -> {
-                if (currentState.noBikesSync) {
+                if (currentState.bikes.isEmpty()) {
                     EmptyGarage{
                         nav.navigateToBikeSync()
                     }
@@ -85,7 +78,7 @@ fun Garage(
                                 }
                             }
 
-                            UpcomingMaintenance(currentState.selectedBike)
+                            UpcomingMaintenances(currentState.selectedBike)
                         }
                     }
                 }

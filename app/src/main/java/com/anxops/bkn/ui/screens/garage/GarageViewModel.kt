@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,15 +19,12 @@ data class HomeScreenState(
     val refreshing: Boolean = false
 )
 
-
 sealed class GarageScreenState {
     object Loading : GarageScreenState()
     data class ShowingGarage(
         val bikes: List<Bike>,
-        val allBikes: List<Bike>,
         val selectedBike: Bike?,
         val lastRides: List<BikeRide>?,
-        val noBikesSync: Boolean = false
     ) : GarageScreenState()
 }
 
@@ -41,13 +37,11 @@ class GarageViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _screenState: MutableStateFlow<GarageScreenState> =
-        bikeRepository.getBikesFlow(true).map { allBikes ->
-            val noBikesSync = allBikes.isNotEmpty() && allBikes.all { it.draft }
-            val bikes = allBikes.filter { !it.draft }.sortedByDescending { it.distance }
+        bikeRepository.getBikesFlow(draft = false, full = true).map { bikes ->
             val selectedBike = bikes.firstOrNull()
             val rides = selectedBike?.let { ridesRepository.getLastBikeRides(it._id) }
             GarageScreenState.ShowingGarage(
-                bikes, allBikes, selectedBike, rides, noBikesSync
+                bikes, selectedBike, rides
             )
         }.mutableStateIn(viewModelScope, GarageScreenState.Loading)
 

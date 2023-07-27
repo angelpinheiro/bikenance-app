@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.R
-import com.anxops.bkn.data.mock.FakeData
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.mikepenz.iconics.typeface.IIcon
@@ -44,8 +43,6 @@ fun HomeBottomBar(
     BottomNavigation(
         elevation = 32.dp, backgroundColor = MaterialTheme.colors.primary
     ) {
-
-        val critical = FakeData.maintenances.filter { it.percentage >= 1 }.size
 
         HomeSections.values().forEach { destination ->
 

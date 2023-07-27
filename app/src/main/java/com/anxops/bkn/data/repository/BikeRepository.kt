@@ -31,7 +31,7 @@ interface BikeRepositoryFacade {
 
     suspend fun updateSynchronizedBikes(ids: Map<String, Boolean>)
 
-    fun getBikesFlow(draft: Boolean = false): Flow<List<Bike>>
+    fun getBikesFlow(draft: Boolean = false, full: Boolean = false): Flow<List<Bike>>
 
     suspend fun refreshBikes(): Boolean
 }
@@ -102,9 +102,26 @@ class BikeRepository(
         db.bikeDao().findAll().map(BikeEntity::toDomain)
     }
 
-    override fun getBikesFlow(draft: Boolean): Flow<List<Bike>> {
+    override fun getBikesFlow(draft: Boolean, full: Boolean): Flow<List<Bike>> {
         return db.bikeDao().flow().map { bikes ->
-            bikes.map { it.toDomain() }
+            withContext(defaultDispatcher) {
+                if (full) bikes.map {
+
+                    it.toDomain().copy(components = db.bikeComponentDao().bike(it._id).map { c ->
+                        val maintenances =
+                            db.maintenanceDao().getByComponentId(c.component._id).map { m ->
+                                m.toDomain()
+                            }
+
+                        c.toDomain().copy(maintenances = maintenances)
+                    })
+                }
+                else {
+                    bikes.map {
+                        it.toDomain()
+                    }
+                }
+            }
         }
     }
 
@@ -147,6 +164,7 @@ class BikeRepository(
             is ApiResponse.Success -> {
                 refreshBikes()
             }
+
             else -> {
                 throw Exception("Could not updateSynchronizedBikes")
             }

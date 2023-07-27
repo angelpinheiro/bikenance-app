@@ -146,21 +146,7 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
                     .weight(1f)
             )
 
-//            IconButton(onClick = { expanded.value = !expanded.value }) {
-//                BknIcon(icon = if (expanded.value) CommunityMaterial.Icon.cmd_arrow_up_drop_circle else CommunityMaterial.Icon.cmd_arrow_down_drop_circle)
-//            }
-
         }
-
-//        if(expanded.value) {
-//            Text(
-//                modifier = Modifier.padding(vertical = 10.dp),
-//                text = stringResource(id = item.type.resources().descriptionResId),
-//                color = MaterialTheme.colors.secondary,
-//                style = MaterialTheme.typography.body1,
-//                fontStyle = FontStyle.Italic
-//            )
-//        }
 
         LinearProgressIndicator(
             progress = item.status.toFloat(),
@@ -195,7 +181,7 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
                     .size(20.dp)
             )
             Text(
-                text = "Current wear ${(item.status * 100).toInt()}%",
+                text = "Current wear ${item.displayStatus()}",
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3,
             )
