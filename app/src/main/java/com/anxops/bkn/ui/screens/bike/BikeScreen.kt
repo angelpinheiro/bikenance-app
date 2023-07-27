@@ -91,7 +91,6 @@ fun BikeScreen(
 
     LaunchedEffect(key1 = context) {
         viewModel.openBikeOnStravaEvent.collect {
-            Toast.makeText(context, "$it", Toast.LENGTH_SHORT).show()
             openStravaBike(context, it)
         }
     }

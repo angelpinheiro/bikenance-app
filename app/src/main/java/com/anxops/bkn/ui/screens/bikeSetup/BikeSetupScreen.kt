@@ -130,10 +130,10 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                         bike = state.bike,
                         onBikeTypeSelected = {
                             viewModel.onSetupDetailsEvent(BSSEvent.BikeTypeSelected(it))
-                            scrollToNextPage(delayMs = 300)
+                            scrollToNextPage(delayMs = 500)
                         })
 
-                    2 -> BikeStatusPage(state.details, onContinue = {
+                    3 -> BikeStatusPage(state.details, onContinue = {
                         scrollToNextPage()
                     }, onLastMaintenanceUpdate = { category, value ->
                         viewModel.onSetupDetailsEvent(
@@ -143,7 +143,7 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                         )
                     })
 
-                    3 -> BikeDetailsPage(state.details, onFullSuspensionSelectionChange = {
+                    2 -> BikeDetailsPage(state.details, onFullSuspensionSelectionChange = {
                         viewModel.onSetupDetailsEvent(BSSEvent.FullSuspensionSelectionChange(it))
                     }, onCliplessPedalsSelectionChange = {
                         viewModel.onSetupDetailsEvent(BSSEvent.CliplessPedalsSelectionChange(it))
@@ -178,7 +178,7 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
 @Composable
 fun BikeSetupTitle(text: String) {
     Text(
-        modifier = Modifier.padding(bottom = 20.dp),
+        modifier = Modifier.padding(bottom = 10.dp),
         text = text,
         color = MaterialTheme.colors.onPrimary,
         style = MaterialTheme.typography.h1

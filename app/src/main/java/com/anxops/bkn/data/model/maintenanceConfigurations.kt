@@ -33,10 +33,9 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
 
                 ComponentType.Custom,
                 ComponentType.Fork,
+                ComponentType.RearSuspension,
                 ComponentType.FrameBearings,
                 ComponentType.DropperPost,
-                ComponentType.PedalClipless,
-                ComponentType.HandlebarTape,
             )
         )
     )

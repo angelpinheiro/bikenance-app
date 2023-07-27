@@ -48,9 +48,10 @@ data class SetupDetails(
     val hasDropperPost: Boolean? = false,
     val hasTubeless: Boolean? = true,
     val hasCliplessPedals: Boolean? = true,
-    val fullSuspension: Boolean? = true,
+    val fullSuspension: Boolean? = false,
     val lastMaintenances: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
-        .associateWith { 0f }
+        .associateWith { 0f },
+    val lastComponentMaintenances: Map<ComponentType, Float> = emptyMap()
 
 )
 
@@ -120,45 +121,68 @@ class BikeSetupViewModel @Inject constructor(
 
         _state.value = when (val currentState = _state.value) {
             is BikeSetupScreenState.SetupInProgress -> {
-                val new = currentState.copy(
-                    details = when (event) {
-                        is BSSEvent.BikeTypeSelected -> {
-                            currentState.details.copy(
-                                selectedBikeType = event.type
-                            )
+
+                val details = when (event) {
+                    is BSSEvent.BikeTypeSelected -> {
+
+                        val fullSuspension = if (listOf(
+                                BikeType.Road,
+                                BikeType.Gravel,
+                                BikeType.Stationary
+                            ).contains(event.type)
+                        ) {
+                            false
+                        } else {
+                            currentState.details.fullSuspension
                         }
 
-                        is BSSEvent.CliplessPedalsSelectionChange -> {
-                            currentState.details.copy(
-                                hasCliplessPedals = event.value
-                            )
-                        }
+                        currentState.details.copy(
+                            selectedBikeType = event.type, fullSuspension = fullSuspension
+                        )
+                    }
 
-                        is BSSEvent.DropperSelectionChange -> {
-                            currentState.details.copy(
-                                hasDropperPost = event.value
-                            )
-                        }
+                    is BSSEvent.CliplessPedalsSelectionChange -> {
 
-                        is BSSEvent.TubelessSelectionChange -> {
-                            currentState.details.copy(
-                                hasTubeless = event.value
-                            )
-                        }
+                        currentState.details.copy(
+                            hasCliplessPedals = event.value
+                        )
 
-                        is BSSEvent.FullSuspensionSelectionChange -> {
-                            currentState.details.copy(
-                                fullSuspension = event.value
-                            )
-                        }
+                    }
 
-                        is BSSEvent.LastMaintenanceUpdate -> currentState.details.copy(
+                    is BSSEvent.DropperSelectionChange -> {
+
+
+                        currentState.details.copy(
+                            hasDropperPost = event.value,
+                        )
+                    }
+
+                    is BSSEvent.TubelessSelectionChange -> {
+                        currentState.details.copy(
+                            hasTubeless = event.value
+                        )
+                    }
+
+                    is BSSEvent.FullSuspensionSelectionChange -> {
+
+                        currentState.details.copy(
+                            fullSuspension = event.value,
+                        )
+                    }
+
+                    is BSSEvent.LastMaintenanceUpdate -> {
+
+                        currentState.details.copy(
                             lastMaintenances = currentState.details.lastMaintenances.plus(event.category to event.value)
                         )
                     }
+                }
+
+                currentState.copy(
+                    details = details.copy(lastComponentMaintenances = getComponentsForSetup(
+                        details
+                    ).associateWith { 0f })
                 )
-                Log.d("getNewComponentsForBike", "${new.details}")
-                new
             }
 
             else -> {
@@ -167,6 +191,27 @@ class BikeSetupViewModel @Inject constructor(
         }
 
 
+    }
+
+    private fun getComponentsForSetup(details: SetupDetails): List<ComponentType> {
+
+        var componentTypes =
+            MaintenanceConfiguration.forBikeType(details.selectedBikeType).componentTypes
+
+        if (details.hasDropperPost == true) {
+            componentTypes = componentTypes.plus(ComponentType.DropperPost)
+        }
+        if (details.hasCliplessPedals == true) {
+            componentTypes = componentTypes.plus(ComponentType.PedalClipless)
+        }
+        if (details.fullSuspension == true) {
+            componentTypes = componentTypes.plus(
+                listOf(
+                    ComponentType.RearSuspension, ComponentType.FrameBearings
+                )
+            )
+        }
+        return componentTypes.toList()
     }
 
 
@@ -181,25 +226,7 @@ class BikeSetupViewModel @Inject constructor(
         state: BikeSetupScreenState.SetupInProgress
     ): List<BikeComponent> {
 
-        var componentTypes =
-            MaintenanceConfiguration.forBikeType(state.details.selectedBikeType).componentTypes
-        Log.d("getNewComponentsForBike", "Got ${componentTypes.size} for ${state.bike.type.name}")
-
-        if (state.details.hasDropperPost == true) {
-            componentTypes = componentTypes.plus(ComponentType.DropperPost)
-        }
-        if (state.details.hasCliplessPedals == true) {
-            componentTypes = componentTypes.plus(ComponentType.PedalClipless)
-        }
-        if (state.details.fullSuspension == true) {
-            componentTypes = componentTypes.plus(
-                listOf(
-                    ComponentType.RearSuspension, ComponentType.FrameBearings
-                )
-            )
-        }
-
-        val components = componentTypes.map {
+        val components = getComponentsForSetup(state.details).map {
 
             val date = getFromLocalDateTime(it, state.details.lastMaintenances)
 
