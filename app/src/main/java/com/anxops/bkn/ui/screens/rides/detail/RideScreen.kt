@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.screens.rides.list.components.BikeRideItem
 import com.anxops.bkn.ui.screens.rides.list.openStravaActivity
 import com.anxops.bkn.ui.shared.Loading
@@ -52,52 +53,9 @@ fun RideScreen(
         is RideScreenState.RideLoaded -> {
 
             val loaded = state.value as RideScreenState.RideLoaded
-
-
-
-            BottomSheetScaffold(
-                modifier = Modifier.fillMaxSize(),
-                sheetContent = {
-                    Text(
-                        text = "Ride performed with...",
-                        modifier = Modifier.padding(10.dp),
-                        style = MaterialTheme.typography.h5
-                    )
-                    bikes.value.forEach {
-
-                        val selected = loaded.item.ride.bikeId == it._id
-
-                        Text(text = it.name ?: "",
-                            style = MaterialTheme.typography.h3,
-                            color = if (selected) MaterialTheme.colors.onSecondary
-                            else MaterialTheme.colors.onSurface,
-                            modifier = Modifier
-                                .background(
-                                    if (selected) MaterialTheme.colors.secondary
-                                    else MaterialTheme.colors.surface
-                                )
-                                .fillMaxWidth()
-                                .padding(12.dp)
-                                .clickable {
-                                    scope.launch {
-                                        bottomSheetScaffoldState.bottomSheetState.collapse()
-                                        viewModel.setRideBike(it)
-                                    }
-                                }
-                        )
-                    }
-                },
-                scaffoldState = bottomSheetScaffoldState,
-                sheetPeekHeight = 0.dp,
-            ) {
-                RideView(loaded, bikes.value, onClickRideBike = {
-                    scope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.expand()
-                    }
-                })
+            RideView(loaded, bikes.value) { bike, ride ->
+                viewModel.setRideBike(bike)
             }
-
-
         }
 
         is RideScreenState.RideNotFound -> {
@@ -112,7 +70,7 @@ fun RideScreen(
 fun RideView(
     state: RideScreenState.RideLoaded,
     bikes: List<Bike>,
-    onClickRideBike: () -> Unit = {}
+    onBikeConfirm: (Bike, BikeRide) -> Unit = { _, _ -> },
 ) {
 
     val context = LocalContext.current
@@ -176,11 +134,11 @@ fun RideView(
         }
 
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 10.dp).align(Alignment.TopCenter)) {
-            BikeRideItem(item = state.item, emptyList(), onClickOpenOnStrava = {
+            BikeRideItem(item = state.item, bikes, onClickOpenOnStrava = {
                 state.item.ride.stravaId?.let {
                     openStravaActivity(context, it)
                 }
-            })
+            }, onBikeConfirm = onBikeConfirm)
         }
 
     }

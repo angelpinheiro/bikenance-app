@@ -3,7 +3,6 @@ package com.anxops.bkn.ui.screens.rides.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
@@ -40,7 +39,7 @@ class RideScreenViewModel @Inject constructor(
         bikeRepository.getBikesFlow(false).stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
     fun loadRide(rideId: String) {
-//        if (state.value !is RideScreenState.RideLoaded) {
+
         viewModelScope.launch {
             val ride = ridesRepository.getRide(rideId)
             if (ride != null) {
@@ -52,21 +51,18 @@ class RideScreenViewModel @Inject constructor(
                 _state.value = RideScreenState.RideNotFound
             }
         }
-//        }
     }
 
-    fun setRideBike(it: Bike) {
+    fun setRideBike(bike: Bike) {
         viewModelScope.launch {
             when (val s = _state.value) {
                 is RideScreenState.RideLoaded -> {
-
                     val updatedRide = s.item.copy(
-                        ride = s.item.ride.copy(_id = it._id, bikeConfirmed = true)
+                        ride = s.item.ride.copy(bikeId = bike._id, bikeConfirmed = true)
                     )
-//                    ridesRepository.updateRide(updatedRide)
+                    ridesRepository.updateRide(updatedRide.ride)
                     _state.value = RideScreenState.RideLoaded(
-                        item = updatedRide,
-                        polyline = s.polyline
+                        item = updatedRide, polyline = s.polyline
                     )
                 }
 

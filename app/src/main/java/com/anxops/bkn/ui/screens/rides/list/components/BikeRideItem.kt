@@ -53,34 +53,30 @@ fun BikeRideItem(
 
     val showBikeConfirm = !item.ride.bikeConfirmed && bikes.isNotEmpty()
 
-    Card(backgroundColor = MaterialTheme.colors.primary,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(
-                start = 10.dp, end = 10.dp, top = 10.dp, bottom = if (!showBikeConfirm) {
-                    10.dp
-                } else {
-                    0.dp
-                }
-            ),
-        shape = if (!showBikeConfirm) {
-            RoundedCornerShape(8.dp)
-        } else {
-            RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
-        }) {
+    Column {
+        Card(backgroundColor = MaterialTheme.colors.primary,
+            modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(
+                    start = 10.dp, end = 10.dp, top = 10.dp, bottom = if (!showBikeConfirm) {
+                        10.dp
+                    } else {
+                        0.dp
+                    }
+                ),
+            shape = if (!showBikeConfirm) {
+                RoundedCornerShape(8.dp)
+            } else {
+                RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
+            }) {
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-
-            Row(
-                Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
+
+                Row(
+                    Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+
+                ) {
 
 //                BknIcon(
 //                    CommunityMaterial.Icon.cmd_bike_fast,
@@ -90,94 +86,90 @@ fun BikeRideItem(
 //                        .size(16.dp)
 //                )
 
+                    Text(
+                        text = item.ride.name ?: "",
+                        color = MaterialTheme.colors.onPrimary,
+                        style = MaterialTheme.typography.h2,
+                        modifier = Modifier.weight(1f).padding(end = 10.dp, bottom = 2.dp),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+
+                }
+
                 Text(
-                    text = item.ride.name ?: "",
+                    text = item.ride.dateTime?.formatAsRelativeTime(showDay = true) ?: "",
                     color = MaterialTheme.colors.onPrimary,
-                    style = MaterialTheme.typography.h2,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 10.dp, bottom = 2.dp),
+                    style = MaterialTheme.typography.h4,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
+                    modifier = Modifier.padding(bottom = 2.dp),
                 )
 
+                Row(
+                    Modifier.padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    item.ride.distance?.let {
+                        BknIcon(
+                            CommunityMaterial.Icon3.cmd_map_marker, modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "${formatDistanceAsKm(it)}",
+                            color = MaterialTheme.colors.onBackground,
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier.padding(start = 4.dp, end = 10.dp)
+                        )
+                    }
+
+                    item.ride.totalElevationGain?.let {
+                        BknIcon(
+                            CommunityMaterial.Icon2.cmd_image_filter_hdr,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "${it}m",
+                            color = MaterialTheme.colors.onBackground,
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier.padding(start = 4.dp, end = 10.dp)
+                        )
+                    }
+
+                    item.ride.movingTime?.let {
+                        BknIcon(
+                            CommunityMaterial.Icon.cmd_clock_fast, modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "${formatDuration(it)}",
+                            color = MaterialTheme.colors.onBackground,
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier.padding(start = 4.dp, end = 10.dp)
+                        )
+                    }
+                }
+
+
+
+
+                Text(text = "View on Strava",
+                    color = MaterialTheme.colors.strava,
+                    style = MaterialTheme.typography.h3,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    modifier = Modifier.padding(top = 6.dp).clickable { onClickOpenOnStrava() })
+
+
             }
-
-            Text(
-                text = item.ride.dateTime?.formatAsRelativeTime(showDay = true) ?: "",
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h4,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                modifier = Modifier.padding(bottom = 2.dp),
-            )
-
-            Row(
-                Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                item.ride.distance?.let {
-                    BknIcon(
-                        CommunityMaterial.Icon3.cmd_map_marker, modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = "${formatDistanceAsKm(it)}",
-                        color = MaterialTheme.colors.onBackground,
-                        style = MaterialTheme.typography.h3,
-                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
-                    )
-                }
-
-                item.ride.totalElevationGain?.let {
-                    BknIcon(
-                        CommunityMaterial.Icon2.cmd_image_filter_hdr,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = "${it}m",
-                        color = MaterialTheme.colors.onBackground,
-                        style = MaterialTheme.typography.h3,
-                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
-                    )
-                }
-
-                item.ride.movingTime?.let {
-                    BknIcon(
-                        CommunityMaterial.Icon.cmd_clock_fast, modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = "${formatDuration(it)}",
-                        color = MaterialTheme.colors.onBackground,
-                        style = MaterialTheme.typography.h3,
-                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
-                    )
-                }
-            }
-
-
-
-
-            Text(text = "View on Strava",
-                color = MaterialTheme.colors.strava,
-                style = MaterialTheme.typography.h3,
-                fontWeight = FontWeight.Bold,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.End,
-                maxLines = 1,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp)
-                    .clickable { onClickOpenOnStrava() })
-
 
         }
 
-    }
-
-    if (showBikeConfirm) {
-        BikeConfirmationView(item.bike, bikes, onBikeConfirm = {
-            onBikeConfirm(it, item.ride)
-        })
+        if (showBikeConfirm) {
+            BikeConfirmationView(item.bike, bikes, onBikeConfirm = {
+                onBikeConfirm(it, item.ride)
+            })
+        }
     }
 
 }
@@ -195,6 +187,7 @@ private fun BikeConfirmationView(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
+            .padding(bottom = 10.dp)
             .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
             .background(MaterialTheme.colors.primaryVariant),
         horizontalArrangement = Arrangement.Start,
