@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.bike.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeStats
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.shared.components.bgGradient
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.anxops.bkn.util.formatAsDayMonth
 import com.anxops.bkn.util.formatDistanceAsShortKm
@@ -33,8 +31,7 @@ fun BikeStats(bikeStats: BikeStats) {
     Column(
         Modifier
             .padding(10.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center
+            .fillMaxWidth(), verticalArrangement = Arrangement.Center
     ) {
 
         Row(
@@ -64,7 +61,7 @@ fun BikeStats(bikeStats: BikeStats) {
             )
             BikeStat(
                 title = "Ascent",
-                value = "${formatElevationShort(bikeStats.elevationGain?.toInt())}",
+                value = "${formatElevationShort(bikeStats.elevationGain.toInt())}",
                 modifier = Modifier.weight(1f),
                 icon = CommunityMaterial.Icon2.cmd_image_filter_hdr,
             )
@@ -108,10 +105,7 @@ fun BikeStats(bikeStats: BikeStats) {
 
 @Composable
 fun BikeStat(
-    title: String,
-    value: String,
-    icon: IIcon? = null,
-    modifier: Modifier = Modifier
+    title: String, value: String, icon: IIcon? = null, modifier: Modifier = Modifier
 ) {
     Column(
         modifier
@@ -121,7 +115,8 @@ fun BikeStat(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             icon?.let {
                 BknIcon(
@@ -129,7 +124,7 @@ fun BikeStat(
                 )
             }
             Text(
-                modifier = Modifier.padding(start = 10.dp),
+                modifier = Modifier.padding(start = if (icon == null) 0.dp else 10.dp),
                 color = MaterialTheme.colors.onBackground,
                 text = title,
                 style = MaterialTheme.typography.h4,

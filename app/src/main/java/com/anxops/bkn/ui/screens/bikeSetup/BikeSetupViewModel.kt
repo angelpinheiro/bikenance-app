@@ -50,7 +50,7 @@ data class SetupDetails(
     val hasCliplessPedals: Boolean? = true,
     val fullSuspension: Boolean? = true,
     val lastMaintenances: Map<ComponentCategory, Float> = ComponentCategory.values().toList()
-        .minus(ComponentCategory.MISC).associateWith { 0f }
+        .associateWith { 0f }
 
 )
 
@@ -174,14 +174,15 @@ class BikeSetupViewModel @Inject constructor(
         componentTypes: ComponentType, lastMaintenances: Map<ComponentCategory, Float>
     ): LocalDateTime {
         val monthsSinceLastMaintenance = lastMaintenances.getOrDefault(componentTypes.category, 0f)
-        return LocalDateTime.now().minusMonths(floor(monthsSinceLastMaintenance).toLong());
+        return LocalDateTime.now().minusMonths(floor(monthsSinceLastMaintenance).toLong())
     }
 
     private fun getNewComponentsForBike(
         state: BikeSetupScreenState.SetupInProgress
     ): List<BikeComponent> {
 
-        var componentTypes = MaintenanceConfiguration.forBikeType(state.details.selectedBikeType).componentTypes
+        var componentTypes =
+            MaintenanceConfiguration.forBikeType(state.details.selectedBikeType).componentTypes
         Log.d("getNewComponentsForBike", "Got ${componentTypes.size} for ${state.bike.type.name}")
 
         if (state.details.hasDropperPost == true) {

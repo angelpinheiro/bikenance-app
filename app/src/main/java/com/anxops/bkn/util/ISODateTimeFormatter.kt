@@ -1,6 +1,7 @@
 package com.anxops.bkn.util
 
 import android.text.format.DateUtils
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -34,8 +35,12 @@ fun Instant.formatAsRelativeTime(from: Long = System.currentTimeMillis()): Strin
     return this.toEpochMilli().formatAsRelativeTime()
 }
 
-fun LocalDateTime.formatAsRelativeTime(from: Long = System.currentTimeMillis(), showDay: Boolean = false): String {
-    return (this.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000).formatAsRelativeTime(from, showDay)
+fun LocalDateTime.formatAsRelativeTime(
+    from: Long = System.currentTimeMillis(), showDay: Boolean = false
+): String {
+    return (this.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000).formatAsRelativeTime(
+        from, showDay
+    )
 }
 
 fun Long.formatAsRelativeTime(
@@ -50,10 +55,11 @@ fun Long.formatAsRelativeTime(
 
     return DateUtils.getRelativeTimeSpanString(
         this, from, 0, flags
-    ).toString();
+    ).toString()
 }
 
-fun TemporalAccessor.formatAsTime(): String {
-    return DateTimeFormatters.localTime.format(this)
+fun LocalDateTime.formatElapsedTimeUntilNow(now: LocalDateTime = LocalDateTime.now()): String {
+    val duration = Duration.between(this, now)
+    val days = duration.toDays()
+    return "$days days"
 }
-

@@ -30,6 +30,7 @@ import com.anxops.bkn.ui.screens.maintenances.getColorForProgress
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatAsMonthYear
+import com.anxops.bkn.util.formatElapsedTimeUntilNow
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 
@@ -107,7 +108,8 @@ fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}) {
 
         ) {
             BikeStat(title = "Distance", value = "${component.displayDistance()}")
-            BikeStat(title = "Hours", value = "${component.displayDuration()}")
+            BikeStat(title = "Duration", value = "${component.from?.formatElapsedTimeUntilNow()}")
+            BikeStat(title = "Active hours", value = "${component.displayDuration()}")
         }
 
         component.maintenances?.forEach {
@@ -173,13 +175,13 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             BknIcon(
-                icon = CommunityMaterial.Icon3.cmd_wrench_clock,
+                icon = CommunityMaterial.Icon3.cmd_repeat,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .size(20.dp)
             )
             Text(
-                text = "Estimated maintenance: ${item.estimatedDate?.formatAsMonthYear()}",
+                text = "${item.defaultFrequency.displayText()}",
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3,
             )
@@ -214,6 +216,21 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
             )
         }
 
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            BknIcon(
+                icon = CommunityMaterial.Icon3.cmd_wrench_clock,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .size(20.dp)
+            )
+            Text(
+                text = "Next maintenance: ${item.estimatedDate?.formatAsMonthYear()}",
+                color = MaterialTheme.colors.onPrimary,
+                style = MaterialTheme.typography.h3,
+            )
+        }
+
+
         Column(
             modifier = Modifier
                 .padding(top = 10.dp)
@@ -225,12 +242,13 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
+                modifier = Modifier.padding(bottom = 10.dp)
             ) {
                 BknIcon(
                     icon = CommunityMaterial.Icon3.cmd_wrench_check,
-                    modifier = Modifier.padding(end = 10.dp).size(20.dp)
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .size(20.dp)
                 )
                 Text(
                     text = "Instructions",
@@ -246,8 +264,6 @@ fun BikeComponentDetailMaintenance(item: Maintenance) {
                 modifier = Modifier
             )
         }
-
-
 
 
     }
