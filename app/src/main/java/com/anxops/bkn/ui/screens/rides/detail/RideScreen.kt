@@ -176,7 +176,7 @@ fun RideView(
         }
 
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 10.dp).align(Alignment.TopCenter)) {
-            BikeRideItem(item = state.item, onClickOpenOnStrava = {
+            BikeRideItem(item = state.item, emptyList(), onClickOpenOnStrava = {
                 state.item.ride.stravaId?.let {
                     openStravaActivity(context, it)
                 }

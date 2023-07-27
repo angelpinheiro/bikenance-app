@@ -1,8 +1,11 @@
 package com.anxops.bkn.ui.screens.rides.list.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,10 +13,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -29,38 +38,17 @@ import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.util.concurrent.TimeUnit
 
-//
-//
-//@Composable
-//fun Ride(
-//    ride: BikeRide,
-//    bikes: List<Bike>,
-//    onClickOpenOnStrava: () -> Unit = {},
-//    onClick: () -> Unit = {},
-//    onClickRideBike: () -> Unit = {},
-//    onClickConfirm: () -> Unit = {}
-//) {
-//
-//
-//    Card(backgroundColor = MaterialTheme.colors.primary,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .clickable { onClick() }
-//            .padding(horizontal = 10.dp, vertical = 5.dp)) {
-//
-//        BikeRideItem(item = ride, bike = bike)
-//    }
-//}
-
 data class RideAndBike(val ride: BikeRide, val bike: Bike?)
 
 @Composable
 fun BikeRideItem(
     item: RideAndBike,
-    onClickConfirm: () -> Unit = {},
+    bikes: List<Bike>,
+    onBikeConfirm: (Bike, BikeRide) -> Unit = { _, _ -> },
     onClick: () -> Unit = {},
     onClickOpenOnStrava: () -> Unit = {}
 ) {
+
     Card(backgroundColor = MaterialTheme.colors.primary,
         modifier = Modifier
             .fillMaxWidth()
@@ -163,74 +151,119 @@ fun BikeRideItem(
                     )
 
 
-                    Text(
-                        text = "View on Strava",
+                    Text(text = "View on Strava",
                         color = MaterialTheme.colors.strava,
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Bold,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.End,
                         maxLines = 1,
-                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp).clickable { onClickOpenOnStrava() }
-                    )
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp)
+                            .clickable { onClickOpenOnStrava() })
 
 
                 }
 
             }
 
-            if (!item.ride.bikeConfirmed) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp).padding(bottom = 5.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    item.bike?.let { bike ->
-                        OutlinedButton(
-                            onClick = { },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                            shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = "Change",
-                                style = MaterialTheme.typography.h4,
-                                color = MaterialTheme.colors.onPrimary
-                            )
-                        }
-                        OutlinedButton(
-                            onClick = { },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
-                            shape = RoundedCornerShape(0.dp),
-                            modifier = Modifier.weight(2f)
-                        ) {
-                            Text(
-                                text = bike.displayName(),
-                                style = MaterialTheme.typography.h4,
-                                color = MaterialTheme.colors.onPrimary
-                            )
-                        }
-                        OutlinedButton(
-                            onClick = onClickConfirm,
-                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                            shape = RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = "Confirm",
-                                style = MaterialTheme.typography.h4,
-                                color = MaterialTheme.colors.onPrimary
-                            )
-                        }
-                    }
-
-
-                }
+            if (!item.ride.bikeConfirmed && bikes.isNotEmpty()) {
+                BikeConfirmationView(item.bike, bikes, onBikeConfirm = {
+                    onBikeConfirm(it, item.ride)
+                })
             }
 
+        }
+    }
+}
+
+@Composable
+private fun BikeConfirmationView(
+    selectedBike: Bike?, bikes: List<Bike>, onBikeConfirm: (Bike) -> Unit
+) {
+
+    val chooserBike = remember(selectedBike) {
+        mutableStateOf(selectedBike)
+    }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+            .padding(bottom = 5.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+
+        BikesDropDown(selected = chooserBike.value,
+            bikes = bikes,
+            modifier = Modifier.weight(2f),
+            onBikeChange = {
+                chooserBike.value = it
+            })
+
+        OutlinedButton(
+            enabled = chooserBike.value != null,
+            onClick = {
+                chooserBike.value?.let { onBikeConfirm(it) }
+            },
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+            shape = RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Confirm",
+                style = MaterialTheme.typography.h4,
+                color = MaterialTheme.colors.onPrimary
+            )
+        }
+    }
+}
+
+
+@Composable
+fun BikesDropDown(
+    modifier: Modifier = Modifier,
+    selected: Bike?,
+    bikes: List<Bike>,
+    onBikeChange: (Bike) -> Unit = {}
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+
+        OutlinedButton(
+            onClick = { expanded = !expanded },
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+            shape = RoundedCornerShape(bottomStart = 5.dp, topStart = 5.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Text(
+                text = selected?.displayName() ?: "Select bike",
+                style = MaterialTheme.typography.h4,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(end = 10.dp)
+            )
+            BknIcon(icon = CommunityMaterial.Icon.cmd_chevron_down, modifier = Modifier.size(16.dp))
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            Modifier
+                .fillMaxWidth(0.9f)
+                .align(Alignment.Center)
+                .background(MaterialTheme.colors.primaryVariant),
+        ) {
+            bikes.forEach { bike ->
+                DropdownMenuItem(content = { Text(bike.displayName()) }, onClick = {
+                    onBikeChange(bike)
+                    expanded = false
+                }, contentPadding = PaddingValues(10.dp), modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -254,16 +287,5 @@ fun formatDuration(seconds: Int): String {
         else -> {
             "${secs}s"
         }
-    }
-}
-
-fun secondsToHours(seconds: Int): Long {
-    return TimeUnit.SECONDS.toHours(seconds.toLong()) % 24
-
-}
-
-fun getRideBike(ride: BikeRide, bikes: List<Bike>): Bike? {
-    return bikes.firstOrNull {
-        it._id == ride.bikeId
     }
 }

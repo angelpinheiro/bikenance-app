@@ -12,6 +12,7 @@ import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.mediator.RideRemoteMediator
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
@@ -57,11 +58,9 @@ class RidesScreenViewModel @Inject constructor(
         }
     }
 
-    fun confirmRideBike(item: RideAndBike) {
+    fun onBikeRideConfirmed(ride: BikeRide, bike: Bike?) {
         viewModelScope.launch {
-            item.bike?.let {
-                ridesRepository.updateRide(item.ride.copy(bikeId = it._id, bikeConfirmed = true))
-            }
+            ridesRepository.updateRide(ride.copy(bikeId = bike?._id, bikeConfirmed = true))
         }
     }
 
@@ -91,8 +90,6 @@ class RidesScreenViewModel @Inject constructor(
             )
         )
     }
-
-
 
 
 }
