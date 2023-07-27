@@ -1,5 +1,9 @@
 package com.anxops.bkn.ui.screens.bike
 
+import android.content.Context
+import android.net.Uri
+import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,12 +24,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.bike.components.BikeComponentDetail
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsTopBar
+import com.anxops.bkn.ui.screens.rides.list.openStravaActivity
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.bgGradient
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -43,6 +49,8 @@ fun BikeScreen(
     bikeId: String,
     section: String?
 ) {
+
+    val context = LocalContext.current
 
     val bknNavigator = BknNavigator(navigator)
     val navController = rememberNavController()
@@ -77,6 +85,13 @@ fun BikeScreen(
     LaunchedEffect(scaffoldState.bottomSheetState.isCollapsed) {
         if (scaffoldState.bottomSheetState.isCollapsed) {
             viewModel.handleEvent(BikeScreenEvent.SelectComponent(null))
+        }
+    }
+
+    LaunchedEffect(key1 = context) {
+        viewModel.openBikeOnStravaEvent.collect {
+            Toast.makeText(context, "$it", Toast.LENGTH_SHORT).show()
+            openStravaBike(context, it)
         }
     }
 
@@ -145,4 +160,10 @@ fun BikeScreen(
                 }
             })
     }
+}
+
+fun openStravaBike(context: Context, bikeId: String) {
+    val url = "https://www.strava.com/bikes/${bikeId.replaceFirst("b", "")}"
+    val intent = CustomTabsIntent.Builder().build()
+    intent.launchUrl(context, Uri.parse(url))
 }

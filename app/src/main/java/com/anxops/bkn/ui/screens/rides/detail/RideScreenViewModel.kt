@@ -7,6 +7,7 @@ import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import com.anxops.bkn.util.decodePoly
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,7 @@ import javax.inject.Inject
 sealed class RideScreenState {
     object RideLoading : RideScreenState()
     object RideNotFound : RideScreenState()
-    data class RideLoaded(val ride: BikeRide, val polyline: List<LatLng>?) : RideScreenState()
+    data class RideLoaded(val item: RideAndBike, val polyline: List<LatLng>?) : RideScreenState()
 }
 
 @HiltViewModel
@@ -43,8 +44,9 @@ class RideScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val ride = ridesRepository.getRide(rideId)
             if (ride != null) {
+                val bike = ride.bikeId?.let { bikeRepository.getBike(it) }
                 _state.value = RideScreenState.RideLoaded(
-                    ride,
+                    RideAndBike(ride, bike),
                     ride.mapSummaryPolyline?.let { decodePoly(it) })
             } else {
                 _state.value = RideScreenState.RideNotFound
@@ -58,12 +60,12 @@ class RideScreenViewModel @Inject constructor(
             when (val s = _state.value) {
                 is RideScreenState.RideLoaded -> {
 
-                    val updatedRide = s.ride.copy(
-                        bikeId = it._id
+                    val updatedRide = s.item.copy(
+                        ride = s.item.ride.copy(_id = it._id, bikeConfirmed = true)
                     )
 //                    ridesRepository.updateRide(updatedRide)
                     _state.value = RideScreenState.RideLoaded(
-                        ride = updatedRide,
+                        item = updatedRide,
                         polyline = s.polyline
                     )
                 }

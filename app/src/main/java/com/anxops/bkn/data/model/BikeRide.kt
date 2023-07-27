@@ -10,6 +10,7 @@ data class BikeRide(
     val _id: String,
     @SerialName("user_id") var userId: String? = null,
     @SerialName("bike_id") var bikeId: String? = null,
+    @SerialName("bike_confirmed") var bikeConfirmed: Boolean = false,
     @SerialName("strava_activity_id") var stravaId: String? = null,
     @SerialName("activity_type") var activityType: String? = null,
     @SerialName("sport_type") var sportType: String? = null,
@@ -21,4 +22,14 @@ data class BikeRide(
     @Serializable(with = LocalDateSerializer::class)
     @SerialName("date_time") var dateTime: LocalDateTime? = null,
     @SerialName("map_summary_polyline") var mapSummaryPolyline: String? = null,
+) {
+    fun toRideUpdate() : BikeRideUpdate {
+        return BikeRideUpdate(bikeId, bikeConfirmed)
+    }
+}
+
+@Serializable
+data class BikeRideUpdate(
+    @SerialName("bike_id") var bikeId: String? = null,
+    @SerialName("bike_confirmed") var bikeConfirmed: Boolean = false,
 )

@@ -105,7 +105,7 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         return safeApiCall {
             httpClient.put(ApiEndpoints.profileRideEndpoint(ride._id)) {
                 header("Authorization", tokenHeader())
-                body = ride
+                body = ride.toRideUpdate()
             }
         }
     }

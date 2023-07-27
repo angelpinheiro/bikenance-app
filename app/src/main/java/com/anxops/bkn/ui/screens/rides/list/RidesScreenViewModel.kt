@@ -12,10 +12,10 @@ import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.mediator.RideRemoteMediator
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,7 +34,10 @@ class RidesScreenViewModel @Inject constructor(
     val api: Api,
 ) : ViewModel() {
 
+
+
     init {
+
         Log.d("RidesScreenViewModel", "RidesScreenViewModel Init")
     }
 
@@ -54,13 +57,22 @@ class RidesScreenViewModel @Inject constructor(
         }
     }
 
+    fun confirmRideBike(item: RideAndBike) {
+        viewModelScope.launch {
+            item.bike?.let {
+                ridesRepository.updateRide(item.ride.copy(bikeId = it._id, bikeConfirmed = true))
+            }
+        }
+    }
+
 
     private fun createPaginatedRidesFlow(
         db: AppDb,
         api: Api,
-    ): Flow<PagingData<BikeRide>> = createPager(db, api).flow.map { p ->
-        p.map {
-            it.toDomain()
+    ): Flow<PagingData<RideAndBike>> = createPager(db, api).flow.map { p ->
+        p.map { rideEntity ->
+            val bike = bikes.value.find { rideEntity.bikeId == it._id }
+            RideAndBike(rideEntity.toDomain(), bike)
         }
     }
 
@@ -79,6 +91,8 @@ class RidesScreenViewModel @Inject constructor(
             )
         )
     }
+
+
 
 
 }

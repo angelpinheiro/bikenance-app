@@ -62,6 +62,7 @@ fun BikeRide.toEntity(): BikeRideEntity {
         _id = _id,
         userId = userId,
         bikeId = bikeId,
+        bikeConfirmed = bikeConfirmed,
         stravaId = stravaId,
         activityType = activityType,
         sportType = sportType,

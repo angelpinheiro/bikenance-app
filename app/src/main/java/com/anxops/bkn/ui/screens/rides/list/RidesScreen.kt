@@ -36,10 +36,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.anxops.bkn.R
-import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.navigation.BknNavigator
-import com.anxops.bkn.ui.screens.rides.list.components.Ride
+import com.anxops.bkn.ui.screens.rides.list.components.BikeRideItem
+import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatAsRelativeTime
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -56,6 +55,7 @@ fun RidesScreen(
     val bknNav = BknNavigator(navigator)
 
     val context = LocalContext.current
+
     LaunchedEffect(key1 = context) {
         viewModel.openActivityEvent.collect {
             openStravaActivity(context, it)
@@ -76,14 +76,15 @@ fun RidesScreen(
     val pullRefreshState =
         rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { pagedRides.refresh() })
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
     ) {
 
-        PagedRideList(rides = pagedRides, bikes = bikes.value, pullRefreshState = pullRefreshState ,onClickOpenStrava = {
+        PagedRideList(rides = pagedRides, pullRefreshState = pullRefreshState, onClickOpenStrava = {
             viewModel.openActivity(it)
         }, onClickRide = {
             bknNav.navigateToRide(it)
+        }, onClickConfirm = {
+            viewModel.confirmRideBike(it)
         })
         Text(
             text = "Updated $at",
@@ -167,9 +168,9 @@ fun EmptyRides(onClickNew: () -> Unit = {}) {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PagedRideList(
-    rides: LazyPagingItems<BikeRide>,
-    bikes: List<Bike>,
+    rides: LazyPagingItems<RideAndBike>,
     onClickRide: (id: String) -> Unit = {},
+    onClickConfirm: (item: RideAndBike) -> Unit = {},
     onClickOpenStrava: (stravaId: String) -> Unit = {},
     pullRefreshState: PullRefreshState,
 ) {
@@ -179,18 +180,21 @@ fun PagedRideList(
     LazyColumn(
         state = lazyColumnState,
         verticalArrangement = Arrangement.spacedBy(0.dp),
-        modifier = Modifier.fillMaxSize().pullRefresh(pullRefreshState),
+        modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState),
         contentPadding = PaddingValues(vertical = 10.dp)
     ) {
 
         items(count = rides.itemCount) { index ->
-            rides[index]?.let {
-                Ride(ride = it, bikes, onClickOpenOnStrava = {
-                    it.stravaId?.let { id ->
-                        onClickOpenStrava(id)
-                    }
-                }, onClick = {
-                    onClickRide(it._id)
+            rides[index]?.let { rideAndBike ->
+                BikeRideItem(item = rideAndBike, onClick = {
+                    onClickRide(rideAndBike.ride._id)
+                }, onClickConfirm = {
+                    onClickConfirm(rideAndBike)
+                }, onClickOpenOnStrava = {
+                    rideAndBike.ride.stravaId?.let { onClickOpenStrava(it) }
+
                 })
 
             }

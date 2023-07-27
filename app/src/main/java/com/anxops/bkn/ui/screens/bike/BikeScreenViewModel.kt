@@ -7,6 +7,7 @@ import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 
 sealed class BikeScreenEvent {
+    object ViewOnStrava : BikeScreenEvent()
     data class LoadBike(val bikeId: String) : BikeScreenEvent()
     data class SelectComponent(val component: BikeComponent?) : BikeScreenEvent()
     data class SelectComponentCategory(val category: ComponentCategory?) : BikeScreenEvent()
@@ -35,10 +37,20 @@ class BikeScreenViewModel @Inject constructor(
     private val stateFlow = MutableStateFlow(BikeScreenState())
     val state: StateFlow<BikeScreenState> = stateFlow
 
+    val openBikeOnStravaEvent: MutableSharedFlow<String> = MutableSharedFlow()
+
+    private fun openBikeOnStrava(id: String) {
+        viewModelScope.launch {
+            openBikeOnStravaEvent.emit(
+                id
+            )
+        }
+    }
+
 
     fun handleEvent(event: BikeScreenEvent) = viewModelScope.launch {
 
-        val newState = when (event) {
+        val newState : BikeScreenState = when (event) {
             is BikeScreenEvent.SelectComponent -> {
                 state.value.copy(
                     selectedComponent = selectedComp(state.value.selectedComponent, event.component)
@@ -57,9 +69,15 @@ class BikeScreenViewModel @Inject constructor(
                     bike = bikesRepository.getBike(event.bikeId)
                 )
             }
-        }
 
-        stateFlow.update { newState }
+            is BikeScreenEvent.ViewOnStrava -> {
+                state.value.bike?.stravaId?.let{ openBikeOnStrava(it) }
+                state.value
+            }
+        }
+        if(newState != state.value) {
+            stateFlow.update { newState }
+        }
     }
 
     private fun selectedCat(curr: ComponentCategory?, new: ComponentCategory?): ComponentCategory? {

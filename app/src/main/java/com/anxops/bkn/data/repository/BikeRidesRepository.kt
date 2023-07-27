@@ -1,5 +1,7 @@
 package com.anxops.bkn.data.repository
 
+import android.util.Log
+import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.BikeRide
@@ -51,8 +53,12 @@ class BikeRidesRepository(
 
     override suspend fun updateRide(ride: BikeRide) {
         withContext(defaultDispatcher) {
-            db.bikeRideDao().update(ride.toEntity())
-            api.updateRide(ride)
+            when (val response = api.updateRide(ride)) {
+                is ApiResponse.Error -> throw Exception(response.message)
+                is ApiResponse.Success -> {
+                    db.bikeRideDao().update(response.data.toEntity())
+                }
+            }
         }
     }
 

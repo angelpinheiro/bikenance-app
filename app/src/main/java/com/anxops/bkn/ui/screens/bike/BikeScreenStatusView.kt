@@ -1,6 +1,7 @@
 package com.anxops.bkn.ui.screens.bike
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
@@ -21,6 +25,7 @@ import com.anxops.bkn.ui.screens.bike.components.BikeStatusMap
 import com.anxops.bkn.ui.screens.bike.components.ComponentCarousel
 import com.anxops.bkn.ui.screens.bike.components.ComponentCategoryCarousel
 import com.anxops.bkn.ui.shared.components.BackgroundBox
+import com.anxops.bkn.ui.theme.strava
 
 
 @Composable
@@ -86,9 +91,20 @@ fun BikeScreenStatusView(
 
                 Text(
                     text = "${bike.type.extendedType}",
-                    modifier = Modifier.padding(start = 6.dp, top = 0.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 16.dp),
                     style = MaterialTheme.typography.h3,
                     color = MaterialTheme.colors.onPrimary
+                )
+
+                Text(
+                    text = "View on Strava",
+                    color = MaterialTheme.colors.strava,
+                    style = MaterialTheme.typography.h3,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End,
+                    maxLines = 1,
+                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 16.dp).clickable { onEvent(BikeScreenEvent.ViewOnStrava) }
                 )
 
             }
