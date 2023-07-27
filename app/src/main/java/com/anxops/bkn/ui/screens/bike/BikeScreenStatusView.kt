@@ -91,7 +91,7 @@ fun BikeScreenStatusView(
 
                 Text(
                     text = "${bike.type.extendedType}",
-                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 6.dp),
                     style = MaterialTheme.typography.h3,
                     color = MaterialTheme.colors.onPrimary
                 )
