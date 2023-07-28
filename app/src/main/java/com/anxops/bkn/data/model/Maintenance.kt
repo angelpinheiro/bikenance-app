@@ -28,7 +28,7 @@ data class Maintenance(
     @SerialName("defaultFrequency") val defaultFrequency: RevisionFrequency,
     @SerialName("description") val description: String,
     @Serializable(with = ComponentTypeSerializer::class) @SerialName("componentType") val componentType: ComponentType,
-    @SerialName("usageSinceLast") var usageSinceLast: Usage?,
+    @SerialName("usageSinceLast") var usageSinceLast: Usage = Usage(0.0, 0.0),
     @SerialName("status") val status: Double = 0.0,
     @Serializable(with = LocalDateSerializer::class) @SerialName("lastDate") var lastMaintenanceDate: LocalDateTime? = null,
     @Serializable(with = LocalDateSerializer::class) @SerialName("estimatedDate") var estimatedDate: LocalDateTime? = null,
