@@ -14,6 +14,8 @@ import com.anxops.bkn.data.mediator.RideRemoteMediator
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.repository.AppInfoRepository
+import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
@@ -31,6 +33,7 @@ import javax.inject.Inject
 class RidesScreenViewModel @Inject constructor(
     private val ridesRepository: RidesRepositoryFacade,
     private val bikesRepository: BikeRepositoryFacade,
+    private val appInfoRepository: AppInfoRepositoryFacade,
     val db: AppDb,
     val api: Api,
 ) : ViewModel() {
@@ -42,7 +45,7 @@ class RidesScreenViewModel @Inject constructor(
         Log.d("RidesScreenViewModel", "RidesScreenViewModel Init")
     }
 
-    val lastUpdatedFlow = db.appInfoDao().getAppInfoFlow()
+    val lastUpdatedFlow = appInfoRepository.appInfoFlow()
     val paginatedRidesFlow = createPaginatedRidesFlow(db, api)
 
     val bikes: StateFlow<List<Bike>> =
@@ -68,7 +71,7 @@ class RidesScreenViewModel @Inject constructor(
     private fun createPaginatedRidesFlow(
         db: AppDb,
         api: Api,
-    ): Flow<PagingData<RideAndBike>> = createPager(db, api).flow.map { p ->
+    ): Flow<PagingData<RideAndBike>> = createPager(db, api, appInfoRepository).flow.map { p ->
         p.map { rideEntity ->
             val bike = bikes.value.find { rideEntity.bikeId == it._id }
             RideAndBike(rideEntity.toDomain(), bike)
@@ -79,6 +82,7 @@ class RidesScreenViewModel @Inject constructor(
     fun createPager(
         db: AppDb,
         api: Api,
+        appInfoRepository: AppInfoRepositoryFacade
     ): Pager<Int, BikeRideEntity> {
         return Pager(
             config = PagingConfig(
@@ -86,7 +90,7 @@ class RidesScreenViewModel @Inject constructor(
             ), pagingSourceFactory = {
                 db.bikeRideDao().pagingSource()
             }, remoteMediator = RideRemoteMediator(
-                db, api
+                db, api, appInfoRepository
             )
         )
     }

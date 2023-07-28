@@ -1,17 +1,17 @@
 package com.anxops.bkn.data.mediator
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
-import com.anxops.bkn.data.database.entities.AppInfo
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.database.toEntity
+import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
+import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -20,80 +20,73 @@ import java.util.concurrent.TimeUnit
 class RideRemoteMediator(
     private val db: AppDb,
     private val api: Api,
+    private val appInfoRepository: AppInfoRepositoryFacade
 ) : RemoteMediator<Int, BikeRideEntity>() {
     override suspend fun load(
         loadType: LoadType, state: PagingState<Int, BikeRideEntity>
     ): MediatorResult {
-        return try {
-            val loadKey = when (loadType) {
+        try {
+            val dateTime = when (loadType) {
                 LoadType.REFRESH -> null
-                LoadType.PREPEND -> return MediatorResult.Success(
-                    endOfPaginationReached = false
-                )
-
+                // when appending, return the last item dateTime
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull() ?: return MediatorResult.Success(
                         endOfPaginationReached = true
                     )
                     lastItem.dateTime
                 }
+                // we don't allow prepending data
+                LoadType.PREPEND -> return MediatorResult.Success(
+                    endOfPaginationReached = false
+                )
             }
-
+            // query our api for items before that datetime (recent rides come first)
             val response = api.getPaginatedRidesByDateTime(
-                loadKey, state.config.pageSize
+                dateTime, state.config.pageSize
             )
+            return handleApiResponse(response, loadType, dateTime)
+        } catch (e: IOException) {
+            return MediatorResult.Error(e)
+        } catch (e: Exception) {
+            return MediatorResult.Error(e)
+        }
+    }
 
-            when (response) {
-                is ApiResponse.Success -> {
-
-                    Log.d(
-                        "RideRemoteMediator",
-                        "Success -> LoadType: [$loadType], LoadKey: [$loadKey], [${response.data.size} items loaded]"
-                    )
-                    if (response.data.isEmpty()) {
-                        db.database().withTransaction {
-                            db.appInfoDao().clear()
-                            db.appInfoDao()
-                                .insert(AppInfo(lastRidesUpdate = System.currentTimeMillis()))
-                        }
-                        return MediatorResult.Success(true)
-                    }
+    private suspend fun handleApiResponse(
+        response: ApiResponse<List<BikeRide>>, loadType: LoadType, dateTime: String?
+    ): MediatorResult {
+        return when (response) {
+            is ApiResponse.Success -> {
+                if (response.data.isEmpty()) {
+                    appInfoRepository.saveLastRidesUpdate(System.currentTimeMillis())
+                    MediatorResult.Success(true)
+                } else {
                     db.database().withTransaction {
+                        // it we are refreshing, clear rides before inserting the new ones
                         if (loadType == LoadType.REFRESH) {
                             db.bikeRideDao().clear()
-                            db.appInfoDao().clear()
-                            db.appInfoDao()
-                                .insert(AppInfo(lastRidesUpdate = System.currentTimeMillis()))
+                            appInfoRepository.saveLastRidesUpdate(System.currentTimeMillis())
                         }
                         response.data.forEach {
                             db.bikeRideDao().insert(it.toEntity())
                         }
                     }
-
-                    return MediatorResult.Success(false)
-                }
-
-                is ApiResponse.Error -> {
-
-                    Log.d(
-                        "RideRemoteMediator", "Error -> LoadKey: [$loadKey] [${response.message}]"
-                    )
-
-                    return MediatorResult.Error(
-                        Exception("ApiResponse error")
-                    )
+                    MediatorResult.Success(false)
                 }
             }
 
-
-        } catch (e: IOException) {
-            MediatorResult.Error(e)
-        } catch (e: Exception) {
-            MediatorResult.Error(e)
+            is ApiResponse.Error -> {
+                MediatorResult.Error(
+                    Exception("Api response error -> LoadKey: [$dateTime] [${response.message}]")
+                )
+            }
         }
     }
 
+    // when the mediator is initialized, skip refresh if the last refresh was in the last hour.
+    // This avoids continuous refreshes when jumping from screens or if the app is reopen
     override suspend fun initialize(): InitializeAction {
+
         val lastUpdate = db.appInfoDao().getAppInfo()?.lastRidesUpdate ?: 0
         val cacheTimeout = TimeUnit.HOURS.toMillis(1) // 1 hour
 

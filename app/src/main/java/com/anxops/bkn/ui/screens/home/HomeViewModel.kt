@@ -8,9 +8,10 @@ import com.anxops.bkn.data.database.entities.AppInfo
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.AppInfoRepository
+import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -25,6 +26,7 @@ class HomeViewModel @Inject constructor(
     private val api: Api,
     private val db: AppDb,
     private val profileRepository: ProfileRepositoryFacade,
+    private val appInfoRepository: AppInfoRepositoryFacade,
 ) : ViewModel() {
 
     val allowRefreshState = db.appInfoDao().getAppInfoFlow().map {info ->
@@ -55,8 +57,7 @@ class HomeViewModel @Inject constructor(
 
                     when (val result = api.refreshLastRides()) {
                         is ApiResponse.Success -> {
-                            db.appInfoDao().clear()
-                            db.appInfoDao().insert(appInfo.copy(lastRidesRefreshRequest = System.currentTimeMillis()))
+                            appInfoRepository.saveLastRidesRefresh(System.currentTimeMillis())
                             Log.d("RidesScreenViewModel", "RefreshLastRides Success: ${result.data}")
                         }
 

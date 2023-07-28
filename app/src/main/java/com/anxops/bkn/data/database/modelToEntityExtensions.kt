@@ -93,7 +93,7 @@ fun Maintenance.toEntity(): MaintenanceEntity {
     return MaintenanceEntity(
         _id = _id,
         componentId = componentId,
-        usageSinceLast = usageSinceLast?.toEntity(),
+        usageSinceLast = usageSinceLast.toEntity(),
         estimatedDate = estimatedDate?.formatAsIso8061(),
         description = description,
         lastMaintenanceDate = lastMaintenanceDate?.formatAsIso8061(),

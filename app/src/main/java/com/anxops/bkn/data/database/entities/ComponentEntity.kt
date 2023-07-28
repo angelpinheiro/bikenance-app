@@ -73,7 +73,7 @@ data class MaintenanceEntity(
     @ColumnInfo("estimatedDate")
     var estimatedDate: String? = null,
     @Embedded
-    var usageSinceLast: UsageEntity?,
+    var usageSinceLast: UsageEntity,
 ) {
 
     fun toDomain(): Maintenance {
@@ -90,7 +90,7 @@ data class MaintenanceEntity(
             description = description,
             estimatedDate = estimatedDate?.toLocalDateTime(),
             lastMaintenanceDate = lastMaintenanceDate?.toLocalDateTime(),
-            usageSinceLast = usageSinceLast?.toDomain()
+            usageSinceLast = usageSinceLast.toDomain()
         )
     }
 }

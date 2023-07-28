@@ -12,8 +12,8 @@ interface AppInfoDao {
     @Query("SELECT * FROM app_info LIMIT 1")
     fun getAppInfoFlow(): Flow<AppInfo?>
 
-    @Insert
-    suspend fun insert(info: AppInfo)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdate(info: AppInfo)
 
     @Query("DELETE FROM app_info")
     suspend fun clear()

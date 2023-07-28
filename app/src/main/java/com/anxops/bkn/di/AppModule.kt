@@ -6,6 +6,8 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.KtorClient
 import com.anxops.bkn.data.network.firebase.SendTokenToServerWorkerStarter
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.AppInfoRepository
+import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.BikeRepository
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.BikeRidesRepository
@@ -59,6 +61,11 @@ class AppModule {
     @Singleton
     fun providesRidesRepository(api: Api, db: AppDb): RidesRepositoryFacade =
         BikeRidesRepository(api, db)
+
+    @Provides
+    @Singleton
+    fun providesAppInfoRepository(api: Api, db: AppDb): AppInfoRepositoryFacade =
+        AppInfoRepository(api, db)
 
     @Provides
     @Singleton

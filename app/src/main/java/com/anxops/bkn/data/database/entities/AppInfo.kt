@@ -9,6 +9,6 @@ data class AppInfo(
     @ColumnInfo(name = "last_rides_update") val lastRidesUpdate: Long = 0,
     @ColumnInfo(name = "last_rides_refresh") val lastRidesRefreshRequest: Long = 0,
 ) {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     var id: Int = 0
 }
