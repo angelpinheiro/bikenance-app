@@ -90,17 +90,12 @@ dependencies {
     implementation libs.androidx.room.ktx
     implementation libs.androidx.work
     implementation libs.androidx.browser
-
     implementation libs.androidx.paging.runtime
     implementation libs.androidx.paging.compose
     implementation libs.androidx.room.paging
 
-    ksp libs.androidx.room.compiler
-
     implementation libs.hilt.android
     implementation libs.hilt.work
-    kapt libs.hilt.androidCompiler
-    kapt libs.androidx.hilt.compiler
 
     implementation libs.compose.ui
     implementation libs.compose.material
@@ -120,28 +115,24 @@ dependencies {
     implementation libs.ktor.serialization
     implementation libs.ktor.logging
 
-//    implementation libs.kotlinx.serialization.json
-//    implementation libs.kotlinx.datetime
-
-    implementation libs.coil.compose
-    implementation libs.okhttp
-    implementation libs.google.gson
-
     implementation libs.firebase.storage.ktx
     implementation libs.firebase.messaging.ktx
 
-    implementation libs.maps.playservices
+    implementation libs.coil.compose
     implementation libs.maps.compose
-
+    implementation libs.maps.playservices
     implementation libs.rc.compose.destinations.core
-    ksp libs.rc.compose.destinations.ksp
-
     implementation libs.iconics.compose
     implementation(libs.iconics.community.material) {
         artifact {
             type = 'aar'
         }
     }
+
+    kapt libs.hilt.androidCompiler
+    kapt libs.androidx.hilt.compiler
+    ksp libs.rc.compose.destinations.ksp
+    ksp libs.androidx.room.compiler
 
     testImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.junit
