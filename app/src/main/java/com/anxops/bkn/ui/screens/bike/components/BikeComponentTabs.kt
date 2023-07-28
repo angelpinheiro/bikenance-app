@@ -1,9 +1,9 @@
 package com.anxops.bkn.ui.screens.bike.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -19,20 +19,18 @@ import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
-import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
-import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.shared.components.bgGradient
-import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import java.util.SortedMap
 
 
 enum class ComponentTabHeaders(val category: ComponentCategory? = null, order: Int = 0) {
     //    GENERAL(order = 1),
-    TRANSMISSION(ComponentCategory.TRANSMISSION, order = 2),
-    SUSPENSION(ComponentCategory.SUSPENSION, order = 3),
-    BRAKES(ComponentCategory.BRAKES, order = 4),
-    WHEELS(ComponentCategory.WHEELS, order = 5),
-    MISC(ComponentCategory.MISC, order = 6)
+    TRANSMISSION(
+        ComponentCategory.TRANSMISSION, order = 2
+    ),
+    SUSPENSION(ComponentCategory.SUSPENSION, order = 3), BRAKES(
+        ComponentCategory.BRAKES, order = 4
+    ),
+    WHEELS(ComponentCategory.WHEELS, order = 5), MISC(ComponentCategory.MISC, order = 6)
 }
 
 data class ComponentCategoryTabData(
@@ -46,8 +44,7 @@ data class GroupedComponents(
 )
 
 fun buildComponentCategoryTabData(
-    components: List<BikeComponent>,
-    bikeStatus: BikeStatus
+    components: List<BikeComponent>, bikeStatus: BikeStatus
 ): SortedMap<ComponentTabHeaders, ComponentCategoryTabData> {
     // group by category
     val groupedByCat = components.groupBy { it.type.category }
@@ -75,6 +72,7 @@ fun buildComponentCategoryTabData(
     return catGroupedComponents.associateBy { it.tabHeader }.toSortedMap()
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BikeComponentTabsV2(
     onTabChange: (ComponentTabHeaders) -> Unit = {},
@@ -83,41 +81,45 @@ fun BikeComponentTabsV2(
     status: BikeStatus
 ) {
 
+    val lazyListState = rememberLazyListState()
     val data = remember(bike) {
         mutableStateOf(buildComponentCategoryTabData(bike.components ?: listOf(), status))
     }
 
     var tabHeaderIndex = data.value.keys.indexOf(selectedTab)
 
-    Column(
-        Modifier
-            .fillMaxSize()
+    LazyColumn(
+        state = lazyListState, modifier = Modifier.fillMaxSize()
     ) {
 
-        ScrollableTabRow(
-            selectedTabIndex = tabHeaderIndex,
-            backgroundColor = MaterialTheme.colors.primaryVariant,
-            edgePadding = 10.dp,
-            divider = {},
-        ) {
-            data.value.forEach { (h, data) ->
-                CategoryTab(d = data, selected = selectedTab == h, onSelected = {
-                    onTabChange(h)
-                })
+        stickyHeader {
+            ScrollableTabRow(
+                selectedTabIndex = tabHeaderIndex,
+                backgroundColor = MaterialTheme.colors.primaryVariant,
+                edgePadding = 10.dp,
+                divider = {},
+            ) {
+                data.value.forEach { (h, data) ->
+                    CategoryTab(d = data, selected = selectedTab == h, onSelected = {
+                        onTabChange(h)
+                    })
+                }
             }
         }
+
 
         val tabData = data.value[selectedTab]!!
         tabData.components.forEach { gc ->
 
-            if (gc.items.size > 1) {
-                MultiComponentListItem(gc)
-            } else {
-                gc.items.forEach {
-                    BikeComponentListItem(component = it)
+            gc.items.forEach {
+                item {
+                    BikeComponentListItem(component = it) {
+                        // ONCLICK
+                    }
                 }
             }
         }
+
 
     }
 }
@@ -125,15 +127,15 @@ fun BikeComponentTabsV2(
 @Composable
 fun CategoryTab(d: ComponentCategoryTabData, selected: Boolean, onSelected: () -> Unit = {}) {
     Tab(
-        icon = {
-            if (d.status > StatusLevel.GOOD) {
-                BknIcon(
-                    icon = CommunityMaterial.Icon.cmd_bell_circle, getColorForStatus(
-                        d.status
-                    ), modifier = Modifier.size(18.dp)
-                )
-            }
-        },
+//        icon = {
+//            if (d.status > StatusLevel.GOOD) {
+//                BknIcon(
+//                    icon = CommunityMaterial.Icon.cmd_bell_circle, getColorForStatus(
+//                        d.status
+//                    ), modifier = Modifier.size(18.dp)
+//                )
+//            }
+//        },
         text = {
             Text(d.tabHeader.name, style = MaterialTheme.typography.h5)
 

@@ -16,7 +16,7 @@
     <string name="componentType_PEDAL_CLIPLESS">Clipless Pedals</string>
     <string name="componentType_REAR_HUB">Rear Hub</string>
     <string name="componentType_THRU_AXLE">Thru Axle</string>
-    <string name="componentType_WHEELSET">Wheelset</string>
+    <string name="componentType_WHEELSET">Wheel</string>
     <string name="componentType_FRAME_BEARINGS">Frame bearings</string>
     <string name="componentType_CABLE_HOUSING">Cable Housing &amp; Cables</string>
     <string name="componentType_CHAIN">Chain</string>
