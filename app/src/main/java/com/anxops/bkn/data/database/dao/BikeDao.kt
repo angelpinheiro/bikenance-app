@@ -10,7 +10,7 @@ interface BikeDao {
     @Query("SELECT * FROM bike ORDER BY distance DESC")
     suspend fun findAll(): List<BikeEntity>
 
-    @Query("SELECT * FROM bike ORDER BY distance DESC")
+    @Query("SELECT * FROM bike WHERE draft == 0 ORDER BY distance DESC")
     fun flow(): Flow<List<BikeEntity>>
 
     @Query("SELECT * FROM bike WHERE _id = :bikeId")

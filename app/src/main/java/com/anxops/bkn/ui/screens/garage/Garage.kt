@@ -11,6 +11,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,72 +33,65 @@ fun Garage(
     navigator: DestinationsNavigator, viewModel: GarageViewModel = hiltViewModel()
 ) {
     val nav = BknNavigator(navigator)
-    val state = viewModel.screenState.collectAsState()
+    val currentState by viewModel.screenState.collectAsState()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.value is GarageScreenState.Loading,
+        refreshing = currentState.isRefreshing,
         onRefresh = { viewModel.loadData() })
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState)
     ) {
-        when (val currentState = state.value) {
-            is GarageScreenState.ShowingGarage -> {
-                if (currentState.bikes.isEmpty()) {
-                    EmptyGarage{
-                        nav.navigateToBikeSync()
-                    }
-                } else {
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
 
-                        BikesPager(bikes = currentState.bikes, onBikeChanged = {
-                            viewModel.setSelectedBike(it)
-                        }, onEditBike = {
-                            nav.navigateToBikeEdit(it._id)
-                        }, onBikeDetails = {
-                            if (it.configDone) nav.navigateToBike(it._id)
-                            else nav.navigateToBikeSetup(it._id)
-                        }, onClickSync = {
-                            nav.navigateToBikeSync()
-                        })
+        if (currentState.isLoading) {
+            Loading()
+        } else if (currentState.bikes.isEmpty()) {
+            EmptyGarage {
+                nav.navigateToBikeSync()
+            }
+        } else {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 6.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                BikesPager(bikes = currentState.bikes, onBikeChanged = {
+                    viewModel.setSelectedBike(it)
+                }, onEditBike = {
+                    nav.navigateToBikeEdit(it._id)
+                }, onBikeDetails = {
+                    if (it.configDone) nav.navigateToBike(it._id)
+                    else nav.navigateToBikeSetup(it._id)
+                }, onClickSync = {
+                    nav.navigateToBikeSync()
+                })
 
-                            currentState.lastRides?.let { rides ->
-                                RecentActivity(rides = rides) {
-                                    nav.navigateToRide(it._id)
-                                }
-                            }
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-                            UpcomingMaintenances(currentState.selectedBike, onClickItem = { m ->
-                                currentState.selectedBike?.let{
-                                    nav.navigateToBike(it._id, m.componentId)
-                                }
-
-                            })
+                    currentState.lastRides?.let { rides ->
+                        RecentActivity(rides = rides) {
+                            nav.navigateToRide(it._id)
                         }
                     }
-                }
-            }
 
-            is GarageScreenState.Loading -> {
-                Loading()
+                    UpcomingMaintenances(currentState.selectedBike, onClickItem = { m ->
+                        currentState.selectedBike?.let {
+                            nav.navigateToBike(it._id, m.componentId)
+                        }
+
+                    })
+                }
             }
         }
 
         PullRefreshIndicator(
-            state.value is GarageScreenState.Loading,
-            pullRefreshState,
-            Modifier.align(Alignment.TopCenter)
+            currentState.isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter)
         )
     }
 }

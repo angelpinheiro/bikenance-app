@@ -5,14 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -31,6 +30,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.theme.statusDanger
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -44,12 +44,6 @@ fun BikesPager(
 ) {
     val configuration = LocalConfiguration.current
     val pagerState = rememberPagerState()
-
-    val pageSize = if (bikes.size > 1) {
-        PageSize.Fixed((configuration.screenWidthDp.dp.value * 0.85).toInt().dp)
-    } else {
-        PageSize.Fill
-    }
 
     val selectedBike = remember {
         mutableStateOf<Bike?>(null)
@@ -73,18 +67,21 @@ fun BikesPager(
 
 
         Row(
-            Modifier
-                .padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 0.dp),
-            verticalAlignment = Alignment.CenterVertically
+            Modifier.padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 0.dp).let {
+                if (bikes.size == 1) {
+                    it.fillMaxWidth()
+                } else {
+                    it
+                }
+            }, verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Bikes",
+                text = "Bikes (${bikes.size})",
                 style = MaterialTheme.typography.h2,
                 color = MaterialTheme.colors.onBackground
             )
             Box(
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
                 if (bikes.size > 1) {
                     BikePagerIndicator(pagerState, bikes.size)
@@ -99,24 +96,36 @@ fun BikesPager(
             }
         }
 
-
-        HorizontalPager(
-            pageCount = bikes.size,
-            state = pagerState,
-            pageSize = pageSize,
-            flingBehavior = PagerDefaults.flingBehavior(
+        if (bikes.size == 1) {
+            bikes.firstOrNull()?.let { bike ->
+                Box(Modifier.padding(horizontal = 16.dp)) {
+                    GarageBikeCard(bike = bike, onEdit = {
+                        onEditBike(bike)
+                    }, onDetail = {
+                        onBikeDetails(bike)
+                    }, isLast = true
+                    )
+                }
+            }
+        } else {
+            HorizontalPager(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                pageCount = bikes.size,
                 state = pagerState,
-                pagerSnapDistance = PagerSnapDistance.atMost(2)
-            )
-        ) {
-            val bike = bikes[it]
-            GarageBikeCard(bike = bike, onEdit = {
-                onEditBike(bike)
-            }, onDetail = {
-                onBikeDetails(bike)
-            },
-                isLast = it == bikes.size - 1
-            )
+                pageSize = PageSize.Fixed((configuration.screenWidthDp.dp.value * 0.8).toInt().dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                pageSpacing = 16.dp
+            ) {
+                val bike = bikes[it]
+                GarageBikeCard(bike = bike, onEdit = {
+                    onEditBike(bike)
+                }, onDetail = {
+                    onBikeDetails(bike)
+                }, isLast = it == bikes.size - 1
+                )
+            }
+
         }
     }
 }

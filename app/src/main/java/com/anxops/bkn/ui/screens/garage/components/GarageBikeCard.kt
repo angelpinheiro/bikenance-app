@@ -68,8 +68,7 @@ fun GarageBikeCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(height)
-            .padding(start = 16.dp, end = if(isLast) 16.dp else 0.dp),
+            .height(height),
         elevation = elevation,
         backgroundColor = tintColor
     ) {

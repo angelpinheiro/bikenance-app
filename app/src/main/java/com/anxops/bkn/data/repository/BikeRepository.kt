@@ -31,7 +31,7 @@ interface BikeRepositoryFacade {
 
     suspend fun updateSynchronizedBikes(ids: Map<String, Boolean>)
 
-    fun getBikesFlow(draft: Boolean = false, full: Boolean = false): Flow<List<Bike>>
+    fun getBikesFlow(full: Boolean = false): Flow<List<Bike>>
 
     suspend fun refreshBikes(): Boolean
 }
@@ -102,7 +102,7 @@ class BikeRepository(
         db.bikeDao().findAll().map(BikeEntity::toDomain)
     }
 
-    override fun getBikesFlow(draft: Boolean, full: Boolean): Flow<List<Bike>> {
+    override fun getBikesFlow(full: Boolean): Flow<List<Bike>> {
         return db.bikeDao().flow().map { bikes ->
             withContext(defaultDispatcher) {
                 if (full) bikes.map {
