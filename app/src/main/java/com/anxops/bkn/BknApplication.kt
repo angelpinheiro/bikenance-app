@@ -3,7 +3,7 @@ package com.anxops.bkn
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.anxops.bkn.data.network.tokenRefresh.RefreshTokenHelper
+import com.anxops.bkn.data.network.tokenRefresh.TokenRefresher
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.ui.Notifier
 import com.google.firebase.FirebaseApp
@@ -26,6 +26,9 @@ class BknApplication : Application(), Configuration.Provider {
     lateinit var dataStore: BknDataStore
 
     @Inject
+    lateinit var tokenRefresher: TokenRefresher
+
+    @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
     @Inject
@@ -44,7 +47,7 @@ class BknApplication : Application(), Configuration.Provider {
     }
 
     private fun configureTokenRefresh() {
-        RefreshTokenHelper.startPeriodicRefreshTokenWork(this)
+        tokenRefresher.startPeriodicRefreshTokenWork(this)
     }
 
     private fun configureNotifications() {

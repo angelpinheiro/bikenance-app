@@ -5,6 +5,8 @@ import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.KtorClient
 import com.anxops.bkn.data.network.firebase.SendTokenToServerWorkerStarter
+import com.anxops.bkn.data.network.tokenRefresh.DefaultTokenRefresher
+import com.anxops.bkn.data.network.tokenRefresh.TokenRefresher
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.AppInfoRepository
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
@@ -42,6 +44,11 @@ class AppModule {
     @Singleton
     fun providesWorkerStarter(@ApplicationContext context: Context): SendTokenToServerWorkerStarter =
         SendTokenToServerWorkerStarter(context)
+
+    @Provides
+    @Singleton
+    fun providesTokenRefresher(dataStore: BknDataStore, api: Api): TokenRefresher = DefaultTokenRefresher(dataStore, api)
+
 
     @Provides
     @Singleton

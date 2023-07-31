@@ -1,7 +1,6 @@
 package com.anxops.bkn.data.network.tokenRefresh
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -14,12 +13,16 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-object RefreshTokenHelper {
-    suspend fun performRefresh(
-        dataStore: BknDataStore,
-        api: Api
-    ): Boolean {
+interface TokenRefresher {
+    suspend fun performRefresh(): Boolean
+    fun startPeriodicRefreshTokenWork(context: Context)
+}
 
+
+class DefaultTokenRefresher(
+    val dataStore: BknDataStore, val api: Api
+) : TokenRefresher {
+    override suspend fun performRefresh(): Boolean {
         dataStore.getRefreshToken()?.let {
             when (val result = api.updateRefreshToken(it)) {
                 is ApiResponse.Success -> {
@@ -40,16 +43,12 @@ object RefreshTokenHelper {
         return false
     }
 
-    fun startPeriodicRefreshTokenWork(context: Context) {
-        val workConstraints = Constraints
-            .Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+    override fun startPeriodicRefreshTokenWork(context: Context) {
+        val workConstraints =
+            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
         val periodicRefreshTokenWork = PeriodicWorkRequest.Builder(
-            RefreshTokenWork::class.java,
-            1,
-            TimeUnit.DAYS
+            RefreshTokenWork::class.java, 1, TimeUnit.DAYS
         ).setConstraints(workConstraints).build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -60,6 +59,5 @@ object RefreshTokenHelper {
 
 
     }
-
 
 }

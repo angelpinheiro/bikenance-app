@@ -14,11 +14,10 @@ import dagger.assisted.AssistedInject
 class RefreshTokenWork @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    val dataStore: BknDataStore,
-    val api: Api
+    private val tokenRefresher: TokenRefresher
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
-        return if (RefreshTokenHelper.performRefresh(dataStore, api))
+        return if (tokenRefresher.performRefresh())
             Result.success()
         else
             Result.failure()
