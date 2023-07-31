@@ -20,7 +20,6 @@ import java.util.*
 
 class Api(client: KtorClient, val dataStore: BknDataStore) {
 
-    private val fileClient = client.fileClient
     private val httpClient = client.client
 
     private suspend fun tokenHeader(): String {

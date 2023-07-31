@@ -78,8 +78,4 @@ class HandleFcmMessageWorker @AssistedInject constructor(
 
         return Result.success()
     }
-
-    companion object {
-        private const val TAG = "SendTokenToServerWorker"
-    }
 }
