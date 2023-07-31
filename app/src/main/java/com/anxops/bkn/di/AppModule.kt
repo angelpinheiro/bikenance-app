@@ -20,11 +20,18 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 class AppModule {
+
+    @Provides
+    @Singleton
+    fun providesIODispatchers(@ApplicationContext context: Context): CoroutineDispatcher =
+        Dispatchers.IO
 
     @Provides
     @Singleton
@@ -52,9 +59,7 @@ class AppModule {
     @Provides
     @Singleton
     fun providesBikesRepository(
-        api: Api,
-        db: AppDb,
-        rf: RidesRepositoryFacade
+        api: Api, db: AppDb, rf: RidesRepositoryFacade
     ): BikeRepositoryFacade = BikeRepository(api, db, rf)
 
     @Provides
