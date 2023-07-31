@@ -121,6 +121,7 @@ dependencies {
     implementation libs.coil.compose
     implementation libs.maps.compose
     implementation libs.maps.playservices
+    implementation libs.timber
     implementation libs.rc.compose.destinations.core
     implementation libs.iconics.compose
     implementation(libs.iconics.community.material) {

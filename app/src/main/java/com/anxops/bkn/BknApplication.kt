@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -32,6 +33,7 @@ class BknApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        configureLogger()
         configureFirebase()
         configureNotifications()
         configureTokenRefresh()
@@ -49,12 +51,19 @@ class BknApplication : Application(), Configuration.Provider {
         notifier.createNotificationChannel(this)
     }
 
+    private fun configureLogger() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+
     private fun configureFirebase() {
         FirebaseApp.initializeApp(this)
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             task.result?.let { token ->
                 MainScope().launch {
                     withContext(dispatcher) {
+                        Timber.v("Saving firebase token: $token")
                         dataStore.saveFirebaseToken(token)
                     }
                 }

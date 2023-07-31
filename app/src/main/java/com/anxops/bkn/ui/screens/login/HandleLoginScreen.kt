@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.login
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,18 +18,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
-import com.anxops.bkn.data.network.firebase.SendTokenToServerWorker
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 
 @Destination(
-    deepLinks = [
-        DeepLink(
-            uriPattern = "bikenance://redirect?code={code}&refresh={refresh}"
-        )
-    ]
+    deepLinks = [DeepLink(
+        uriPattern = "bikenance://redirect?code={code}&refresh={refresh}"
+    )]
 )
 @Composable
 fun HandleLoginScreen(
@@ -44,7 +41,7 @@ fun HandleLoginScreen(
     val context = LocalContext.current
     val state = viewModel.state.collectAsState()
 
-    Log.d("HandleLoginScreen", "Tokens: [$code,$refresh]")
+    Timber.d("Handle login with tokens: [$code,$refresh]")
 
     viewModel.setAuthTokens(code, refresh)
 

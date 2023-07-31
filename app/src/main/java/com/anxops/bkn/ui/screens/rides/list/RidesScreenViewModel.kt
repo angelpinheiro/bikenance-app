@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.rides.list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -14,7 +13,6 @@ import com.anxops.bkn.data.mediator.RideRemoteMediator
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
-import com.anxops.bkn.data.repository.AppInfoRepository
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
@@ -23,7 +21,6 @@ import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -38,13 +35,6 @@ class RidesScreenViewModel @Inject constructor(
     val db: AppDb,
     val api: Api,
 ) : ViewModel() {
-
-
-
-    init {
-
-        Log.d("RidesScreenViewModel", "RidesScreenViewModel Init")
-    }
 
     val lastUpdatedFlow = appInfoRepository.appInfoFlow()
     val paginatedRidesFlow = createPaginatedRidesFlow(db, api)
@@ -81,9 +71,7 @@ class RidesScreenViewModel @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     fun createPager(
-        db: AppDb,
-        api: Api,
-        appInfoRepository: AppInfoRepositoryFacade
+        db: AppDb, api: Api, appInfoRepository: AppInfoRepositoryFacade
     ): Pager<Int, BikeRideEntity> {
         return Pager(
             config = PagingConfig(

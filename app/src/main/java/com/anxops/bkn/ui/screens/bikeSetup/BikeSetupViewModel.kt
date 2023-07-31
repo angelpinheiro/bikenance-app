@@ -103,8 +103,6 @@ class BikeSetupViewModel @Inject constructor(
                             configDone = false
                         )
 
-                        Log.d("getNewComponentsForBike", "Single ${bike.componentList().size}")
-
                         bikesRepository.setupBike(bike)
                         _state.value = BikeSetupScreenState.SetupDone(bike)
                     }
@@ -238,7 +236,6 @@ class BikeSetupViewModel @Inject constructor(
                 ComponentType.Wheel,
             )
             if (duplicatedComponents.contains(it)) {
-                Log.d("getNewComponentsForBike", "Duplicated ${it.name}")
                 listOf(
                     BikeComponent(
                         bikeId = state.bike._id,
@@ -255,7 +252,6 @@ class BikeSetupViewModel @Inject constructor(
                     )
                 )
             } else {
-                Log.d("getNewComponentsForBike", "Single ${it.name}")
                 listOf(
                     BikeComponent(
                         bikeId = state.bike._id, alias = it.name, type = it, from = date
@@ -264,8 +260,6 @@ class BikeSetupViewModel @Inject constructor(
             }
 
         }.flatten()
-
-        Log.d("getNewComponentsForBike", "Total ${components.size}")
 
         return components
     }

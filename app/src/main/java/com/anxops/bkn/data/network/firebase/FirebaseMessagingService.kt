@@ -9,6 +9,7 @@ import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -31,13 +32,13 @@ class MessagingService : FirebaseMessagingService() {
     lateinit var ridesRepository: RidesRepositoryFacade
 
     override fun onNewToken(token: String) {
-        Log.d("MessagingService", "New token received $token")
+        Timber.d("New firebase token received. Starting SendTokenToServerWorker job...")
         SendTokenToServerWorker.launch(this)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         if (remoteMessage.data.isNotEmpty()) {
-            Log.d("MessagingService", "Message data payload: ${remoteMessage.data}")
+            Timber.d("New push message received ${remoteMessage.data} ")
             val work = OneTimeWorkRequest.Builder(HandleFcmMessageWorker::class.java)
                 .setInputData(Data.Builder().putAll(remoteMessage.data as Map<String, Any>).build())
                 .build()

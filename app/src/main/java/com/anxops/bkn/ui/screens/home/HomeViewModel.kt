@@ -59,7 +59,6 @@ class HomeViewModel @Inject constructor(
                     when (val result = api.refreshLastRides()) {
                         is ApiResponse.Success -> {
                             appInfoRepository.saveLastRidesRefresh(System.currentTimeMillis())
-                            Log.d("RidesScreenViewModel", "RefreshLastRides Success: ${result.data}")
                         }
 
                         is ApiResponse.Error -> {

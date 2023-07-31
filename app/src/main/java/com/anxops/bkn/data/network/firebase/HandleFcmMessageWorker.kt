@@ -1,7 +1,6 @@
 package com.anxops.bkn.data.network.firebase
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -53,7 +52,6 @@ class HandleFcmMessageWorker @AssistedInject constructor(
                 bikeRepository.refreshBikes()
                 ridesRepository.reloadData()
 
-                Log.d("HandleFcmMessageWorker", "SHow profile sync notification")
                 notifier.show(
                     applicationContext, NotificationData.DestinationDeepLink(
                         title = "Sync complete!",

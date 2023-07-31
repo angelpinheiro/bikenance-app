@@ -1,7 +1,6 @@
 package com.anxops.bkn.data.network.firebase
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker
@@ -12,6 +11,7 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.preferences.BknDataStore
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import timber.log.Timber
 
 
 class SendTokenToServerWorkerStarter(val context: Context) {
@@ -31,16 +31,14 @@ class SendTokenToServerWorker @AssistedInject constructor(
     override suspend fun doWork(): ListenableWorker.Result {
         dataStore.getAuthToken()?.let {
             dataStore.getFirebaseToken()?.let {
-                Log.d(TAG, "Sending token to server: $it")
                 api.updateFirebaseToken(it)
+                Timber.d("Sending firebase token to server success")
             }
         }
         return Result.success()
     }
 
     companion object {
-        private const val TAG = "SendTokenToServerWorker"
-
         fun launch(context: Context) {
             val work = OneTimeWorkRequest.Builder(SendTokenToServerWorker::class.java).build()
             WorkManager.getInstance(context).beginWith(work).enqueue()

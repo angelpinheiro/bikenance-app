@@ -18,6 +18,7 @@ import com.anxops.bkn.MainActivity
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.DeepLinkDestination
 import com.ramcosta.composedestinations.spec.Direction
+import timber.log.Timber
 import java.util.UUID
 
 
@@ -74,12 +75,9 @@ class Notifier {
             ) {
                 return -1
             }
-            Log.d("HandleFcmMessageWorker", "Call notify")
+            Timber.d("Show notification $notificationId: ${data.title}")
             notify(notificationId, builder.build())
         }
-
-        Log.d("HandleFcmMessageWorker", "Notification ID $notificationId")
-
         return notificationId
     }
 

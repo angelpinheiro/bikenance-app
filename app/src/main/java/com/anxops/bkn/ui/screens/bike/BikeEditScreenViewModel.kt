@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -120,7 +121,7 @@ class BikeEditScreenViewModel @Inject constructor(
                 }
                 statusFlow.emit(BikeEditScreenStatus.UpdateSuccess)
             } catch (err: Exception) {
-                Log.e("ProfileScreenViewModel", "Error", err)
+                Timber.e(err)
                 statusFlow.emit(BikeEditScreenStatus.Error)
             }
         }
@@ -136,7 +137,7 @@ class BikeEditScreenViewModel @Inject constructor(
                     }
                     statusFlow.emit(BikeEditScreenStatus.UpdateSuccess)
                 } catch (err: Exception) {
-                    Log.e("ProfileScreenViewModel", "Error", err)
+                    Timber.e(err)
                     statusFlow.emit(BikeEditScreenStatus.Error)
                 }
             }

@@ -50,17 +50,7 @@ class BikeRepository(
                 db.database().withTransaction {
                     val bikes = apiResponse.data
 
-                    Log.d("BikeRepository", "Refresh bikes")
-
-                    bikes.forEach {
-                        Log.d(
-                            "BikeRepository",
-                            "Bike ${it.name} has ${it.components?.size} components"
-                        )
-                    }
-
                     val bikeEntities = bikes.map { it.toEntity() }
-
                     val componentEntities = bikes.flatMap { bike ->
                         bike.components?.map { it.toEntity() } ?: emptyList()
                     }
@@ -138,7 +128,6 @@ class BikeRepository(
                     db.bikeDao().update(response.data.toEntity())
                     db.bikeComponentDao().clearBike(bike._id)
                     response.data.components?.forEach { component ->
-                        Log.d("createComponents", "Inserting ${component.alias} in db")
                         db.bikeComponentDao().insert(component.toEntity())
                         component.maintenances?.forEach {
                             db.maintenanceDao().insert(it.toEntity())
