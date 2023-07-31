@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatElapsedTimeUntilNow
@@ -46,7 +47,7 @@ fun BikeComponentDetailBg(): Brush {
 }
 
 @Composable
-fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}) {
+fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}, onMaintenanceSelected: (Maintenance) -> Unit = {}) {
 
     Column(
         modifier = Modifier
@@ -107,7 +108,7 @@ fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}) {
         }
 
         component.maintenances?.forEach {
-            BikeComponentDetailMaintenance(item = it)
+            BikeComponentDetailMaintenance(item = it) { onMaintenanceSelected(it) }
         }
     }
 }

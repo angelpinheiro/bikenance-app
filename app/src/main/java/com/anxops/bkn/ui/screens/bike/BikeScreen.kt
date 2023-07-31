@@ -2,7 +2,6 @@ package com.anxops.bkn.ui.screens.bike
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,7 +30,6 @@ import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.bike.components.BikeComponentDetail
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsTopBar
-import com.anxops.bkn.ui.screens.rides.list.openStravaActivity
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.bgGradient
@@ -111,8 +109,7 @@ fun BikeScreen(
                     bknNavigator.navigateToBikeSetup(bike._id)
                 }, onBikeSettings = {
                     bknNavigator.navigateToBikeEdit(bike._id)
-                },
-                    onClickBack = {
+                }, onClickBack = {
                     bknNavigator.popBackStack()
                 })
             },
@@ -120,6 +117,8 @@ fun BikeScreen(
                 state.value.selectedComponent?.let {
                     BikeComponentDetail(component = it, onClose = {
                         scope.launch { scaffoldState.bottomSheetState.collapse() }
+                    }, onMaintenanceSelected = { maintenance ->
+                        bknNavigator.navigateToMaintenance(bike._id, maintenance._id)
                     })
                 }
             },
@@ -138,14 +137,12 @@ fun BikeScreen(
                     ) {
                         when (currentSection) {
                             BikeSections.Status -> {
-                                BikeScreenStatusView(
-                                    bike,
+                                BikeScreenStatusView(bike,
                                     state.value.selectedComponent,
                                     state.value.selectedCategory,
                                     onEvent = {
                                         viewModel.handleEvent(it)
-                                    }
-                                )
+                                    })
                             }
 
                             BikeSections.Components -> {

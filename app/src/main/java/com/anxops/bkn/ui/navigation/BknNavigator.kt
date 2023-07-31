@@ -10,6 +10,7 @@ import com.anxops.bkn.ui.screens.destinations.BikeSetupScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeSyncScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
+import com.anxops.bkn.ui.screens.destinations.MaintenanceScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SplashScreenDestination
@@ -53,7 +54,11 @@ class BknNavigator(var navigator: DestinationsNavigator) {
         navigator.navigate(BikeSetupScreenDestination.invoke(id))
     }
 
-    fun navigateToBike(id: String, section: String = BikeSections.Status.id, componentId: String? = null) {
+    fun navigateToBike(
+        id: String,
+        section: String = BikeSections.Status.id,
+        componentId: String? = null
+    ) {
         navigator.navigate(BikeScreenDestination.invoke(id, section, componentId))
     }
 
@@ -63,6 +68,10 @@ class BknNavigator(var navigator: DestinationsNavigator) {
 
     fun navigateToBikeSync() {
         navigator.navigate(BikeSyncScreenDestination.route)
+    }
+
+    fun navigateToMaintenance(bikeId: String, maintenanceId: String) {
+        navigator.navigate(MaintenanceScreenDestination.invoke(bikeId, maintenanceId))
     }
 
     fun popBackStack() {

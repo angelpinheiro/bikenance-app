@@ -6,6 +6,8 @@ import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeEntity
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponent
+import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,6 +36,10 @@ interface BikeRepositoryFacade {
     fun getBikesFlow(full: Boolean = false): Flow<List<Bike>>
 
     suspend fun refreshBikes(): Boolean
+
+    suspend fun getBikeMaintenance(id: String) : Maintenance?
+
+    suspend fun getBikeComponent(id: String) : BikeComponent?
 }
 
 class BikeRepository(
@@ -73,6 +79,14 @@ class BikeRepository(
 
             else -> false
         }
+    }
+
+    override suspend fun getBikeMaintenance(id: String): Maintenance? = withContext(defaultDispatcher) {
+        db.maintenanceDao().getById(id)?.toDomain()
+    }
+
+    override suspend fun getBikeComponent(id: String): BikeComponent? = withContext(defaultDispatcher) {
+        db.bikeComponentDao().getById(id)?.toDomain()
     }
 
     override suspend fun getBike(id: String): Bike? = withContext(defaultDispatcher) {
