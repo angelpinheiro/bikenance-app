@@ -4,9 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,7 +21,7 @@ enum class BikeSyncScreenStatus {
 }
 
 data class BikeSyncState(
-    val status: BikeSyncScreenStatus, val bikes: Map<Bike, Boolean>
+    val status: BikeSyncScreenStatus, val bikes: Map<Bike, Boolean> = emptyMap()
 )
 
 
@@ -25,9 +30,16 @@ class BikeSyncViewModel @Inject constructor(
     private val bikeRepository: BikeRepositoryFacade,
 ) : ViewModel() {
 
+    private val statusFlow = MutableStateFlow(BikeSyncScreenStatus.LOADING)
+    private val syncBikesFlow = MutableStateFlow<Map<Bike, Boolean>>(emptyMap())
 
-    private val _state = MutableStateFlow(BikeSyncState(BikeSyncScreenStatus.LOADING, emptyMap()))
-    val state: StateFlow<BikeSyncState> = _state
+    val state: StateFlow<BikeSyncState> = combine(statusFlow, syncBikesFlow) { status, syncBikes ->
+        BikeSyncState(status = status, bikes = syncBikes)
+    }.stateIn(
+        scope = viewModelScope,
+        started = WhileUiSubscribed,
+        initialValue = BikeSyncState(status = BikeSyncScreenStatus.LOADING)
+    )
 
     init {
         loadBikes()
@@ -36,27 +48,28 @@ class BikeSyncViewModel @Inject constructor(
     private fun loadBikes() {
         viewModelScope.launch {
             bikeRepository.getBikes().let { bikes ->
-                _state.value =
-                    BikeSyncState(BikeSyncScreenStatus.LOADED, bikes.associateWith { !it.draft })
+                syncBikesFlow.update {
+                    bikes.associateWith { !it.draft }
+                }
+                statusFlow.emit(BikeSyncScreenStatus.LOADED)
             }
         }
     }
 
     fun syncBike(bike: Bike, sync: Boolean) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(
-                bikes = _state.value.bikes.plus(bike to sync)
-            )
+            syncBikesFlow.update {
+                it.plus(bike to sync)
+            }
         }
     }
 
-
     fun performSync() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(status = BikeSyncScreenStatus.SAVING)
-            val idToSync = state.value.bikes.map { it.key._id to it.value }.toMap()
+            statusFlow.emit(BikeSyncScreenStatus.SAVING)
+            val idToSync = syncBikesFlow.value.map { it.key._id to it.value }.toMap()
             bikeRepository.updateSynchronizedBikes(idToSync)
-            _state.value = _state.value.copy(status = BikeSyncScreenStatus.DONE)
+            statusFlow.emit(BikeSyncScreenStatus.DONE)
         }
     }
 

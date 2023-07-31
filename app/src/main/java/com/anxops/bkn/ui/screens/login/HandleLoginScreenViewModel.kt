@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -63,10 +64,11 @@ class HandleLoginScreenViewModel @Inject constructor(
                 else -> {
                     dataStore.saveAuthUser(profile.userId)
                     val isNewAccount = profile.createdAt == null
-                    _state.value = _state.value.copy(
-                        profile = profile,
-                        isNewAccount = isNewAccount
-                    )
+                    _state.update {
+                        it.copy(
+                            profile = profile, isNewAccount = isNewAccount
+                        )
+                    }
 
                     profileRepository.reloadData()
                     bikeRepository.refreshBikes()

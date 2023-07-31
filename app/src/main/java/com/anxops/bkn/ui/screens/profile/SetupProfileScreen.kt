@@ -24,6 +24,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknLabelTopTextField
@@ -53,14 +53,10 @@ fun ProfileScreen(
     resultNavigator: ResultBackNavigator<Boolean>,
 ) {
 
-    val state = viewModel.state.collectAsState()
-    val isNew = state.value.profile?.createdAt == null
+    val state by viewModel.state.collectAsState()
 
-    val nav = BknNavigator(navigator)
-
-
-    LaunchedEffect(state.value.status) {
-        if (state.value.status == ProfileScreenStatus.UpdateSuccess) {
+    LaunchedEffect(state.status) {
+        if (state.status == ProfileScreenStatus.UpdateSuccess) {
             resultNavigator.navigateBack(true)
         }
     }
@@ -79,7 +75,7 @@ fun ProfileScreen(
 
 
     BackgroundBox(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        when (state.value.status) {
+        when (state.status) {
 
             ProfileScreenStatus.Loading -> {
                 Loading("Loading profile...")
@@ -90,14 +86,16 @@ fun ProfileScreen(
             }
 
             ProfileScreenStatus.Error -> {
-                Text("An error occurred :(")
+                Text(
+                    text = "An error occurred!", modifier = Modifier, color = MaterialTheme.colors.secondary
+                )
             }
 
-            ProfileScreenStatus.Error -> {
-                Text("An error occurred :(")
+            ProfileScreenStatus.UpdateSuccess -> {
+                Text(
+                    text = "Done!", modifier = Modifier, color = MaterialTheme.colors.secondary
+                )
             }
-
-            ProfileScreenStatus.UpdateSuccess -> Text("Done!")
 
             ProfileScreenStatus.Loaded -> {
 
@@ -112,7 +110,7 @@ fun ProfileScreen(
                 ) {
 
                     Text(
-                        text = "Hi, ${state.value.profile?.firstname}!",
+                        text = "Hi, ${state.profile?.firstname}!",
                         style = MaterialTheme.typography.h1,
                         modifier = Modifier.padding(start = 10.dp),
                         color = MaterialTheme.colors.onPrimary
@@ -136,13 +134,9 @@ fun ProfileScreen(
                         ) {
 
 
-
-
-                        ProfileImageLoader(
-                            state.value.profile.profilePhotoUrl,
-                            onNewImageSelected = {
-                                viewModel.onUpdateProfileImage(it)
-                            })
+                        ProfileImageLoader(state.profile.profilePhotoUrl, onNewImageSelected = {
+                            viewModel.onUpdateProfileImage(it)
+                        })
                     }
 
                     Column(
@@ -157,7 +151,7 @@ fun ProfileScreen(
                             modifier = Modifier.padding(top = 26.dp)
                         )
 
-                        BknLabelTopTextField(value = state.value.profile?.firstname,
+                        BknLabelTopTextField(value = state.profile.firstname,
                             label = "First name",
                             colors = colors,
                             modifier = Modifier.fillMaxWidth(),
@@ -165,7 +159,7 @@ fun ProfileScreen(
                                 viewModel.updateFirstname(it)
 
                             })
-                        BknLabelTopTextField(value = state.value.profile?.lastname,
+                        BknLabelTopTextField(value = state.profile.lastname,
                             label = "Last name",
                             modifier = Modifier.fillMaxWidth(),
                             colors = colors,
@@ -181,7 +175,7 @@ fun ProfileScreen(
                         modifier = Modifier
                             .padding(top = 20.dp)
                             .fillMaxWidth(),
-                        enabled = (state.value.profile?.firstname != null && state.value.profile?.lastname != null)
+                        enabled = (state.profile.firstname != null && state.profile.lastname != null)
                     ) {
 
                         Text(

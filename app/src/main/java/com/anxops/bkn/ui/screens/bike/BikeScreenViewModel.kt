@@ -6,10 +6,14 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,10 +38,24 @@ class BikeScreenViewModel @Inject constructor(
     private val bikesRepository: BikeRepositoryFacade,
 ) : ViewModel() {
 
-    private val stateFlow = MutableStateFlow(BikeScreenState())
-    val state: StateFlow<BikeScreenState> = stateFlow
-
     val openBikeOnStravaEvent: MutableSharedFlow<String> = MutableSharedFlow()
+
+    private val bikeFlow = MutableStateFlow<Bike?>(null)
+    private val loadingFlow = MutableStateFlow(false)
+    private val selectedCategoryFLow = MutableStateFlow<ComponentCategory?>(null)
+    private val selectedComponentFlow = MutableStateFlow<BikeComponent?>(null)
+
+    val state: StateFlow<BikeScreenState> = combine(
+        loadingFlow, bikeFlow, selectedComponentFlow, selectedCategoryFLow
+    ) { loading, bike, selectedComponent, selectedCategory ->
+        BikeScreenState(
+            loading = loading,
+            bike = bike,
+            selectedCategory = selectedCategory,
+            selectedComponent = selectedComponent
+        )
+    }.stateIn(viewModelScope, WhileUiSubscribed, BikeScreenState())
+
 
     private fun openBikeOnStrava(id: String) {
         viewModelScope.launch {
@@ -47,42 +65,31 @@ class BikeScreenViewModel @Inject constructor(
         }
     }
 
-
     fun handleEvent(event: BikeScreenEvent) = viewModelScope.launch {
-
-        val newState: BikeScreenState = when (event) {
+        when (event) {
             is BikeScreenEvent.SelectComponent -> {
-                state.value.copy(
-                    selectedComponent = selectedComp(state.value.selectedComponent, event.component)
-                )
+                selectedComponentFlow.update {
+                    selectedComp(selectedComponentFlow.value, event.component)
+                }
             }
 
             is BikeScreenEvent.SelectComponentCategory -> {
-                state.value.copy(
-                    selectedCategory = selectedCat(state.value.selectedCategory, event.category),
-                    selectedComponent = null
-                )
+                selectedCategoryFLow.update {
+                    selectedCat(selectedCategoryFLow.value, event.category)
+                }
             }
 
             is BikeScreenEvent.LoadBike -> {
-
                 val bike = bikesRepository.getBike(event.bikeId)
                 val component = bike?.components?.find { event.componentId == it._id }
-
-                state.value.copy(
-                    bike = bike,
-                    selectedComponent = component,
-                    selectedCategory = component?.type?.category
-                )
+                bikeFlow.update { bike }
+                selectedComponentFlow.update { component }
+                selectedCategoryFLow.update { component?.type?.category }
             }
 
             is BikeScreenEvent.ViewOnStrava -> {
-                state.value.bike?.stravaId?.let { openBikeOnStrava(it) }
-                state.value
+                bikeFlow.value?.stravaId?.let { openBikeOnStrava(it) }
             }
-        }
-        if (newState != state.value) {
-            stateFlow.update { newState }
         }
     }
 

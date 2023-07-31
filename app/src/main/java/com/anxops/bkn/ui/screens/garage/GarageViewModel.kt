@@ -7,6 +7,7 @@ import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,7 +55,7 @@ class GarageViewModel @Inject constructor(
             selectedBike = selectedBikeResult,
             lastRides = lastRidesResult,
         )
-    }.stateIn(viewModelScope, SharingStarted.Lazily, GarageScreenState(isLoading = true))
+    }.stateIn(viewModelScope, WhileUiSubscribed, GarageScreenState(isLoading = true))
 
     fun loadData() {
         viewModelScope.launch {

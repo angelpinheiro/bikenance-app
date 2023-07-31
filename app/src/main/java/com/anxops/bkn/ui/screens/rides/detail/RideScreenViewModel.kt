@@ -7,6 +7,7 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
+import com.anxops.bkn.util.WhileUiSubscribed
 import com.anxops.bkn.util.decodePoly
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +37,7 @@ class RideScreenViewModel @Inject constructor(
     val state: StateFlow<RideScreenState> = _state
 
     val bikes =
-        bikeRepository.getBikesFlow(false).stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+        bikeRepository.getBikesFlow(false).stateIn(viewModelScope, WhileUiSubscribed, listOf())
 
     fun loadRide(rideId: String) {
 

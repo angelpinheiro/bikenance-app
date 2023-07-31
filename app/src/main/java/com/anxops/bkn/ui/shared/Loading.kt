@@ -3,6 +3,7 @@ package com.anxops.bkn.ui.shared
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -18,7 +19,8 @@ fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVar
     Box(
         Modifier
             .fillMaxSize()
-            .background(color)) {
+            .background(color)
+    ) {
         CircularProgressIndicator(
             color = MaterialTheme.colors.secondary,
             strokeWidth = 5.dp,
@@ -29,7 +31,9 @@ fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVar
         if (text != null) {
             Text(
                 text = text,
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp),
                 color = MaterialTheme.colors.secondary
             )
         }

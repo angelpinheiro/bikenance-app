@@ -11,6 +11,7 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.AppInfoRepository
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -31,11 +32,11 @@ class HomeViewModel @Inject constructor(
 
     val allowRefreshState = db.appInfoDao().getAppInfoFlow().map {info ->
         info?.let { allowRefresh(it) } ?: false
-    }.stateIn(viewModelScope, SharingStarted.Eagerly ,false)
+    }.stateIn(viewModelScope, WhileUiSubscribed,false)
 
     val profileSyncState = profileRepository.getProfileFlow().map {
         it?.sync
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }.stateIn(viewModelScope, WhileUiSubscribed, null)
 
     init {
         viewModelScope.launch {

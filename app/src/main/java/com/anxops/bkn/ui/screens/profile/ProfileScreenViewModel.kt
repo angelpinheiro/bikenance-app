@@ -7,10 +7,14 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.util.RepositoryResult
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,83 +40,70 @@ class ProfileScreenViewModel @Inject constructor(
     private val profileRepository: ProfileRepositoryFacade,
 ) : ViewModel() {
 
-    val updateEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    private val statusFlow = MutableStateFlow<ProfileScreenStatus>(ProfileScreenStatus.Loading)
+    private val profileFlow = MutableStateFlow(Profile.Empty)
+    private val loadProgressFlow = MutableStateFlow(0.0f)
 
-    private val _state = MutableStateFlow(ProfileScreenState())
-    val state: StateFlow<ProfileScreenState> = _state
+    val state: StateFlow<ProfileScreenState> = combine(
+        statusFlow, loadProgressFlow, profileFlow
+    ) { statusRes, loadProgressRes, profileRes ->
+        ProfileScreenState(statusRes, loadProgressRes, profileRes)
+    }.stateIn(viewModelScope, WhileUiSubscribed, ProfileScreenState())
 
 
     fun loadProfile() {
         viewModelScope.launch {
-            val profile = profileRepository.getProfile()
-            if (profile != null) {
-                _state.value = _state.value.copy(
-                    profile = profile, status = ProfileScreenStatus.Loaded
-                )
+            profileRepository.getProfile()?.let {
+                profileFlow.emit(it)
+                statusFlow.emit(ProfileScreenStatus.Loaded)
             }
         }
-
     }
 
     fun updateFirstname(value: String) {
-        _state.value = _state.value.copy(
-            profile = _state.value.profile.copy(firstname = value)
-        )
+        profileFlow.update { profileFlow.value.copy(firstname = value) }
     }
 
     fun updateLastname(value: String) {
-        _state.value = _state.value.copy(
-            profile = _state.value.profile.copy(lastname = value)
-        )
+        profileFlow.update { profileFlow.value.copy(lastname = value) }
     }
 
     fun saveProfileChanges() {
 
         viewModelScope.launch {
 
-            _state.value = _state.value.copy(
-                status = ProfileScreenStatus.Loading
-            )
+            statusFlow.update { ProfileScreenStatus.Loading }
 
-            when (val result = profileRepository.updateProfile(_state.value.profile)) {
+            when (val result = profileRepository.updateProfile(profileFlow.value)) {
 
                 is RepositoryResult.Success -> {
-                    _state.value = _state.value.copy(
-                        profile = result.data, status = ProfileScreenStatus.UpdateSuccess
-                    )
+                    profileFlow.update { result.data }
+                    statusFlow.update { ProfileScreenStatus.UpdateSuccess }
                 }
 
                 else -> {
-                    _state.value = _state.value.copy(
-                        status = ProfileScreenStatus.Error
-                    )
+                    statusFlow.update { ProfileScreenStatus.UpdateSuccess }
                 }
             }
         }
     }
 
 
-    fun onUpdateProfileImage(imageByteArray: ByteArray?) {
+    fun onUpdateProfileImage(bytes: ByteArray) {
         viewModelScope.launch {
-            imageByteArray?.let {
-                api.uploadImageToFirebase(dataStore.getAuthUserOrFail(),
-                    it,
-                    onUpdateUpload = { updatePercent ->
-                        _state.value = _state.value.copy(profileImagePercent = updatePercent)
-                    },
-                    onSuccess = { url ->
-                        _state.value = _state.value.copy(
-                            profileImagePercent = 0f, profile = _state.value.profile.copy(
-                                profilePhotoUrl = url,
-                            )
-                        )
-                    },
-                    onFailure = {
-                        _state.value = _state.value.copy(
-                            status = ProfileScreenStatus.Error
-                        )
-                    })
-            }
+            loadProgressFlow.update { 0f }
+            api.uploadImageToFirebase(dataStore.getAuthUserOrFail(),
+                bytes,
+                onUpdateUpload = { updatePercent ->
+                    loadProgressFlow.update { updatePercent }
+                },
+                onSuccess = { url ->
+                    loadProgressFlow.update { 0f }
+                    profileFlow.update { it.copy(profilePhotoUrl = url) }
+                },
+                onFailure = {
+                    statusFlow.update { ProfileScreenStatus.Error }
+                })
         }
     }
 

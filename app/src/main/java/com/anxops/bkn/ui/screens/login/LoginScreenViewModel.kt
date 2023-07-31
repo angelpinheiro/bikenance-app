@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.network.ApiEndpoints
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ class LoginScreenViewModel @Inject constructor(
 
     val loginEvent: MutableSharedFlow<LoginEvent> = MutableSharedFlow()
 
-    val useDebugApi = dataStore.useDebugAPi.stateIn(viewModelScope, SharingStarted.Eagerly, true).map { it ?: false }
+    val useDebugApi = dataStore.useDebugAPi.stateIn(viewModelScope, WhileUiSubscribed, true).map { it ?: false }
 
     fun updateEmail(value: String) {
         _state.value = _state.value.copy(email = value)

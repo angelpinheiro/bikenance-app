@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenuItem
@@ -41,10 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
@@ -61,7 +56,6 @@ import com.anxops.bkn.ui.theme.statusGood
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
@@ -72,12 +66,10 @@ fun BikeEditScreen(
     resultNavigator: ResultBackNavigator<Boolean>,
     bikeId: String = ""
 ) {
-    val context = LocalContext.current
-    val state = viewModel.state.collectAsState()
-    val scrollState = rememberScrollState()
     val bknNavigator = BknNavigator(navigator)
+    val scrollState = rememberScrollState()
 
-    val isNew = state.value.bike._id != null
+    val state = viewModel.state.collectAsState()
 
     LaunchedEffect(bikeId) {
         if (bikeId.isNotBlank()) {
@@ -85,11 +77,9 @@ fun BikeEditScreen(
         }
     }
 
-    LaunchedEffect(key1 = context) {
-        viewModel.updateEvent.collect { success ->
-            if (success) {
-                resultNavigator.navigateBack(true)
-            }
+    LaunchedEffect(state.value.status) {
+        if (state.value.status == BikeEditScreenStatus.UpdateSuccess) {
+            bknNavigator.popBackStack()
         }
     }
 
@@ -113,9 +103,27 @@ fun BikeEditScreen(
                         Loading(color = Color.Transparent)
                     }
 
+
                     BikeEditScreenStatus.Saving -> {
                         Loading("Updating bike...", Color.Transparent)
                     }
+
+                    BikeEditScreenStatus.Error -> {
+                        Text(
+                            text = "An error occurred!",
+                            modifier = Modifier,
+                            color = MaterialTheme.colors.secondary
+                        )
+                    }
+
+                    BikeEditScreenStatus.UpdateSuccess -> {
+                        Text(
+                            text = "Done!",
+                            modifier = Modifier,
+                            color = MaterialTheme.colors.secondary
+                        )
+                    }
+
 
                     BikeEditScreenStatus.Editing -> {
 
@@ -139,8 +147,7 @@ fun BikeEditScreen(
                             OutlinedButton(
                                 onClick = { viewModel.onSaveBike() },
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                                modifier = Modifier
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 enabled = (state.value.bike.name != null)
                             ) {
                                 Text(
@@ -164,16 +171,16 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
     val context = LocalContext.current
     val colors = onBackgroundTextFieldColors()
     val imageData = remember { mutableStateOf<Uri?>(null) }
-    val launcher =
-        rememberLauncherForActivityResult(contract = (ActivityResultContracts.GetContent()),
-            onResult = { uri ->
-                imageData.value = uri
-                uri?.let {
-                    val inputStream = context.contentResolver.openInputStream(it)
-                    val imageByteArray = inputStream?.readBytes()
-                    viewModel.updateBikeImage(imageByteArray)
-                }
-            })
+    val launcher = rememberLauncherForActivityResult(
+        contract = (ActivityResultContracts.GetContent()),
+        onResult = { uri ->
+            imageData.value = uri
+            uri?.let {
+                val inputStream = context.contentResolver.openInputStream(it)
+                val imageByteArray = inputStream?.readBytes()
+                viewModel.updateBikeImage(imageByteArray)
+            }
+        })
 
 
 
@@ -294,53 +301,5 @@ fun BikeTypeDropDown(bikeType: String, onBikeTypeChange: (BikeType) -> Unit = {}
                 )
             }
         }
-    }
-}
-
-
-val nullTranslator = object : OffsetMapping {
-    override fun originalToTransformed(offset: Int): Int {
-        return offset
-    }
-
-    override fun transformedToOriginal(offset: Int): Int {
-        return offset
-    }
-}
-
-class AmountOrMessageVisualTransformation : VisualTransformation {
-    override fun filter(text: AnnotatedString): TransformedText {
-
-        if (text.text.isNullOrBlank() || text.text.isEmpty()) {
-            return TransformedText(AnnotatedString(""), nullTranslator)
-        }
-
-        val originalText = text.text.trim()
-        val formattedText = DecimalFormat("#,###").format(text.text.toDouble())
-
-        val offsetMapping = object : OffsetMapping {
-
-            override fun originalToTransformed(offset: Int): Int {
-                if (originalText.isNotEmpty()) {
-                    val commas =
-                        formattedText.subSequence(0, offset).count { it == '.' || it == ',' }
-                    return offset + commas
-                }
-                return offset
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                if (originalText.isNotEmpty()) {
-                    val commas =
-                        formattedText.subSequence(0, offset).count { it == '.' || it == ',' }
-                    return offset - commas
-                }
-                return offset
-            }
-        }
-
-        return TransformedText(
-            text = AnnotatedString(formattedText), offsetMapping = offsetMapping
-        )
     }
 }
