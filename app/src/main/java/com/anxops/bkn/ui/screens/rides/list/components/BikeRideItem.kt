@@ -55,13 +55,13 @@ fun BikeRideItem(
 
     Column {
         Card(backgroundColor = MaterialTheme.colors.primary,
-            modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(
+            modifier = Modifier.fillMaxWidth().padding(
                     start = 10.dp, end = 10.dp, top = 10.dp, bottom = if (!showBikeConfirm) {
                         10.dp
                     } else {
                         0.dp
                     }
-                ),
+                ).clickable { onClick() },
             shape = if (!showBikeConfirm) {
                 RoundedCornerShape(8.dp)
             } else {
