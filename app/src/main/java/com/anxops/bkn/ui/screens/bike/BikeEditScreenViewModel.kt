@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.bike
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
@@ -12,7 +11,6 @@ import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -30,7 +28,7 @@ sealed class BikeEditScreenStatus {
     object UpdateSuccess : BikeEditScreenStatus()
 }
 
-data class NewBikeScreenState(
+data class BikeEditScreenState(
     val bike: Bike = Bike(_id = ""),
     val status: BikeEditScreenStatus = BikeEditScreenStatus.Loading,
     val imageLoadProgress: Float = 0f,
@@ -47,12 +45,12 @@ class BikeEditScreenViewModel @Inject constructor(
     private val statusFlow = MutableStateFlow<BikeEditScreenStatus>(BikeEditScreenStatus.Loading)
     private val loadProgressFlow = MutableStateFlow(0.0f)
 
-    val state: StateFlow<NewBikeScreenState> =
+    val state: StateFlow<BikeEditScreenState> =
         combine(bikeFlow, statusFlow, loadProgressFlow) { bike, status, progress ->
-            NewBikeScreenState(
+            BikeEditScreenState(
                 bike = bike, status = status, imageLoadProgress = progress
             )
-        }.stateIn(viewModelScope, WhileUiSubscribed, NewBikeScreenState())
+        }.stateIn(viewModelScope, WhileUiSubscribed, BikeEditScreenState())
 
 
     fun loadBike(bikeId: String) {

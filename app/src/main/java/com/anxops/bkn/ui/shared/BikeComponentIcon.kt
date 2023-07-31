@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.anxops.bkn.R
 import com.anxops.bkn.data.model.ComponentType
 
 
