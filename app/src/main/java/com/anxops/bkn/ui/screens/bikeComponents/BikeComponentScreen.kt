@@ -5,23 +5,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Surface
@@ -188,6 +183,10 @@ fun BikeComponentScreen(
 
                         ) {
                             BikeStat(
+                                title = "Mounted on",
+                                value = "${currentState.bike.displayName()}"
+                            )
+                            BikeStat(
                                 title = "Installation date",
                                 value = "${currentState.component.from?.formatAsDate()}"
                             )
@@ -218,8 +217,6 @@ fun BikeComponentScreen(
                             )
                         }
 
-
-
                         currentState.maintenances.forEach { m ->
                             MaintenanceDetail(item = m) {
                                 viewModel.onMaintenanceEdit(m)
@@ -243,8 +240,6 @@ fun MaintenanceEdit(
     onSaveChanges: () -> Unit,
     onClose: () -> Unit
 ) {
-
-    val showSave = maintenance != original && maintenance.defaultFrequency.every > 0
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -282,40 +277,14 @@ fun MaintenanceEdit(
                 BknIcon(icon = CommunityMaterial.Icon.cmd_close)
             }
 
-
         }
-
-
 
         RevisionFreqEdit(
-            frequency = maintenance.defaultFrequency, onFrequencyChange = onFrequencyChange
+            frequency = maintenance.defaultFrequency,
+            original = original.defaultFrequency,
+            onFrequencyChange = onFrequencyChange,
+            onSaveChanges = onSaveChanges
         )
-
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .height(52.dp)
-                    .width(1.dp)
-            )
-            if (showSave) {
-                OutlinedButton(modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                    onClick = { onSaveChanges() }) {
-                    Text(text = "Confirm service cycle", Modifier.padding(5.dp))
-                }
-            }
-            Spacer(
-                modifier = Modifier
-                    .height(52.dp)
-                    .width(1.dp)
-            )
-
-        }
     }
 }
 

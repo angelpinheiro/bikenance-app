@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -51,10 +51,12 @@ fun CustomNumberPicker(
             onChange(decrementBy(value, increment, range))
         }) {
             BknIcon(
-                icon = CommunityMaterial.Icon3.cmd_minus, modifier = Modifier
-                    .size(48.dp)
+                icon = CommunityMaterial.Icon3.cmd_minus,
+                modifier = Modifier
+                    .height(48.dp)
+                    .width(60.dp)
                     .clip(
-                        RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp)
+                        RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp)
                     )
                     .background(MaterialTheme.colors.secondary)
                     .padding(6.dp)
@@ -67,25 +69,8 @@ fun CustomNumberPicker(
                 .background(MaterialTheme.colors.surface)
         ) {
             BasicTextField(
-                value = if (value == 0) "" else value.toString(),
-
-                onValueChange = { text ->
-
-                    if (text.isNotBlank()) {
-                        val v = text.toInt()
-                        val newVal = if (range.contains(v)) {
-                            v
-                        } else if (v < range.first) {
-                            range.first
-                        } else {
-                            range.last
-                        }
-                        onChange(newVal)
-                    } else {
-                        onChange(0)
-                    }
-
-                },
+                value = valueToText(value),
+                onValueChange = { onChange(textToValue(it, range)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -100,7 +85,7 @@ fun CustomNumberPicker(
                     singleLine = true,
                     enabled = true,
                     interactionSource = interactionSource,
-                    visualTransformation = VisualTransformation.None, //SuffixTransformation(suffix = " ${suffix.lowercase()}"),
+                    visualTransformation = VisualTransformation.None,
                     innerTextField = innerTextField,
                     contentPadding = PaddingValues(6.dp),
                 )
@@ -118,10 +103,12 @@ fun CustomNumberPicker(
 
         IconButton(onClick = { onChange(incrementBy(value, increment, range)) }) {
             BknIcon(
-                icon = CommunityMaterial.Icon3.cmd_plus, modifier = Modifier
-                    .size(48.dp)
+                icon = CommunityMaterial.Icon3.cmd_plus,
+                modifier = Modifier
+                    .height(48.dp)
+                    .width(60.dp)
                     .clip(
-                        RoundedCornerShape(topEnd = 6.dp, bottomEnd = 6.dp)
+                        RoundedCornerShape(topEnd = 50.dp, bottomEnd = 50.dp)
                     )
                     .background(MaterialTheme.colors.secondary)
                     .padding(6.dp)
@@ -129,4 +116,37 @@ fun CustomNumberPicker(
         }
         Spacer(modifier = Modifier.weight(0.3f))
     }
+}
+
+private fun toIntOrZero(text: String): Int {
+    return try {
+        text.toInt()
+    } catch (e: Exception) {
+        return 0
+    }
+}
+
+private fun valueToText(value: Int): String {
+    return if (value == 0) "" else value.formatThousand()
+}
+
+private fun textToValue(raw: String, range: IntRange): Int {
+    val text = raw.trim().clearThousandFormat()
+    return if (text.isNullOrBlank()) {
+        0
+    } else {
+        toIntOrZero(text).coerceIn(range)
+    }
+}
+
+/* TODO: This causes issues while editing text field value manually.
+    Will try to fix at some point */
+fun Int.formatThousand(): String {
+    return toString()
+    // val decimalFormatter = DecimalFormat("#,###")
+    // return decimalFormatter.format(this)
+}
+
+fun String.clearThousandFormat(): String {
+    return this.replace(",", "")
 }

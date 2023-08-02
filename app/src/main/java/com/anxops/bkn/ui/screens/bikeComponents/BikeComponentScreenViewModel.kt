@@ -79,10 +79,8 @@ class BikeComponentScreenViewModel @Inject constructor(
     }
 
     fun onMaintenanceFreqUpdate(frequency: RevisionFrequency) {
-        // always coerce freq in valid range
-        val f = frequency.copy(every = frequency.every.coerceIn(revisionUnitRange(frequency.unit)))
         editingMaintenanceFlow.update {
-            it?.copy(editingMaintenance = it.editingMaintenance.copy(defaultFrequency = f))
+            it?.copy(editingMaintenance = it.editingMaintenance.copy(defaultFrequency = frequency))
         }
     }
 

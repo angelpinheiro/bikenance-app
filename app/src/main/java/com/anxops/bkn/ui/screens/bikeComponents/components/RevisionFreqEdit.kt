@@ -5,15 +5,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,13 +39,20 @@ import com.anxops.bkn.ui.shared.components.CustomNumberPicker
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
-fun RevisionFreqEdit(frequency: RevisionFrequency, onFrequencyChange: (RevisionFrequency) -> Unit) {
+fun RevisionFreqEdit(
+    frequency: RevisionFrequency,
+    original: RevisionFrequency,
+    onSaveChanges: () -> Unit = {},
+    onFrequencyChange: (RevisionFrequency) -> Unit
+) {
 
     val unit by remember(frequency) {
         mutableStateOf(frequency.unit)
     }
 
     val range = revisionUnitRange(unit)
+    val inBounds = range.contains(frequency.every)
+    val showSave = frequency != original && inBounds
 
     Column(
         Modifier.fillMaxWidth()
@@ -77,9 +89,15 @@ fun RevisionFreqEdit(frequency: RevisionFrequency, onFrequencyChange: (RevisionF
         )
 
 
-        FreqUnitCarousel(
-            selected = frequency.unit,
-            onSelected = { onFrequencyChange(frequency.copy(unit = it)) })
+        FreqUnitCarousel(selected = frequency.unit, onSelected = {
+            onFrequencyChange(
+                frequency.copy(
+                    unit = it, every = frequency.every.coerceIn(
+                        revisionUnitRange(it)
+                    )
+                )
+            )
+        })
 
 
         Text(
@@ -88,7 +106,11 @@ fun RevisionFreqEdit(frequency: RevisionFrequency, onFrequencyChange: (RevisionF
             modifier = Modifier.padding(top = 10.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
         )
 
-        Box(modifier = Modifier.padding(top = 16.dp, bottom = 26.dp).padding(horizontal = 16.dp)) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 26.dp)
+                .padding(horizontal = 16.dp)
+        ) {
 
             when (unit) {
                 RevisionUnit.KILOMETERS -> RevisionFrequencyDistanceEdit(
@@ -103,6 +125,32 @@ fun RevisionFreqEdit(frequency: RevisionFrequency, onFrequencyChange: (RevisionF
                     frequency, onChange = onFrequencyChange
                 )
             }
+        }
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .height(52.dp)
+                    .width(1.dp)
+            )
+            if (showSave) {
+                OutlinedButton(modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+                    onClick = { onSaveChanges() }) {
+                    Text(text = "Confirm service cycle", Modifier.padding(5.dp))
+                }
+            }
+            Spacer(
+                modifier = Modifier
+                    .height(52.dp)
+                    .width(1.dp)
+            )
+
         }
 
 
