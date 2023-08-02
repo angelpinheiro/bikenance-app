@@ -82,7 +82,7 @@ fun Garage(
 
                     UpcomingMaintenances(currentState.selectedBike, onClickItem = { m ->
                         currentState.selectedBike?.let {
-                            nav.navigateToBike(it._id, m.componentId)
+                            nav.navigateToBikeComponent(it._id, m.componentId)
                         }
 
                     })

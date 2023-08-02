@@ -2,13 +2,16 @@ package com.anxops.bkn.ui.screens.bike.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -41,7 +44,7 @@ fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 6.dp),
+                .padding(top = 6.dp),
             verticalAlignment = Alignment.CenterVertically
 
         ) {
@@ -51,79 +54,123 @@ fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h2,
                 modifier = Modifier
-                    .padding(bottom = 5.dp)
+                    .padding(bottom = 0.dp)
                     .weight(1f)
             )
 
-        }
+//            IconButton(onClick = {onSelected() }) {
+//                BknIcon(
+//                    icon = CommunityMaterial.Icon3.cmd_wrench,
+//                    modifier = Modifier
+//                        .clip(CircleShape)
+//                        .background(MaterialTheme.colors.primaryVariant)
+//                        .padding(6.dp)
+//                        .size(18.dp),
+//                    color = MaterialTheme.colors.onBackground
+//                )
+//            }
 
-        LinearProgressIndicator(
-            progress = item.status.toFloat(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 6.dp)
-                .height(5.dp)
-                .clip(RoundedCornerShape(20.dp)),
-            color = getColorForProgress(percentage = item.status.toFloat()),
-            backgroundColor = MaterialTheme.colors.primaryVariant,
-        )
+        }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_repeat,
                 modifier = Modifier
                     .padding(end = 10.dp)
-                    .size(20.dp)
+                    .size(16.dp)
             )
             Text(
-                text = "${item.defaultFrequency.displayText()}",
+                text = "${item.defaultFrequency.displayText()} (${item.displayStatus()})",
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3,
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            BknIcon(
-                icon = CommunityMaterial.Icon3.cmd_progress_wrench,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(20.dp)
+        LinearProgressIndicator(
+            progress = item.status.toFloat(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp, bottom = 5.dp)
+                .height(5.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            color = getColorForProgress(percentage = item.status.toFloat()),
+            backgroundColor = MaterialTheme.colors.primaryVariant,
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "${item.lastMaintenanceDate?.formatAsMonthYear()}",
+                color = MaterialTheme.colors.onPrimary,
+                style = MaterialTheme.typography.h4,
             )
             Text(
-                text = "Current wear ${item.displayStatus()}",
+                text = "~ ${item.estimatedDate?.formatAsMonthYear()}",
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h4,
             )
         }
 
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            BknIcon(
-                icon = CommunityMaterial.Icon.cmd_calendar_end,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(20.dp)
-            )
-            Text(
-                text = "Last maintenance: ${item.lastMaintenanceDate?.formatAsMonthYear()}",
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3,
-            )
-        }
+//        Row(verticalAlignment = Alignment.CenterVertically) {
+//            BknIcon(
+//                icon = CommunityMaterial.Icon3.cmd_repeat,
+//                modifier = Modifier
+//                    .padding(end = 10.dp)
+//                    .size(20.dp)
+//            )
+//            Text(
+//                text = "${item.defaultFrequency.displayText()} (${item.displayStatus()})",
+//                color = MaterialTheme.colors.onPrimary,
+//                style = MaterialTheme.typography.h3,
+//            )
+//        }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            BknIcon(
-                icon = CommunityMaterial.Icon3.cmd_wrench_clock,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(20.dp)
-            )
-            Text(
-                text = "Next maintenance: ${item.estimatedDate?.formatAsMonthYear()}",
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3,
-            )
-        }
+//        Row(verticalAlignment = Alignment.CenterVertically) {
+//            BknIcon(
+//                icon = CommunityMaterial.Icon3.cmd_progress_wrench,
+//                modifier = Modifier
+//                    .padding(end = 10.dp)
+//                    .size(20.dp)
+//            )
+//            Text(
+//                text = "Current wear ${item.displayStatus()}",
+//                color = MaterialTheme.colors.onPrimary,
+//                style = MaterialTheme.typography.h3,
+//            )
+//        }
+
+
+//        Row(verticalAlignment = Alignment.CenterVertically) {
+//            BknIcon(
+//                icon = CommunityMaterial.Icon.cmd_calendar_end,
+//                modifier = Modifier
+//                    .padding(end = 10.dp)
+//                    .size(20.dp)
+//            )
+//            Text(
+//                text = "Last maintenance: ${item.lastMaintenanceDate?.formatAsMonthYear()}",
+//                color = MaterialTheme.colors.onPrimary,
+//                style = MaterialTheme.typography.h3,
+//            )
+//        }
+//
+//        Row(verticalAlignment = Alignment.CenterVertically) {
+//            BknIcon(
+//                icon = CommunityMaterial.Icon3.cmd_wrench_clock,
+//                modifier = Modifier
+//                    .padding(end = 10.dp)
+//                    .size(20.dp)
+//            )
+//            Text(
+//                text = "Next maintenance: ${item.estimatedDate?.formatAsMonthYear()}",
+//                color = MaterialTheme.colors.onPrimary,
+//                style = MaterialTheme.typography.h3,
+//            )
+//        }
 
     }
 }

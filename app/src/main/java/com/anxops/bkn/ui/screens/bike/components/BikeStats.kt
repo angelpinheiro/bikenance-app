@@ -105,7 +105,7 @@ fun BikeStats(bikeStats: BikeStats) {
 
 @Composable
 fun BikeStat(
-    title: String, value: String, icon: IIcon? = null, modifier: Modifier = Modifier
+    title: String, value: String, icon: IIcon? = null, modifier: Modifier = Modifier, onClick: () -> Unit = {}
 ) {
     Column(
         modifier

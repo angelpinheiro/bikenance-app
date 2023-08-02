@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -18,12 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.ui.shared.BikeComponentIcon
+import com.anxops.bkn.ui.shared.bikeComponentName
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatElapsedTimeUntilNow
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -47,7 +49,12 @@ fun BikeComponentDetailBg(): Brush {
 }
 
 @Composable
-fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}, onMaintenanceSelected: (Maintenance) -> Unit = {}) {
+fun BikeComponentDetail(
+    component: BikeComponent,
+    onClose: () -> Unit = {},
+    onDetailsSelected: () -> Unit = {},
+    onMaintenanceSelected: (Maintenance) -> Unit = {}
+) {
 
     Column(
         modifier = Modifier
@@ -65,22 +72,15 @@ fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}, onMa
             BikeComponentIcon(
                 type = component.type,
                 tint = MaterialTheme.colors.onSurface,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.surface.copy(alpha = .9f))
-                    .padding(5.dp)
+                modifier = Modifier.size(32.dp).clip(CircleShape)
+                    .background(MaterialTheme.colors.surface.copy(alpha = .9f)).padding(5.dp)
             )
 
             Text(
-                text = "${if (component.modifier != null) "${component.modifier.displayName} " else ""}" + stringResource(
-                    component.type.resources().nameResId
-                ),
+                text = bikeComponentName(component = component),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h2,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 10.dp),
+                modifier = Modifier.weight(1f).padding(horizontal = 10.dp),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
@@ -92,10 +92,7 @@ fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}, onMa
         }
 
         Row(
-            Modifier
-                .padding(top = 0.dp)
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
+            Modifier.padding(top = 0.dp).fillMaxWidth().padding(vertical = 10.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
             verticalAlignment = Alignment.CenterVertically,
@@ -109,6 +106,21 @@ fun BikeComponentDetail(component: BikeComponent, onClose: () -> Unit = {}, onMa
 
         component.maintenances?.forEach {
             BikeComponentDetailMaintenance(item = it) { onMaintenanceSelected(it) }
+        }
+
+        OutlinedButton(
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+            onClick = onDetailsSelected,
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+
+        ) {
+            BknIcon(
+                icon = CommunityMaterial.Icon3.cmd_wrench,
+                modifier = Modifier.padding(end = 10.dp, bottom = 3.dp).size(16.dp),
+                color = MaterialTheme.colors.onSecondary
+            )
+            Text(text = "Service", Modifier.padding(5.dp))
+
         }
     }
 }

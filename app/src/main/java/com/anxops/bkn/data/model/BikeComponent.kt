@@ -13,7 +13,7 @@ enum class ComponentModifier(val displayName: String) {
 
 @Serializable
 data class BikeComponent(
-    val _id: String? = null,
+    val _id: String,
     @SerialName("bikeId") val bikeId: String?,
     @SerialName("alias") val alias: String? = null,
     @SerialName("type") val type: ComponentType,

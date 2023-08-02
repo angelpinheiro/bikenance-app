@@ -86,7 +86,10 @@ class BikeRepository(
     }
 
     override suspend fun getBikeComponent(id: String): BikeComponent? = withContext(defaultDispatcher) {
-        db.bikeComponentDao().getById(id)?.toDomain()
+        db.bikeComponentDao().getById(id)?.toDomain()?.let {
+            val maintenances = db.maintenanceDao().getByComponentId(it._id).map { m -> m.toDomain() }
+            it.copy(maintenances = maintenances)
+        }
     }
 
     override suspend fun getBike(id: String): Bike? = withContext(defaultDispatcher) {

@@ -7,6 +7,16 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
+fun  revisionUnitRange(unit: RevisionUnit): IntRange {
+    return when(unit) {
+        RevisionUnit.HOURS -> IntRange(1, 1000)
+        RevisionUnit.KILOMETERS -> IntRange(1, 10000)
+        RevisionUnit.WEEKS -> IntRange(1, 12)
+        RevisionUnit.MONTHS -> IntRange(1, 24)
+        RevisionUnit.YEARS -> IntRange(1, 10)
+    }
+}
+
 enum class RevisionUnit {
     KILOMETERS, HOURS, WEEKS, MONTHS, YEARS
 }

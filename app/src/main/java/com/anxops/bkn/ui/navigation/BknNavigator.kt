@@ -4,13 +4,13 @@ package com.anxops.bkn.ui.navigation
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
 import com.anxops.bkn.ui.screens.bike.BikeSections
+import com.anxops.bkn.ui.screens.destinations.BikeComponentScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeEditScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeSetupScreenDestination
 import com.anxops.bkn.ui.screens.destinations.BikeSyncScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.LoginScreenDestination
-import com.anxops.bkn.ui.screens.destinations.MaintenanceScreenDestination
 import com.anxops.bkn.ui.screens.destinations.ProfileScreenDestination
 import com.anxops.bkn.ui.screens.destinations.RideScreenDestination
 import com.anxops.bkn.ui.screens.destinations.SplashScreenDestination
@@ -70,8 +70,8 @@ class BknNavigator(var navigator: DestinationsNavigator) {
         navigator.navigate(BikeSyncScreenDestination.route)
     }
 
-    fun navigateToMaintenance(bikeId: String, maintenanceId: String) {
-        navigator.navigate(MaintenanceScreenDestination.invoke(bikeId, maintenanceId))
+    fun navigateToBikeComponent(bikeId: String, componentId: String) {
+        navigator.navigate(BikeComponentScreenDestination.invoke(bikeId, componentId))
     }
 
     fun popBackStack() {

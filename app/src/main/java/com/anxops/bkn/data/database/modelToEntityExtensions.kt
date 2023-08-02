@@ -78,7 +78,7 @@ fun BikeRide.toEntity(): BikeRideEntity {
 
 fun BikeComponent.toEntity(): ComponentEntity {
     return ComponentEntity(
-        _id = _id ?: throw NullPointerException("ComponentEntity id can not be null"),
+        _id = _id,
         bikeId = bikeId,
         description = alias,
         type = type.name,

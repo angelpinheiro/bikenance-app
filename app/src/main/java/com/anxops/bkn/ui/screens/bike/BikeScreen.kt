@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -30,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.bike.components.BikeComponentDetail
 import com.anxops.bkn.ui.screens.bike.components.BikeDetailsTopBar
+import com.anxops.bkn.ui.screens.destinations.BikeComponentScreenDestination
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.bgGradient
@@ -37,13 +39,16 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Destination
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun BikeScreen(
     navigator: DestinationsNavigator,
+    resultRecipient: ResultRecipient<BikeComponentScreenDestination, Boolean>,
     viewModel: BikeScreenViewModel = hiltViewModel(),
     bikeId: String,
     componentId: String? = null,
@@ -56,6 +61,9 @@ fun BikeScreen(
     val navController = rememberNavController()
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     var currentSection by rememberSaveable { mutableStateOf(BikeSections.Status) }
+    var showComponent by remember {
+        mutableStateOf(componentId)
+    }
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -64,8 +72,16 @@ fun BikeScreen(
 
     val state = viewModel.state.collectAsState()
 
+
+
+    resultRecipient.onNavResult {
+        // don't select component when navigating back
+        showComponent = null
+    }
+
+
     LaunchedEffect(bikeId) {
-        viewModel.handleEvent(BikeScreenEvent.LoadBike(bikeId, componentId))
+        viewModel.handleEvent(BikeScreenEvent.LoadBike(bikeId, showComponent))
     }
 
     LaunchedEffect(section) {
@@ -114,11 +130,15 @@ fun BikeScreen(
                 })
             },
             sheetContent = {
-                state.value.selectedComponent?.let {
-                    BikeComponentDetail(component = it, onClose = {
-                        scope.launch { scaffoldState.bottomSheetState.collapse() }
+                state.value.selectedComponent?.let { component ->
+                    BikeComponentDetail(component = component, onClose = {
+                        scope.launch {
+                            scaffoldState.bottomSheetState.collapse()
+                        }
                     }, onMaintenanceSelected = { maintenance ->
-                        bknNavigator.navigateToMaintenance(bike._id, maintenance._id)
+                        bknNavigator.navigateToBikeComponent(bike._id, maintenance._id)
+                    }, onDetailsSelected = {
+                        bknNavigator.navigateToBikeComponent(bike._id, component._id)
                     })
                 }
             },
@@ -146,7 +166,9 @@ fun BikeScreen(
                             }
 
                             BikeSections.Components -> {
-                                BikeScreenComponentsView(bike)
+                                BikeScreenComponentsView(bike) {
+                                    bknNavigator.navigateToBikeComponent(bike._id, it._id)
+                                }
                             }
                         }
                     }

@@ -11,8 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentType
 
 
@@ -24,7 +26,7 @@ fun BikeComponentIcon(
 ) {
 
     val icon = remember(type) {
-        mutableStateOf (
+        mutableStateOf(
             type.resources().iconRes
         )
     }
@@ -36,6 +38,13 @@ fun BikeComponentIcon(
         colorFilter = ColorFilter.tint(tint)
 
     )
+}
+
+@Composable
+fun bikeComponentName(component: BikeComponent): String {
+    return stringResource(
+        component.type.resources().nameResId
+    ) + (component.modifier?.let { " (${it.displayName})" } ?: "")
 }
 
 

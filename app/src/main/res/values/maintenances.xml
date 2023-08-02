@@ -3,22 +3,22 @@
 
 
     <!-- Maintenance Types -->
-    <string name="brake_maintenance">Maintenance of Brakes</string>
-    <string name="disc_pads_maintenance">Maintenance of Disc Pads</string>
-    <string name="cables_and_housing_maintenance">Maintenance of Cables and Housings</string>
-    <string name="cassette_maintenance">Maintenance of Cassette</string>
-    <string name="chain_maintenance">Maintenance of Chain</string>
-    <string name="chain_ring_maintenance">Maintenance of Chain Ring</string>
-    <string name="rear_derailleur_maintenance">Maintenance of Rear Derailleur</string>
-    <string name="frame_bearings_maintenance">Maintenance of Frame Bearings</string>
-    <string name="rear_hub_maintenance">Maintenance of Rear Hub</string>
-    <string name="disc_brake_maintenance">Maintenance of Disc Brakes</string>
-    <string name="dropper_post_maintenance">Maintenance of Dropper Post</string>
-    <string name="fork_maintenance">Maintenance of Fork</string>
-    <string name="front_hub_maintenance">Maintenance of Front Hub</string>
-    <string name="rear_suspension_maintenance">Maintenance of Rear Suspension</string>
-    <string name="thru_axle_maintenance">Maintenance of Thru Axle</string>
-    <string name="tire_maintenance">Maintenance of Tires</string>
+    <string name="brake_maintenance">Brakes Service</string>
+    <string name="disc_pads_maintenance">Disc Pads Service</string>
+    <string name="cables_and_housing_maintenance">Cables and Housings Service</string>
+    <string name="cassette_maintenance">Cassette Service</string>
+    <string name="chain_maintenance">Chain Service</string>
+    <string name="chain_ring_maintenance">Chain Ring Service</string>
+    <string name="rear_derailleur_maintenance">Rear Derailleur Service</string>
+    <string name="frame_bearings_maintenance">Frame Bearings Service</string>
+    <string name="rear_hub_maintenance">Rear Hub Service</string>
+    <string name="disc_brake_maintenance">Disc Brakes Service</string>
+    <string name="dropper_post_maintenance">Dropper Post Service</string>
+    <string name="fork_maintenance">Fork Service</string>
+    <string name="front_hub_maintenance">Front Hub Service</string>
+    <string name="rear_suspension_maintenance">Rear Suspension Service</string>
+    <string name="thru_axle_maintenance">Thru Axle Service</string>
+    <string name="tire_maintenance">Tires Service</string>
     <string name="wheelset_tubeless_maintenance">Tubeless Fluid Replacement</string>
     <string name="wheelset_wheels_and_spokes_maintenance">Wheels and Spokes Inspection</string>
     <string name="wheelset_tread_wear_maintenance">Tread Wear Inspection</string>

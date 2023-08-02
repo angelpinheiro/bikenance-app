@@ -4,13 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeStatus
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.ui.screens.bike.components.BikeComponentTabsV2
 import com.anxops.bkn.ui.screens.bike.components.ComponentTabHeaders
 
 @Composable
-fun BikeScreenComponentsView(bike: Bike) {
+fun BikeScreenComponentsView(bike: Bike, onComponentSelected: (BikeComponent) -> Unit) {
 
     val selectedTab =
         remember { mutableStateOf(ComponentTabHeaders.TRANSMISSION) }
@@ -21,6 +22,7 @@ fun BikeScreenComponentsView(bike: Bike) {
     BikeComponentTabsV2(bike = bike,
         status = bike.status,
         selectedTab = selectedTab.value,
+        onComponentSelected = onComponentSelected,
         onTabChange = { tab ->
             selectedTab.value = tab
             tab.category?.let { selectedComponentCategory.value = it }

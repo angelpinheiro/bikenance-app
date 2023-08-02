@@ -238,12 +238,14 @@ class BikeSetupViewModel @Inject constructor(
             if (duplicatedComponents.contains(it)) {
                 listOf(
                     BikeComponent(
+                        _id = "",
                         bikeId = state.bike._id,
                         modifier = ComponentModifier.FRONT,
                         alias = ComponentModifier.FRONT.displayName + " ${it.name.lowercase()}",
                         type = it,
                         from = date
                     ), BikeComponent(
+                        _id = "",
                         bikeId = state.bike._id,
                         modifier = ComponentModifier.REAR,
                         alias = ComponentModifier.REAR.displayName + " ${it.name.lowercase()}",
@@ -254,7 +256,7 @@ class BikeSetupViewModel @Inject constructor(
             } else {
                 listOf(
                     BikeComponent(
-                        bikeId = state.bike._id, alias = it.name, type = it, from = date
+                        _id = "", bikeId = state.bike._id, alias = it.name, type = it, from = date
                     )
                 )
             }

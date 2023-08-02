@@ -77,6 +77,7 @@ fun buildComponentCategoryTabData(
 fun BikeComponentTabsV2(
     onTabChange: (ComponentTabHeaders) -> Unit = {},
     selectedTab: ComponentTabHeaders = ComponentTabHeaders.TRANSMISSION,
+    onComponentSelected: (BikeComponent) -> Unit,
     bike: Bike,
     status: BikeStatus
 ) {
@@ -114,7 +115,7 @@ fun BikeComponentTabsV2(
             gc.items.forEach {
                 item {
                     BikeComponentListItem(component = it) {
-                        // ONCLICK
+                        onComponentSelected(it)
                     }
                 }
             }

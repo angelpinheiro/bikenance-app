@@ -1,6 +1,7 @@
 package com.anxops.bkn.ui.screens.bike.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ fun BikeComponentListItem(component: BikeComponent, onClick: () -> Unit = {}) {
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
             .padding(top = 10.dp)
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier

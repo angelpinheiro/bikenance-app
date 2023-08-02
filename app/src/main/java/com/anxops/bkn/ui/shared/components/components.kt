@@ -7,6 +7,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -19,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mikepenz.iconics.typeface.IIcon
@@ -43,6 +48,13 @@ fun onBackgroundTextFieldColors(): TextFieldColors =
         unfocusedIndicatorColor = Color.Transparent,
         textColor = MaterialTheme.colors.onSurface,
     )
+
+
+@Composable
+fun secondaryButtonColors(): ButtonColors =
+    ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+
+
 
 
 
