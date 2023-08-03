@@ -32,7 +32,7 @@ fun wearPercentage(
 
 
 fun wearPercentByKm(distanceInMeters: Double, freqInKm: Double): Double {
-    return if (distanceInMeters > 0) {
+    return if (freqInKm > 0) {
         (distanceInMeters / 1000) / freqInKm
     } else {
         0.0
@@ -41,7 +41,7 @@ fun wearPercentByKm(distanceInMeters: Double, freqInKm: Double): Double {
 
 fun wearPercentByHours(durationInSeconds: Double, freqInHours: Double): Double {
     val durationHours = (durationInSeconds / 3600)
-    return if (durationHours > 0) {
+    return if (freqInHours > 0) {
         durationHours / freqInHours
     } else {
         0.0
@@ -119,7 +119,7 @@ fun Maintenance.expectedNextMaintenanceDate(today: LocalDateTime = LocalDateTime
                     val expectedDurationInDays = (currentDurationInDays / status).toLong()
                     lastMaintenance.plusDays(expectedDurationInDays)
                 } else {
-                    null
+                    null//TODO Use last maintenance duration (new field to be added)
                 }
             }
         }
