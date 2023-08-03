@@ -3,26 +3,29 @@ package com.anxops.bkn.ui.screens.rides.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
+import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
-import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
+import com.anxops.bkn.data.repository.onSuccess
+import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.WhileUiSubscribed
-import com.anxops.bkn.util.decodePoly
-import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class RideScreenState {
-    object RideLoading : RideScreenState()
-    object RideNotFound : RideScreenState()
-    data class RideLoaded(val item: RideAndBike, val polyline: List<LatLng>?) : RideScreenState()
-}
+
+data class RideScreenState(
+    val isLoading: Boolean = true,
+    val bike: Bike? = null,
+    val allBikes: List<Bike> = emptyList(),
+    val ride: BikeRide? = null
+)
 
 @HiltViewModel
 class RideScreenViewModel @Inject constructor(
@@ -31,43 +34,37 @@ class RideScreenViewModel @Inject constructor(
     private val bikeRepository: BikeRepositoryFacade,
 ) : ViewModel() {
 
+    private val rideFlow = MutableStateFlow<BikeRide?>(null)
+    private val loadingFLow = MutableStateFlow<Boolean>(true)
+    private val allBikes =
+        bikeRepository.getBikesFlow(false).stateIn(viewModelScope, WhileUiSubscribed, emptyList())
 
-    private val _state: MutableStateFlow<RideScreenState> =
-        MutableStateFlow(RideScreenState.RideLoading)
-    val state: StateFlow<RideScreenState> = _state
+    val state: StateFlow<RideScreenState> =
+        combine(rideFlow, loadingFLow, allBikes) { ride, loading, allBikes ->
+            val bike = allBikes.find { it._id == ride?.bikeId }
+            RideScreenState(loading, bike, allBikes, ride)
+        }.stateIn(viewModelScope, WhileUiSubscribed, RideScreenState(isLoading = true))
 
-    val bikes =
-        bikeRepository.getBikesFlow(false).stateIn(viewModelScope, WhileUiSubscribed, listOf())
 
     fun loadRide(rideId: String) {
-
         viewModelScope.launch {
-            val ride = ridesRepository.getRide(rideId)
-            if (ride != null) {
-                val bike = ride.bikeId?.let { bikeRepository.getBike(it) }
-                _state.value = RideScreenState.RideLoaded(
-                    RideAndBike(ride, bike),
-                    ride.mapSummaryPolyline?.let { decodePoly(it) })
-            } else {
-                _state.value = RideScreenState.RideNotFound
+            loadingFLow.emit(true)
+            ridesRepository.getRide(rideId).onSuccessNotNull { ride ->
+                rideFlow.update { ride }
             }
+            loadingFLow.emit(false)
         }
     }
 
     fun setRideBike(bike: Bike) {
         viewModelScope.launch {
-            when (val s = _state.value) {
-                is RideScreenState.RideLoaded -> {
-                    val updatedRide = s.item.copy(
-                        ride = s.item.ride.copy(bikeId = bike._id, bikeConfirmed = true)
-                    )
-                    ridesRepository.updateRide(updatedRide.ride)
-                    _state.value = RideScreenState.RideLoaded(
-                        item = updatedRide, polyline = s.polyline
-                    )
-                }
-
-                else -> {}
+            rideFlow.value?.let { ride ->
+                loadingFLow.emit(true)
+                ridesRepository.updateRide(ride.copy(bikeId = bike._id, bikeConfirmed = true))
+                    .onSuccess {
+                        rideFlow.update { it }
+                    }
+                loadingFLow.emit(false)
             }
         }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -61,7 +62,8 @@ fun BikeComponentDetail(
             .fillMaxWidth()
             .background(MaterialTheme.colors.primary)
             .background(BikeComponentDetailBg())
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Row(
@@ -72,15 +74,20 @@ fun BikeComponentDetail(
             BikeComponentIcon(
                 type = component.type,
                 tint = MaterialTheme.colors.onSurface,
-                modifier = Modifier.size(32.dp).clip(CircleShape)
-                    .background(MaterialTheme.colors.surface.copy(alpha = .9f)).padding(5.dp)
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colors.surface.copy(alpha = .9f))
+                    .padding(5.dp)
             )
 
             Text(
                 text = bikeComponentName(component = component),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h2,
-                modifier = Modifier.weight(1f).padding(horizontal = 10.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 10.dp),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
@@ -92,7 +99,10 @@ fun BikeComponentDetail(
         }
 
         Row(
-            Modifier.padding(top = 0.dp).fillMaxWidth().padding(vertical = 10.dp)
+            Modifier
+                .padding(top = 0.dp)
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
             verticalAlignment = Alignment.CenterVertically,
@@ -107,21 +117,34 @@ fun BikeComponentDetail(
         component.maintenances?.forEach {
             BikeComponentDetailMaintenance(item = it) { onMaintenanceSelected(it) }
         }
-
-        OutlinedButton(
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-            onClick = onDetailsSelected,
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-
-        ) {
+        
+        FloatingActionButton(onClick = onDetailsSelected) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_wrench,
-                modifier = Modifier.padding(end = 10.dp, bottom = 3.dp).size(16.dp),
+                modifier = Modifier
+                    .size(26.dp),
                 color = MaterialTheme.colors.onSecondary
             )
-            Text(text = "Service", Modifier.padding(5.dp))
-
         }
+
+//        OutlinedButton(
+//            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+//            onClick = onDetailsSelected,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 16.dp)
+//
+//        ) {
+//            BknIcon(
+//                icon = CommunityMaterial.Icon3.cmd_wrench,
+//                modifier = Modifier
+//                    .padding(end = 10.dp, bottom = 3.dp)
+//                    .size(16.dp),
+//                color = MaterialTheme.colors.onSecondary
+//            )
+//            Text(text = "Service", Modifier.padding(5.dp))
+//
+//        }
     }
 }
 

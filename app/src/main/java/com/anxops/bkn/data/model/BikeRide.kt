@@ -1,6 +1,8 @@
 package com.anxops.bkn.data.model
 
 import com.anxops.bkn.data.model.util.LocalDateSerializer
+import com.anxops.bkn.util.decodePoly
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
@@ -25,6 +27,10 @@ data class BikeRide(
 ) {
     fun toRideUpdate() : BikeRideUpdate {
         return BikeRideUpdate(bikeId, bikeConfirmed)
+    }
+
+    val decodedPolyline: List<LatLng>? by lazy {
+        mapSummaryPolyline?.let { decodePoly(it) }
     }
 }
 

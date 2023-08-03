@@ -136,6 +136,8 @@ dependencies {
     ksp libs.androidx.room.compiler
 
     testImplementation libs.androidx.junit
+    testImplementation libs.kotlinx.coroutines.test
+
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.compose.test.uiJunit4
 

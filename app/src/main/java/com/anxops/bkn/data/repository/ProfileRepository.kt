@@ -76,7 +76,7 @@ class ProfileRepository(
                 RepositoryResult.Success(profile)
             }
 
-            else -> RepositoryResult.Error(result.message ?: "Unknown error")
+            is ApiResponse.Error -> RepositoryResult.Error(result.message)
 
         }
 

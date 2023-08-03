@@ -63,6 +63,7 @@ timber-version = "5.0.1"
 
 # Junit
 junit = "1.1.5"
+kotlin-test-version = "1.7.3"
 
 ### LIBRARIES ###
 [libraries]
@@ -94,7 +95,10 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
+
+# Test
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
+kotlinx-coroutines-test ={ module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-test-version" }
 
 # Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }

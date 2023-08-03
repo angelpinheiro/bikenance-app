@@ -115,9 +115,9 @@ fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    BknIcon(CommunityMaterial.Icon3.cmd_progress_wrench)
-                }
+//                IconButton(onClick = { /*TODO*/ }) {
+//                    BknIcon(CommunityMaterial.Icon3.cmd_progress_wrench)
+//                }
                 OutlinedButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier.weight(1f),

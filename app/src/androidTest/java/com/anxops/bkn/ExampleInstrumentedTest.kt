@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("dev.marcocattaneo.androidcomposetemplate", appContext.packageName)
+        assertEquals("com.anxops.bkn", appContext.packageName)
     }
 }

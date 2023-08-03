@@ -51,7 +51,7 @@ fun BikeRideItem(
     onClickOpenOnStrava: () -> Unit = {}
 ) {
 
-    val showBikeConfirm = !item.ride.bikeConfirmed && bikes.isNotEmpty()
+    val showBikeConfirm = true;//!item.ride.bikeConfirmed && bikes.isNotEmpty()
 
     Column {
         Card(backgroundColor = MaterialTheme.colors.primary,
