@@ -1,6 +1,5 @@
 package com.anxops.bkn.data.repository
 
-import android.util.Log
 import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeEntity
@@ -15,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 interface BikeRepositoryFacade {
@@ -37,9 +37,13 @@ interface BikeRepositoryFacade {
 
     suspend fun refreshBikes(): Boolean
 
-    suspend fun getBikeMaintenance(id: String) : Maintenance?
+    suspend fun getBikeMaintenance(id: String): Maintenance?
 
-    suspend fun getBikeComponent(id: String) : BikeComponent?
+    suspend fun getBikeComponent(id: String): BikeComponent?
+
+    suspend fun updateMaintenance(bike: Bike, m: Maintenance)
+
+    suspend fun replaceComponent(it: BikeComponent): BikeComponent?
 }
 
 class BikeRepository(
@@ -54,41 +58,56 @@ class BikeRepository(
         when (val apiResponse = api.getBikes()) {
             is ApiResponse.Success -> {
                 db.database().withTransaction {
-                    val bikes = apiResponse.data
-
-                    val bikeEntities = bikes.map { it.toEntity() }
-                    val componentEntities = bikes.flatMap { bike ->
-                        bike.components?.map { it.toEntity() } ?: emptyList()
-                    }
-                    val maintenanceEntities = bikes.flatMap { bike ->
-                        bike.components?.flatMap {
-                            it.maintenances?.map { m -> m.toEntity() } ?: listOf()
-                        } ?: emptyList()
-                    }
-
                     db.bikeDao().clear()
-                    db.bikeComponentDao().clear()
-                    db.maintenanceDao().clear()
-
-                    db.bikeDao().insertAll(bikeEntities)
-                    db.bikeComponentDao().insertAll(componentEntities)
-                    db.maintenanceDao().insertAll(maintenanceEntities)
+                    apiResponse.data.forEach {
+                        insertOrUpdateBike(it)
+                    }
                 }
                 true
             }
-
             else -> false
         }
     }
 
-    override suspend fun getBikeMaintenance(id: String): Maintenance? = withContext(defaultDispatcher) {
-        db.maintenanceDao().getById(id)?.toDomain()
-    }
+    override suspend fun getBikeMaintenance(id: String): Maintenance? =
+        withContext(defaultDispatcher) {
+            db.maintenanceDao().getById(id)?.toDomain()
+        }
 
-    override suspend fun getBikeComponent(id: String): BikeComponent? = withContext(defaultDispatcher) {
-        db.bikeComponentDao().getById(id)?.toDomain()?.let {
-            val maintenances = db.maintenanceDao().getByComponentId(it._id).map { m -> m.toDomain() }
-            it.copy(maintenances = maintenances)
+    override suspend fun getBikeComponent(id: String): BikeComponent? =
+        withContext(defaultDispatcher) {
+            db.bikeComponentDao().getById(id)?.toDomain()?.let {
+                val maintenances =
+                    db.maintenanceDao().getByComponentId(it._id).map { m -> m.toDomain() }
+                it.copy(maintenances = maintenances)
+            }
+        }
+
+    override suspend fun updateMaintenance(bike: Bike, m: Maintenance) =
+        withContext(defaultDispatcher) {
+            when (val response = api.updateMaintenance(bike, m)) {
+                is ApiResponse.Success -> {
+                    insertOrUpdateBike(response.data)
+                }
+
+                else -> {
+                    throw Exception("Could not updateSynchronizedBikes")
+                }
+            }
+        }
+
+    override suspend fun replaceComponent(c: BikeComponent): BikeComponent? {
+        return withContext(defaultDispatcher) {
+            when (val response = api.replaceComponent(c)) {
+                is ApiResponse.Success -> {
+                    c.bikeId?.let { refreshBike(it) }
+                    getBikeComponent(response.data)
+                }
+
+                else -> {
+                    throw Exception("Could not replace component")
+                }
+            }
         }
     }
 
@@ -141,16 +160,34 @@ class BikeRepository(
         when (val response = api.setupBike(bike)) {
             is ApiResponse.Error -> throw Exception(response.message)
             is ApiResponse.Success -> {
-                db.database().withTransaction {
-                    db.bikeDao().update(response.data.toEntity())
-                    db.bikeComponentDao().clearBike(bike._id)
-                    response.data.components?.forEach { component ->
-                        db.bikeComponentDao().insert(component.toEntity())
-                        component.maintenances?.forEach {
-                            db.maintenanceDao().insert(it.toEntity())
-                        }
-                    }
+                insertOrUpdateBike(response.data)
+            }
+        }
+    }
+
+    private suspend fun insertOrUpdateBike(bike: Bike) {
+        db.database().withTransaction {
+            // remove old bike components
+            db.bikeDao().removeAllBikeComponents(bike._id)
+            // save new bike data
+            db.bikeDao().insert(bike.toEntity())
+            // save new components and maintenances
+            bike.components?.forEach { component ->
+                db.bikeComponentDao().insert(component.toEntity())
+                component.maintenances?.forEach {
+                    db.maintenanceDao().insert(it.toEntity())
                 }
+            }
+        }
+    }
+
+    private suspend fun refreshBike(
+        bikeId: String
+    ) {
+        when (val response = api.getBike(bikeId)) {
+            is ApiResponse.Error -> throw Exception(response.message)
+            is ApiResponse.Success -> {
+                insertOrUpdateBike(response.data)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.anxops.bkn.data.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.anxops.bkn.data.model.BikeComponent
@@ -15,7 +16,16 @@ import com.anxops.bkn.data.model.RevisionUnit
 import com.anxops.bkn.data.model.Usage
 import com.anxops.bkn.util.toLocalDateTime
 
-@Entity(tableName = "component")
+@Entity(tableName = "component",
+    foreignKeys = [
+        ForeignKey(
+            entity = BikeEntity::class,
+            parentColumns = arrayOf("_id"),
+            childColumns = arrayOf("bike_id"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class ComponentEntity(
     @PrimaryKey val _id: String,
     @ColumnInfo(name = "bike_id") val bikeId: String?,
@@ -50,8 +60,14 @@ data class UsageEntity(
         return Usage(duration, distance)
     }
 }
-
-@Entity(tableName = "maintenance")
+@Entity(tableName = "maintenance",    foreignKeys = [
+    ForeignKey(
+        entity = ComponentEntity::class,
+        parentColumns = arrayOf("_id"),
+        childColumns = arrayOf("componentId"),
+        onDelete = ForeignKey.CASCADE
+    )
+])
 data class MaintenanceEntity(
     @PrimaryKey val _id: String,
     @ColumnInfo("componentId")
@@ -66,12 +82,8 @@ data class MaintenanceEntity(
     val description: String,
     @ColumnInfo("componentType")
     val componentType: String,
-    @ColumnInfo("status")
-    val status: Double = 0.0,
     @ColumnInfo("lastDate")
     var lastMaintenanceDate: String? = null,
-    @ColumnInfo("estimatedDate")
-    var estimatedDate: String? = null,
     @Embedded
     var usageSinceLast: UsageEntity,
 ) {
@@ -81,14 +93,13 @@ data class MaintenanceEntity(
             _id = _id,
             componentId = componentId,
             type = MaintenanceType.getByName(type),
-            status = status,
+//            status = status,
             componentType = ComponentType.getByName(componentType),
             defaultFrequency = RevisionFrequency(
                 every = defaultFrequencyEvery,
                 unit = RevisionUnit.valueOf(defaultFrequencyUnit)
             ),
             description = description,
-            estimatedDate = estimatedDate?.toLocalDateTime(),
             lastMaintenanceDate = lastMaintenanceDate?.toLocalDateTime(),
             usageSinceLast = usageSinceLast.toDomain()
         )

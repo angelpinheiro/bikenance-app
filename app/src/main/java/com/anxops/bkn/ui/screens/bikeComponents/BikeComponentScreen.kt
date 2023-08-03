@@ -14,9 +14,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Surface
@@ -120,7 +123,7 @@ fun BikeComponentScreen(
                         ) {
                             currentState.editingMaintenance?.let { m ->
                                 MaintenanceEdit(maintenance = m.editingMaintenance,
-                                    original = m.maintenance,
+                                    original = m.original,
                                     onFrequencyChange = {
                                         viewModel.onMaintenanceFreqUpdate(it)
                                     },
@@ -147,79 +150,107 @@ fun BikeComponentScreen(
 
                     Column(
                         modifier = Modifier
-                            .verticalScroll(scrollState)
                             .fillMaxSize()
                             .padding(it)
-                            .padding(16.dp)
                     ) {
-//                        BikeComponentInfo(bikeComponent = currentState.component)
 
-                        Row(
-                            Modifier
-                                .padding(top = 0.dp)
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(scrollState)
                                 .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-
+                                .padding(16.dp)
+                                .weight(1f)
                         ) {
-                            BikeStat(
-                                title = "Alias",
-                                value = "${currentState.component.alias ?: "Add an alias..."}"
-                            )
+
+                            // BikeComponentInfo(bikeComponent = currentState.component)
+
+//                            Row(
+//                                Modifier
+//                                    .padding(top = 0.dp)
+//                                    .fillMaxWidth()
+//                                    .padding(vertical = 10.dp)
+//                                    .clip(RoundedCornerShape(8.dp))
+//                                    .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
+//                                verticalAlignment = Alignment.CenterVertically,
+//                                horizontalArrangement = Arrangement.SpaceEvenly
+//
+//                            ) {
+//                                BikeStat(
+//                                    title = "Alias",
+//                                    value = "${currentState.component.alias ?: "Add an alias..."}"
+//                                )
+//                            }
+
+                            Row(
+                                Modifier
+                                    .padding(top = 0.dp)
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceEvenly
+
+                            ) {
+                                BikeStat(
+                                    title = "Mounted on",
+                                    value = "${currentState.bike.displayName()}"
+                                )
+                                BikeStat(
+                                    title = "Installation date",
+                                    value = "${currentState.component.from?.formatAsDate()}"
+                                )
+                            }
+
+                            Row(
+                                Modifier
+                                    .padding(top = 0.dp)
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceEvenly
+
+                            ) {
+                                BikeStat(
+                                    title = "Distance",
+                                    value = "${currentState.component.displayDistance()}"
+                                )
+                                BikeStat(
+                                    title = "Duration",
+                                    value = "${currentState.component.from?.formatElapsedTimeUntilNow()}"
+                                )
+                                BikeStat(
+                                    title = "Active hours",
+                                    value = "${currentState.component.displayDuration()}"
+                                )
+                            }
+
+
+                            currentState.maintenances.forEach { m ->
+                                MaintenanceDetail(item = m) {
+                                    viewModel.onMaintenanceEdit(m)
+                                }
+                            }
                         }
 
-                        Row(
-                            Modifier
-                                .padding(top = 0.dp)
+                        Box(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-
+                                .background(MaterialTheme.colors.primary)
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            BikeStat(
-                                title = "Mounted on",
-                                value = "${currentState.bike.displayName()}"
-                            )
-                            BikeStat(
-                                title = "Installation date",
-                                value = "${currentState.component.from?.formatAsDate()}"
-                            )
-                        }
-
-                        Row(
-                            Modifier
-                                .padding(top = 0.dp)
-                                .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-
-                        ) {
-                            BikeStat(
-                                title = "Distance",
-                                value = "${currentState.component.displayDistance()}"
-                            )
-                            BikeStat(
-                                title = "Duration",
-                                value = "${currentState.component.from?.formatElapsedTimeUntilNow()}"
-                            )
-                            BikeStat(
-                                title = "Active hours",
-                                value = "${currentState.component.displayDuration()}"
-                            )
-                        }
-
-                        currentState.maintenances.forEach { m ->
-                            MaintenanceDetail(item = m) {
-                                viewModel.onMaintenanceEdit(m)
+//                            ExtendedFloatingActionButton(text = { Text("Replace component") },
+//                                icon = {
+//                                    BknIcon(icon = CommunityMaterial.Icon3.cmd_wrench, modifier = Modifier.size(24.dp))
+//                                },
+//                                onClick = { })
+                            OutlinedButton(modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+                                onClick = { viewModel.onComponentReplace() }) {
+                                Text(text = "Replace component", Modifier.padding(5.dp))
                             }
                         }
 
@@ -280,6 +311,7 @@ fun MaintenanceEdit(
         }
 
         RevisionFreqEdit(
+            editing = maintenance,
             frequency = maintenance.defaultFrequency,
             original = original.defaultFrequency,
             onFrequencyChange = onFrequencyChange,

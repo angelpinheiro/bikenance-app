@@ -19,6 +19,8 @@ object ApiEndpoints {
     fun profileBikeSetupEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId/setup"
     fun profileRideEndpoint(rideId: String) = "$baseApiUrl/profile/rides/$rideId"
     fun addComponentsEndpoint(bikeId: String) = "$baseApiUrl/profile/bikes/$bikeId/components"
+    fun replaceComponentEndpoint(bikeId: String, componentId: String) = "$baseApiUrl/profile/bikes/$bikeId/components/$componentId/replace"
+    fun maintenanceEndpoint(bikeId: String, maintenanceId: String) = "$baseApiUrl/profile/bikes/$bikeId/maintenance/$maintenanceId"
     fun setUseDebugAPi(use: Boolean) {
         baseApiUrl = if (use) {
             BuildConfig.DEBUG_API_URL + "/api"

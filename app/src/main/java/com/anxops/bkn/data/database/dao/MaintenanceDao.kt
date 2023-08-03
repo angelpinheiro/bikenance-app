@@ -21,6 +21,4 @@ interface MaintenanceDao {
 
     @Query("DELETE FROM maintenance")
     suspend fun clear()
-
-
 }

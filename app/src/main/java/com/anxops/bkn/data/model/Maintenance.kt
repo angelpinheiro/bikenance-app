@@ -3,12 +3,14 @@ package com.anxops.bkn.data.model
 import com.anxops.bkn.data.model.util.ComponentTypeSerializer
 import com.anxops.bkn.data.model.util.LocalDateSerializer
 import com.anxops.bkn.data.model.util.MaintenanceTypeSerializer
+import com.anxops.bkn.data.model.util.expectedNextMaintenanceDate
+import com.anxops.bkn.data.model.util.wearPercentage
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
-fun  revisionUnitRange(unit: RevisionUnit): IntRange {
-    return when(unit) {
+fun revisionUnitRange(unit: RevisionUnit): IntRange {
+    return when (unit) {
         RevisionUnit.HOURS -> IntRange(1, 1000)
         RevisionUnit.KILOMETERS -> IntRange(1, 10000)
         RevisionUnit.WEEKS -> IntRange(1, 12)
@@ -39,10 +41,17 @@ data class Maintenance(
     @SerialName("description") val description: String,
     @Serializable(with = ComponentTypeSerializer::class) @SerialName("componentType") val componentType: ComponentType,
     @SerialName("usageSinceLast") var usageSinceLast: Usage = Usage(0.0, 0.0),
-    @SerialName("status") val status: Double = 0.0,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("lastDate") var lastMaintenanceDate: LocalDateTime? = null,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("estimatedDate") var estimatedDate: LocalDateTime? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("lastDate") val lastMaintenanceDate: LocalDateTime? = null,
 ) {
+
+    val status: Double by lazy {
+        wearPercentage(LocalDateTime.now())
+    }
+
+    val estimatedDate: LocalDateTime? by lazy {
+        expectedNextMaintenanceDate(LocalDateTime.now())
+    }
+
     fun displayStatus() = "${(status * 100).toInt()}%"
 
     fun statusLevel() = StatusLevel.from(status)

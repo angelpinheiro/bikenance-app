@@ -27,14 +27,6 @@ fun Profile.toEntity(): ProfileEntity {
         profilePhoto = profilePhotoUrl,
         createdAt = createdAt,
         sync = sync
-//        biggestRideDistance = biggestRideDistance,
-//        biggestClimbElevationGain = biggestClimbElevationGain,
-//        recentRideTotalDistance = recentRideTotalDistance,
-//        recentRideTotalDuration = recentRideTotalDuration,
-//        ytdRideTotalDistance = ytdRideTotalDistance,
-//        ytdRideTotalDuration = ytdRideTotalDuration,
-//        allRideTotalDistance = allRideTotalDistance,
-//        allRideTotalDuration = allRideTotalDuration
     )
 }
 
@@ -94,12 +86,10 @@ fun Maintenance.toEntity(): MaintenanceEntity {
         _id = _id,
         componentId = componentId,
         usageSinceLast = usageSinceLast.toEntity(),
-        estimatedDate = estimatedDate?.formatAsIso8061(),
         description = description,
         lastMaintenanceDate = lastMaintenanceDate?.formatAsIso8061(),
         componentType = componentType.name,
         type = type.name,
-        status = status,
         defaultFrequencyEvery = defaultFrequency.every,
         defaultFrequencyUnit = defaultFrequency.unit.name,
     )

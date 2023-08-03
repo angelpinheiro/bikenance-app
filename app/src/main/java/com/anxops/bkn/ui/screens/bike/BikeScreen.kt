@@ -135,8 +135,8 @@ fun BikeScreen(
                         scope.launch {
                             scaffoldState.bottomSheetState.collapse()
                         }
-                    }, onMaintenanceSelected = { maintenance ->
-                        bknNavigator.navigateToBikeComponent(bike._id, maintenance._id)
+                    }, onMaintenanceSelected = { _ ->
+                        bknNavigator.navigateToBikeComponent(bike._id, component._id)
                     }, onDetailsSelected = {
                         bknNavigator.navigateToBikeComponent(bike._id, component._id)
                     })

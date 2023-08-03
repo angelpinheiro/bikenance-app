@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.RevisionFrequency
 import com.anxops.bkn.data.model.RevisionUnit
 import com.anxops.bkn.data.model.revisionUnitRange
@@ -40,6 +41,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun RevisionFreqEdit(
+    editing: Maintenance,
     frequency: RevisionFrequency,
     original: RevisionFrequency,
     onSaveChanges: () -> Unit = {},
@@ -76,7 +78,7 @@ fun RevisionFreqEdit(
                     .size(22.dp)
             )
             Text(
-                text = "${frequency.displayText()}",
+                text = "${frequency.displayText()} (${editing.displayStatus()})",
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3,
             )

@@ -31,15 +31,21 @@ interface BikeDao {
         syncSelectedBikes(ids)
     }
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(bike: BikeEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     @JvmSuppressWildcards
     suspend fun insertAll(bikes: List<BikeEntity>)
 
+    @Query("DELETE FROM component WHERE bike_id = :bikeId")
+    suspend fun removeAllBikeComponents(bikeId: String)
+
     @Delete
     suspend fun delete(bike: BikeEntity)
+
+    @Query("DELETE FROM bike WHERE _id = :bikeId")
+    suspend fun delete(bikeId: String)
 
     @Query("DELETE FROM bike")
     suspend fun clear()

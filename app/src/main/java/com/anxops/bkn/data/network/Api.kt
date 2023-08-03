@@ -3,6 +3,7 @@ package com.anxops.bkn.data.network
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.BikeRide
+import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.google.firebase.storage.FirebaseStorage
@@ -212,6 +213,23 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
         }
     }
 
+    suspend fun updateMaintenance(bike: Bike, m: Maintenance): ApiResponse<Bike> {
+        return safeApiCall {
+            httpClient.put(ApiEndpoints.maintenanceEndpoint(bikeId = bike._id, maintenanceId = m._id)) {
+                header("Authorization", tokenHeader())
+                body = m
+            }
+        }
+    }
+
+    suspend fun replaceComponent(c: BikeComponent): ApiResponse<String> {
+        return safeApiCall {
+            httpClient.put(ApiEndpoints.replaceComponentEndpoint(bikeId = c.bikeId!!, componentId = c._id)) {
+                header("Authorization", tokenHeader())
+                body = c
+            }
+        }
+    }
 
 }
 

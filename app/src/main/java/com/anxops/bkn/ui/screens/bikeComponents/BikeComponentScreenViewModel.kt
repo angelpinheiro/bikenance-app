@@ -6,7 +6,6 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.RevisionFrequency
-import com.anxops.bkn.data.model.revisionUnitRange
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.util.WhileUiSubscribed
@@ -21,7 +20,7 @@ import javax.inject.Inject
 
 
 data class EditingMaintenance(
-    val maintenance: Maintenance, val editingMaintenance: Maintenance = maintenance.copy()
+    val original: Maintenance, val editingMaintenance: Maintenance = original.copy()
 )
 
 sealed interface BikeComponentScreenState {
@@ -79,32 +78,51 @@ class BikeComponentScreenViewModel @Inject constructor(
     }
 
     fun onMaintenanceFreqUpdate(frequency: RevisionFrequency) {
-        editingMaintenanceFlow.update {
-            it?.copy(editingMaintenance = it.editingMaintenance.copy(defaultFrequency = frequency))
+
+        editingMaintenanceFlow.update { em ->
+
+            em?.let {
+                val updated = it.editingMaintenance.copy(defaultFrequency = frequency)
+                it.copy(editingMaintenance = updated)
+            }
+
         }
     }
 
     fun onConfirmEdit() {
-//        maintenanceFlow.update {
-//            it?.copy(
-//                maintenance = it.editingMaintenance,
-//                editingMaintenance = it.editingMaintenance.copy()
-//            )
-//        }
+        viewModelScope.launch {
+            val bike = bikeFlow.value ?: return@launch
+            val component = componentFlow.value ?: return@launch
+            isLoadingFlow.emit(true)
+            editingMaintenanceFlow.update {
+                it?.let {
+                    bikeRepository.updateMaintenance(bike, it.editingMaintenance)
+                    loadComponent(bike._id, component._id)
+                }
+                null
+            }
+            isLoadingFlow.emit(false)
+        }
     }
 
-    fun onDiscardEditingFreqChanges() {
-        editingMaintenanceFlow.update {
-            it?.copy(
-                editingMaintenance = it.maintenance.copy()
-            )
+    fun onComponentReplace() {
+        viewModelScope.launch {
+            val bike = bikeFlow.value ?: return@launch
+            componentFlow.value?.let { bikeComponent ->
+                bikeRepository.replaceComponent(bikeComponent)?.let {
+                    loadComponent(bike._id, it._id)
+                }
+
+            }
+
         }
+
     }
 
     fun onMaintenanceWearUpdate(wear: Double) {
-        editingMaintenanceFlow.update {
-            it?.copy(editingMaintenance = it.editingMaintenance.copy(status = wear))
-        }
+//        editingMaintenanceFlow.update {
+//            it?.copy(editingMaintenance = it.editingMaintenance.copy(status = wear))
+//        }
     }
 
     fun onMaintenanceEdit(m: Maintenance?) {
