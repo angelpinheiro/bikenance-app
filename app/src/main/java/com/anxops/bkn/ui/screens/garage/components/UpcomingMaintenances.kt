@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.StatusLevel
-import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
+import com.anxops.bkn.ui.shared.getColorForStatus
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.FadeInFadeOutAnimatedVisibility

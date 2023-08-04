@@ -1,5 +1,6 @@
 package com.anxops.bkn.data.repository
 
+import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.database.toEntity
@@ -8,6 +9,7 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.successOrException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 
 interface RidesRepositoryFacade {
 
@@ -29,9 +31,19 @@ class BikeRidesRepository(
 
     override suspend fun refreshRides(): Result<Unit> = result {
         api.getRides().successOrException {
-            it.forEach { b ->
-                db.bikeRideDao().insert(b.toEntity())
+            db.database().withTransaction {
+                db.bikeRideDao().clear()
+                it.forEach { b ->
+                    try {
+                        db.bikeRideDao().insert(b.toEntity())
+                    } catch (e: Exception) {
+                        Timber.e("An error occurred inserting: $b")
+                        Timber.e(e)
+                    }
+                }
             }
+
+
         }
     }
 

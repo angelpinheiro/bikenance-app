@@ -73,8 +73,8 @@ import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
-import com.anxops.bkn.ui.screens.maintenances.getColorForStatus
-import com.anxops.bkn.ui.screens.maintenances.getIconResForStatus
+import com.anxops.bkn.ui.shared.getColorForStatus
+import com.anxops.bkn.ui.shared.getIconResForStatus
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.resources
