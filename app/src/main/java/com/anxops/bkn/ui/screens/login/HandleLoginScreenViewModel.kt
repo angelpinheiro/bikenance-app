@@ -8,6 +8,8 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.data.repository.onSuccessNotNull
+import com.anxops.bkn.data.repository.onSuccessWithNull
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,8 +21,7 @@ import javax.inject.Inject
 
 
 data class HandleLoginScreenState(
-    val profile: Profile? = null,
-    val isNewAccount: Boolean? = null
+    val profile: Profile? = null, val isNewAccount: Boolean? = null
 )
 
 sealed class LoadProfileEvent {
@@ -36,8 +37,7 @@ class HandleLoginScreenViewModel @Inject constructor(
     private val bikeRepository: BikeRepositoryFacade,
     private val ridesRepository: RidesRepositoryFacade,
     private val sendFirebaseTokenToServer: SendTokenToServerWorkerStarter
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private var _state = MutableStateFlow(HandleLoginScreenState())
     val state: StateFlow<HandleLoginScreenState> = _state
@@ -53,35 +53,35 @@ class HandleLoginScreenViewModel @Inject constructor(
             dataStore.saveAuthTokens(token, refreshToken ?: "")
             sendFirebaseTokenToServer.start()
 
-            profileRepository.reloadData()
+            profileRepository.refreshProfile()
 
-            when (val profile = profileRepository.getProfile()) {
-                null -> {
-                    dataStore.deleteAuthToken()
-                    loadProfileEvent.emit(LoadProfileEvent.LoadFailed)
+            val result = profileRepository.getProfile()
+
+            result.onSuccessNotNull { profile ->
+                dataStore.saveAuthUser(profile.userId)
+                val isNewAccount = profile.createdAt == null
+                _state.update {
+                    it.copy(
+                        profile = profile, isNewAccount = isNewAccount
+                    )
                 }
 
-                else -> {
-                    dataStore.saveAuthUser(profile.userId)
-                    val isNewAccount = profile.createdAt == null
-                    _state.update {
-                        it.copy(
-                            profile = profile, isNewAccount = isNewAccount
-                        )
-                    }
+                profileRepository.refreshProfile()
+                bikeRepository.refreshBikes()
+                ridesRepository.refreshRides()
 
-                    profileRepository.reloadData()
-                    bikeRepository.refreshBikes()
-                    ridesRepository.reloadData()
-
-                    if (isNewAccount) {
-                        delay(1000)
-                        loadProfileEvent.emit(LoadProfileEvent.NewAccount)
-                    } else {
-                        delay(500)
-                        loadProfileEvent.emit(LoadProfileEvent.ExistingAccount)
-                    }
+                if (isNewAccount) {
+                    delay(1000)
+                    loadProfileEvent.emit(LoadProfileEvent.NewAccount)
+                } else {
+                    delay(500)
+                    loadProfileEvent.emit(LoadProfileEvent.ExistingAccount)
                 }
+            }
+
+            result.onSuccessWithNull {
+                dataStore.deleteAuthToken()
+                loadProfileEvent.emit(LoadProfileEvent.LoadFailed)
             }
         }
     }

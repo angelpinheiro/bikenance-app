@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
@@ -8,12 +7,11 @@ import com.anxops.bkn.data.database.entities.AppInfo
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.preferences.BknDataStore
-import com.anxops.bkn.data.repository.AppInfoRepository
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.data.repository.successOrException
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -30,17 +28,17 @@ class HomeViewModel @Inject constructor(
     private val appInfoRepository: AppInfoRepositoryFacade,
 ) : ViewModel() {
 
-    val allowRefreshState = db.appInfoDao().getAppInfoFlow().map {info ->
+    val allowRefreshState = db.appInfoDao().getAppInfoFlow().map { info ->
         info?.let { allowRefresh(it) } ?: false
-    }.stateIn(viewModelScope, WhileUiSubscribed,false)
+    }.stateIn(viewModelScope, WhileUiSubscribed, false)
 
     val profileSyncState = profileRepository.getProfileFlow().map {
-        it?.sync
+        it.successOrException { p -> p?.sync ?: false }
     }.stateIn(viewModelScope, WhileUiSubscribed, null)
 
     init {
         viewModelScope.launch {
-            profileRepository.reloadData()
+            profileRepository.refreshProfile()
         }
     }
 
@@ -52,7 +50,7 @@ class HomeViewModel @Inject constructor(
 
     fun refreshRides() {
         viewModelScope.launch {
-            db.appInfoDao().getAppInfo()?.let {  appInfo ->
+            db.appInfoDao().getAppInfo()?.let { appInfo ->
                 // only one req per day
                 if (allowRefresh(appInfo)) {
 

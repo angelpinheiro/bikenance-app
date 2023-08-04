@@ -15,6 +15,7 @@ import com.anxops.bkn.data.model.MaintenanceConfiguration
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.data.repository.successOrException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,7 +73,7 @@ class BikeSetupViewModel @Inject constructor(
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
             val bike = bikesRepository.getBike(bikeId)
-            val stats = profileRepository.getProfileStats()
+            val stats = profileRepository.getProfileStats().successOrException { it } // TODO handle result
 
             if (bike != null && stats != null) {
                 _state.value = BikeSetupScreenState.SetupInProgress(

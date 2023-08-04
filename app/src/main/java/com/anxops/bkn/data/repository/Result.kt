@@ -3,6 +3,10 @@ package com.anxops.bkn.data.repository
 import com.anxops.bkn.data.network.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CancellationException
 
@@ -60,6 +64,17 @@ inline fun <T> Result<T>.onSuccessNotNull(block: (T & Any) -> Unit): Result<T> {
 }
 
 /**
+ * Extension function that executes the provided block function if the result is Success but data is null
+ */
+inline fun <T> Result<T>.onSuccessWithNull(block: () -> Unit): Result<T> {
+    when (this) {
+        is Result.Success -> if (this.data == null) block()
+        else -> {}
+    }
+    return this
+}
+
+/**
  * Extension function that executes the provided block function if the result is Error, passing the stored exception.
  */
 inline fun <T> Result<T>.onError(block: (Throwable?) -> Unit): Result<T> {
@@ -98,6 +113,16 @@ inline fun <T> ApiResponse<T>.asResult(): Result<T> {
     } catch (e: Throwable) {
         Result.Error(e)
     }
+}
+
+fun <T> Flow<T>.asResult(): Flow<Result<T>> {
+    return this
+        .filter { it != null }
+        .map<T, Result<T>> {
+            Result.Success(it)
+        }
+//        .onStart { emit(Result.Loading) }
+        .catch { emit(Result.Error(it)) }
 }
 
 /**

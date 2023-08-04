@@ -30,7 +30,7 @@ class HandleFcmMessageWorker @AssistedInject constructor(
         when (inputData.getString("app_message_type")) {
 
             MessageType.RIDES_UPDATED.type -> {
-                ridesRepository.reloadData()
+                ridesRepository.refreshRides()
 
                 val count = inputData.getString("count") ?: "0"
                 notifier.show(
@@ -43,14 +43,14 @@ class HandleFcmMessageWorker @AssistedInject constructor(
             }
 
             MessageType.RIDES_DELETED.type -> {
-                ridesRepository.reloadData()
+                ridesRepository.refreshRides()
             }
 
             MessageType.PROFILE_SYNC.type -> {
 
-                profileRepository.reloadData()
+                profileRepository.refreshProfile()
                 bikeRepository.refreshBikes()
-                ridesRepository.reloadData()
+                ridesRepository.refreshRides()
 
                 notifier.show(
                     applicationContext, NotificationData.DestinationDeepLink(
@@ -62,7 +62,7 @@ class HandleFcmMessageWorker @AssistedInject constructor(
             }
 
             MessageType.NEW_ACTIVITY.type -> {
-                ridesRepository.reloadData()
+                ridesRepository.refreshRides()
 
                 val id = inputData.getString("id") ?: ""
                 notifier.show(

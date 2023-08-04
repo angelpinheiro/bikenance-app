@@ -60,8 +60,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesProfileRepository(api: Api, db: AppDb): ProfileRepositoryFacade =
-        ProfileRepository(api, db)
+    fun providesProfileRepository(api: Api, db: AppDb, dataStore: BknDataStore): ProfileRepositoryFacade =
+        ProfileRepository(api, db, dataStore)
 
     @Provides
     @Singleton

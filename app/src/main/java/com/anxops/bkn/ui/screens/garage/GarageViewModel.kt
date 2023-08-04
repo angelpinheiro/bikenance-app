@@ -42,7 +42,7 @@ class GarageViewModel @Inject constructor(
     ) { bikesResult, selectedBikeResult, refreshResult ->
 
         val lastRides = selectedBikeResult?.let { bike ->
-            ridesRepository.getLastBikeRides(bike._id).successOrException { it }
+            ridesRepository.getLastRides(bike._id).successOrException { it }
         }
 
         GarageScreenState(

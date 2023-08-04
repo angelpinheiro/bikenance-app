@@ -15,11 +15,11 @@ interface RidesRepositoryFacade {
 
     suspend fun getRides(): Result<List<BikeRide>>
 
-    suspend fun getLastBikeRides(bikeId: String): Result<List<BikeRide>>
+    suspend fun getLastRides(bikeId: String): Result<List<BikeRide>>
 
     suspend fun updateRide(ride: BikeRide): Result<BikeRide>
 
-    suspend fun reloadData(): Result<Unit>
+    suspend fun refreshRides(): Result<Unit>
 }
 
 class BikeRidesRepository(
@@ -27,7 +27,7 @@ class BikeRidesRepository(
 ) : RidesRepositoryFacade, BaseRepository(defaultDispatcher) {
 
 
-    override suspend fun reloadData(): Result<Unit> = result {
+    override suspend fun refreshRides(): Result<Unit> = result {
         api.getRides().successOrException {
             it.forEach { b ->
                 db.bikeRideDao().insert(b.toEntity())
@@ -35,7 +35,7 @@ class BikeRidesRepository(
         }
     }
 
-    override suspend fun getLastBikeRides(bikeId: String): Result<List<BikeRide>> = result {
+    override suspend fun getLastRides(bikeId: String): Result<List<BikeRide>> = result {
         db.bikeRideDao().lastBikeRides(bikeId).map {
             it.toDomain()
         }

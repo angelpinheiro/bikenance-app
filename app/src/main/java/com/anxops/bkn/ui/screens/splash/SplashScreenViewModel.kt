@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.network.ApiEndpoints
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.CheckLoginResult
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.data.repository.onError
+import com.anxops.bkn.data.repository.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,15 +34,19 @@ class SplashScreenViewModel @Inject constructor(
         }
     }
 
-    val isLogged = dataStore.authToken.map { token ->
-        val profile = repository.getProfile()
-        if (profile == null) {
-            CheckLoginState.NotLoggedIn
-        } else if (token != null) {
-            // TODO: check token is valid or refresh token
-            CheckLoginState.LoggedIn
-        } else {
-            CheckLoginState.LoginExpired
+    val isLogged = flow {
+        repository.checkLogin().onSuccess { checkResult ->
+            val state = when (checkResult) {
+                is CheckLoginResult.LoggedIn -> CheckLoginState.LoggedIn
+                is CheckLoginResult.LoginExpired -> CheckLoginState.LoginExpired
+                else -> {
+                    CheckLoginState.NotLoggedIn
+                }
+            }
+            emit(state)
+        }.onError {
+            // TODO handle error
+            emit(CheckLoginState.NotLoggedIn)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), CheckLoginState.Checking)
 

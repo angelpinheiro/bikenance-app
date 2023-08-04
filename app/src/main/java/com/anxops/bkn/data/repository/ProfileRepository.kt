@@ -1,86 +1,109 @@
 package com.anxops.bkn.data.repository
 
+import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.AthleteStats
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.network.Api
-import com.anxops.bkn.data.network.ApiResponse
-import com.anxops.bkn.util.RepositoryResult
+import com.anxops.bkn.data.network.successOrException
+import com.anxops.bkn.data.preferences.BknDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 
 interface ProfileRepositoryFacade {
 
-    suspend fun reloadData(): Boolean
+    suspend fun refreshProfile(): Result<Profile>
 
-    suspend fun getProfile(): Profile?
+    suspend fun checkLogin(): Result<CheckLoginResult>
 
-    suspend fun getProfileStats(): AthleteStats?
+    suspend fun profileExists(): Result<Boolean>
 
-    suspend fun updateProfile(profile: Profile): RepositoryResult<Profile>
+    suspend fun getProfile(): Result<Profile?>
 
-    fun getProfileFlow(): Flow<Profile?>
+    suspend fun getProfileStats(): Result<AthleteStats?>
+
+    suspend fun updateProfile(profile: Profile): Result<Profile>
+
+    fun getProfileFlow(): Flow<Result<Profile?>>
 
 }
 
 class ProfileRepository(
-    val api: Api, val db: AppDb, private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ProfileRepositoryFacade {
+    val api: Api,
+    val db: AppDb,
+    val dataStore: BknDataStore,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : ProfileRepositoryFacade, BaseRepository(defaultDispatcher) {
 
-    override suspend fun reloadData(): Boolean {
-        return withContext(defaultDispatcher) {
-            val success = when (val profile = api.profile()) {
-                is ApiResponse.Success -> {
-                    db.profileDao().clear()
-                    profile.data.let {
-                        db.profileDao().insert(it.toEntity())
-                    }
-                    true
+    override suspend fun refreshProfile(): Result<Profile> = result {
+        api.profile().successOrException {
+            db.profileDao().clear()
+            db.profileDao().insert(it.toEntity())
+            it
+        }
+    }
+
+    override suspend fun checkLogin(): Result<CheckLoginResult> = result {
+
+        val token = dataStore.authToken.firstOrNull()
+        val profileExists = db.profileDao().exists()
+
+        when (token) {
+            // There is no auth token
+            null -> {
+                // If a profile is saved, the login has expired and the auth token deleted
+                if (profileExists) {
+                    CheckLoginResult.LoginExpired
+                } else {
+                    // If a profile dos not exist, there is no logged user
+                    CheckLoginResult.NotLoggedIn
                 }
-                else -> false
             }
-            success
+            // If there is an auth token and a profile exists, the user is logged in
+            else -> {
+                CheckLoginResult.LoggedIn(db.profileDao().getProfile().toDomain())
+            }
         }
     }
 
-    override suspend fun getProfile(): Profile? {
-        return db.profileDao().getProfile()?.toDomain()
+    override suspend fun profileExists(): Result<Boolean> = result {
+        db.profileDao().exists()
     }
 
-    override suspend fun getProfileStats(): AthleteStats? = withContext(defaultDispatcher) {
-        when (val profile = api.profile()) {
-            is ApiResponse.Success -> {
-                profile.data.stats
-
-            }
-            else -> null
+    override suspend fun getProfile(): Result<Profile?> = result {
+        db.database().withTransaction {
+            if (db.profileDao().exists()) {
+                db.profileDao().getProfile().toDomain()
+            } else null
         }
     }
 
-    override fun getProfileFlow(): Flow<Profile?> {
+    override fun getProfileFlow(): Flow<Result<Profile?>> {
         return db.profileDao().getProfileFlow().map {
             it?.toDomain()
+        }.asResult()
+    }
+
+    override suspend fun updateProfile(profile: Profile): Result<Profile> = result {
+        api.updateProfile(profile).successOrException {
+            db.profileDao().update(it.toEntity())
+            db.profileDao().getProfile()?.toDomain() ?: throw RuntimeException("Profile not found")
         }
     }
 
-    override suspend fun updateProfile(profile: Profile): RepositoryResult<Profile> {
-        return when (val result = api.updateProfile(profile)) {
-
-            is ApiResponse.Success -> {
-                db.profileDao().update(profile.toEntity())
-                RepositoryResult.Success(profile)
-            }
-
-            is ApiResponse.Error -> RepositoryResult.Error(result.message)
-
-        }
-
-
+    override suspend fun getProfileStats(): Result<AthleteStats?> = result {
+        api.profile().successOrException { it.stats }
     }
 
+}
+
+sealed class CheckLoginResult {
+    data class LoggedIn(val profile: Profile) : CheckLoginResult()
+    object NotLoggedIn : CheckLoginResult()
+    object LoginExpired : CheckLoginResult()
 }

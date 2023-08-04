@@ -6,6 +6,9 @@ import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.data.repository.Result
+import com.anxops.bkn.data.repository.onError
+import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.RepositoryResult
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,9 +56,11 @@ class ProfileScreenViewModel @Inject constructor(
 
     fun loadProfile() {
         viewModelScope.launch {
-            profileRepository.getProfile()?.let {
+            profileRepository.getProfile().onSuccessNotNull {
                 profileFlow.emit(it)
                 statusFlow.emit(ProfileScreenStatus.Loaded)
+            }.onError {
+                //TODO
             }
         }
     }
@@ -76,7 +81,7 @@ class ProfileScreenViewModel @Inject constructor(
 
             when (val result = profileRepository.updateProfile(profileFlow.value)) {
 
-                is RepositoryResult.Success -> {
+                is Result.Success -> {
                     profileFlow.update { result.data }
                     statusFlow.update { ProfileScreenStatus.UpdateSuccess }
                 }
