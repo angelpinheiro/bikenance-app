@@ -25,6 +25,7 @@ data class GarageScreenState(
     val lastRides: List<BikeRide> = emptyList(),
 )
 
+
 @HiltViewModel
 class GarageViewModel @Inject constructor(
     private val profileRepository: ProfileRepositoryFacade,
@@ -33,9 +34,8 @@ class GarageViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val isRefreshingFlow = MutableStateFlow(false)
-    private val bikesFlow = bikeRepository.getBikesFlow(full = true)
+    private val bikesFlow = bikeRepository.getBikesFlow(fillComponents = true)
     private val selectedBikeFlow = MutableStateFlow<Bike?>(null)
-
 
     val screenState: StateFlow<GarageScreenState> = combine(
         bikesFlow, selectedBikeFlow, isRefreshingFlow

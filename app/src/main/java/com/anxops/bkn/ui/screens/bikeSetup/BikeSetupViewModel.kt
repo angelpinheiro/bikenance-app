@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.bikeSetup
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.database.AppDb
@@ -15,10 +14,13 @@ import com.anxops.bkn.data.model.MaintenanceConfiguration
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
-import com.anxops.bkn.data.repository.successOrException
+import com.anxops.bkn.data.repository.onError
+import com.anxops.bkn.data.repository.onSuccessNotNull
+import com.anxops.bkn.data.repository.onSuccessWithNull
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -72,15 +74,22 @@ class BikeSetupViewModel @Inject constructor(
 
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
-            val bike = bikesRepository.getBike(bikeId)
-            val stats = profileRepository.getProfileStats().successOrException { it } // TODO handle result
 
-            if (bike != null && stats != null) {
-                _state.value = BikeSetupScreenState.SetupInProgress(
-                    bike = bike, stats = stats
-                )
-            } else {
-                _state.value = BikeSetupScreenState.Error("Could not load data. Try again later.")
+            val bikeResult = bikesRepository.getBike(bikeId)
+
+            bikeResult.onSuccessNotNull { bike ->
+
+                profileRepository.getProfileStats().onSuccessNotNull { stats ->
+                    _state.update {
+                        BikeSetupScreenState.SetupInProgress(
+                            bike = bike, stats = stats
+                        )
+                    }
+                }.onSuccessWithNull {
+                    _state.update { BikeSetupScreenState.Error("Could not load data. Try again later.") }
+                }.onError {
+                    _state.update { BikeSetupScreenState.Error("Could not load data. Try again later.") }
+                }
             }
         }
     }
@@ -125,9 +134,7 @@ class BikeSetupViewModel @Inject constructor(
                     is BSSEvent.BikeTypeSelected -> {
 
                         val fullSuspension = if (listOf(
-                                BikeType.Road,
-                                BikeType.Gravel,
-                                BikeType.Stationary
+                                BikeType.Road, BikeType.Gravel, BikeType.Stationary
                             ).contains(event.type)
                         ) {
                             false

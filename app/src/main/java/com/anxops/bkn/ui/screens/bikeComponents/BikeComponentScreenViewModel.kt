@@ -8,6 +8,10 @@ import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.RevisionFrequency
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.data.repository.data
+import com.anxops.bkn.data.repository.isNullOrError
+import com.anxops.bkn.data.repository.onError
+import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,13 +71,15 @@ class BikeComponentScreenViewModel @Inject constructor(
 
     fun loadComponent(bikeId: String, componentId: String) {
         viewModelScope.launch {
-            // TODO: Handle errors
-            val bike = bikeRepository.getBike(bikeId)!!
-            val c = bikeRepository.getBikeComponent(componentId)!!
-
-            bikeFlow.update { bike }
-            componentFlow.update { c }
-            isLoadingFlow.update { false }
+            val bikeResult = bikeRepository.getBike(bikeId)
+            val compResult = bikeRepository.getBikeComponent(componentId)
+            if (bikeResult.isNullOrError() || compResult.isNullOrError()) {
+                // TODO: handle bike or component not load
+            } else {
+                bikeFlow.update { bikeResult.data() }
+                componentFlow.update { compResult.data() }
+                isLoadingFlow.update { false }
+            }
         }
     }
 
@@ -109,8 +115,10 @@ class BikeComponentScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val bike = bikeFlow.value ?: return@launch
             componentFlow.value?.let { bikeComponent ->
-                bikeRepository.replaceComponent(bikeComponent)?.let {
+                bikeRepository.replaceComponent(bikeComponent).onSuccessNotNull {
                     loadComponent(bike._id, it._id)
+                }.onError {
+                    //TODO: Handle error
                 }
 
             }

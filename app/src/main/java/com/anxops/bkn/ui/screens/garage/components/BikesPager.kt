@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.theme.statusDanger
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -109,8 +108,7 @@ fun BikesPager(
             }
         } else {
             HorizontalPager(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 pageCount = bikes.size,
                 state = pagerState,
                 pageSize = PageSize.Fixed((configuration.screenWidthDp.dp.value * 0.8).toInt().dp),

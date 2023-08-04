@@ -7,6 +7,7 @@ import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.data.repository.data
 import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.WhileUiSubscribed
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,8 +38,8 @@ class RideScreenViewModel @Inject constructor(
 
     private val rideFlow = MutableStateFlow<BikeRide?>(null)
     private val loadingFLow = MutableStateFlow<Boolean>(true)
-    private val allBikes =
-        bikeRepository.getBikesFlow(false).stateIn(viewModelScope, WhileUiSubscribed, emptyList())
+    private val allBikes = bikeRepository.getBikesFlow(false)
+        .stateIn(viewModelScope, WhileUiSubscribed, emptyList())
 
     val state: StateFlow<RideScreenState> =
         combine(rideFlow, loadingFLow, allBikes) { ride, loading, allBikes ->

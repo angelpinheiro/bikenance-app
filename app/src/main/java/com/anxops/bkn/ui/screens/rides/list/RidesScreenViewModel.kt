@@ -16,12 +16,12 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
+import com.anxops.bkn.data.repository.data
 import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -39,8 +39,9 @@ class RidesScreenViewModel @Inject constructor(
     val lastUpdatedFlow = appInfoRepository.appInfoFlow()
     val paginatedRidesFlow = createPaginatedRidesFlow(db, api)
 
-    val bikes: StateFlow<List<Bike>> =
-        bikesRepository.getBikesFlow().stateIn(viewModelScope, WhileUiSubscribed, emptyList())
+    val bikes = bikesRepository.getBikesFlow().stateIn(
+        viewModelScope, WhileUiSubscribed, emptyList()
+    )
 
     val openActivityEvent: MutableSharedFlow<String> = MutableSharedFlow()
 

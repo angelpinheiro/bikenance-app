@@ -1,13 +1,15 @@
 package com.anxops.bkn.data.repository
 
 import com.anxops.bkn.data.network.ApiResponse
+import com.anxops.bkn.util.LoadableState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.concurrent.CancellationException
 
 /**
@@ -26,6 +28,10 @@ sealed interface Result<out T> {
     data class Error(val exception: Throwable? = null) : Result<Nothing>
 }
 
+fun <T> Result<T>.isNullOrError() : Boolean {
+    return this is Error || this is Result.Success && data == null
+}
+
 /**
  * Extension function that either applies the provided block function to the data if the result is Success,
  * or throws an exception with the stored error if the result is Error.
@@ -34,7 +40,22 @@ inline fun <T, R> Result<T>.successOrException(block: (T) -> R): R {
     try {
         return when (this) {
             is Result.Success -> block(this.data)
-            is Result.Error -> throw Exception("Expected success but got error", this.exception)
+            is Result.Error -> throw this.exception ?: Exception("Expected success but got error")
+        }
+    } catch (e: Throwable) {
+        throw e
+    }
+}
+
+/**
+ * Extension function that returns the result data if the result is Success,
+ * or throws an exception with the stored error if the result is Error.
+ */
+inline fun <T> Result<T>.data(): T {
+    try {
+        return when (this) {
+            is Result.Success -> this.data
+            is Result.Error -> throw this.exception ?: Exception("Expected data but got error")
         }
     } catch (e: Throwable) {
         throw e
@@ -47,7 +68,9 @@ inline fun <T, R> Result<T>.successOrException(block: (T) -> R): R {
 inline fun <T> Result<T>.onSuccess(block: (T) -> Unit): Result<T> {
     when (this) {
         is Result.Success -> block(this.data)
-        else -> {}
+        is Result.Error -> {
+            Timber.e(this.exception ?: RuntimeException("Unexpected error"))
+        }
     }
     return this
 }
@@ -58,7 +81,9 @@ inline fun <T> Result<T>.onSuccess(block: (T) -> Unit): Result<T> {
 inline fun <T> Result<T>.onSuccessNotNull(block: (T & Any) -> Unit): Result<T> {
     when (this) {
         is Result.Success -> if (this.data != null) block(this.data)
-        else -> {}
+        is Result.Error -> {
+            Timber.e(this.exception ?: RuntimeException("Unexpected error"))
+        }
     }
     return this
 }
@@ -69,7 +94,9 @@ inline fun <T> Result<T>.onSuccessNotNull(block: (T & Any) -> Unit): Result<T> {
 inline fun <T> Result<T>.onSuccessWithNull(block: () -> Unit): Result<T> {
     when (this) {
         is Result.Success -> if (this.data == null) block()
-        else -> {}
+        is Result.Error -> {
+            Timber.e(this.exception ?: RuntimeException("Unexpected error"))
+        }
     }
     return this
 }
@@ -94,6 +121,7 @@ suspend inline fun <T> runCatchingResult(block: suspend () -> T): Result<T> {
         val result = block()
         Result.Success(result)
     } catch (e: Throwable) {
+        Timber.e(e)
         Result.Error(e)
     }
 }
@@ -116,13 +144,24 @@ inline fun <T> ApiResponse<T>.asResult(): Result<T> {
 }
 
 fun <T> Flow<T>.asResult(): Flow<Result<T>> {
-    return this
-        .filter { it != null }
-        .map<T, Result<T>> {
-            Result.Success(it)
-        }
+    return this.map<T, Result<T>> {
+        Result.Success(it)
+    }
 //        .onStart { emit(Result.Loading) }
-        .catch { emit(Result.Error(it)) }
+        .catch {
+            Timber.e(it)
+            emit(Result.Error(it))
+        }
+}
+
+
+fun <T> Flow<T>.asLoadableState(): Flow<LoadableState<T>> {
+    return this.map<T, LoadableState<T>> {
+        LoadableState.Success(it)
+    }.onStart { emit(LoadableState.Loading) }.catch {
+        Timber.e(it)
+        emit(LoadableState.Error)
+    }
 }
 
 /**
