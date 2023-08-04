@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.Garage
@@ -35,7 +35,6 @@ import com.anxops.bkn.ui.screens.rides.list.RidesScreen
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -46,12 +45,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun HomeScreen(
     navigator: DestinationsNavigator, viewModel: HomeViewModel = hiltViewModel(), section: String?
 ) {
-    val navController = rememberNavController()
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
-    navController.navigatorProvider.addNavigator(bottomSheetNavigator)
+    val nav = BknNavigator(navigator)
 
     var selectedItem by rememberSaveable { mutableStateOf(HomeSections.Home) }
-
     val allowRefresh by viewModel.allowRefreshState.collectAsState()
     val profileSync by viewModel.profileSyncState.collectAsState()
 
@@ -59,7 +55,17 @@ fun HomeScreen(
         HomeSections.values().firstOrNull { it.id == section }?.let { selectedItem = it }
     }
 
-    val nav = BknNavigator(navigator)
+    LaunchedEffect(LocalContext.current) {
+        viewModel.events.collect {
+            when (it) {
+                is HomeEvent.Logout -> {
+                    nav.popBackStack()
+                    nav.navigateToSplash()
+                }
+            }
+        }
+    }
+
     Scaffold(backgroundColor = MaterialTheme.colors.primaryVariant, topBar = {
         TopAppBar(
             elevation = 6.dp,
@@ -104,8 +110,6 @@ fun HomeScreen(
                         }
                         IconButton(onClick = {
                             viewModel.logout()
-                            nav.popBackStack()
-                            nav.navigateToSplash()
                         }) {
                             BknIcon(
                                 icon = CommunityMaterial.Icon.cmd_exit_to_app,

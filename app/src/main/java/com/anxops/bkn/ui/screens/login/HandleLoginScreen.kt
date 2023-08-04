@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,6 +23,7 @@ import com.anxops.bkn.ui.navigation.BknNavigator
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @Destination(
@@ -39,18 +41,27 @@ fun HandleLoginScreen(
 
     val nav = BknNavigator(navigator)
     val context = LocalContext.current
-    val state = viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     Timber.d("Handle login with tokens: [$code,$refresh]")
 
     viewModel.setAuthTokens(code, refresh)
 
-    LaunchedEffect(key1 = context) {
+    LaunchedEffect(context) {
         viewModel.loadProfileEvent.collect { ev ->
-            nav.popBackStack()
             when (ev) {
-                is LoadProfileEvent.NewAccount -> nav.navigateToProfile()
-                is LoadProfileEvent.ExistingAccount -> nav.navigateToGarage()
+                is LoadProfileEvent.NewAccount -> {
+                    delay(1000)
+                    nav.popBackStack()
+                    nav.navigateToProfile()
+                }
+
+                is LoadProfileEvent.ExistingAccount -> {
+                    delay(1000)
+                    nav.popBackStack()
+                    nav.navigateToGarage()
+                }
+
                 else -> nav.navigateToLogin()
             }
         }
@@ -68,9 +79,7 @@ fun HandleLoginScreen(
                 modifier = Modifier.size(80.dp)
             )
 
-            // Text(text = state.value.profile?.profile?.firstname  + " Code: $code")
-
-            when (state.value.isNewAccount) {
+            when (state.isNewAccount) {
                 null -> {
                     Text(
                         text = "Loading profile...",
@@ -81,7 +90,7 @@ fun HandleLoginScreen(
 
                 true -> {
                     Text(
-                        text = "Welcome ${state.value.profile?.firstname}...",
+                        text = "Welcome ${state.profile?.firstname}...",
                         color = MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h3
                     )
@@ -89,14 +98,12 @@ fun HandleLoginScreen(
 
                 else -> {
                     Text(
-                        text = "Hi ${state.value.profile?.firstname}, nice to see you again!",
+                        text = "Hi ${state.profile?.firstname}, nice to see you again!",
                         color = MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h3
                     )
                 }
             }
-
-
         }
     }
 }

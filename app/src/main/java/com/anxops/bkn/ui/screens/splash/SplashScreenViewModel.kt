@@ -39,9 +39,7 @@ class SplashScreenViewModel @Inject constructor(
             val state = when (checkResult) {
                 is CheckLoginResult.LoggedIn -> CheckLoginState.LoggedIn
                 is CheckLoginResult.LoginExpired -> CheckLoginState.LoginExpired
-                else -> {
-                    CheckLoginState.NotLoggedIn
-                }
+                else -> CheckLoginState.NotLoggedIn
             }
             emit(state)
         }.onError {

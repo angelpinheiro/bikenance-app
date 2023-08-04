@@ -35,7 +35,7 @@ class DefaultTokenRefresher(
 
                 is ApiResponse.Error -> {
                     Timber.d("Token refresh error")
-                    // TODO: Logout user if we can not refresh token?
+                    // TODO: Logout user if we can not refresh token
                     // dataStore.deleteAuthToken()
                 }
             }

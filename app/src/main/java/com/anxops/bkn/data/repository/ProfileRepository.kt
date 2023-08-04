@@ -31,6 +31,10 @@ interface ProfileRepositoryFacade {
 
     fun getProfileFlow(): Flow<Result<Profile?>>
 
+    suspend fun saveLogin(token: String, refreshToken: String?): Result<Profile>
+
+    suspend fun logout(): Result<Unit>
+
 }
 
 class ProfileRepository(
@@ -69,6 +73,29 @@ class ProfileRepository(
                 CheckLoginResult.LoggedIn(db.profileDao().getProfile().toDomain())
             }
         }
+    }
+
+    override suspend fun saveLogin(token: String, refreshToken: String?): Result<Profile> = result {
+        // save auth tokens
+        dataStore.saveAuthTokens(token, refreshToken ?: "")
+        // refresh user profile and save current user id
+
+        when (val refreshResult = refreshProfile()) {
+            is Result.Success -> {
+                dataStore.saveAuthUser(refreshResult.data.userId)
+                refreshResult.data
+            }
+
+            is Result.Error -> {
+                dataStore.deleteAuthToken()
+                throw Exception("Could not refresh profile")
+            }
+
+        }
+    }
+
+    override suspend fun logout(): Result<Unit> = result {
+        dataStore.deleteAuthToken()
     }
 
     override suspend fun profileExists(): Result<Boolean> = result {

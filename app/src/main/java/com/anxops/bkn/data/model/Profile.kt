@@ -17,7 +17,12 @@ data class Profile(
     @SerialName("stats") var stats: AthleteStats? = null,
     @SerialName("sync") val sync: Boolean = false
 ) {
+
+    fun isNew(): Boolean {
+        return createdAt == null
+    }
+
     companion object {
-        val Empty : Profile = Profile(_id = "", userId = "")
+        val Empty: Profile = Profile(_id = "", userId = "")
     }
 }

@@ -9,15 +9,22 @@ import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
+import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.successOrException
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
+
+
+sealed class HomeEvent {
+    object Logout : HomeEvent()
+}
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -27,6 +34,8 @@ class HomeViewModel @Inject constructor(
     private val profileRepository: ProfileRepositoryFacade,
     private val appInfoRepository: AppInfoRepositoryFacade,
 ) : ViewModel() {
+
+    val events: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
 
     val allowRefreshState = db.appInfoDao().getAppInfoFlow().map { info ->
         info?.let { allowRefresh(it) } ?: false
@@ -44,7 +53,9 @@ class HomeViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            dataStore.deleteAuthToken()
+            profileRepository.logout().onSuccess {
+                events.emit(HomeEvent.Logout)
+            }
         }
     }
 
@@ -53,7 +64,6 @@ class HomeViewModel @Inject constructor(
             db.appInfoDao().getAppInfo()?.let { appInfo ->
                 // only one req per day
                 if (allowRefresh(appInfo)) {
-
                     when (val result = api.refreshLastRides()) {
                         is ApiResponse.Success -> {
                             appInfoRepository.saveLastRidesRefresh(System.currentTimeMillis())
@@ -64,11 +74,9 @@ class HomeViewModel @Inject constructor(
                         }
                     }
                 }
-
             }
         }
     }
-
 
     private fun allowRefresh(appInfo: AppInfo): Boolean {
         return Instant.ofEpochMilli(appInfo.lastRidesRefreshRequest)

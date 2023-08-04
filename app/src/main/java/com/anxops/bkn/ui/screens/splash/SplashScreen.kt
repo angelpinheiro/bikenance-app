@@ -58,7 +58,6 @@ fun SplashScreen(
 
 
     route?.let {
-        println("ROUTE: $route")
         nav.popBackStack()
         nav.navigateToRoute(route)
     }
