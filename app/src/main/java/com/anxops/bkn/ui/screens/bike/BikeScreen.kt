@@ -41,7 +41,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Destination
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)

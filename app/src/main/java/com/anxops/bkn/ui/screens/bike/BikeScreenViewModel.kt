@@ -1,5 +1,6 @@
 package com.anxops.bkn.ui.screens.bike
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
@@ -38,6 +39,7 @@ data class BikeScreenState(
 @HiltViewModel
 class BikeScreenViewModel @Inject constructor(
     private val bikesRepository: BikeRepositoryFacade,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val openBikeOnStravaEvent: MutableSharedFlow<String> = MutableSharedFlow()
@@ -50,11 +52,20 @@ class BikeScreenViewModel @Inject constructor(
     val state: StateFlow<BikeScreenState> = combine(
         loadingFlow, bikeFlow, selectedComponentFlow, selectedCategoryFLow
     ) { loading, bike, selectedComponent, selectedCategory ->
+
+
+        val lastSelected = savedStateHandle.get<String>("cid")
+        val selected = if (selectedComponent == null && lastSelected != null) {
+            bike?.components?.find { it._id == lastSelected }.let {
+                it
+            }
+        } else selectedComponent
+
         BikeScreenState(
             loading = loading,
             bike = bike,
             selectedCategory = selectedCategory,
-            selectedComponent = selectedComponent
+            selectedComponent = selected
         )
     }.stateIn(viewModelScope, WhileUiSubscribed, BikeScreenState())
 
@@ -71,7 +82,9 @@ class BikeScreenViewModel @Inject constructor(
         when (event) {
             is BikeScreenEvent.SelectComponent -> {
                 selectedComponentFlow.update {
+                    savedStateHandle["cid"] = event.component?._id
                     selectedComp(selectedComponentFlow.value, event.component)
+
                 }
             }
 
