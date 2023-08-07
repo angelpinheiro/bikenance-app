@@ -36,6 +36,7 @@ import com.anxops.bkn.ui.screens.bikeSetup.components.BikeTypePage
 import com.anxops.bkn.ui.screens.bikeSetup.components.InfoPage
 import com.anxops.bkn.ui.screens.bikeSetup.components.RidingHabitsPage
 import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
+import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknIcon
@@ -82,7 +83,7 @@ fun BikeSetupScreen(
 
             is BikeSetupScreenState.SetupDone -> {
                 LaunchedEffect(state) {
-                    bknNavigator.popBackStackTo(BikeScreenDestination.route, true)
+                    bknNavigator.popBackStackTo(HomeScreenDestination.route, false)
                     bknNavigator.navigateToBike(screenState.bike._id)
                 }
             }
