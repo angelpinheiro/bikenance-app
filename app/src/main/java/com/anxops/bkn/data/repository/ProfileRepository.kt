@@ -119,7 +119,7 @@ class ProfileRepository(
     override suspend fun updateProfile(profile: Profile): Result<Profile> = result {
         api.updateProfile(profile).successOrException {
             db.profileDao().update(it.toEntity())
-            db.profileDao().getProfile()?.toDomain() ?: throw RuntimeException("Profile not found")
+            it
         }
     }
 

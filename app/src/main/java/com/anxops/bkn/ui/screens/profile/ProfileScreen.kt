@@ -37,9 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknLabelTopTextField
+import com.anxops.bkn.ui.shared.components.ErrorDialog
 import com.anxops.bkn.ui.theme.statusGood
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -53,6 +55,7 @@ fun ProfileScreen(
     resultNavigator: ResultBackNavigator<Boolean>,
 ) {
 
+    val bknNavigator = BknNavigator(navigator)
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(state.status) {
@@ -85,11 +88,17 @@ fun ProfileScreen(
                 Loading("Updating profile...")
             }
 
-            ProfileScreenStatus.Error -> {
-                Text(
-                    text = "An error occurred!", modifier = Modifier, color = MaterialTheme.colors.secondary
-                )
-            }
+//            ProfileScreenStatus.Error -> {
+//                Text(
+//                    text = "An error occurred!", modifier = Modifier, color = MaterialTheme.colors.secondary
+//                )
+//            }
+//
+//            ProfileScreenStatus.UpdateFailed -> {
+//                Text(
+//                    text = "Could not update profile!", modifier = Modifier, color = MaterialTheme.colors.secondary
+//                )
+//            }
 
             ProfileScreenStatus.UpdateSuccess -> {
                 Text(
@@ -187,8 +196,12 @@ fun ProfileScreen(
 
                 }
             }
+        }
 
-
+        state.error?.let {
+            ErrorDialog(appError = it, bknNavigator = bknNavigator, onDismissRequest = {
+                viewModel.onDismissError()
+            })
         }
     }
 

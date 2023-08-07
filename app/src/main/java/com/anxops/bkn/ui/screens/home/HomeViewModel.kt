@@ -70,7 +70,7 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ApiResponse.Error -> {
-                            throw Exception("${result.message}")
+                            throw Exception("$result")
                         }
                     }
                 }

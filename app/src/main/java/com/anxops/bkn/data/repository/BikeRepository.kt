@@ -114,11 +114,8 @@ class BikeRepository(
     }
 
     override suspend fun setupBike(bike: Bike) {
-        when (val response = api.setupBike(bike)) {
-            is ApiResponse.Error -> throw Exception(response.message)
-            is ApiResponse.Success -> {
-                insertOrUpdateBike(response.data)
-            }
+        api.setupBike(bike).successOrException {
+            insertOrUpdateBike(it)
         }
     }
 
@@ -165,7 +162,7 @@ class BikeRepository(
         bikeId: String
     ) {
         when (val response = api.getBike(bikeId)) {
-            is ApiResponse.Error -> throw Exception(response.message)
+            is ApiResponse.Error -> throw Exception(response.exception)
             is ApiResponse.Success -> {
                 insertOrUpdateBike(response.data)
             }

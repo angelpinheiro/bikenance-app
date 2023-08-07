@@ -4,10 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,41 +23,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mikepenz.iconics.typeface.IIcon
 
 @Composable
-fun onSurfaceTextFieldColors(): TextFieldColors =
-    TextFieldDefaults.textFieldColors(
-        backgroundColor = MaterialTheme.colors.secondaryVariant,
-        cursorColor = MaterialTheme.colors.onSurface,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        textColor = MaterialTheme.colors.onSurface,
-    )
+fun onSurfaceTextFieldColors(): TextFieldColors = TextFieldDefaults.textFieldColors(
+    backgroundColor = MaterialTheme.colors.secondaryVariant,
+    cursorColor = MaterialTheme.colors.onSurface,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+    textColor = MaterialTheme.colors.onSurface,
+)
 
 
 @Composable
-fun onBackgroundTextFieldColors(): TextFieldColors =
-    TextFieldDefaults.textFieldColors(
-        backgroundColor = MaterialTheme.colors.surface,
-        cursorColor = MaterialTheme.colors.onSurface,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        textColor = MaterialTheme.colors.onSurface,
-    )
+fun onBackgroundTextFieldColors(): TextFieldColors = TextFieldDefaults.textFieldColors(
+    backgroundColor = MaterialTheme.colors.surface,
+    cursorColor = MaterialTheme.colors.onSurface,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+    textColor = MaterialTheme.colors.onSurface,
+)
 
 
 @Composable
 fun secondaryButtonColors(): ButtonColors =
     ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
-
-
-
 
 
 @Composable
@@ -71,15 +60,13 @@ fun BknIcon(
 ) {
 
     com.mikepenz.iconics.compose.Image(
-        icon,
-        colorFilter = ColorFilter.tint(color),
-        modifier = modifier
+        icon, colorFilter = ColorFilter.tint(color), modifier = modifier
     )
 }
 
 
 @Composable
-fun bgGradient() : Brush {
+fun bgGradient(): Brush {
 
     val color1 = MaterialTheme.colors.primary
     val color2 = MaterialTheme.colors.primaryVariant
@@ -106,15 +93,9 @@ fun BknOutlinedTextField(
 ) {
 
     OutlinedTextField(
-        modifier = modifier,
-        value = value ?: "",
-        onValueChange = update,
-        placeholder = {
+        modifier = modifier, value = value ?: "", onValueChange = update, placeholder = {
             Text(text = label)
-        },
-        colors = colors,
-        shape = RoundedCornerShape(6.dp),
-        keyboardOptions = keyboardOptions
+        }, colors = colors, shape = RoundedCornerShape(6.dp), keyboardOptions = keyboardOptions
 
     )
 }
@@ -155,8 +136,7 @@ fun BknLabelTopTextField(
 
 @Composable
 fun FadeInFadeOutAnimatedVisibility(
-    visible: Boolean,
-    content: @Composable() AnimatedVisibilityScope.() -> Unit
+    visible: Boolean, content: @Composable() AnimatedVisibilityScope.() -> Unit
 ) {
 
     AnimatedVisibility(
@@ -171,8 +151,7 @@ fun FadeInFadeOutAnimatedVisibility(
 
 @Composable
 fun FadeInFadeOutSlideAnimatedVisibility(
-    visible: Boolean,
-    content: @Composable() AnimatedVisibilityScope.() -> Unit
+    visible: Boolean, content: @Composable() AnimatedVisibilityScope.() -> Unit
 ) {
 
     AnimatedVisibility(
@@ -180,6 +159,20 @@ fun FadeInFadeOutSlideAnimatedVisibility(
         enter = fadeIn() + slideInVertically(),
         exit = fadeOut() + slideOutVertically(),
 
+        ) {
+        content()
+    }
+}
+
+@Composable
+fun SlideFromBottomAnimatedVisibility(
+    visible: Boolean, content: @Composable() AnimatedVisibilityScope.() -> Unit
+) {
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn() + slideInVertically(initialOffsetY = { 200 }),
+        exit = fadeOut() + slideOutVertically(targetOffsetY = { 200 }),
         ) {
         content()
     }

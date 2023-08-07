@@ -10,6 +10,7 @@ import com.anxops.bkn.data.database.entities.BikeRideEntity
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.network.ApiException
 import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import java.io.IOException
@@ -77,7 +78,7 @@ class RideRemoteMediator(
 
             is ApiResponse.Error -> {
                 MediatorResult.Error(
-                    Exception("Api response error -> LoadKey: [$dateTime] [${response.message}]")
+                    ApiException.Unknown("Api response error -> LoadKey: [$dateTime]")
                 )
             }
         }

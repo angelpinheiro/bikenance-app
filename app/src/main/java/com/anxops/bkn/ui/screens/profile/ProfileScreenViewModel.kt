@@ -7,11 +7,12 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ImageUploadRequest
 import com.anxops.bkn.data.network.ImageUploader
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.AppError
+import com.anxops.bkn.data.repository.ErrorType
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.Result
 import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
-import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,13 +29,13 @@ sealed class ProfileScreenStatus {
     object Saving : ProfileScreenStatus()
     object Loaded : ProfileScreenStatus()
     object UpdateSuccess : ProfileScreenStatus()
-    object Error : ProfileScreenStatus()
 }
 
 data class ProfileScreenState(
     val status: ProfileScreenStatus = ProfileScreenStatus.Loading,
     val profileImagePercent: Float = 0f,
     val profile: Profile = Profile.Empty,
+    val error: AppError? = null
 )
 
 @HiltViewModel
@@ -48,11 +49,12 @@ class ProfileScreenViewModel @Inject constructor(
     private val statusFlow = MutableStateFlow<ProfileScreenStatus>(ProfileScreenStatus.Loading)
     private val profileFlow = MutableStateFlow(Profile.Empty)
     private val loadProgressFlow = MutableStateFlow(0.0f)
+    private val errorStateFlow = MutableStateFlow<AppError?>(null)
 
     val state: StateFlow<ProfileScreenState> = combine(
-        statusFlow, loadProgressFlow, profileFlow
-    ) { statusRes, loadProgressRes, profileRes ->
-        ProfileScreenState(statusRes, loadProgressRes, profileRes)
+        statusFlow, loadProgressFlow, profileFlow, errorStateFlow
+    ) { statusRes, loadProgressRes, profileRes, error ->
+        ProfileScreenState(statusRes, loadProgressRes, profileRes, error)
     }.stateIn(viewModelScope, WhileUiSubscribed, ProfileScreenState())
 
 
@@ -88,8 +90,9 @@ class ProfileScreenViewModel @Inject constructor(
                     statusFlow.update { ProfileScreenStatus.UpdateSuccess }
                 }
 
-                else -> {
-                    statusFlow.update { ProfileScreenStatus.UpdateSuccess }
+                is Result.Error -> {
+                    statusFlow.update { ProfileScreenStatus.Loaded }
+                    errorStateFlow.update { result.toAppError("Could not save changes") }
                 }
             }
         }
@@ -107,9 +110,13 @@ class ProfileScreenViewModel @Inject constructor(
                 loadProgressFlow.update { 0f }
                 profileFlow.update { it.copy(profilePhotoUrl = url) }
             }, onFailure = {
-                statusFlow.update { ProfileScreenStatus.Error }
+                errorStateFlow.update { AppError(ErrorType.Unexpected, message = "Could not process the selected image") }
             })
         }
+    }
+
+    fun onDismissError() {
+        errorStateFlow.update { null }
     }
 
 }

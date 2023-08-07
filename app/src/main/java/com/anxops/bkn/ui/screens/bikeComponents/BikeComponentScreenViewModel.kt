@@ -1,5 +1,6 @@
 package com.anxops.bkn.ui.screens.bikeComponents
 
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
@@ -11,6 +12,7 @@ import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.data.repository.data
 import com.anxops.bkn.data.repository.isNullOrError
 import com.anxops.bkn.data.repository.onError
+import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -102,8 +105,12 @@ class BikeComponentScreenViewModel @Inject constructor(
             isLoadingFlow.emit(true)
             editingMaintenanceFlow.update {
                 it?.let {
-                    bikeRepository.updateMaintenance(bike, it.editingMaintenance)
-                    loadComponent(bike._id, component._id)
+                    bikeRepository.updateMaintenance(bike, it.editingMaintenance).onSuccess {
+                        Timber.d("Success")
+                        loadComponent(bike._id, component._id)
+                    }.onError {
+                        Timber.d("Error")
+                    }
                 }
                 null
             }

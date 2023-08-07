@@ -17,6 +17,11 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 
 class KtorClient {
+
+    companion object {
+        private const val TIMEOUT = 5000L
+    }
+
     val client = HttpClient(Android) {
         // Logging
         if (BuildConfig.DEBUG) {
@@ -37,9 +42,9 @@ class KtorClient {
         }
         // Timeout
         install(HttpTimeout) {
-            requestTimeoutMillis = 15000L
-            connectTimeoutMillis = 15000L
-            socketTimeoutMillis = 15000L
+            requestTimeoutMillis = TIMEOUT
+            connectTimeoutMillis = TIMEOUT
+            socketTimeoutMillis = TIMEOUT
         }
         // Apply to all requests
         defaultRequest {

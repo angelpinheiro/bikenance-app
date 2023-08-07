@@ -86,6 +86,10 @@ class BknNavigator(var navigator: DestinationsNavigator) {
         navigator.navigate(route)
     }
 
+    fun clear() {
+        navigator.clearBackStack("")
+    }
+
     companion object {
         fun rootNavGraph(): NavGraph {
             return NavGraphs.root

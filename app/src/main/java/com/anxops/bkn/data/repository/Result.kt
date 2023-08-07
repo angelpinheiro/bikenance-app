@@ -1,5 +1,6 @@
 package com.anxops.bkn.data.repository
 
+import com.anxops.bkn.data.network.ApiException
 import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.util.LoadableState
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,10 +26,12 @@ sealed interface Result<out T> {
     /**
      * Represents an error result with an optional exception.
      */
-    data class Error(val exception: Throwable? = null) : Result<Nothing>
+    data class Error(val exception: Throwable? = null) : Result<Nothing> {
+        fun toAppError(msg: String? = null) = exception.toAppError(msg)
+    }
 }
 
-fun <T> Result<T>.isNullOrError() : Boolean {
+fun <T> Result<T>.isNullOrError(): Boolean {
     return this is Error || this is Result.Success && data == null
 }
 
@@ -104,26 +107,12 @@ inline fun <T> Result<T>.onSuccessWithNull(block: () -> Unit): Result<T> {
 /**
  * Extension function that executes the provided block function if the result is Error, passing the stored exception.
  */
-inline fun <T> Result<T>.onError(block: (Throwable?) -> Unit): Result<T> {
+inline fun <T> Result<T>.onError(block: (AppError) -> Unit): Result<T> {
     when (this) {
-        is Result.Error -> block(this.exception)
+        is Result.Error -> block(this.exception.toAppError())
         else -> {}
     }
     return this
-}
-
-/**
- * Function that runs the provided block within a try-catch block. Returns a Result.Success if the
- * block executes successfully, or a Result.Error with the caught exception.
- */
-suspend inline fun <T> runCatchingResult(block: suspend () -> T): Result<T> {
-    return try {
-        val result = block()
-        Result.Success(result)
-    } catch (e: Throwable) {
-        Timber.e(e)
-        Result.Error(e)
-    }
 }
 
 /**
@@ -165,6 +154,22 @@ fun <T> Flow<T>.asLoadableState(): Flow<LoadableState<T>> {
 }
 
 /**
+ * Function that runs the provided block within a try-catch block. Returns a Result.Success if the
+ * block executes successfully, or a Result.Error with the caught exception.
+ */
+suspend inline fun <T> runCatchingResult(block: suspend () -> T): Result<T> {
+    return try {
+        val result = block()
+        Result.Success(result)
+    }
+    catch (e: Throwable) {
+        Timber.e(e)
+        Result.Error(e)
+    }
+}
+
+
+/**
  * Base repository class that provides a result function that executes a block within a specified coroutine dispatcher,
  * and returns the block result wrapped in a Result
  */
@@ -176,7 +181,14 @@ open class BaseRepository(private val dispatcher: CoroutineDispatcher = Dispatch
      */
     suspend fun <T> result(block: suspend () -> T): Result<T> {
         return withContext(dispatcher) {
-            runCatchingResult(block)
+            try {
+                val result = block()
+                Result.Success(result)
+            }
+            catch (e: Throwable) {
+                Timber.e(e)
+                Result.Error(e)
+            }
         }
     }
 }

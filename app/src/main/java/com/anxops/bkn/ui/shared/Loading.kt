@@ -1,7 +1,9 @@
 package com.anxops.bkn.ui.shared
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,25 +18,25 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVariant) {
-    Box(
+    Column(
         Modifier
             .fillMaxSize()
-            .background(color)
+            .background(color),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
-            color = MaterialTheme.colors.secondary,
+            color = MaterialTheme.colors.onPrimary,
             strokeWidth = 5.dp,
             modifier = Modifier
                 .size(50.dp)
-                .align(Alignment.Center),
         )
         if (text != null) {
             Text(
                 text = text,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
-                color = MaterialTheme.colors.secondary
+                    .padding(top = 16.dp),
+                color = MaterialTheme.colors.onPrimary
             )
         }
     }

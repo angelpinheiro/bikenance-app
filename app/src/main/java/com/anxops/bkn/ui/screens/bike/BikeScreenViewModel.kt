@@ -9,8 +9,6 @@ import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
-import com.anxops.bkn.data.repository.onSuccessNotNull
-import com.anxops.bkn.data.repository.onSuccessWithNull
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
