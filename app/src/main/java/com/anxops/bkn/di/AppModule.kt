@@ -3,7 +3,9 @@ package com.anxops.bkn.di
 import android.content.Context
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.network.ImageUploader
 import com.anxops.bkn.data.network.KtorClient
+import com.anxops.bkn.data.network.firebase.FirebaseImageUploader
 import com.anxops.bkn.data.network.firebase.SendTokenToServerWorkerStarter
 import com.anxops.bkn.data.network.tokenRefresh.DefaultTokenRefresher
 import com.anxops.bkn.data.network.tokenRefresh.TokenRefresher
@@ -47,7 +49,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesTokenRefresher(dataStore: BknDataStore, api: Api): TokenRefresher = DefaultTokenRefresher(dataStore, api)
+    fun providesTokenRefresher(dataStore: BknDataStore, api: Api): TokenRefresher =
+        DefaultTokenRefresher(dataStore, api)
 
 
     @Provides
@@ -60,8 +63,11 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesProfileRepository(api: Api, db: AppDb, dataStore: BknDataStore): ProfileRepositoryFacade =
-        ProfileRepository(api, db, dataStore)
+    fun providesProfileRepository(
+        api: Api,
+        db: AppDb,
+        dataStore: BknDataStore
+    ): ProfileRepositoryFacade = ProfileRepository(api, db, dataStore)
 
     @Provides
     @Singleton
@@ -82,5 +88,9 @@ class AppModule {
     @Provides
     @Singleton
     fun providesNotifier(): Notifier = Notifier()
+
+    @Provides
+    @Singleton
+    fun providesImageUploader(): ImageUploader = FirebaseImageUploader()
 
 }

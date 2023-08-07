@@ -1,6 +1,5 @@
 package com.anxops.bkn.data.network
 
-import coil.network.HttpException
 import java.io.IOException
 
 sealed class ApiResponse<T> {
@@ -17,21 +16,20 @@ inline fun <T, R> ApiResponse<T>.successOrException(block: (T) -> R): R {
     try {
         return when (this) {
             is ApiResponse.Success -> block(this.data)
-            is ApiResponse.Error -> throw Exception("Expected success but got error [${this.message}]", this.exception)
+            is ApiResponse.Error -> throw Exception(
+                "Expected success but got error [${this.message}]",
+                this.exception
+            )
         }
     } catch (e: Throwable) {
         throw e
     }
 }
 
-suspend fun <T> safeApiCall(apiToBeCalled: suspend () -> T): ApiResponse<T> {
+suspend fun <T> apiResponse(apiToBeCalled: suspend () -> T): ApiResponse<T> {
     return try {
         val response: T = apiToBeCalled()
         ApiResponse.Success(response)
-    } catch (e: HttpException) {
-        // Returning HttpException's message
-        // wrapped in Resource.Error
-        ApiResponse.Error(message = e.message ?: "Something went wrong", e)
     } catch (e: IOException) {
         // Returning no internet message
         // wrapped in Resource.Error

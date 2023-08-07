@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.network.ImageUploadRequest
+import com.anxops.bkn.data.network.ImageUploader
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.Result
@@ -39,6 +41,7 @@ class ProfileScreenViewModel @Inject constructor(
     private val api: Api,
     private val dataStore: BknDataStore,
     private val profileRepository: ProfileRepositoryFacade,
+    private val imageUploader: ImageUploader
 ) : ViewModel() {
 
     private val statusFlow = MutableStateFlow<ProfileScreenStatus>(ProfileScreenStatus.Loading)
@@ -95,18 +98,16 @@ class ProfileScreenViewModel @Inject constructor(
     fun onUpdateProfileImage(bytes: ByteArray) {
         viewModelScope.launch {
             loadProgressFlow.update { 0f }
-            api.uploadImageToFirebase(dataStore.getAuthUserOrFail(),
-                bytes,
-                onUpdateUpload = { updatePercent ->
-                    loadProgressFlow.update { updatePercent }
-                },
-                onSuccess = { url ->
-                    loadProgressFlow.update { 0f }
-                    profileFlow.update { it.copy(profilePhotoUrl = url) }
-                },
-                onFailure = {
-                    statusFlow.update { ProfileScreenStatus.Error }
-                })
+            imageUploader.uploadImage(ImageUploadRequest(
+                dataStore.getAuthUserOrFail(), bytes
+            ), onProgressUpdate = { updatePercent ->
+                loadProgressFlow.update { updatePercent }
+            }, onSuccess = { url ->
+                loadProgressFlow.update { 0f }
+                profileFlow.update { it.copy(profilePhotoUrl = url) }
+            }, onFailure = {
+                statusFlow.update { ProfileScreenStatus.Error }
+            })
         }
     }
 

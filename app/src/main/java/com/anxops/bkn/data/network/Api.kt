@@ -6,9 +6,6 @@ import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.preferences.BknDataStore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.component1
-import com.google.firebase.storage.ktx.component2
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -29,207 +26,141 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
     }
 
     suspend fun profile(): ApiResponse<Profile> {
-        return safeApiCall {
+        return apiResponse {
             httpClient.get(ApiEndpoints.profileEndpoint()) {
                 header("Authorization", tokenHeader())
             }
         }
     }
 
-    suspend fun getBike(bikeId: String): ApiResponse<Bike> {
-        return safeApiCall {
-            httpClient.get(ApiEndpoints.profileBikeEndpoint(bikeId)) {
-                header("Authorization", tokenHeader())
-            }
+    suspend fun getBike(bikeId: String): ApiResponse<Bike> = apiResponse {
+        httpClient.get(ApiEndpoints.profileBikeEndpoint(bikeId)) {
+            header("Authorization", tokenHeader())
         }
     }
 
-    suspend fun getBikes(): ApiResponse<List<Bike>> {
-        return safeApiCall {
-            httpClient.get(ApiEndpoints.profileBikesEndpoint()) {
-                header("Authorization", tokenHeader())
-            }
+    suspend fun getBikes(): ApiResponse<List<Bike>> = apiResponse {
+        httpClient.get(ApiEndpoints.profileBikesEndpoint()) {
+            header("Authorization", tokenHeader())
         }
     }
 
-    suspend fun getRides(): ApiResponse<List<BikeRide>> {
-        return safeApiCall {
-            httpClient.get(ApiEndpoints.profileRidesEndpoint()) {
-                header("Authorization", tokenHeader())
-            }
+    suspend fun getRides(): ApiResponse<List<BikeRide>> = apiResponse {
+        httpClient.get(ApiEndpoints.profileRidesEndpoint()) {
+            header("Authorization", tokenHeader())
         }
     }
 
-    suspend fun refreshLastRides(): ApiResponse<Boolean> {
-        return safeApiCall {
-            httpClient.get(ApiEndpoints.profileRefreshLastRidesEndpoint()) {
-                header("Authorization", tokenHeader())
-            }
+    suspend fun refreshLastRides(): ApiResponse<Boolean> = apiResponse {
+        httpClient.get(ApiEndpoints.profileRefreshLastRidesEndpoint()) {
+            header("Authorization", tokenHeader())
         }
     }
 
     suspend fun getPaginatedRidesByDateTime(
-        key: String?,
-        pageSize: Int = 10
-    ): ApiResponse<List<BikeRide>> {
-        return safeApiCall {
-            httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint()) {
-                header("Authorization", tokenHeader())
-                key?.let {
-                    parameter("key", it)
-                }
-                parameter("pageSize", pageSize)
+        key: String?, pageSize: Int = 10
+    ): ApiResponse<List<BikeRide>> = apiResponse {
+        httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint()) {
+            header("Authorization", tokenHeader())
+            key?.let {
+                parameter("key", it)
             }
+            parameter("pageSize", pageSize)
         }
     }
 
-    suspend fun updateProfile(update: Profile): ApiResponse<Profile> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.profileEndpoint()) {
-                header("Authorization", tokenHeader())
-                body = update
-            }
+    suspend fun updateProfile(update: Profile): ApiResponse<Profile> = apiResponse {
+        httpClient.put(ApiEndpoints.profileEndpoint()) {
+            header("Authorization", tokenHeader())
+            body = update
         }
     }
 
-    suspend fun updateBike(bike: Bike): ApiResponse<Bike> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.profileBikeEndpoint(bike._id)) {
-                header("Authorization", tokenHeader())
-                body = bike.toBikeUpdate()
-            }
+    suspend fun updateBike(bike: Bike): ApiResponse<Bike> = apiResponse {
+        httpClient.put(ApiEndpoints.profileBikeEndpoint(bike._id)) {
+            header("Authorization", tokenHeader())
+            body = bike.toBikeUpdate()
         }
     }
 
-    suspend fun updateRide(ride: BikeRide): ApiResponse<BikeRide> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.profileRideEndpoint(ride._id)) {
-                header("Authorization", tokenHeader())
-                body = ride.toRideUpdate()
-            }
+    suspend fun updateRide(ride: BikeRide): ApiResponse<BikeRide> = apiResponse {
+        httpClient.put(ApiEndpoints.profileRideEndpoint(ride._id)) {
+            header("Authorization", tokenHeader())
+            body = ride.toRideUpdate()
         }
     }
 
-    suspend fun createBike(bike: Bike): ApiResponse<Bike> {
-        return safeApiCall {
-            httpClient.post(ApiEndpoints.profileBikesEndpoint()) {
-                header("Authorization", tokenHeader())
-                body = bike.toBikeUpdate()
-            }
+    suspend fun createBike(bike: Bike): ApiResponse<Bike> = apiResponse {
+        httpClient.post(ApiEndpoints.profileBikesEndpoint()) {
+            header("Authorization", tokenHeader())
+            body = bike.toBikeUpdate()
         }
     }
 
-    suspend fun deleteBike(bike: Bike): ApiResponse<String> {
-        return safeApiCall {
-            httpClient.delete(ApiEndpoints.profileBikeEndpoint(bike._id)) {
-                header("Authorization", tokenHeader())
-            }
+    suspend fun deleteBike(bike: Bike): ApiResponse<String> = apiResponse {
+        httpClient.delete(ApiEndpoints.profileBikeEndpoint(bike._id)) {
+            header("Authorization", tokenHeader())
         }
     }
 
-    suspend fun syncBikes(ids: Map<String, Boolean>): ApiResponse<Boolean> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.profileSyncBikesEndpoint()) {
-                header("Authorization", tokenHeader())
-                body = SyncBikes(ids)
-            }
+    suspend fun syncBikes(ids: Map<String, Boolean>): ApiResponse<Boolean> = apiResponse {
+        httpClient.put(ApiEndpoints.profileSyncBikesEndpoint()) {
+            header("Authorization", tokenHeader())
+            body = SyncBikes(ids)
         }
     }
 
-    suspend fun uploadImageToFirebase(
-        userId: String,
-        byteArray: ByteArray,
-        onUpdateUpload: (Float) -> Unit = {},
-        onSuccess: (String) -> Unit = {},
-        onFailure: () -> Unit = {}
-    ) {
-        try {
-
-            val imageId = UUID.randomUUID().toString() + ".jpg"
-            var storage = FirebaseStorage.getInstance()
-            val storageRef = storage.reference
-            val fileRef = storageRef.child(userId).child(imageId)
-            val uploadTask = fileRef.putBytes(byteArray)
-
-            uploadTask.addOnProgressListener { (bytesTransferred, totalByteCount) ->
-                val progress = (100.0 * bytesTransferred) / totalByteCount
-                onUpdateUpload(progress.toFloat())
-            }.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    fileRef.downloadUrl.addOnCompleteListener { urlTask ->
-                        val url = urlTask.result
-                        if (urlTask.isSuccessful && url != null) {
-                            onSuccess(url.toString())
-                        } else {
-                            onFailure()
-                        }
-                    }
-                } else {
-                    onFailure()
-                }
-            }
-
-
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-
-    suspend fun updateFirebaseToken(token: String): Boolean {
-        return httpClient.put(ApiEndpoints.firebaseTokenEndpoint()) {
+    suspend fun updateFirebaseToken(token: String): ApiResponse<Boolean> = apiResponse {
+        httpClient.put(ApiEndpoints.firebaseTokenEndpoint()) {
             header("Authorization", tokenHeader())
             body = TokenWrapper(token)
         }
 
     }
 
-    suspend fun updateRefreshToken(refreshToken: String): ApiResponse<LoginResult> {
-        return safeApiCall {
-            httpClient.post(ApiEndpoints.refreshTokenEndpoint()) {
-                body = RefreshData(refreshToken)
-            }
-        }
-
-    }
-
-    suspend fun addBikeComponents(
-        bikeId: String,
-        newComponents: List<BikeComponent>
-    ): ApiResponse<List<BikeComponent>> {
-        return safeApiCall {
-            httpClient.post(ApiEndpoints.addComponentsEndpoint(bikeId)) {
-                header("Authorization", tokenHeader())
-                body = newComponents
-            }
+    suspend fun updateRefreshToken(refreshToken: String): ApiResponse<LoginResult> = apiResponse {
+        httpClient.post(ApiEndpoints.refreshTokenEndpoint()) {
+            body = RefreshData(refreshToken)
         }
     }
 
-    suspend fun setupBike(bike: Bike) : ApiResponse<Bike> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.profileBikeSetupEndpoint(bike._id)) {
-                header("Authorization", tokenHeader())
-                body = bike
-            }
+    suspend fun setupBike(bike: Bike): ApiResponse<Bike> = apiResponse {
+        httpClient.put(ApiEndpoints.profileBikeSetupEndpoint(bike._id)) {
+            header("Authorization", tokenHeader())
+            body = bike
         }
     }
 
-    suspend fun updateMaintenance(bike: Bike, m: Maintenance): ApiResponse<Bike> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.maintenanceEndpoint(bikeId = bike._id, maintenanceId = m._id)) {
-                header("Authorization", tokenHeader())
-                body = m
-            }
+    suspend fun updateMaintenance(bike: Bike, m: Maintenance): ApiResponse<Bike> = apiResponse {
+        httpClient.put(
+            ApiEndpoints.maintenanceEndpoint(
+                bikeId = bike._id, maintenanceId = m._id
+            )
+        ) {
+            header("Authorization", tokenHeader())
+            body = m
         }
     }
 
-    suspend fun replaceComponent(c: BikeComponent): ApiResponse<String> {
-        return safeApiCall {
-            httpClient.put(ApiEndpoints.replaceComponentEndpoint(bikeId = c.bikeId!!, componentId = c._id)) {
-                header("Authorization", tokenHeader())
-                body = c
-            }
+    suspend fun replaceComponent(c: BikeComponent): ApiResponse<String> = apiResponse {
+        httpClient.put(
+            ApiEndpoints.replaceComponentEndpoint(
+                bikeId = c.bikeId!!, componentId = c._id
+            )
+        ) {
+            header("Authorization", tokenHeader())
+            body = c
         }
     }
+
+    /*suspend fun addBikeComponents(
+        bikeId: String, newComponents: List<BikeComponent>
+    ): ApiResponse<List<BikeComponent>> = apiResponse {
+        httpClient.post(ApiEndpoints.addComponentsEndpoint(bikeId)) {
+            header("Authorization", tokenHeader())
+            body = newComponents
+        }
+    }*/
 
 }
 

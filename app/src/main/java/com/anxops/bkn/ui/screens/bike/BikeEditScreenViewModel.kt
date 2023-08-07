@@ -6,6 +6,8 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
+import com.anxops.bkn.data.network.ImageUploadRequest
+import com.anxops.bkn.data.network.ImageUploader
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.util.WhileUiSubscribed
@@ -39,6 +41,7 @@ class BikeEditScreenViewModel @Inject constructor(
     private val dataStore: BknDataStore,
     private val api: Api,
     private val repository: BikeRepositoryFacade,
+    private val imageUploader: ImageUploader
 ) : ViewModel() {
 
     private val bikeFlow = MutableStateFlow(Bike(_id = ""))
@@ -70,22 +73,18 @@ class BikeEditScreenViewModel @Inject constructor(
 
 
     fun updateBikeImage(byteArray: ByteArray?) {
-
         viewModelScope.launch {
-
             byteArray?.let { bytes ->
-                api.uploadImageToFirebase(dataStore.getAuthUserOrFail(),
-                    bytes,
-                    onUpdateUpload = { updatePercent ->
-                        loadProgressFlow.update { updatePercent }
-                    },
-                    onSuccess = { url ->
-                        loadProgressFlow.update { 0.0f }
-                        bikeFlow.update { it.copy(photoUrl = url) }
-                    },
-                    onFailure = {
-                        statusFlow.update { BikeEditScreenStatus.Error }
-                    })
+                imageUploader.uploadImage(ImageUploadRequest(
+                    dataStore.getAuthUserOrFail(), bytes
+                ), onProgressUpdate = { updatePercent ->
+                    loadProgressFlow.update { updatePercent }
+                }, onSuccess = { url ->
+                    loadProgressFlow.update { 0.0f }
+                    bikeFlow.update { it.copy(photoUrl = url) }
+                }, onFailure = {
+                    statusFlow.update { BikeEditScreenStatus.Error }
+                })
             }
 
         }
