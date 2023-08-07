@@ -4,6 +4,11 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -158,6 +163,22 @@ fun FadeInFadeOutAnimatedVisibility(
         visible = visible,
         enter = fadeIn(),
         exit = fadeOut(),
+
+        ) {
+        content()
+    }
+}
+
+@Composable
+fun FadeInFadeOutSlideAnimatedVisibility(
+    visible: Boolean,
+    content: @Composable() AnimatedVisibilityScope.() -> Unit
+) {
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn() + slideInVertically(),
+        exit = fadeOut() + slideOutVertically(),
 
         ) {
         content()

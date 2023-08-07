@@ -23,6 +23,6 @@ data class Profile(
     }
 
     companion object {
-        val Empty: Profile = Profile(_id = "", userId = "")
+        val Empty: Profile = Profile(_id = "", userId = "", sync = true)
     }
 }

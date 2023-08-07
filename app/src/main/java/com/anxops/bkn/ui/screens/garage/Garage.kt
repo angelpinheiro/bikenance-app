@@ -35,8 +35,7 @@ fun Garage(
     val nav = BknNavigator(navigator)
     val currentState by viewModel.screenState.collectAsState()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = currentState.isRefreshing,
+    val pullRefreshState = rememberPullRefreshState(refreshing = currentState.isRefreshing,
         onRefresh = { viewModel.loadData() })
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState)
@@ -55,7 +54,6 @@ fun Garage(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 BikesPager(bikes = currentState.bikes, onBikeChanged = {
                     viewModel.setSelectedBike(it)
                 }, onEditBike = {
