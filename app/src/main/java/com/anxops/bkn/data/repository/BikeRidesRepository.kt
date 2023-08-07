@@ -13,7 +13,7 @@ import timber.log.Timber
 
 interface RidesRepositoryFacade {
 
-    suspend fun getRide(id: String): Result<BikeRide?>
+    suspend fun getRide(id: String): Result<BikeRide>
 
     suspend fun getRides(): Result<List<BikeRide>>
 
@@ -60,8 +60,9 @@ class BikeRidesRepository(
         }
     }
 
-    override suspend fun getRide(id: String): Result<BikeRide?> = result {
+    override suspend fun getRide(id: String): Result<BikeRide> = result {
         db.bikeRideDao().getById(id)?.toDomain()
+            ?: throw RuntimeException("Ride with id $id not found")
     }
 
     override suspend fun getRides(): Result<List<BikeRide>> = result {

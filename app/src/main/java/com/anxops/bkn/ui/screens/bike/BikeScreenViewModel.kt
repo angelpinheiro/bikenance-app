@@ -8,6 +8,7 @@ import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.onError
+import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.data.repository.onSuccessWithNull
 import com.anxops.bkn.util.WhileUiSubscribed
@@ -95,13 +96,11 @@ class BikeScreenViewModel @Inject constructor(
             }
 
             is BikeScreenEvent.LoadBike -> {
-                bikesRepository.getBike(event.bikeId).onSuccessNotNull { bike ->
+                bikesRepository.getBike(event.bikeId).onSuccess { bike ->
                     val component = bike.components?.find { event.componentId == it._id }
                     bikeFlow.update { bike }
                     selectedComponentFlow.update { component }
                     selectedCategoryFLow.update { component?.type?.category }
-                }.onSuccessWithNull {
-                    // TODO: Handle bike not found
                 }.onError {
                     // TODO: Handle error
                 }

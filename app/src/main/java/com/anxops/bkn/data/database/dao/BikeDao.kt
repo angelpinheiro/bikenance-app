@@ -25,18 +25,8 @@ interface BikeDao {
     @Query("UPDATE bike SET draft = 0 WHERE _id IN (:ids)")
     suspend fun syncSelectedBikes(ids: Set<String>)
 
-    @Transaction
-    suspend fun syncBikes(ids: Set<String>) {
-        unSyncAllBikes()
-        syncSelectedBikes(ids)
-    }
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(bike: BikeEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    @JvmSuppressWildcards
-    suspend fun insertAll(bikes: List<BikeEntity>)
 
     @Query("DELETE FROM component WHERE bike_id = :bikeId")
     suspend fun removeAllBikeComponents(bikeId: String)
@@ -49,5 +39,11 @@ interface BikeDao {
 
     @Query("DELETE FROM bike")
     suspend fun clear()
+
+    @Transaction
+    suspend fun syncBikes(ids: Set<String>) {
+        unSyncAllBikes()
+        syncSelectedBikes(ids)
+    }
 
 }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 
 interface BikeRepositoryFacade {
 
-    suspend fun getBike(id: String): Result<Bike?>
+    suspend fun getBike(id: String): Result<Bike>
 
     suspend fun getBikes(): List<Bike>
 
@@ -90,10 +90,10 @@ class BikeRepository(
         }
     }
 
-    override suspend fun getBike(id: String): Result<Bike?> = result {
+    override suspend fun getBike(id: String): Result<Bike> = result {
         db.bikeDao().getById(id)?.let {
             getBikeWithComponentsAndMaintenances(it.toDomain())
-        }
+        } ?: throw RuntimeException("Bike with id $id not found")
     }
 
     override suspend fun getBikes(): List<Bike> = withContext(defaultDispatcher) {

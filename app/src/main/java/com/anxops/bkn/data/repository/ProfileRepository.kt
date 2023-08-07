@@ -23,7 +23,7 @@ interface ProfileRepositoryFacade {
 
     suspend fun profileExists(): Result<Boolean>
 
-    suspend fun getProfile(): Result<Profile?>
+    suspend fun getProfile(): Result<Profile>
 
     suspend fun getProfileStats(): Result<AthleteStats?>
 
@@ -102,11 +102,11 @@ class ProfileRepository(
         db.profileDao().exists()
     }
 
-    override suspend fun getProfile(): Result<Profile?> = result {
+    override suspend fun getProfile(): Result<Profile> = result {
         db.database().withTransaction {
             if (db.profileDao().exists()) {
                 db.profileDao().getProfile().toDomain()
-            } else null
+            } else throw RuntimeException("Profile not found")
         }
     }
 
