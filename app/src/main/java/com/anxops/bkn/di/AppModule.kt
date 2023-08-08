@@ -3,6 +3,7 @@ package com.anxops.bkn.di
 import android.content.Context
 import com.anxops.bkn.data.database.AppDb
 import com.anxops.bkn.data.network.Api
+import com.anxops.bkn.data.network.ConnectivityChecker
 import com.anxops.bkn.data.network.ImageUploader
 import com.anxops.bkn.data.network.KtorClient
 import com.anxops.bkn.data.network.firebase.FirebaseImageUploader
@@ -88,4 +89,8 @@ class AppModule {
     @Provides
     @Singleton
     fun providesImageUploader(): ImageUploader = FirebaseImageUploader()
+
+    @Provides
+    @Singleton
+    fun providesConnectivityChecker(@ApplicationContext context: Context): ConnectivityChecker = ConnectivityChecker(context)
 }

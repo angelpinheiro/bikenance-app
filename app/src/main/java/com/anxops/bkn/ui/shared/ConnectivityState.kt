@@ -12,72 +12,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.network.ConnectionState
-import com.anxops.bkn.data.network.currentConnectivityState
-import com.anxops.bkn.data.network.observeConnectivityAsFlow
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.FadeInFadeOutSlideAnimatedVisibility
 import com.anxops.bkn.ui.theme.statusDanger
 import com.anxops.bkn.ui.theme.statusGood
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
-import timber.log.Timber
 
 @Composable
-fun connectivityState(): State<ConnectionState> {
-    val context = LocalContext.current
-    // Creates a State<ConnectionState> with current connectivity state as initial value
-    return produceState(initialValue = context.currentConnectivityState) {
-        context.observeConnectivityAsFlow().distinctUntilChanged().collect {
-            Timber.d("[ConnectivityState] ConnectionState: $it")
-            value = it
-        }
-    }
-}
-
-@Composable
-fun ConnectionStateBanner(modifier: Modifier = Modifier) {
-    val connectionState by connectivityState()
-
-    var prevConnectionState by remember {
-        mutableStateOf<ConnectionState?>(null)
-    }
-
-    var showConnectionState by remember {
-        mutableStateOf<ConnectionState?>(null)
-    }
-
+fun ConnectionStateBanner(connectionState: ConnectionState?, modifier: Modifier = Modifier) {
     val isConnected = connectionState === ConnectionState.Available
-
-    LaunchedEffect(connectionState) {
-        // if disconnected, show banner
-        if (!isConnected) {
-            showConnectionState = connectionState
-        }
-        // connection recovery, show banner during 2 seconds
-        else if (prevConnectionState == ConnectionState.Unavailable) {
-            showConnectionState = connectionState
-            delay(2000)
-            showConnectionState = null
-        } // in other case, there is connection, hide banner
-        else {
-            showConnectionState = null
-        }
-        prevConnectionState = connectionState
-    }
 
     val icon = if (isConnected) {
         CommunityMaterial.Icon.cmd_cloud_check_outline
@@ -95,7 +43,7 @@ fun ConnectionStateBanner(modifier: Modifier = Modifier) {
         MaterialTheme.colors.statusDanger
     }
 
-    FadeInFadeOutSlideAnimatedVisibility(showConnectionState != null) {
+    FadeInFadeOutSlideAnimatedVisibility(connectionState != null) {
         Box(
             Modifier.fillMaxWidth().then(modifier),
             contentAlignment = Alignment.TopStart
