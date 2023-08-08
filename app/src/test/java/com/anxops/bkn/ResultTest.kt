@@ -19,7 +19,6 @@ class ResultTest {
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = TestScope(testDispatcher)
 
-
     @Test
     fun `test successOrException function with Success`() {
         val result: Result<Int> = Result.Success(42)
@@ -114,4 +113,3 @@ class ResultTest {
         Assert.assertTrue(result is Result.Error)
     }
 }
-

@@ -53,7 +53,6 @@ fun BikeScreen(
     componentId: String? = null,
     section: String?
 ) {
-
     val context = LocalContext.current
 
     val bknNavigator = BknNavigator(navigator)
@@ -71,13 +70,10 @@ fun BikeScreen(
 
     val state = viewModel.state.collectAsState()
 
-
-
     resultRecipient.onNavResult {
         // don't select component when navigating back
         showComponent = null
     }
-
 
     LaunchedEffect(bikeId) {
         viewModel.handleEvent(BikeScreenEvent.LoadBike(bikeId, showComponent))
@@ -114,7 +110,8 @@ fun BikeScreen(
     }
 
     state.value.bike?.let { bike ->
-        BottomSheetScaffold(backgroundColor = MaterialTheme.colors.primaryVariant,
+        BottomSheetScaffold(
+            backgroundColor = MaterialTheme.colors.primaryVariant,
             scaffoldState = scaffoldState,
             sheetPeekHeight = 0.dp,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -143,25 +140,16 @@ fun BikeScreen(
             },
             content = { paddingValues ->
                 Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.primary)
-                        .background(bgGradient())
-                        .padding(paddingValues)
+                    Modifier.fillMaxSize().background(MaterialTheme.colors.primary).background(bgGradient()).padding(paddingValues)
                 ) {
                     BackgroundBox(
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
+                        Modifier.fillMaxWidth().weight(1f)
                     ) {
                         when (currentSection) {
                             BikeSections.Status -> {
-                                BikeScreenStatusView(bike,
-                                    state.value.selectedComponent,
-                                    state.value.selectedCategory,
-                                    onEvent = {
-                                        viewModel.handleEvent(it)
-                                    })
+                                BikeScreenStatusView(bike, state.value.selectedComponent, state.value.selectedCategory, onEvent = {
+                                    viewModel.handleEvent(it)
+                                })
                             }
 
                             BikeSections.Components -> {
@@ -177,7 +165,8 @@ fun BikeScreen(
                         })
                     }
                 }
-            })
+            }
+        )
     }
 }
 

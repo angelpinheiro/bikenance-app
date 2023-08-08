@@ -11,6 +11,7 @@ import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +19,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 sealed class BikeScreenEvent {
     object ViewOnStrava : BikeScreenEvent()
@@ -49,16 +48,20 @@ class BikeScreenViewModel @Inject constructor(
     private val selectedComponentFlow = MutableStateFlow<BikeComponent?>(null)
 
     val state: StateFlow<BikeScreenState> = combine(
-        loadingFlow, bikeFlow, selectedComponentFlow, selectedCategoryFLow
+        loadingFlow,
+        bikeFlow,
+        selectedComponentFlow,
+        selectedCategoryFLow
     ) { loading, bike, selectedComponent, selectedCategory ->
-
 
         val lastSelected = savedStateHandle.get<String>("cid")
         val selected = if (selectedComponent == null && lastSelected != null) {
             bike?.components?.find { it._id == lastSelected }.let {
                 it
             }
-        } else selectedComponent
+        } else {
+            selectedComponent
+        }
 
         BikeScreenState(
             loading = loading,
@@ -67,7 +70,6 @@ class BikeScreenViewModel @Inject constructor(
             selectedComponent = selected
         )
     }.stateIn(viewModelScope, WhileUiSubscribed, BikeScreenState())
-
 
     private fun openBikeOnStrava(id: String) {
         viewModelScope.launch {
@@ -83,7 +85,6 @@ class BikeScreenViewModel @Inject constructor(
                 selectedComponentFlow.update {
                     savedStateHandle["cid"] = event.component?._id
                     selectedComp(selectedComponentFlow.value, event.component)
-
                 }
             }
 
@@ -118,5 +119,3 @@ class BikeScreenViewModel @Inject constructor(
         return if (curr != new) new else null
     }
 }
-
-

@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-
 interface ProfileRepositoryFacade {
 
     suspend fun refreshProfile(): Result<Profile>
@@ -34,7 +33,6 @@ interface ProfileRepositoryFacade {
     suspend fun saveLogin(token: String, refreshToken: String?): Result<Profile>
 
     suspend fun logout(): Result<Unit>
-
 }
 
 class ProfileRepository(
@@ -53,7 +51,6 @@ class ProfileRepository(
     }
 
     override suspend fun checkLogin(): Result<CheckLoginResult> = result {
-
         val token = dataStore.authToken.firstOrNull()
         val profileExists = db.profileDao().exists()
 
@@ -90,7 +87,6 @@ class ProfileRepository(
                 dataStore.deleteAuthToken()
                 throw Exception("Could not refresh profile")
             }
-
         }
     }
 
@@ -106,7 +102,9 @@ class ProfileRepository(
         db.database().withTransaction {
             if (db.profileDao().exists()) {
                 db.profileDao().getProfile().toDomain()
-            } else throw RuntimeException("Profile not found")
+            } else {
+                throw RuntimeException("Profile not found")
+            }
         }
     }
 
@@ -126,7 +124,6 @@ class ProfileRepository(
     override suspend fun getProfileStats(): Result<AthleteStats?> = result {
         api.profile().successOrException { it.stats }
     }
-
 }
 
 sealed class CheckLoginResult {

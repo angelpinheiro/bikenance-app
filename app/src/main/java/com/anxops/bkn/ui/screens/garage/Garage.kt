@@ -30,17 +30,19 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Garage(
-    navigator: DestinationsNavigator, viewModel: GarageViewModel = hiltViewModel()
+    navigator: DestinationsNavigator,
+    viewModel: GarageViewModel = hiltViewModel()
 ) {
     val nav = BknNavigator(navigator)
     val currentState by viewModel.screenState.collectAsState()
 
-    val pullRefreshState = rememberPullRefreshState(refreshing = currentState.isRefreshing,
-        onRefresh = { viewModel.loadData() })
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = currentState.isRefreshing,
+        onRefresh = { viewModel.loadData() }
+    )
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState)
     ) {
-
         if (currentState.isLoading) {
             Loading()
         } else if (currentState.bikes.isEmpty()) {
@@ -49,9 +51,7 @@ fun Garage(
             }
         } else {
             Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BikesPager(bikes = currentState.bikes, onBikeChanged = {
@@ -59,20 +59,20 @@ fun Garage(
                 }, onEditBike = {
                     nav.navigateToBikeEdit(it._id)
                 }, onBikeDetails = {
-                    if (it.configDone) nav.navigateToBike(it._id)
-                    else nav.navigateToBikeSetup(it._id)
+                    if (it.configDone) {
+                        nav.navigateToBike(it._id)
+                    } else {
+                        nav.navigateToBikeSetup(it._id)
+                    }
                 }, onClickSync = {
                     nav.navigateToBikeSync()
                 })
 
                 Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 6.dp),
+                    Modifier.fillMaxSize().padding(horizontal = 6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
-                    currentState.lastRides?.let { rides ->
+                    currentState.lastRides.let { rides ->
                         RecentActivity(rides = rides) {
                             nav.navigateToRide(it._id)
                         }
@@ -82,29 +82,26 @@ fun Garage(
                         currentState.selectedBike?.let {
                             nav.navigateToBikeComponent(it._id, m.componentId)
                         }
-
                     })
                 }
             }
         }
 
         PullRefreshIndicator(
-            currentState.isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter)
+            currentState.isRefreshing,
+            pullRefreshState,
+            Modifier.align(Alignment.TopCenter)
         )
     }
 }
 
-
 @Composable
 fun EmptyGarage(onClickAction: () -> Unit = {}) {
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 20.dp),
+        Modifier.fillMaxSize().padding(top = 20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = "There are no bikes on your garage",
             modifier = Modifier.padding(vertical = 30.dp, horizontal = 30.dp),
@@ -121,22 +118,15 @@ fun EmptyGarage(onClickAction: () -> Unit = {}) {
         Image(
             painter = painterResource(id = R.drawable.ic_undraw_not_found),
             contentDescription = "Not found",
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .background(Color.Transparent)
-                .padding(top = 0.dp)
+            modifier = Modifier.fillMaxWidth(0.6f).background(Color.Transparent).padding(top = 0.dp)
         )
 
         OutlinedButton(onClick = { onClickAction() }, modifier = Modifier.padding(top = 20.dp)) {
             Text(
                 text = "Sync bikes with Strava",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h3
             )
         }
     }
 }
-
-
-
-

@@ -16,7 +16,6 @@ import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-
 @OptIn(ExperimentalPagingApi::class)
 class RideRemoteMediator(
     private val db: AppDb,
@@ -24,7 +23,8 @@ class RideRemoteMediator(
     private val appInfoRepository: AppInfoRepositoryFacade
 ) : RemoteMediator<Int, BikeRideEntity>() {
     override suspend fun load(
-        loadType: LoadType, state: PagingState<Int, BikeRideEntity>
+        loadType: LoadType,
+        state: PagingState<Int, BikeRideEntity>
     ): MediatorResult {
         try {
             val dateTime = when (loadType) {
@@ -43,7 +43,8 @@ class RideRemoteMediator(
             }
             // query our api for items before that datetime (recent rides come first)
             val response = api.getPaginatedRidesByDateTime(
-                dateTime, state.config.pageSize
+                dateTime,
+                state.config.pageSize
             )
             return handleApiResponse(response, loadType, dateTime)
         } catch (e: IOException) {
@@ -54,7 +55,9 @@ class RideRemoteMediator(
     }
 
     private suspend fun handleApiResponse(
-        response: ApiResponse<List<BikeRide>>, loadType: LoadType, dateTime: String?
+        response: ApiResponse<List<BikeRide>>,
+        loadType: LoadType,
+        dateTime: String?
     ): MediatorResult {
         return when (response) {
             is ApiResponse.Success -> {
@@ -87,7 +90,6 @@ class RideRemoteMediator(
     // when the mediator is initialized, skip refresh if the last refresh was in the last hour.
     // This avoids continuous refreshes when jumping from screens or if the app is reopen
     override suspend fun initialize(): InitializeAction {
-
         val lastUpdate = db.appInfoDao().getAppInfo()?.lastRidesUpdate ?: 0
         val cacheTimeout = TimeUnit.HOURS.toMillis(1) // 1 hour
 
@@ -97,6 +99,4 @@ class RideRemoteMediator(
             InitializeAction.SKIP_INITIAL_REFRESH
         }
     }
-
-
 }

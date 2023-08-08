@@ -17,14 +17,12 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentType
 
-
 @Composable
 fun BikeComponentIcon(
     type: ComponentType,
     modifier: Modifier = Modifier.padding(3.dp),
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 ) {
-
     val icon = remember(type) {
         mutableStateOf(
             type.resources().iconRes
@@ -46,8 +44,3 @@ fun bikeComponentName(component: BikeComponent): String {
         component.type.resources().nameResId
     ) + (component.modifier?.let { " (${it.displayName})" } ?: "")
 }
-
-
-
-
-

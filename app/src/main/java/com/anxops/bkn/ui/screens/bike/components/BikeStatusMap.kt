@@ -73,10 +73,10 @@ import com.anxops.bkn.data.model.ComponentCategory
 import com.anxops.bkn.data.model.ComponentModifier
 import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
-import com.anxops.bkn.ui.shared.getColorForStatus
-import com.anxops.bkn.ui.shared.getIconResForStatus
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.shared.getColorForStatus
+import com.anxops.bkn.ui.shared.getIconResForStatus
 import com.anxops.bkn.ui.shared.resources
 import com.anxops.bkn.ui.theme.statusWarning
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -93,7 +93,6 @@ fun BikeStatusMap(
     onComponentSelected: (BikeComponent) -> Unit = {},
     onCategoryUnselected: () -> Unit = {}
 ) {
-
     val showCategories = remember {
         mutableStateOf(false)
     }
@@ -113,51 +112,40 @@ fun BikeStatusMap(
         mutableStateOf(
             listOf(
                 ComponentCategory.TRANSMISSION to MapOffset(0.35f, 0.65f, Alignment.BottomCenter),
-                ComponentCategory.BRAKES to MapOffset(0.16f, 0.57f,Alignment.TopStart),
-                ComponentCategory.SUSPENSION to MapOffset(0.73f, 0.40f,Alignment.BottomCenter),
-                ComponentCategory.WHEELS to MapOffset(0.65f, 0.70f,Alignment.BottomEnd),
-                ComponentCategory.MISC to MapOffset(0.5f, 0.35f,Alignment.TopCenter),
+                ComponentCategory.BRAKES to MapOffset(0.16f, 0.57f, Alignment.TopStart),
+                ComponentCategory.SUSPENSION to MapOffset(0.73f, 0.40f, Alignment.BottomCenter),
+                ComponentCategory.WHEELS to MapOffset(0.65f, 0.70f, Alignment.BottomEnd),
+                ComponentCategory.MISC to MapOffset(0.5f, 0.35f, Alignment.TopCenter)
             )
         )
     }
 
     val componentVisibility = bike.componentList().associate {
-            it._id to (selectedCategory == it.type.category)
-        }
+        it._id to (selectedCategory == it.type.category)
+    }
 
-    BoxWithConstraints(modifier = Modifier
-        .fillMaxHeight()
-        .aspectRatio(1.6f)
-        .clickable(
-            interactionSource = interactionSource, indication = null
-        ) { onCategoryUnselected() }) {
-
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxHeight().aspectRatio(1.6f).clickable(
+        interactionSource = interactionSource,
+            indication = null
+    ) { onCategoryUnselected() }
+    ) {
         Image(
             imageVector = ImageVector.vectorResource(id = vector),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .blur(1.dp)
-                .padding(5.dp)
-                .align(Alignment.Center)
-                .alpha(0.1f),
+            modifier = Modifier.fillMaxSize().blur(1.dp).padding(5.dp).align(Alignment.Center).alpha(0.1f),
             colorFilter = ColorFilter.tint(Color.Black)
         )
         Image(
             imageVector = ImageVector.vectorResource(id = vector),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp)
-                .align(Alignment.Center),
+            modifier = Modifier.fillMaxSize().padding(5.dp).align(Alignment.Center),
             colorFilter = ColorFilter.tint(
-                MaterialTheme.colors.surface.copy(alpha = 0.25f)
-                    .compositeOver(MaterialTheme.colors.primary)
+                MaterialTheme.colors.surface.copy(alpha = 0.25f).compositeOver(MaterialTheme.colors.primary)
             )
         )
 
         if (selectedCategory == null) {
-
             hotSpotCoordinates.value.forEach { (category, offset) ->
                 HotSpotAnimatedVisibility(
                     visible = showCategories.value
@@ -177,15 +165,14 @@ fun BikeStatusMap(
             }
         }
 
-
-
         bike.componentList().forEach { component ->
 
             val isSelected = component._id == selectedComponent?._id
             val offset: MapOffset = getComponentMapOffset(component)
 
             HotSpotAnimatedVisibility(componentVisibility[component._id] ?: false) {
-                StatusMapComponent(isSelected = isSelected,
+                StatusMapComponent(
+                    isSelected = isSelected,
                     size = 25.dp,
                     maxHeight = maxHeight,
                     maxWidth = maxWidth,
@@ -195,7 +182,8 @@ fun BikeStatusMap(
                     status = bike.status.componentTypeStatus[component.type],
                     onSelected = {
                         onComponentSelected(component)
-                    })
+                    }
+                )
             }
         }
     }
@@ -255,6 +243,7 @@ private fun getComponentMapOffset(component: BikeComponent): MapOffset {
                 MapOffset(0.8f, 0.6f)
             }
         }
+
         ComponentType.FrameBearings -> MapOffset(0.5f, 0.45f)
         ComponentType.HandlebarTape -> MapOffset(0.5f, 0.25f)
         ComponentType.Custom -> MapOffset(0f, 0f)
@@ -280,13 +269,12 @@ private fun chooseBikeVector(bike: Bike): Int {
     return vector
 }
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ComponentCategoryCarousel(
-    selectedCategory: ComponentCategory?, onCategorySelected: (ComponentCategory) -> Unit
+    selectedCategory: ComponentCategory?,
+    onCategorySelected: (ComponentCategory) -> Unit
 ) {
-
     val categoryScroll = rememberLazyListState()
     val categories = remember {
         ComponentCategory.values()
@@ -298,8 +286,7 @@ fun ComponentCategoryCarousel(
     }
 
     LazyRow(
-        Modifier
-            .fillMaxWidth().padding(top = 6.dp),
+        Modifier.fillMaxWidth().padding(top = 6.dp),
         state = categoryScroll,
         horizontalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(
@@ -311,9 +298,7 @@ fun ComponentCategoryCarousel(
             val isSelected = selectedCategory == category
             item {
                 Chip(
-                    modifier = Modifier
-                        .widthIn(80.dp, 180.dp)
-                        .padding(horizontal = 3.dp),
+                    modifier = Modifier.widthIn(80.dp, 180.dp).padding(horizontal = 3.dp),
                     onClick = { onCategorySelected(category) },
                     colors = ChipDefaults.chipColors(
                         backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
@@ -322,13 +307,11 @@ fun ComponentCategoryCarousel(
                     leadingIcon = {
                         BknIcon(
                             icon = CommunityMaterial.Icon.cmd_close,
-                            modifier = Modifier
-                                .padding(start = 6.dp)
-                                .size(10.dp),
+                            modifier = Modifier.padding(start = 6.dp).size(10.dp),
                             color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
 
                         )
-                    },
+                    }
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 16.dp),
@@ -350,7 +333,6 @@ fun ComponentCarousel(
     selectedComponent: BikeComponent?,
     onComponentSelected: (BikeComponent) -> Unit
 ) {
-
     val categoryScroll = rememberLazyListState()
 
     LaunchedEffect(selectedComponent) {
@@ -359,9 +341,7 @@ fun ComponentCarousel(
     }
 
     LazyRow(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 0.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 0.dp),
         state = categoryScroll,
         horizontalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(
@@ -374,9 +354,7 @@ fun ComponentCarousel(
 
             item {
                 Chip(
-                    modifier = Modifier
-                        .widthIn(80.dp, 180.dp)
-                        .padding(end = 6.dp),
+                    modifier = Modifier.widthIn(80.dp, 180.dp).padding(end = 6.dp),
                     onClick = { onComponentSelected(component) },
                     colors = ChipDefaults.chipColors(
                         backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface,
@@ -386,11 +364,9 @@ fun ComponentCarousel(
                         BikeComponentIcon(
                             type = component.type,
                             tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
-                            modifier = Modifier
-                                .padding(start = 6.dp)
-                                .size(16.dp)
+                            modifier = Modifier.padding(start = 6.dp).size(16.dp)
                         )
-                    },
+                    }
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, end = 16.dp),
@@ -408,7 +384,6 @@ fun ComponentCarousel(
         }
     }
 }
-
 
 @Composable
 fun HotSpot(
@@ -431,25 +406,17 @@ fun HotSpot(
     val start = max(maxWidth * xOffset - boxSize / 2, 0.dp)
 
     Box(
-        modifier
-            .padding(top = top, start = start)
-            .size(boxSize)
-            .clickable(interactionSource, indication = null) { onSelected() },
+        modifier.padding(top = top, start = start).size(boxSize).clickable(interactionSource, indication = null) { onSelected() },
         contentAlignment = Alignment.Center
 
     ) {
-
         PulsatingCircles(size, color = color, pulsate = pulsate)
 
         Text(
             text = text,
-            Modifier
-                .align(textAlignment)
-                .clip(
-                    RoundedCornerShape(20.dp)
-                )
-                .background(MaterialTheme.colors.surface)
-                .padding(horizontal = 6.dp, vertical = 1.dp),
+            Modifier.align(textAlignment).clip(
+                RoundedCornerShape(20.dp)
+            ).background(MaterialTheme.colors.surface).padding(horizontal = 6.dp, vertical = 1.dp),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             textAlign = TextAlign.Center,
@@ -458,9 +425,7 @@ fun HotSpot(
             fontSize = 13.sp
         )
     }
-
 }
-
 
 @Composable
 fun StatusMapComponent(
@@ -475,27 +440,21 @@ fun StatusMapComponent(
     maxHeight: Dp,
     onSelected: () -> Unit = {}
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
     val boxSize = max(50.dp, size)
 
     val top = max(maxHeight * yOffset - boxSize / 2, 0.dp)
     val start = max(maxWidth * xOffset - boxSize / 2, 0.dp)
 
-
     val color = getColorForStatus(status ?: StatusLevel.UNKNOWN)
     val icon = getIconResForStatus(status ?: StatusLevel.UNKNOWN)
 
     Box(
-        modifier
-            .padding(top = top, start = start)
-            .width(boxSize)
-            .height(boxSize)
+        modifier.padding(top = top, start = start).width(boxSize).height(boxSize)
             .clickable(interactionSource, indication = null) { onSelected() },
-        contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center
 
     ) {
-
         CircularProgressIndicator(
             modifier = Modifier.size(42.dp),
             color = color,
@@ -506,30 +465,24 @@ fun StatusMapComponent(
         BikeComponentIcon(
             type = component.type,
             tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
-            modifier = Modifier
-                .size(35.dp)
-                .clip(CircleShape)
-                .background(if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface)
-                .padding(5.dp)
+            modifier = Modifier.size(35.dp).clip(CircleShape)
+                .background(if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface).padding(5.dp)
         )
-
-
     }
-
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HotSpotAnimatedVisibility(
-    visible: Boolean, content: @Composable AnimatedVisibilityScope.() -> Unit
+    visible: Boolean,
+    content: @Composable AnimatedVisibilityScope.() -> Unit
 ) {
-
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut(),
+        exit = fadeOut() + scaleOut()
 
-        ) {
+    ) {
         content()
     }
 }
@@ -545,74 +498,85 @@ fun SimpleCircleShape(
         modifier = Modifier.wrapContentSize(Alignment.Center)
     ) {
         Box(
-            modifier = Modifier
-                .size(size)
-                .clip(CircleShape)
-                .background(
-                    color
-                )
-                .border(borderWidth, borderColor)
+            modifier = Modifier.size(size).clip(CircleShape).background(
+                color
+            ).border(borderWidth, borderColor)
         )
     }
 }
 
 @Composable
 fun PulsatingCircles(
-    size: Dp, color: Color = Color.White, alpha: Float = 0.5f, pulsate: Boolean = false
+    size: Dp,
+    color: Color = Color.White,
+    alpha: Float = 0.5f,
+    pulsate: Boolean = false
 ) {
     Box(contentAlignment = Alignment.Center) {
         val infiniteTransition = rememberInfiniteTransition(label = "")
 
-        val alpha: Float = if (!pulsate) 0.5f else infiniteTransition.animateValue(
-            label = "",
-            initialValue = alpha,
-            targetValue = 0.1f,
-            typeConverter = Float.VectorConverter,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = FastOutLinearInEasing),
-                repeatMode = RepeatMode.Reverse
-            )
-        ).value
+        val alpha: Float = if (!pulsate) {
+            0.5f
+        } else {
+            infiniteTransition.animateValue(
+                label = "",
+                initialValue = alpha,
+                targetValue = 0.1f,
+                typeConverter = Float.VectorConverter,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = FastOutLinearInEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
+            ).value
+        }
 
+        val size: Dp = if (!pulsate) {
+            size * 0.7f
+        } else {
+            infiniteTransition.animateValue(
+                label = "",
+                initialValue = size,
+                targetValue = size * 0.8f,
+                typeConverter = Dp.VectorConverter,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = FastOutLinearInEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
+            ).value
+        }
 
-        val size: Dp = if (!pulsate) size*0.7f else infiniteTransition.animateValue(
-            label = "",
-            initialValue = size,
-            targetValue = size * 0.8f,
-            typeConverter = Dp.VectorConverter,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = FastOutLinearInEasing),
-                repeatMode = RepeatMode.Reverse
-            )
-        ).value
-
-        val mediumSize: Dp = if (!pulsate) size * 0.6f else infiniteTransition.animateValue(
-            initialValue = size * 0.7f,
-            targetValue = size * 0.5f,
-            Dp.VectorConverter,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = FastOutLinearInEasing),
-                repeatMode = RepeatMode.Reverse
-            ),
-            label = ""
-        ).value
+        val mediumSize: Dp = if (!pulsate) {
+            size * 0.6f
+        } else {
+            infiniteTransition.animateValue(
+                initialValue = size * 0.7f,
+                targetValue = size * 0.5f,
+                Dp.VectorConverter,
+                    animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = FastOutLinearInEasing),
+                        repeatMode = RepeatMode.Reverse
+                ),
+                    label = ""
+            ).value
+        }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(size),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth().height(size),
+            contentAlignment = Alignment.Center
         ) {
             SimpleCircleShape(
-                size = size, color = color.copy(alpha = alpha)
+                size = size,
+                color = color.copy(alpha = alpha)
             )
-            if(pulsate) {
+            if (pulsate) {
                 SimpleCircleShape(
-                    size = mediumSize, color = color.copy(alpha = alpha)
+                    size = mediumSize,
+                    color = color.copy(alpha = alpha)
                 )
             }
             SimpleCircleShape(
-                size = size * .3f, color = color
+                size = size * .3f,
+                color = color
             )
         }
     }

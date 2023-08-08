@@ -33,31 +33,25 @@ fun BikeDetailsTopBar(
     onBikeSettings: () -> Unit = {},
     onClickBack: () -> Unit = {}
 ) {
-
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
         backgroundColor = MaterialTheme.colors.primaryVariant,
-        elevation = 5.dp,
+        elevation = 5.dp
     ) {
         Column(Modifier.fillMaxWidth()) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
-                    IconButton(
-                        modifier = Modifier.padding(start = 6.dp),
-                        onClick = { onClickBack() }) {
+                    IconButton(modifier = Modifier.padding(start = 6.dp), onClick = { onClickBack() }) {
                         BknIcon(
                             icon = CommunityMaterial.Icon.cmd_arrow_left,
                             color = Color.White,
                             modifier = Modifier.size(26.dp)
                         )
                     }
-
 
                     Text(
                         text = bike.name ?: bike.displayName(),
@@ -70,47 +64,35 @@ fun BikeDetailsTopBar(
                         Image(
                             painter = painterResource(id = R.drawable.ic_strava_logo),
                             contentDescription = null,
-                            modifier = Modifier
-                                .padding(12.dp)
-                                .size(26.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colors.primary)
-                                .padding(5.dp),
+                            modifier = Modifier.padding(12.dp).size(26.dp).clip(CircleShape).background(MaterialTheme.colors.primary)
+                                .padding(5.dp)
                         )
                     }
-
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (bike.stravaId != null) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-
                             IconButton(onClick = {
                                 onBikeSetup()
                             }) {
-
                                 BknIcon(
                                     CommunityMaterial.Icon3.cmd_playlist_check,
                                     MaterialTheme.colors.surface,
-                                    modifier = Modifier
-                                        .size(26.dp)
+                                    modifier = Modifier.size(26.dp)
                                 )
                             }
 
                             IconButton(onClick = {
                                 onBikeSettings()
                             }) {
-
                                 BknIcon(
                                     CommunityMaterial.Icon.cmd_cog,
                                     MaterialTheme.colors.surface,
-                                    modifier = Modifier
-                                        .size(26.dp)
+                                    modifier = Modifier.size(26.dp)
                                 )
                             }
-
                         }
                     }
-
                 }
             }
         }

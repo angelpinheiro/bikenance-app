@@ -22,30 +22,22 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Maintenance
-import com.anxops.bkn.ui.shared.getColorForProgress
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.secondaryButtonColors
+import com.anxops.bkn.ui.shared.getColorForProgress
 import com.anxops.bkn.util.formatAsMonthYear
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
 fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
-
     Card(
-        backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.95f)
-            .compositeOver(MaterialTheme.colors.surface),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        shape = RoundedCornerShape(8.dp),
+        backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.95f).compositeOver(MaterialTheme.colors.surface),
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        shape = RoundedCornerShape(8.dp)
     ) {
-
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
         ) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -58,37 +50,27 @@ fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
                     modifier = Modifier.padding(bottom = 5.dp)
                 )
 
-                BknIcon(icon = CommunityMaterial.Icon.cmd_cog_refresh,
-                    modifier = Modifier
-                        .size(26.dp)
-                        .clickable { onEdit() })
+                BknIcon(icon = CommunityMaterial.Icon.cmd_cog_refresh, modifier = Modifier.size(26.dp).clickable { onEdit() })
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BknIcon(
                     icon = CommunityMaterial.Icon3.cmd_repeat,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .size(16.dp)
+                    modifier = Modifier.padding(end = 10.dp).size(16.dp)
                 )
                 Text(
                     text = "${item.defaultFrequency.displayText()} (${item.displayStatus()})",
                     color = MaterialTheme.colors.onPrimary,
-                    style = MaterialTheme.typography.h3,
+                    style = MaterialTheme.typography.h3
                 )
             }
 
             LinearProgressIndicator(
                 progress = item.status.toFloat(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
-                    .height(5.dp)
-                    .clip(RoundedCornerShape(20.dp)),
+                modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp).height(5.dp).clip(RoundedCornerShape(20.dp)),
                 color = getColorForProgress(percentage = item.status.toFloat()),
-                backgroundColor = MaterialTheme.colors.primaryVariant,
+                backgroundColor = MaterialTheme.colors.primaryVariant
             )
-
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -98,19 +80,17 @@ fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
                 Text(
                     text = "${item.lastMaintenanceDate?.formatAsMonthYear()}",
                     color = MaterialTheme.colors.onPrimary,
-                    style = MaterialTheme.typography.h4,
+                    style = MaterialTheme.typography.h4
                 )
                 Text(
                     text = "~ ${item.estimatedDate?.formatAsMonthYear()}",
                     color = MaterialTheme.colors.onPrimary,
-                    style = MaterialTheme.typography.h4,
+                    style = MaterialTheme.typography.h4
                 )
             }
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
@@ -120,7 +100,7 @@ fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
                 OutlinedButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier.weight(1f),
-                    colors = secondaryButtonColors(),
+                    colors = secondaryButtonColors()
                 ) {
                     Text("Perform service")
                 }
@@ -154,8 +134,6 @@ fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
 //                modifier = Modifier
 //            )
 //        }
-
-
         }
     }
 }

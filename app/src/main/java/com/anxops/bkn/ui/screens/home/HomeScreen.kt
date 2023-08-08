@@ -43,7 +43,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun HomeScreen(
-    navigator: DestinationsNavigator, viewModel: HomeViewModel = hiltViewModel(), section: String?
+    navigator: DestinationsNavigator,
+    viewModel: HomeViewModel = hiltViewModel(),
+    section: String?
 ) {
     val nav = BknNavigator(navigator)
 
@@ -78,13 +80,10 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     BknIcon(
                         icon = selectedItem.icon,
                         color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .size(20.dp)
+                        modifier = Modifier.padding(start = 12.dp).size(20.dp)
                     )
                     Text(
                         text = stringResource(id = selectedItem.titleRes),
@@ -94,21 +93,16 @@ fun HomeScreen(
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     if (selectedItem == HomeSections.Home) {
-
                         IconButton(onClick = {
                             nav.navigateToProfile()
                         }) {
                             BknIcon(
                                 icon = CommunityMaterial.Icon.cmd_account,
                                 color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .size(20.dp)
+                                modifier = Modifier.padding(horizontal = 6.dp).size(20.dp)
                             )
-                        }
-                        /*IconButton(onClick = {
+                        } /*IconButton(onClick = {
                             viewModel.logout()
                         }) {
                             BknIcon(
@@ -127,9 +121,7 @@ fun HomeScreen(
                                 BknIcon(
                                     icon = CommunityMaterial.Icon.cmd_cloud_refresh,
                                     color = Color.White,
-                                    modifier = Modifier
-                                        .padding(horizontal = 6.dp)
-                                        .size(20.dp)
+                                    modifier = Modifier.padding(horizontal = 6.dp).size(20.dp)
                                 )
                             }
                         }
@@ -145,11 +137,9 @@ fun HomeScreen(
         }
     }) {
         BackgroundBox(
-            Modifier
-                .padding(it)
-                .fillMaxSize(), contentAlignment = Alignment.TopCenter
+            Modifier.padding(it).fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
-
             if (profileSync == true) {
                 when (selectedItem) {
                     HomeSections.Home -> {
@@ -171,18 +161,13 @@ fun HomeScreen(
     }
 }
 
-
 @Composable
 fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
-
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 0.dp),
+        Modifier.fillMaxSize().padding(top = 0.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         val infiniteTransition = rememberInfiniteTransition(label = "")
 
         val size: Dp = infiniteTransition.animateValue(
@@ -190,25 +175,21 @@ fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
             initialValue = 30.dp,
             targetValue = 40.dp,
             typeConverter = Dp.VectorConverter,
-            animationSpec = infiniteRepeatable(
+                animationSpec = infiniteRepeatable(
                 animation = tween(1000, easing = FastOutLinearInEasing),
-                repeatMode = RepeatMode.Reverse
+                    repeatMode = RepeatMode.Reverse
             )
         ).value
-
-
 
         Text(
             text = "Building profile",
             modifier = Modifier.padding(top = 30.dp),
-            style = MaterialTheme.typography.h2,
+            style = MaterialTheme.typography.h2
         )
 
         Text(
             text = "We're fetching your bikes and rides from Strava. It'll be a quick process, and we'll let you know once your profile is ready!",
-            modifier = Modifier
-                .padding(horizontal = 30.dp)
-                .padding(top = 10.dp, bottom = 50.dp),
+            modifier = Modifier.padding(horizontal = 30.dp).padding(top = 10.dp, bottom = 50.dp),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
             fontSize = 18.sp
@@ -216,26 +197,22 @@ fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
 
         Box(Modifier.size(130.dp), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colors.primary
             )
 
             Image(
                 painter = painterResource(id = R.drawable.ic_strava_logo),
                 contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.primary)
-                    .padding(20.dp)
-                    .size(size),
+                modifier = Modifier.clip(CircleShape).background(MaterialTheme.colors.primary).padding(20.dp).size(size)
             )
-
         }
         Text(
             text = "Fetching from Strava...",
             modifier = Modifier.padding(top = 20.dp),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Thin,
-            fontSize = 13.sp,
+            fontSize = 13.sp
         )
     }
 }

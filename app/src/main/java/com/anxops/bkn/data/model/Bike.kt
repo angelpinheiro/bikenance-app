@@ -2,9 +2,9 @@ package com.anxops.bkn.data.model
 
 import com.anxops.bkn.data.model.util.BikeTypeSerializer
 import com.anxops.bkn.data.model.util.LocalDateSerializer
+import java.time.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
 
 @Serializable
 data class Bike(
@@ -21,14 +21,14 @@ data class Bike(
     @SerialName("full_suspension") val fullSuspension: Boolean = false,
     @SerialName("configDone") val configDone: Boolean = false,
     @Serializable(with = BikeTypeSerializer::class)
-    @SerialName("bike_type") var type: BikeType = BikeType.Unknown,
+    @SerialName("bike_type")
+    var type: BikeType = BikeType.Unknown,
     @SerialName("stats") var stats: BikeStats? = null,
-    @SerialName("components")
-    val components: List<BikeComponent>? = null,
+    @SerialName("components") val components: List<BikeComponent>? = null
 
 ) {
 
-    fun componentList() : List<BikeComponent> {
+    fun componentList(): List<BikeComponent> {
         return components ?: emptyList()
     }
 
@@ -42,15 +42,7 @@ data class Bike(
 
     fun toBikeUpdate(): BikeUpdate {
         return BikeUpdate(
-            name,
-            brandName,
-            modelName,
-            photoUrl,
-            draft,
-            electric,
-            fullSuspension,
-            configDone,
-            type
+            name, brandName, modelName, photoUrl, draft, electric, fullSuspension, configDone, type
         )
     }
 
@@ -79,11 +71,7 @@ data class Bike(
 
         val generalStatus = categoryStatus.maxByOrNull { it.value }?.value ?: StatusLevel.UNKNOWN
 
-        return BikeStatus(generalStatus,
-            categoryStatus,
-            componentTypeStatus,
-            componentStatus.associate { it.first to it.second })
-
+        return BikeStatus(generalStatus, categoryStatus, componentTypeStatus, componentStatus.associate { it.first to it.second })
     }
 }
 
@@ -120,27 +108,18 @@ data class BikeStatus(
     val componentStatus: Map<BikeComponent, StatusLevel>
 )
 
-
 @Serializable
 data class BikeStats(
-    @SerialName("ride_count")
-    val rideCount: Double? = null,
-    @SerialName("duration")
-    val duration: Double = 0.0,
-    @SerialName("distance")
-    val distance: Double = 0.0,
-    @SerialName("elevationGain")
-    val elevationGain: Double = 0.0,
-    @SerialName("average_speed")
-    val averageSpeed: Double? = null,
-    @SerialName("max_speed")
-    val maxSpeed: Double? = null,
+    @SerialName("ride_count") val rideCount: Double? = null,
+    @SerialName("duration") val duration: Double = 0.0,
+    @SerialName("distance") val distance: Double = 0.0,
+    @SerialName("elevationGain") val elevationGain: Double = 0.0,
+    @SerialName("average_speed") val averageSpeed: Double? = null,
+    @SerialName("max_speed") val maxSpeed: Double? = null,
     @Serializable(with = LocalDateSerializer::class)
     @SerialName("last_ride_date")
-    val lastRideDate: LocalDateTime? = null,
+    val lastRideDate: LocalDateTime? = null
 )
-
-
 
 @Serializable
 data class BikeUpdate(
@@ -153,5 +132,6 @@ data class BikeUpdate(
     @SerialName("full_suspension") val fullSuspension: Boolean = false,
     @SerialName("configDone") val configDone: Boolean = false,
     @Serializable(with = BikeTypeSerializer::class)
-    @SerialName("bike_type") var type: BikeType = BikeType.Unknown
+    @SerialName("bike_type")
+    var type: BikeType = BikeType.Unknown
 )

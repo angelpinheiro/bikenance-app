@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.navigation
 
-
 import com.anxops.bkn.ui.screens.NavGraph
 import com.anxops.bkn.ui.screens.NavGraphs
 import com.anxops.bkn.ui.screens.bike.BikeSections
@@ -95,5 +94,4 @@ class BknNavigator(var navigator: DestinationsNavigator) {
             return NavGraphs.root
         }
     }
-
 }

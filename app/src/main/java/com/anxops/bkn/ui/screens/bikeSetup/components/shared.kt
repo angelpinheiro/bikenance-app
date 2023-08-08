@@ -23,34 +23,37 @@ import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
 @Composable
 fun BooleanRadioButton(labelTrue: String, labelFalse: String, value: Boolean = false) {
-
     val colors = RadioButtonDefaults.colors(
         unselectedColor = MaterialTheme.colors.surface,
         selectedColor = MaterialTheme.colors.secondary
     )
 
     Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.width(IntrinsicSize.Min)
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.width(IntrinsicSize.Min)
     ) {
         Text(
-            text = labelTrue, color = MaterialTheme.colors.surface
+            text = labelTrue,
+            color = MaterialTheme.colors.surface
         )
         RadioButton(
-            selected = value, onClick = { }, colors = colors
+            selected = value,
+            onClick = { },
+            colors = colors
         )
         Text(
-            text = labelFalse, color = MaterialTheme.colors.surface
+            text = labelFalse,
+            color = MaterialTheme.colors.surface
         )
         RadioButton(
-            selected = !value, onClick = { }, colors = colors
+            selected = !value,
+            onClick = { },
+            colors = colors
         )
-
     }
 }
-
 
 @Composable
 fun BooleanSelector(
@@ -59,30 +62,26 @@ fun BooleanSelector(
     value: Boolean? = null,
     onOptionSelected: (Boolean) -> Unit
 ) {
-
     val colors = RadioButtonDefaults.colors(
         unselectedColor = MaterialTheme.colors.surface,
         selectedColor = MaterialTheme.colors.secondary
     )
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
-
         OutlinedButton(
             onClick = {
                 onOptionSelected(true)
-            }, modifier = Modifier
-                .padding(4.dp)
-                .weight(1f), colors = if (value == true) {
+            },
+            modifier = Modifier.padding(4.dp).weight(1f),
+                colors = if (value == true) {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.secondary,
+                    backgroundColor = MaterialTheme.colors.secondary
                 )
-
             } else {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primaryVariant,
+                    backgroundColor = MaterialTheme.colors.primaryVariant
                 )
             }
         ) {
@@ -90,24 +89,23 @@ fun BooleanSelector(
                 modifier = Modifier.padding(2.dp),
                 text = labelTrue,
                 color = MaterialTheme.colors.onSecondary,
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.h5
 
-                )
+            )
         }
 
         OutlinedButton(
             onClick = {
                 onOptionSelected(false)
-            }, modifier = Modifier
-                .padding(4.dp)
-                .weight(1f), colors = if (value == false) {
+            },
+            modifier = Modifier.padding(4.dp).weight(1f),
+                colors = if (value == false) {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.secondary,
+                    backgroundColor = MaterialTheme.colors.secondary
                 )
-
             } else {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primaryVariant,
+                    backgroundColor = MaterialTheme.colors.primaryVariant
                 )
             }
         ) {
@@ -115,14 +113,12 @@ fun BooleanSelector(
                 modifier = Modifier.padding(2.dp),
                 text = labelFalse,
                 color = MaterialTheme.colors.onSecondary,
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.h5
 
-                )
+            )
         }
-
     }
 }
-
 
 @Composable
 fun selectableButton(text: String, selected: Boolean, onSelected: () -> Unit = {}) {
@@ -130,17 +126,15 @@ fun selectableButton(text: String, selected: Boolean, onSelected: () -> Unit = {
         onClick = {
             onSelected()
         },
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth(0.8f),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (selected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
+        modifier = Modifier.padding(4.dp).fillMaxWidth(0.8f),
+            colors = ButtonDefaults.buttonColors(
+            backgroundColor = if (selected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary
         )
     ) {
         Text(
             text = text,
             color = MaterialTheme.colors.onSecondary,
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.h5
         )
     }
 }
@@ -153,8 +147,6 @@ fun DatePicker(
     pattern: String = "yyyy-MM-dd",
     visible: Boolean = false
 ) {
-
-
     val formatter = DateTimeFormatter.ofPattern(pattern)
     val date = if (value.isNotBlank()) LocalDate.parse(value, formatter) else LocalDate.now()
     val dialog = DatePickerDialog(
@@ -164,7 +156,7 @@ fun DatePicker(
         },
         date.year,
         date.monthValue - 1,
-        date.dayOfMonth,
+        date.dayOfMonth
     )
 
     LaunchedEffect(visible) {

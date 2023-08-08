@@ -24,9 +24,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -34,13 +34,11 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesIODispatchers(@ApplicationContext context: Context): CoroutineDispatcher =
-        Dispatchers.IO
+    fun providesIODispatchers(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     @Singleton
-    fun providesDataStore(@ApplicationContext context: Context): BknDataStore =
-        BknDataStore(context)
+    fun providesDataStore(@ApplicationContext context: Context): BknDataStore = BknDataStore(context)
 
     @Provides
     @Singleton
@@ -49,9 +47,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesTokenRefresher(dataStore: BknDataStore, api: Api): TokenRefresher =
-        DefaultTokenRefresher(dataStore, api)
-
+    fun providesTokenRefresher(dataStore: BknDataStore, api: Api): TokenRefresher = DefaultTokenRefresher(dataStore, api)
 
     @Provides
     @Singleton
@@ -72,18 +68,18 @@ class AppModule {
     @Provides
     @Singleton
     fun providesBikesRepository(
-        api: Api, db: AppDb, rf: RidesRepositoryFacade
+        api: Api,
+        db: AppDb,
+        rf: RidesRepositoryFacade
     ): BikeRepositoryFacade = BikeRepository(api, db, rf)
 
     @Provides
     @Singleton
-    fun providesRidesRepository(api: Api, db: AppDb): RidesRepositoryFacade =
-        BikeRidesRepository(api, db)
+    fun providesRidesRepository(api: Api, db: AppDb): RidesRepositoryFacade = BikeRidesRepository(api, db)
 
     @Provides
     @Singleton
-    fun providesAppInfoRepository(api: Api, db: AppDb): AppInfoRepositoryFacade =
-        AppInfoRepository(api, db)
+    fun providesAppInfoRepository(api: Api, db: AppDb): AppInfoRepositoryFacade = AppInfoRepository(api, db)
 
     @Provides
     @Singleton
@@ -92,5 +88,4 @@ class AppModule {
     @Provides
     @Singleton
     fun providesImageUploader(): ImageUploader = FirebaseImageUploader()
-
 }

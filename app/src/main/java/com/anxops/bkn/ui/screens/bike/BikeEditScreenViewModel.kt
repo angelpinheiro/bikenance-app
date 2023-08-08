@@ -15,6 +15,7 @@ import com.anxops.bkn.data.repository.ErrorType
 import com.anxops.bkn.data.repository.toAppError
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,8 +23,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
-
 
 sealed class BikeEditScreenStatus {
     object Loading : BikeEditScreenStatus()
@@ -60,10 +59,12 @@ class BikeEditScreenViewModel @Inject constructor(
         errorStateFlow
     ) { bike, status, progress, error ->
         BikeEditScreenState(
-            bike = bike, status = status, imageLoadProgress = progress, error = error
+            bike = bike,
+            status = status,
+            imageLoadProgress = progress,
+            error = error
         )
     }.stateIn(viewModelScope, WhileUiSubscribed, BikeEditScreenState())
-
 
     fun loadBike(bikeId: String) {
         viewModelScope.launch {
@@ -72,6 +73,7 @@ class BikeEditScreenViewModel @Inject constructor(
                     bikeFlow.update { r.data }
                     statusFlow.update { BikeEditScreenStatus.Editing }
                 }
+
                 is ApiResponse.Error -> {
                     statusFlow.update { BikeEditScreenStatus.LoadFailed }
                     errorStateFlow.update { r.exception.toAppError("Could not load bike") }
@@ -80,24 +82,28 @@ class BikeEditScreenViewModel @Inject constructor(
         }
     }
 
-
     fun updateBikeImage(byteArray: ByteArray?) {
         viewModelScope.launch {
             byteArray?.let { bytes ->
-                imageUploader.uploadImage(ImageUploadRequest(
-                    dataStore.getAuthUserOrFail(), bytes
-                ), onProgressUpdate = { updatePercent ->
+                imageUploader.uploadImage(
+                    ImageUploadRequest(
+                    dataStore.getAuthUserOrFail(),
+                        bytes
+                ),
+                    onProgressUpdate = { updatePercent ->
                     loadProgressFlow.update { updatePercent }
-                }, onSuccess = { url ->
+                },
+                    onSuccess = { url ->
                     loadProgressFlow.update { 0.0f }
                     bikeFlow.update { it.copy(photoUrl = url) }
-                }, onFailure = {
+                },
+                    onFailure = {
                     loadProgressFlow.update { 0.0f }
                     statusFlow.update { BikeEditScreenStatus.Editing }
                     errorStateFlow.update { AppError(ErrorType.Unexpected) }
-                })
+                }
+                )
             }
-
         }
     }
 
@@ -119,7 +125,6 @@ class BikeEditScreenViewModel @Inject constructor(
 
     fun onSaveBike() {
         viewModelScope.launch {
-
             try {
                 statusFlow.emit(BikeEditScreenStatus.Saving)
                 if (bikeFlow.value._id.isNotBlank()) {
@@ -152,12 +157,9 @@ class BikeEditScreenViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun onDismissError() {
         errorStateFlow.update { null }
     }
-
-
 }

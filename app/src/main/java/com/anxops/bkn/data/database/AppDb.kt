@@ -19,14 +19,7 @@ import com.anxops.bkn.data.database.entities.ProfileEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Database(
-    entities = [
-        ProfileEntity::class,
-        BikeEntity::class,
-        BikeRideEntity::class,
-        AppInfo::class,
-        ComponentEntity::class,
-        MaintenanceEntity::class
-    ],
+    entities = [ProfileEntity::class, BikeEntity::class, BikeRideEntity::class, AppInfo::class, ComponentEntity::class, MaintenanceEntity::class],
     version = 1,
     exportSchema = false
 )
@@ -38,7 +31,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun appInfoDao(): AppInfoDao
     abstract fun maintenanceDao(): MaintenanceDao
 }
-
 
 class AppDb(@ApplicationContext context: Context) {
 
@@ -55,8 +47,9 @@ class AppDb(@ApplicationContext context: Context) {
 
     private fun createRoomDatabase(context: Context): AppDatabase {
         return Room.databaseBuilder(
-            context, AppDatabase::class.java, "bikenance-db"
+            context,
+            AppDatabase::class.java,
+            "bikenance-db"
         ).build()
     }
-
 }

@@ -21,14 +21,15 @@ import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.StatusLevel
 import java.util.SortedMap
 
-
 enum class ComponentTabHeaders(val category: ComponentCategory? = null, order: Int = 0) {
     //    GENERAL(order = 1),
     TRANSMISSION(
-        ComponentCategory.TRANSMISSION, order = 2
+        ComponentCategory.TRANSMISSION,
+        order = 2
     ),
     SUSPENSION(ComponentCategory.SUSPENSION, order = 3), BRAKES(
-        ComponentCategory.BRAKES, order = 4
+        ComponentCategory.BRAKES,
+        order = 4
     ),
     WHEELS(ComponentCategory.WHEELS, order = 5), MISC(ComponentCategory.MISC, order = 6)
 }
@@ -36,15 +37,17 @@ enum class ComponentTabHeaders(val category: ComponentCategory? = null, order: I
 data class ComponentCategoryTabData(
     val tabHeader: ComponentTabHeaders,
     val components: List<GroupedComponents>,
-    val status: StatusLevel,
+    val status: StatusLevel
 )
 
 data class GroupedComponents(
-    val type: ComponentType, val items: List<BikeComponent>
+    val type: ComponentType,
+    val items: List<BikeComponent>
 )
 
 fun buildComponentCategoryTabData(
-    components: List<BikeComponent>, bikeStatus: BikeStatus
+    components: List<BikeComponent>,
+    bikeStatus: BikeStatus
 ): SortedMap<ComponentTabHeaders, ComponentCategoryTabData> {
     // group by category
     val groupedByCat = components.groupBy { it.type.category }
@@ -54,7 +57,8 @@ fun buildComponentCategoryTabData(
 
         val items = comp.groupBy { it.type }.map { (t, c) ->
             GroupedComponents(
-                type = t, items = c
+                type = t,
+                items = c
             )
         }
 
@@ -65,7 +69,9 @@ fun buildComponentCategoryTabData(
         val status = bikeStatus.componentCategoryStatus[cat.category] ?: StatusLevel.UNKNOWN
 
         ComponentCategoryTabData(
-            components = items, status = status, tabHeader = cat
+            components = items,
+            status = status,
+            tabHeader = cat
         )
     }
 
@@ -81,7 +87,6 @@ fun BikeComponentTabsV2(
     bike: Bike,
     status: BikeStatus
 ) {
-
     val lazyListState = rememberLazyListState()
     val data = remember(bike) {
         mutableStateOf(buildComponentCategoryTabData(bike.components ?: listOf(), status))
@@ -90,15 +95,15 @@ fun BikeComponentTabsV2(
     var tabHeaderIndex = data.value.keys.indexOf(selectedTab)
 
     LazyColumn(
-        state = lazyListState, modifier = Modifier.fillMaxSize()
+        state = lazyListState,
+        modifier = Modifier.fillMaxSize()
     ) {
-
         stickyHeader {
             ScrollableTabRow(
                 selectedTabIndex = tabHeaderIndex,
                 backgroundColor = MaterialTheme.colors.primaryVariant,
                 edgePadding = 10.dp,
-                divider = {},
+                divider = {}
             ) {
                 data.value.forEach { (h, data) ->
                     CategoryTab(d = data, selected = selectedTab == h, onSelected = {
@@ -107,7 +112,6 @@ fun BikeComponentTabsV2(
                 }
             }
         }
-
 
         val tabData = data.value[selectedTab]!!
         tabData.components.forEach { gc ->
@@ -120,8 +124,6 @@ fun BikeComponentTabsV2(
                 }
             }
         }
-
-
     }
 }
 
@@ -139,10 +141,8 @@ fun CategoryTab(d: ComponentCategoryTabData, selected: Boolean, onSelected: () -
 //        },
         text = {
             Text(d.tabHeader.name, style = MaterialTheme.typography.h5)
-
         },
         selected = selected,
-        onClick = { onSelected() },
+        onClick = { onSelected() }
     )
 }
-

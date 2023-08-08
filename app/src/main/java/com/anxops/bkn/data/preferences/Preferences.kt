@@ -1,7 +1,6 @@
 package com.anxops.bkn.data.preferences
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -93,6 +92,4 @@ class BknDataStore(private val context: Context) {
     suspend fun getAuthUserOrFail(): String {
         return context.dataStore.data.first()[AUTH_USER] ?: throw Exception("Auth user not found")
     }
-
-
 }

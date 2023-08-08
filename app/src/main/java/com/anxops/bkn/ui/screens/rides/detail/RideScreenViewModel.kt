@@ -11,14 +11,13 @@ import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 data class RideScreenState(
     val isLoading: Boolean = true,
@@ -31,20 +30,17 @@ data class RideScreenState(
 class RideScreenViewModel @Inject constructor(
     val dataStore: BknDataStore,
     private val ridesRepository: RidesRepositoryFacade,
-    private val bikeRepository: BikeRepositoryFacade,
+    private val bikeRepository: BikeRepositoryFacade
 ) : ViewModel() {
 
     private val rideFlow = MutableStateFlow<BikeRide?>(null)
     private val loadingFLow = MutableStateFlow<Boolean>(true)
-    private val allBikes =
-        bikeRepository.getBikesFlow(false).stateIn(viewModelScope, WhileUiSubscribed, emptyList())
+    private val allBikes = bikeRepository.getBikesFlow(false).stateIn(viewModelScope, WhileUiSubscribed, emptyList())
 
-    val state: StateFlow<RideScreenState> =
-        combine(rideFlow, loadingFLow, allBikes) { ride, loading, allBikes ->
-            val bike = allBikes.find { it._id == ride?.bikeId }
-            RideScreenState(loading, bike, allBikes, ride)
-        }.stateIn(viewModelScope, WhileUiSubscribed, RideScreenState(isLoading = true))
-
+    val state: StateFlow<RideScreenState> = combine(rideFlow, loadingFLow, allBikes) { ride, loading, allBikes ->
+        val bike = allBikes.find { it._id == ride?.bikeId }
+        RideScreenState(loading, bike, allBikes, ride)
+    }.stateIn(viewModelScope, WhileUiSubscribed, RideScreenState(isLoading = true))
 
     fun loadRide(rideId: String) {
         viewModelScope.launch {
@@ -53,7 +49,6 @@ class RideScreenViewModel @Inject constructor(
                 rideFlow.update { ride }
             }.onError {
                 // TODO handle error
-
             }
             loadingFLow.emit(false)
         }
@@ -63,14 +58,11 @@ class RideScreenViewModel @Inject constructor(
         viewModelScope.launch {
             rideFlow.value?.let { ride ->
                 loadingFLow.emit(true)
-                ridesRepository.updateRide(ride.copy(bikeId = bike._id, bikeConfirmed = true))
-                    .onSuccess {
-                        rideFlow.update { it }
-                    }
+                ridesRepository.updateRide(ride.copy(bikeId = bike._id, bikeConfirmed = true)).onSuccess {
+                    rideFlow.update { it }
+                }
                 loadingFLow.emit(false)
             }
         }
-
     }
-
 }

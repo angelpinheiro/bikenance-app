@@ -6,7 +6,7 @@ import com.anxops.bkn.ui.shared.ComponentResources
 import kotlinx.serialization.Serializable
 
 @Serializable(with = ComponentTypeSerializer::class)
-sealed class ComponentType(val name: String, val category: ComponentCategory){
+sealed class ComponentType(val name: String, val category: ComponentCategory) {
 
     object Cassette : ComponentType("CASSETTE", ComponentCategory.TRANSMISSION)
     object Chain : ComponentType("CHAIN", ComponentCategory.TRANSMISSION)
@@ -35,7 +35,7 @@ sealed class ComponentType(val name: String, val category: ComponentCategory){
 
     fun resources(): ComponentResources = componentTypeResources(this)
 
-    companion object{
+    companion object {
 
         private val allComponentTypes: List<ComponentType> by lazy {
             listOf(
@@ -71,6 +71,7 @@ sealed class ComponentType(val name: String, val category: ComponentCategory){
         }
     }
 }
+
 fun componentTypeResources(type: ComponentType): ComponentResources {
     return when (type) {
         ComponentType.BrakeLever -> ComponentResources(

@@ -9,12 +9,12 @@ import com.anxops.bkn.ui.Notifier
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltAndroidApp
 class BknApplication : Application(), Configuration.Provider {
@@ -74,5 +74,3 @@ class BknApplication : Application(), Configuration.Provider {
         }
     }
 }
-
-

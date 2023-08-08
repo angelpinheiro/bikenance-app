@@ -21,7 +21,6 @@ fun MaintenancesScreen(
 
 @Composable
 fun MaintenanceList() {
-
     var tabIndex = remember { mutableStateOf(0) }
 
     val tabs = listOf("Critical", "Upcoming", "History")
@@ -29,11 +28,7 @@ fun MaintenanceList() {
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex.value) {
             tabs.forEachIndexed { index, title ->
-                Tab(
-                    text = { Text(title) },
-                    selected = tabIndex.value == index,
-                    onClick = { tabIndex.value = index },
-                )
+                Tab(text = { Text(title) }, selected = tabIndex.value == index, onClick = { tabIndex.value = index })
             }
         }
         when (tabIndex.value) {

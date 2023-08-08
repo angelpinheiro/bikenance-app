@@ -41,17 +41,19 @@ fun Instant.formatAsRelativeTime(from: Long = System.currentTimeMillis()): Strin
 }
 
 fun LocalDateTime.formatAsRelativeTime(
-    from: Long = System.currentTimeMillis(), showDay: Boolean = false
+    from: Long = System.currentTimeMillis(),
+    showDay: Boolean = false
 ): String {
     return (this.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000).formatAsRelativeTime(
-        from, showDay
+        from,
+        showDay
     )
 }
 
 fun Long.formatAsRelativeTime(
-    from: Long = System.currentTimeMillis(), showDay: Boolean = false
+    from: Long = System.currentTimeMillis(),
+    showDay: Boolean = false
 ): String {
-
     val flags = if (showDay) {
         DateUtils.FORMAT_SHOW_YEAR
     } else {
@@ -59,7 +61,10 @@ fun Long.formatAsRelativeTime(
     }
 
     return DateUtils.getRelativeTimeSpanString(
-        this, from, 0, flags
+        this,
+        from,
+        0,
+        flags
     ).toString()
 }
 

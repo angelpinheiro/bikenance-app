@@ -29,29 +29,23 @@ fun BikeTypePage(
         BikeSetupDescription(text = "Which kind of bike is your '${bike.displayName()}'?")
 
         Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp),
+            Modifier.fillMaxWidth().padding(vertical = 10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             BikeType.getAllKnown().forEach {
                 OutlinedButton(
                     onClick = {
                         onBikeTypeSelected(it)
                     },
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(0.8f),
-                    colors = if (details.selectedBikeType == it) {
+                    modifier = Modifier.padding(4.dp).fillMaxWidth(0.8f),
+                        colors = if (details.selectedBikeType == it) {
                         ButtonDefaults.buttonColors(
-                            backgroundColor = MaterialTheme.colors.secondary,
+                            backgroundColor = MaterialTheme.colors.secondary
                         )
-
                     } else {
                         ButtonDefaults.buttonColors(
-                            backgroundColor = MaterialTheme.colors.primaryVariant,
+                            backgroundColor = MaterialTheme.colors.primaryVariant
                         )
                     }
                 ) {
@@ -59,12 +53,11 @@ fun BikeTypePage(
                         modifier = Modifier.padding(5.dp),
                         text = it.extendedType,
                         color = MaterialTheme.colors.onSecondary,
-                        style = MaterialTheme.typography.h5,
+                        style = MaterialTheme.typography.h5
 
-                        )
+                    )
                 }
             }
         }
-
     }
 }

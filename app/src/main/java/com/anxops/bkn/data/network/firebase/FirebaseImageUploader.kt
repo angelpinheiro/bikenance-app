@@ -5,9 +5,8 @@ import com.anxops.bkn.data.network.ImageUploader
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.component1
 import com.google.firebase.storage.ktx.component2
-import timber.log.Timber
 import java.util.UUID
-
+import timber.log.Timber
 
 class FirebaseImageUploader : ImageUploader {
     override suspend fun uploadImage(

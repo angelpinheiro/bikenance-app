@@ -11,10 +11,9 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import java.util.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*
-
 
 class Api(client: KtorClient, val dataStore: BknDataStore) {
 
@@ -58,7 +57,8 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
     }
 
     suspend fun getPaginatedRidesByDateTime(
-        key: String?, pageSize: Int = 10
+        key: String?,
+        pageSize: Int = 10
     ): ApiResponse<List<BikeRide>> = apiResponse {
         httpClient.get(ApiEndpoints.profileRidesByKeyEndpoint()) {
             header("Authorization", tokenHeader())
@@ -115,7 +115,6 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
             header("Authorization", tokenHeader())
             body = TokenWrapper(token)
         }
-
     }
 
     suspend fun updateRefreshToken(refreshToken: String): ApiResponse<LoginResult> = apiResponse {
@@ -134,7 +133,8 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
     suspend fun updateMaintenance(bike: Bike, m: Maintenance): ApiResponse<Bike> = apiResponse {
         httpClient.put(
             ApiEndpoints.maintenanceEndpoint(
-                bikeId = bike._id, maintenanceId = m._id
+                bikeId = bike._id,
+                maintenanceId = m._id
             )
         ) {
             header("Authorization", tokenHeader())
@@ -145,7 +145,8 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
     suspend fun replaceComponent(c: BikeComponent): ApiResponse<String> = apiResponse {
         httpClient.put(
             ApiEndpoints.replaceComponentEndpoint(
-                bikeId = c.bikeId!!, componentId = c._id
+                bikeId = c.bikeId!!,
+                componentId = c._id
             )
         ) {
             header("Authorization", tokenHeader())
@@ -161,7 +162,6 @@ class Api(client: KtorClient, val dataStore: BknDataStore) {
             body = newComponents
         }
     }*/
-
 }
 
 @Serializable
@@ -171,7 +171,7 @@ data class TokenWrapper(
 
 @Serializable
 data class RefreshData(
-    val refreshToken: String,
+    val refreshToken: String
 )
 
 @Serializable

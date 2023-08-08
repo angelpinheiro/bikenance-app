@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.bike
 
-
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import com.anxops.bkn.ui.screens.bike.components.ComponentCarousel
 import com.anxops.bkn.ui.screens.bike.components.ComponentCategoryCarousel
 import com.anxops.bkn.ui.theme.strava
 
-
 @Composable
 fun BikeScreenStatusView(
     bike: Bike,
@@ -38,33 +36,25 @@ fun BikeScreenStatusView(
     selectedCategory: ComponentCategory?,
     onEvent: (BikeScreenEvent) -> Unit = {}
 ) {
-
     LandscapeAwareBikeStatus(carouselView = {
         Column(Modifier.height(100.dp)) {
             ComponentCategoryCarousel(selectedCategory) {
                 onEvent(BikeScreenEvent.SelectComponentCategory(it))
             }
             selectedCategory?.let {
-                ComponentCarousel(bike.componentList().filter { c -> c.type.category == it },
-                    selectedComponent,
-                    onComponentSelected = {
-                        onEvent(BikeScreenEvent.SelectComponent(it))
-                    })
+                ComponentCarousel(bike.componentList().filter { c -> c.type.category == it }, selectedComponent, onComponentSelected = {
+                    onEvent(BikeScreenEvent.SelectComponent(it))
+                })
             }
         }
     }, statusView = {
-        BikeStatusMap(bike = bike,
-            selectedCategory = selectedCategory,
-            selectedComponent = selectedComponent,
-            onCategorySelected = {
-                onEvent(BikeScreenEvent.SelectComponentCategory(it))
-            },
-            onCategoryUnselected = {
-                onEvent(BikeScreenEvent.SelectComponentCategory(null))
-            },
-            onComponentSelected = {
-                onEvent(BikeScreenEvent.SelectComponent(it))
-            })
+        BikeStatusMap(bike = bike, selectedCategory = selectedCategory, selectedComponent = selectedComponent, onCategorySelected = {
+            onEvent(BikeScreenEvent.SelectComponentCategory(it))
+        }, onCategoryUnselected = {
+            onEvent(BikeScreenEvent.SelectComponentCategory(null))
+        }, onComponentSelected = {
+            onEvent(BikeScreenEvent.SelectComponent(it))
+        })
     }, bikeNameAndTypeView = {
         BikeNameAndType(bike, onEvent)
     }, bikeStatsView = {
@@ -72,7 +62,6 @@ fun BikeScreenStatusView(
             BikeStats(bikeStats = it)
         }
     })
-
 }
 
 @Composable
@@ -87,22 +76,17 @@ fun LandscapeAwareBikeStatus(
 
     if (isLandscape) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp)
+            modifier = Modifier.fillMaxSize().padding(0.dp)
 
         ) {
             Column(
-                Modifier
-                    .weight(0.4f)
-                    .fillMaxHeight(), verticalArrangement = Arrangement.Center
+                Modifier.weight(0.4f).fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
             ) {
                 bikeStatsView()
             }
             Column(
-                Modifier
-                    .weight(0.6f)
-                    .padding(20.dp),
+                Modifier.weight(0.6f).padding(20.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -111,17 +95,12 @@ fun LandscapeAwareBikeStatus(
         }
     } else {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp)
+            modifier = Modifier.fillMaxSize().padding(0.dp)
 
         ) {
             carouselView()
             Column(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 20.dp),
+                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -133,12 +112,12 @@ fun LandscapeAwareBikeStatus(
             }
         }
     }
-
 }
 
 @Composable
 private fun BikeNameAndType(
-    bike: Bike, onEvent: (BikeScreenEvent) -> Unit
+    bike: Bike,
+    onEvent: (BikeScreenEvent) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -159,18 +138,15 @@ private fun BikeNameAndType(
             color = MaterialTheme.colors.onPrimary
         )
 
-        Text(text = "View on Strava",
+        Text(
+            text = "View on Strava",
             color = MaterialTheme.colors.strava,
             style = MaterialTheme.typography.h3,
             fontWeight = FontWeight.Bold,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.End,
             maxLines = 1,
-            modifier = Modifier
-                .padding(start = 16.dp, top = 0.dp, bottom = 16.dp)
-                .clickable { onEvent(BikeScreenEvent.ViewOnStrava) })
+            modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 16.dp).clickable { onEvent(BikeScreenEvent.ViewOnStrava) }
+        )
     }
 }
-
-
-

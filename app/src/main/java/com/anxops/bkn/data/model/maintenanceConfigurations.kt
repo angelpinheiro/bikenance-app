@@ -1,6 +1,5 @@
 package com.anxops.bkn.data.model
 
-
 sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
 
     object Mtb : MaintenanceConfiguration(
@@ -11,7 +10,7 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
                 ComponentType.RearSuspension,
                 ComponentType.FrameBearings,
                 ComponentType.PedalClipless,
-                ComponentType.HandlebarTape,
+                ComponentType.HandlebarTape
             )
         )
     )
@@ -22,7 +21,7 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
                 ComponentType.Custom,
                 ComponentType.DropperPost,
                 ComponentType.PedalClipless,
-                ComponentType.HandlebarTape,
+                ComponentType.HandlebarTape
             )
         )
     )
@@ -35,7 +34,7 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
                 ComponentType.Fork,
                 ComponentType.RearSuspension,
                 ComponentType.FrameBearings,
-                ComponentType.DropperPost,
+                ComponentType.DropperPost
             )
         )
     )
@@ -49,7 +48,7 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
                 ComponentType.FrameBearings,
                 ComponentType.DropperPost,
                 ComponentType.PedalClipless,
-                ComponentType.HandlebarTape,
+                ComponentType.HandlebarTape
             )
         )
     )
@@ -61,7 +60,10 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
     companion object {
 
         fun getAll() = listOf(
-            Mtb, FullMtb, Road, Gravel,
+            Mtb,
+            FullMtb,
+            Road,
+            Gravel
         )
 
         fun forBikeType(bikeType: BikeType): MaintenanceConfiguration {
@@ -74,9 +76,5 @@ sealed class MaintenanceConfiguration(val componentTypes: Set<ComponentType>) {
                 BikeType.Unknown -> Empty
             }
         }
-
-
     }
 }
-
-

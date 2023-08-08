@@ -59,12 +59,8 @@ fun BikesPager(
     }
 
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(top = 0.dp)
+        Modifier.fillMaxWidth().padding(top = 0.dp)
     ) {
-
-
         Row(
             Modifier.padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 0.dp).let {
                 if (bikes.size == 1) {
@@ -72,7 +68,8 @@ fun BikesPager(
                 } else {
                     it
                 }
-            }, verticalAlignment = Alignment.CenterVertically
+            },
+                verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Bikes (${bikes.size})",
@@ -98,11 +95,15 @@ fun BikesPager(
         if (bikes.size == 1) {
             bikes.firstOrNull()?.let { bike ->
                 Box(Modifier.padding(horizontal = 16.dp)) {
-                    GarageBikeCard(bike = bike, onEdit = {
+                    GarageBikeCard(
+                        bike = bike,
+                        onEdit = {
                         onEditBike(bike)
-                    }, onDetail = {
+                    },
+                        onDetail = {
                         onBikeDetails(bike)
-                    }, isLast = true
+                    },
+                        isLast = true
                     )
                 }
             }
@@ -116,14 +117,17 @@ fun BikesPager(
                 pageSpacing = 16.dp
             ) {
                 val bike = bikes[it]
-                GarageBikeCard(bike = bike, onEdit = {
+                GarageBikeCard(
+                    bike = bike,
+                    onEdit = {
                     onEditBike(bike)
-                }, onDetail = {
+                },
+                    onDetail = {
                     onBikeDetails(bike)
-                }, isLast = it == bikes.size - 1
+                },
+                    isLast = it == bikes.size - 1
                 )
             }
-
         }
     }
 }
@@ -131,30 +135,26 @@ fun BikesPager(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BikePagerIndicator(pagerState: PagerState, bikeCount: Int) {
-
     if (bikeCount > 0) {
-
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Row(
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
                 repeat(bikeCount) { iteration ->
                     val color = if (pagerState.currentPage == iteration) {
                         MaterialTheme.colors.onBackground
-                    } else MaterialTheme.colors.onBackground.copy(
-                        alpha = 0.2f
-                    )
+                    } else {
+                        MaterialTheme.colors.onBackground.copy(
+                            alpha = 0.2f
+                        )
+                    }
                     Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .clip(CircleShape)
-                            .background(color)
-                            .size(8.dp)
+                        modifier = Modifier.padding(2.dp).clip(CircleShape).background(color).size(8.dp)
 
                     )
                 }

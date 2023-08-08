@@ -27,18 +27,19 @@ import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @Destination(
-    deepLinks = [DeepLink(
+    deepLinks = [
+        DeepLink(
         uriPattern = "bikenance://redirect?code={code}&refresh={refresh}"
-    )]
+    )
+    ]
 )
 @Composable
 fun HandleLoginScreen(
     code: String?,
     refresh: String?,
     navigator: DestinationsNavigator,
-    viewModel: HandleLoginScreenViewModel = hiltViewModel(),
+    viewModel: HandleLoginScreenViewModel = hiltViewModel()
 ) {
-
     val nav = BknNavigator(navigator)
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -71,7 +72,7 @@ fun HandleLoginScreen(
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.bicycle),

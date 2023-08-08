@@ -12,9 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
@@ -23,8 +21,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +47,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
-
 @Destination
 @Composable
 fun LoginScreen(
@@ -65,22 +60,17 @@ fun LoginScreen(
     val useDebugApi = viewModel.useDebugApi.collectAsState(true)
 
     LaunchedEffect(key1 = context) {
-
         viewModel.loginEvent.collect {
             onClickLogin(navigator, it, context)
         }
     }
 
-
     val colors = onSurfaceTextFieldColors()
 
     BackgroundBox(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.primary),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
-
 //        Image(
 //            painter = painterResource(id = R.drawable.ic_login_artwork),
 //            contentDescription = "LocationPin",
@@ -109,9 +99,9 @@ fun LoginScreen(
         Column(
             modifier = Modifier,
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
 
-            ) {
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.bicycle),
                 contentDescription = "Bikenance Logo",
@@ -146,7 +136,6 @@ fun LoginScreen(
 //            )
 //            SignIn(onClick = { viewModel.signInWithEmailAndPassword() })
 
-
 //            Text(
 //                text = "Forgot Password ?",
 //                color = MaterialTheme.colors.onPrimary,
@@ -166,30 +155,23 @@ fun LoginScreen(
         }
 
         Box(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 100.dp)
+            Modifier.align(Alignment.BottomCenter).padding(bottom = 100.dp)
         ) {
             AnimatedVisibility(visible = true) {
                 ConnectWithStrava(onClick = { viewModel.signInWithStrava() })
             }
-
         }
     }
 }
-
 
 @Composable
 fun SignIn(onClick: () -> Unit = {}) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
         onClick = onClick,
-        modifier = Modifier
-            .padding(top = 25.dp)
-            .requiredWidth(277.dp)
+        modifier = Modifier.padding(top = 25.dp).requiredWidth(277.dp)
 
     ) {
-
         Text(text = "Sign In", modifier = Modifier.padding(4.dp))
     }
 }
@@ -199,9 +181,9 @@ fun SignInWithStrava(onClick: () -> Unit = {}) {
     Button(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.strava
-        ), onClick = onClick, modifier = Modifier
-            .padding(top = 10.dp)
-            .requiredWidth(277.dp)
+        ),
+            onClick = onClick,
+        modifier = Modifier.padding(top = 10.dp).requiredWidth(277.dp)
 
     ) {
         Text(text = "Sign In with Strava", color = Color.White, modifier = Modifier.padding(6.dp))
@@ -210,7 +192,6 @@ fun SignInWithStrava(onClick: () -> Unit = {}) {
 
 @Composable
 fun ConnectWithStrava(onClick: () -> Unit = {}) {
-
     IconButton(onClick = onClick) {
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.btn_strava_connect),
@@ -241,7 +222,9 @@ fun DefaultPreview() {
 }
 
 private fun onClickLogin(
-    navigator: DestinationsNavigator, loginEvent: LoginEvent, context: Context
+    navigator: DestinationsNavigator,
+    loginEvent: LoginEvent,
+    context: Context
 ) {
     when (loginEvent) {
         is LoginEvent.StravaLogin -> {
@@ -251,7 +234,9 @@ private fun onClickLogin(
 
         is LoginEvent.EmailPasswordLogin -> {
             Toast.makeText(
-                context, loginEvent.email + ":" + loginEvent.password, Toast.LENGTH_SHORT
+                context,
+                loginEvent.email + ":" + loginEvent.password,
+                Toast.LENGTH_SHORT
             ).show()
         }
 
@@ -260,7 +245,6 @@ private fun onClickLogin(
 }
 
 private fun launchStravaLogin(context: Context) {
-
     val intent = CustomTabsIntent.Builder().build()
 
     val headers = Bundle()

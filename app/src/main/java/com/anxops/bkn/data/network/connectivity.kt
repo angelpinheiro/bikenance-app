@@ -7,7 +7,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import timber.log.Timber
 
 sealed class ConnectionState {
     object Available : ConnectionState()
@@ -19,19 +18,16 @@ sealed class ConnectionState {
  */
 val Context.currentConnectivityState: ConnectionState
     get() {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return getCurrentConnectivityState(connectivityManager)
     }
 
 private fun getCurrentConnectivityState(
     connectivityManager: ConnectivityManager
 ): ConnectionState {
-
     val network = connectivityManager.activeNetwork
     val connected = network?.let {
-        connectivityManager.getNetworkCapabilities(it)
-            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+        connectivityManager.getNetworkCapabilities(it)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
     } ?: false
 
     return if (connected) ConnectionState.Available else ConnectionState.Unavailable
@@ -49,8 +45,7 @@ fun Context.observeConnectivityAsFlow() = callbackFlow {
         trySend(state)
     }
 
-    val networkRequest =
-        NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+    val networkRequest = NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
 
     connectivityManager.registerNetworkCallback(networkRequest, callback)
 

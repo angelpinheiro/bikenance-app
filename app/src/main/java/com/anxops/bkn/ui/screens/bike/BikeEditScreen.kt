@@ -58,9 +58,7 @@ import com.anxops.bkn.ui.theme.statusGood
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun BikeEditScreen(
@@ -95,13 +93,10 @@ fun BikeEditScreen(
     }) { padding ->
 
         BackgroundBox(Modifier.padding(padding), contentAlignment = Alignment.TopCenter) {
-
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-
                 when (state.value.status) {
-
                     BikeEditScreenStatus.Loading -> {
                         Loading(color = Color.Transparent)
                     }
@@ -119,23 +114,14 @@ fun BikeEditScreen(
                     }
 
                     BikeEditScreenStatus.Editing -> {
-
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .verticalScroll(scrollState)
+                            modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(scrollState)
                         ) {
-
                             BikeDetailsEdit(viewModel, state.value.bike)
-
                         }
 
                         Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colors.primaryVariant)
-                                .padding(16.dp)
+                            Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(16.dp)
                         ) {
                             OutlinedButton(
                                 onClick = { viewModel.onSaveBike() },
@@ -166,31 +152,23 @@ fun BikeEditScreen(
 
 @Composable
 fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
-
     val context = LocalContext.current
     val colors = onBackgroundTextFieldColors()
     val imageData = remember { mutableStateOf<Uri?>(null) }
-    val launcher =
-        rememberLauncherForActivityResult(contract = (ActivityResultContracts.GetContent()),
-            onResult = { uri ->
-                imageData.value = uri
-                uri?.let {
-                    val inputStream = context.contentResolver.openInputStream(it)
-                    val imageByteArray = inputStream?.readBytes()
-                    viewModel.updateBikeImage(imageByteArray)
-                }
-            })
-
-
+    val launcher = rememberLauncherForActivityResult(contract = (ActivityResultContracts.GetContent()), onResult = { uri ->
+        imageData.value = uri
+        uri?.let {
+            val inputStream = context.contentResolver.openInputStream(it)
+            val imageByteArray = inputStream?.readBytes()
+            viewModel.updateBikeImage(imageByteArray)
+        }
+    })
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
+        modifier = Modifier.fillMaxSize().padding(20.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-
         Text(
             text = "Edit your bike details below",
             style = MaterialTheme.typography.h3,
@@ -199,30 +177,23 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
         )
 
         Row(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(20.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
 
-            ) {
-
+        ) {
             Box {
                 IconButton(onClick = {
                     launcher.launch("image/jpeg")
                 }) {
                     SubcomposeAsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current).data(bike.photoUrl)
-                            .crossfade(true).build(),
+                        model = ImageRequest.Builder(LocalContext.current).data(bike.photoUrl).crossfade(true).build(),
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .padding(0.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colors.background),
+                        modifier = Modifier.size(100.dp).padding(0.dp).clip(CircleShape).background(MaterialTheme.colors.background),
                         loading = {
                             CircularProgressIndicator(
-                                strokeWidth = 5.dp, color = MaterialTheme.colors.statusGood
+                                strokeWidth = 5.dp,
+                                color = MaterialTheme.colors.statusGood
                             )
                         },
                         contentScale = ContentScale.Crop
@@ -236,51 +207,44 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.Start
         ) {
+            BknLabelTopTextField(value = bike.name, label = "Alias", colors = colors, modifier = Modifier.fillMaxWidth(), onValueChange = {
+                viewModel.updateName(it)
+            })
 
-            BknLabelTopTextField(value = bike.name,
-                label = "Alias",
-                colors = colors,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {
-                    viewModel.updateName(it)
-
-                })
-
-            BknLabelTopTextField(value = bike.brandName,
+            BknLabelTopTextField(
+                value = bike.brandName,
                 label = "Brand name",
                 modifier = Modifier.fillMaxWidth(),
                 colors = colors,
                 onValueChange = {
                     viewModel.updateBrandName(it)
-                })
+                }
+            )
 
-            BknLabelTopTextField(value = bike.modelName,
+            BknLabelTopTextField(
+                value = bike.modelName,
                 label = "Model name",
                 modifier = Modifier.fillMaxWidth(),
                 colors = colors,
                 onValueChange = {
                     viewModel.updateModel(it)
-                })
+                }
+            )
             BikeTypeDropDown(bike.type.extendedType) {
                 viewModel.updateBikeType(it)
             }
-
         }
     }
 }
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BikeTypeDropDown(bikeType: String, onBikeTypeChange: (BikeType) -> Unit = {}) {
-
     var expanded by remember { mutableStateOf(false) }
     // We want to react on tap/press on TextField to show menu
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-    ) {
-        BknLabelTopTextField(readOnly = true,
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+        BknLabelTopTextField(
+            readOnly = true,
             value = bikeType,
             onValueChange = {},
             label = "Bike Type",
@@ -288,15 +252,15 @@ fun BikeTypeDropDown(bikeType: String, onBikeTypeChange: (BikeType) -> Unit = {}
             colors = onBackgroundTextFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             BikeType.getAllKnown().forEach { type ->
-                DropdownMenuItem(content = { Text(type.extendedType) }, onClick = {
+                DropdownMenuItem(
+                    content = { Text(type.extendedType) },
+                    onClick = {
                     onBikeTypeChange(type)
                     expanded = false
-                }, contentPadding = PaddingValues(10.dp)
+                },
+                    contentPadding = PaddingValues(10.dp)
                 )
             }
         }

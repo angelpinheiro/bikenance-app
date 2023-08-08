@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng
  * Courtesy : jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
  **/
 
-fun decodePoly(encoded: String): List<LatLng>? {
+fun decodePoly(encoded: String): List<LatLng> {
     val poly: MutableList<LatLng> = ArrayList<LatLng>()
     var index = 0
     val len = encoded.length
@@ -18,7 +18,7 @@ fun decodePoly(encoded: String): List<LatLng>? {
         var shift = 0
         var result = 0
         do {
-            b = encoded[index++].toInt() - 63
+            b = encoded[index++].code - 63
             result = result or (b and 0x1f shl shift)
             shift += 5
         } while (b >= 0x20)
@@ -27,7 +27,7 @@ fun decodePoly(encoded: String): List<LatLng>? {
         shift = 0
         result = 0
         do {
-            b = encoded[index++].toInt() - 63
+            b = encoded[index++].code - 63
             result = result or (b and 0x1f shl shift)
             shift += 5
         } while (b >= 0x20)

@@ -44,7 +44,6 @@ fun RideScreen(
     viewModel: RideScreenViewModel = hiltViewModel(),
     rideId: String
 ) {
-
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(rideId) {
@@ -60,23 +59,18 @@ fun RideScreen(
     }
 }
 
-
 @Composable
 fun RideView(
     state: RideScreenState,
-    onBikeConfirm: (Bike, BikeRide) -> Unit = { _, _ -> },
+    onBikeConfirm: (Bike, BikeRide) -> Unit = { _, _ -> }
 ) {
-
     val context = LocalContext.current
 
     Box(
-        Modifier
-            .fillMaxSize()
-            .background(bgGradient())
+        Modifier.fillMaxSize().background(bgGradient())
     ) {
-
         if (state.ride?.decodedPolyline?.isNotEmpty() == true) {
-            state.ride?.decodedPolyline?.let { pl ->
+            state.ride.decodedPolyline?.let { pl ->
 
                 val start = pl.first()
                 val end = pl.last()
@@ -98,9 +92,7 @@ fun RideView(
                     )
                 }
                 GoogleMap(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(0.dp),
+                    modifier = Modifier.fillMaxSize().padding(0.dp),
                     cameraPositionState = cameraPositionState,
                     uiSettings = mapUiSettings,
                     properties = mapProperties
@@ -113,34 +105,33 @@ fun RideView(
                     )
 
                     Marker(
-                        title = "Start", position = start
+                        title = "Start",
+                        position = start
                     )
 
                     Marker(
                         title = "End",
-                        position = end,
+                        position = end
                     )
-
                 }
             }
         }
 
         state.ride?.let { ride ->
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 6.dp, vertical = 10.dp)
-                    .align(Alignment.TopCenter)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 10.dp).align(Alignment.TopCenter)
             ) {
                 BikeRideItem(
-                    item = RideAndBike(ride, state.bike), state.allBikes, onClickOpenOnStrava = {
+                    item = RideAndBike(ride, state.bike),
+                    state.allBikes,
+                    onClickOpenOnStrava = {
                         ride.stravaId?.let {
                             openStravaActivity(context, it)
                         }
-                    }, onBikeConfirm = onBikeConfirm
+                    },
+                    onBikeConfirm = onBikeConfirm
                 )
             }
         }
     }
-
 }

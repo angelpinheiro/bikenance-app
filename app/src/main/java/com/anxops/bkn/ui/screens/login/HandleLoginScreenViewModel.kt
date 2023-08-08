@@ -10,16 +10,16 @@ import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 data class HandleLoginScreenState(
-    val profile: Profile? = null, val isNewAccount: Boolean? = null
+    val profile: Profile? = null,
+    val isNewAccount: Boolean? = null
 )
 
 sealed class LoadProfileEvent {
@@ -46,7 +46,6 @@ class HandleLoginScreenViewModel @Inject constructor(
 
     private fun loadUserProfile(token: String, refreshToken: String?) {
         viewModelScope.launch {
-
             profileRepository.saveLogin(token, refreshToken).onSuccess { p ->
                 sendFirebaseTokenToServer.start()
 
@@ -62,12 +61,10 @@ class HandleLoginScreenViewModel @Inject constructor(
                 } else {
                     loadProfileEvent.emit(LoadProfileEvent.ExistingAccount)
                 }
-
             }.onError {
                 // TODO: Handle error
                 loadProfileEvent.emit(LoadProfileEvent.LoadFailed)
             }
         }
     }
-
 }

@@ -33,14 +33,12 @@ import com.anxops.bkn.ui.screens.bikeSetup.BikeSetupTitle
 import com.anxops.bkn.ui.screens.bikeSetup.SetupDetails
 import com.anxops.bkn.ui.shared.resources
 
-
 @Composable
 fun BikeStatusPage(
     details: SetupDetails,
     onContinue: () -> Unit = {},
-    onLastMaintenanceUpdate: (ComponentCategory, Float) -> Unit = { _, _ -> },
+    onLastMaintenanceUpdate: (ComponentCategory, Float) -> Unit = { _, _ -> }
 ) {
-
     val scrollState = rememberScrollState()
 
     Column(
@@ -48,7 +46,6 @@ fun BikeStatusPage(
         modifier = Modifier.verticalScroll(scrollState)
 
     ) {
-
         BikeSetupTitle(text = "Current bike status")
 
         Text(
@@ -63,46 +60,38 @@ fun BikeStatusPage(
         Column {
             details.lastMaintenances.toList().forEachIndexed { index, (category, months) ->
 
-
-                details.lastComponentMaintenances.filter { it.key.category == category }
-                    .let { items ->
-                        if (items.isNotEmpty()) {
-
-                            Column(
-                                Modifier.padding(10.dp)
+                details.lastComponentMaintenances.filter { it.key.category == category }.let { items ->
+                    if (items.isNotEmpty()) {
+                        Column(
+                            Modifier.padding(10.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = stringResource(id = category.resources().nameResId),
-                                        color = MaterialTheme.colors.onPrimary,
-                                        style = MaterialTheme.typography.h2,
-                                        fontWeight = FontWeight.Normal,
-                                    )
-                                }
-
-                                DurationSelector(value = months, onUpdate = {
-                                    onLastMaintenanceUpdate(category, it)
-                                })
+                                Text(
+                                    text = stringResource(id = category.resources().nameResId),
+                                    color = MaterialTheme.colors.onPrimary,
+                                    style = MaterialTheme.typography.h2,
+                                    fontWeight = FontWeight.Normal
+                                )
                             }
+
+                            DurationSelector(value = months, onUpdate = {
+                                onLastMaintenanceUpdate(category, it)
+                            })
                         }
                     }
+                }
             }
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DurationSelector(value: Float, onUpdate: (Float) -> Unit = {}) {
-
     val lazyListState = rememberLazyListState()
 
     val values = remember {
@@ -149,7 +138,7 @@ fun DurationSelector(value: Float, onUpdate: (Float) -> Unit = {}) {
                 onClick = { onUpdate(months) },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primaryVariant
-                ),
+                )
             ) {
                 Text(
                     modifier = Modifier.padding(3.dp),
@@ -165,18 +154,15 @@ fun DurationSelector(value: Float, onUpdate: (Float) -> Unit = {}) {
     }
 }
 
-
 @Composable
 fun PeriodSelector(value: Float, onUpdate: (Float) -> Unit = {}) {
-
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-
         Slider(
             value = value,
             valueRange = 0f..12f,
             steps = 11,
             onValueChange = { onUpdate(it) },
-            colors = SliderDefaults.colors(
+                colors = SliderDefaults.colors(
                 activeTrackColor = MaterialTheme.colors.surface,
                 thumbColor = MaterialTheme.colors.surface,
                 inactiveTrackColor = MaterialTheme.colors.primaryVariant,
@@ -189,8 +175,5 @@ fun PeriodSelector(value: Float, onUpdate: (Float) -> Unit = {}) {
             Text(text = "Recently", color = MaterialTheme.colors.surface, fontSize = 10.sp)
             Text(text = "1 year +", color = MaterialTheme.colors.surface, fontSize = 10.sp)
         }
-
     }
-
-
 }

@@ -27,26 +27,22 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun BikeComponentTopBar(
-    component: BikeComponent, onClickBack: () -> Unit = {}
+    component: BikeComponent,
+    onClickBack: () -> Unit = {}
 ) {
-
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
         backgroundColor = MaterialTheme.colors.primaryVariant,
-        elevation = 5.dp,
+        elevation = 5.dp
     ) {
         Column(Modifier.fillMaxWidth()) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
-                    IconButton(
-                        modifier = Modifier.padding(start = 6.dp),
-                        onClick = { onClickBack() }) {
+                    IconButton(modifier = Modifier.padding(start = 6.dp), onClick = { onClickBack() }) {
                         BknIcon(
                             icon = CommunityMaterial.Icon.cmd_arrow_left,
                             color = Color.White,
@@ -57,33 +53,23 @@ fun BikeComponentTopBar(
                     BikeComponentIcon(
                         type = component.type,
                         tint = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colors.surface)
-                            .padding(5.dp)
+                        modifier = Modifier.size(32.dp).clip(CircleShape).background(MaterialTheme.colors.surface).padding(5.dp)
                     )
 
                     Text(
                         text = bikeComponentName(component = component),
                         color = MaterialTheme.colors.onPrimary,
                         style = MaterialTheme.typography.h2,
-                        modifier = Modifier
-                            .padding(start = 12.dp, end = 4.dp)
-                            .weight(1f)
+                        modifier = Modifier.padding(start = 12.dp, end = 4.dp).weight(1f)
                     )
 
-                    IconButton(onClick = {
-
-                    }) {
-
+                    IconButton(onClick = {}) {
                         BknIcon(
                             CommunityMaterial.Icon.cmd_delete,
                             MaterialTheme.colors.surface,
                             modifier = Modifier.size(26.dp)
                         )
                     }
-
                 }
             }
         }

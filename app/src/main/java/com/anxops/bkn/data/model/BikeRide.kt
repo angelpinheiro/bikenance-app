@@ -3,9 +3,9 @@ package com.anxops.bkn.data.model
 import com.anxops.bkn.data.model.util.LocalDateSerializer
 import com.anxops.bkn.util.decodePoly
 import com.google.android.gms.maps.model.LatLng
+import java.time.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
 
 @Serializable
 data class BikeRide(
@@ -22,10 +22,11 @@ data class BikeRide(
     @SerialName("elapsed_time") var elapsedTime: Int? = null,
     @SerialName("total_elevation_gain") var totalElevationGain: Int? = null,
     @Serializable(with = LocalDateSerializer::class)
-    @SerialName("date_time") var dateTime: LocalDateTime? = null,
-    @SerialName("map_summary_polyline") var mapSummaryPolyline: String? = null,
+    @SerialName("date_time")
+    var dateTime: LocalDateTime? = null,
+    @SerialName("map_summary_polyline") var mapSummaryPolyline: String? = null
 ) {
-    fun toRideUpdate() : BikeRideUpdate {
+    fun toRideUpdate(): BikeRideUpdate {
         return BikeRideUpdate(bikeId, bikeConfirmed)
     }
 
@@ -37,5 +38,5 @@ data class BikeRide(
 @Serializable
 data class BikeRideUpdate(
     @SerialName("bike_id") var bikeId: String? = null,
-    @SerialName("bike_confirmed") var bikeConfirmed: Boolean = false,
+    @SerialName("bike_confirmed") var bikeConfirmed: Boolean = false
 )

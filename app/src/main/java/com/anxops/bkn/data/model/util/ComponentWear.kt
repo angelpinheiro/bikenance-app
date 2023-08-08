@@ -7,14 +7,12 @@ import com.anxops.bkn.data.model.Usage
 import java.time.Duration
 import java.time.LocalDateTime
 
-
 fun wearPercentage(
     freq: RevisionFrequency,
     from: LocalDateTime,
     until: LocalDateTime,
-    usage: Usage,
+    usage: Usage
 ): Double {
-
     return when (freq.unit) {
         RevisionUnit.KILOMETERS -> {
             wearPercentByKm(usage.distance, freq.every.toDouble())
@@ -29,7 +27,6 @@ fun wearPercentage(
         }
     }
 }
-
 
 fun wearPercentByKm(distanceInMeters: Double, freqInKm: Double): Double {
     return if (freqInKm > 0) {
@@ -49,9 +46,10 @@ fun wearPercentByHours(durationInSeconds: Double, freqInHours: Double): Double {
 }
 
 fun wearPercentByElapsedTime(
-    from: LocalDateTime?, freq: RevisionFrequency, now: LocalDateTime
+    from: LocalDateTime?,
+    freq: RevisionFrequency,
+    now: LocalDateTime
 ): Double {
-
     if (from == null || from.isAfter(now)) {
         return 0.0
     }
@@ -84,18 +82,15 @@ fun Maintenance.wearPercentage(untilDateTime: LocalDateTime): Double {
             defaultFrequency,
             lastMaintenanceDate,
             untilDateTime,
-            usageSinceLast,
+            usageSinceLast
         )
     } else {
         0.0
     }
 }
 
-
 fun Maintenance.expectedNextMaintenanceDate(today: LocalDateTime = LocalDateTime.now()): LocalDateTime? {
-
     return when (defaultFrequency.unit) {
-
         RevisionUnit.WEEKS -> {
             lastMaintenanceDate?.plusWeeks(defaultFrequency.every.toLong())
         }
@@ -119,7 +114,7 @@ fun Maintenance.expectedNextMaintenanceDate(today: LocalDateTime = LocalDateTime
                     val expectedDurationInDays = (currentDurationInDays / status).toLong()
                     lastMaintenance.plusDays(expectedDurationInDays)
                 } else {
-                    null//TODO Use last maintenance duration (new field to be added)
+                    null // TODO Use last maintenance duration (new field to be added)
                 }
             }
         }

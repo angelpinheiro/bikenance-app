@@ -7,7 +7,6 @@ data class ComponentCategoryResources(
     val nameResId: Int
 )
 
-
 data class ComponentResources(
     val nameResId: Int,
     val descriptionResId: Int,
@@ -19,15 +18,13 @@ data class MaintenanceResources(
     val descriptionResId: Int
 )
 
-fun ComponentCategory.resources(): ComponentCategoryResources =
-    categoryResourcesMap[this]!!
-
+fun ComponentCategory.resources(): ComponentCategoryResources = categoryResourcesMap[this]!!
 
 val categoryResourcesMap = mapOf(
     ComponentCategory.SUSPENSION to ComponentCategoryResources(R.string.component_category_suspension),
     ComponentCategory.TRANSMISSION to ComponentCategoryResources(R.string.component_category_transmission),
     ComponentCategory.BRAKES to ComponentCategoryResources(R.string.component_category_brakes),
     ComponentCategory.WHEELS to ComponentCategoryResources(R.string.component_category_wheels),
-    ComponentCategory.MISC to ComponentCategoryResources(R.string.component_category_misc),
+    ComponentCategory.MISC to ComponentCategoryResources(R.string.component_category_misc)
 
-    )
+)

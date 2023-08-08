@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.Bike
@@ -50,34 +49,35 @@ fun BikeRideItem(
     onClick: () -> Unit = {},
     onClickOpenOnStrava: () -> Unit = {}
 ) {
-
-    val showBikeConfirm = true;//!item.ride.bikeConfirmed && bikes.isNotEmpty()
+    val showBikeConfirm = true // !item.ride.bikeConfirmed && bikes.isNotEmpty()
 
     Column {
-        Card(backgroundColor = MaterialTheme.colors.primary,
-            modifier = Modifier.fillMaxWidth().padding(
-                    start = 10.dp, end = 10.dp, top = 10.dp, bottom = if (!showBikeConfirm) {
-                        10.dp
-                    } else {
-                        0.dp
-                    }
-                ).clickable { onClick() },
-            shape = if (!showBikeConfirm) {
+        Card(
+            backgroundColor = MaterialTheme.colors.primary,
+                modifier = Modifier.fillMaxWidth().padding(
+                start = 10.dp,
+                    end = 10.dp,
+                    top = 10.dp,
+                    bottom = if (!showBikeConfirm) {
+                    10.dp
+                } else {
+                    0.dp
+                }
+            ).clickable { onClick() },
+                shape = if (!showBikeConfirm) {
                 RoundedCornerShape(8.dp)
             } else {
                 RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
-            }) {
-
-
+            }
+        ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
-
                 Row(
-                    Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
 
                 ) {
-
 //                BknIcon(
 //                    CommunityMaterial.Icon.cmd_bike_fast,
 //                    color = MaterialTheme.colors.onPrimary,
@@ -94,7 +94,6 @@ fun BikeRideItem(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
-
                 }
 
                 Text(
@@ -103,17 +102,17 @@ fun BikeRideItem(
                     style = MaterialTheme.typography.h4,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.padding(bottom = 2.dp),
+                    modifier = Modifier.padding(bottom = 2.dp)
                 )
 
                 Row(
                     Modifier.padding(vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     item.ride.distance?.let {
                         BknIcon(
-                            CommunityMaterial.Icon3.cmd_map_marker, modifier = Modifier.size(16.dp)
+                            CommunityMaterial.Icon3.cmd_map_marker,
+                            modifier = Modifier.size(16.dp)
                         )
                         Text(
                             text = "${formatDistanceAsKm(it)}",
@@ -138,7 +137,8 @@ fun BikeRideItem(
 
                     item.ride.movingTime?.let {
                         BknIcon(
-                            CommunityMaterial.Icon.cmd_clock_fast, modifier = Modifier.size(16.dp)
+                            CommunityMaterial.Icon.cmd_clock_fast,
+                            modifier = Modifier.size(16.dp)
                         )
                         Text(
                             text = "${formatDuration(it)}",
@@ -149,20 +149,16 @@ fun BikeRideItem(
                     }
                 }
 
-
-
-
-                Text(text = "View on Strava",
+                Text(
+                    text = "View on Strava",
                     color = MaterialTheme.colors.strava,
                     style = MaterialTheme.typography.h3,
                     fontWeight = FontWeight.Bold,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.padding(top = 6.dp).clickable { onClickOpenOnStrava() })
-
-
+                    modifier = Modifier.padding(top = 6.dp).clickable { onClickOpenOnStrava() }
+                )
             }
-
         }
 
         if (showBikeConfirm) {
@@ -171,62 +167,49 @@ fun BikeRideItem(
             })
         }
     }
-
 }
 
 @Composable
 private fun BikeConfirmationView(
-    selectedBike: Bike?, bikes: List<Bike>, onBikeConfirm: (Bike) -> Unit
+    selectedBike: Bike?,
+    bikes: List<Bike>,
+    onBikeConfirm: (Bike) -> Unit
 ) {
-
     val chooserBike = remember(selectedBike) {
         mutableStateOf(selectedBike)
     }
 
     Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-            .padding(bottom = 10.dp)
-            .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-            .background(MaterialTheme.colors.primaryVariant),
+        Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(bottom = 10.dp)
+            .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)).background(MaterialTheme.colors.primaryVariant),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        BikesDropDown(selected = chooserBike.value, bikes = bikes, modifier = Modifier.weight(2f), onBikeChange = {
+            chooserBike.value = it
+        })
 
-        BikesDropDown(selected = chooserBike.value,
-            bikes = bikes,
-            modifier = Modifier.weight(2f),
-            onBikeChange = {
-                chooserBike.value = it
-            })
-
-        Surface(color = MaterialTheme.colors.secondary,
+        Surface(
+            color = MaterialTheme.colors.secondary,
             contentColor = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .weight(1f)
-                .height(45.dp)
-                .padding(0.dp)
-                .clickable {
-                    chooserBike.value?.let { onBikeConfirm(it) }
-                }) {
+            modifier = Modifier.weight(1f).height(45.dp).padding(0.dp).clickable {
+                chooserBike.value?.let { onBikeConfirm(it) }
+            }
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
             ) {
                 Text(
                     text = "Confirm",
                     style = MaterialTheme.typography.h4,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.onPrimary
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun BikesDropDown(
@@ -237,20 +220,15 @@ fun BikesDropDown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-
-        Surface(color = MaterialTheme.colors.primaryVariant,
+        Surface(
+            color = MaterialTheme.colors.primaryVariant,
             contentColor = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(45.dp)
-                .padding(0.dp)
-                .clickable { expanded = !expanded }) {
+            modifier = Modifier.fillMaxWidth().height(45.dp).padding(0.dp).clickable { expanded = !expanded }
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
             ) {
                 Text(
                     text = selected?.displayName() ?: "Select bike",
@@ -259,7 +237,8 @@ fun BikesDropDown(
                     modifier = Modifier.weight(1f)
                 )
                 BknIcon(
-                    icon = CommunityMaterial.Icon.cmd_chevron_down, modifier = Modifier.size(16.dp)
+                    icon = CommunityMaterial.Icon.cmd_chevron_down,
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }
@@ -267,25 +246,24 @@ fun BikesDropDown(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            Modifier
-                .fillMaxWidth(0.9f)
-                .align(Alignment.Center)
-                .background(MaterialTheme.colors.primaryVariant),
+            Modifier.fillMaxWidth(0.9f).align(Alignment.Center).background(MaterialTheme.colors.primaryVariant)
         ) {
             bikes.forEach { bike ->
-                DropdownMenuItem(content = { Text(bike.displayName()) }, onClick = {
+                DropdownMenuItem(
+                    content = { Text(bike.displayName()) },
+                    onClick = {
                     onBikeChange(bike)
                     expanded = false
-                }, contentPadding = PaddingValues(10.dp), modifier = Modifier.fillMaxWidth()
+                },
+                    contentPadding = PaddingValues(10.dp),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
     }
 }
 
-
 fun formatDuration(seconds: Int): String {
-
     val hours = TimeUnit.SECONDS.toHours(seconds.toLong()) % 24
     val minutes = TimeUnit.SECONDS.toMinutes(seconds.toLong()) % 60
     val secs = TimeUnit.SECONDS.toSeconds(seconds.toLong()) % 60

@@ -12,9 +12,7 @@ sealed class ApiResponse<T> {
     class Error<T>(val exception: ApiException? = null) : ApiResponse<T>()
 }
 
-
-sealed class ApiException(override val message: String? = null, override val cause: Throwable?) :
-    Throwable(message, cause) {
+sealed class ApiException(override val message: String? = null, override val cause: Throwable?) : Throwable(message, cause) {
 
     data class Unknown(
         override val message: String? = "Unknown api exception",
@@ -22,22 +20,25 @@ sealed class ApiException(override val message: String? = null, override val cau
     ) : ApiException(message, cause)
 
     class NotFound(
-        override val message: String? = null, override val cause: Throwable? = null
+        override val message: String? = null,
+        override val cause: Throwable? = null
     ) : ApiException(message, cause)
 
     class Authorization(
-        override val message: String? = null, override val cause: Throwable? = null
+        override val message: String? = null,
+        override val cause: Throwable? = null
     ) : ApiException(message, cause)
 
     class Connection(
-        override val message: String? = null, override val cause: Throwable? = null
+        override val message: String? = null,
+        override val cause: Throwable? = null
     ) : ApiException(message, cause)
 
     class Server(
-        override val message: String? = null, override val cause: Throwable? = null
+        override val message: String? = null,
+        override val cause: Throwable? = null
     ) : ApiException(message, cause)
 }
-
 
 /**
  * Inline extension function used to handle the success case of the ApiResponse.
@@ -81,5 +82,4 @@ suspend fun <T> apiResponse(apiToBeCalled: suspend () -> T): ApiResponse<T> {
         // Unknown error
         ApiResponse.Error(ApiException.Unknown(cause = e))
     }
-
 }

@@ -6,25 +6,22 @@ import com.anxops.bkn.data.network.ApiEndpoints
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 sealed class LoginEvent {
     object StravaLogin : LoginEvent()
     class EmailPasswordLogin(val email: String, val password: String) : LoginEvent()
 }
 
-
 data class LoginScreenState(
     val email: String = "",
-    val password: String = "",
+    val password: String = ""
 )
 
 @HiltViewModel
@@ -66,8 +63,5 @@ class LoginScreenViewModel @Inject constructor(
             dataStore.setUseDebugAPi(use)
             ApiEndpoints.setUseDebugAPi(use)
         }
-
-
     }
-
 }

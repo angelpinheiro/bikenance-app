@@ -23,13 +23,9 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit = {}) {
-
     FadeInFadeOutAnimatedVisibility(visible = rides.isNotEmpty()) {
-
         if (rides.isNotEmpty()) {
-
             val total = rides.sumOf { it.distance ?: 0 }
-
 
             Column {
                 Text(
@@ -39,27 +35,17 @@ fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit
                     color = MaterialTheme.colors.onBackground
                 )
 
-
-
                 Column(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .clip(RoundedCornerShape(10.dp))
+                    modifier = Modifier.padding(horizontal = 10.dp).clip(RoundedCornerShape(10.dp))
                 ) {
-
                     rides.forEach { ride ->
-
 
                         Row(
                             Modifier.padding(bottom = 1.dp),
                             verticalAlignment = Alignment.CenterVertically
 
                         ) {
-                            Button(
-                                onClick = { onActivitySelected(ride) },
-                            ) {
-
-
+                            Button(onClick = { onActivitySelected(ride) }) {
                                 BknIcon(
                                     CommunityMaterial.Icon.cmd_bike_fast,
                                     color = MaterialTheme.colors.onPrimary,
@@ -71,9 +57,7 @@ fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit
                                     style = MaterialTheme.typography.h3,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1,
-                                    modifier = Modifier
-                                        .padding(horizontal = 10.dp)
-                                        .weight(1f),
+                                    modifier = Modifier.padding(horizontal = 10.dp).weight(1f)
 
                                 )
                                 Text(
@@ -89,7 +73,6 @@ fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit
                                     modifier = Modifier.padding(horizontal = 10.dp)
                                 )
                             }
-
                         }
                     }
                 }

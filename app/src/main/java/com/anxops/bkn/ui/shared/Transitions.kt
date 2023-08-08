@@ -15,9 +15,7 @@ import com.ramcosta.composedestinations.spec.DestinationStyle
 object NavigationSlideUp : DestinationStyle.Animated {
 
     override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition {
-        return fadeIn() + slideInVertically(
-            animationSpec = tween(400),
-            initialOffsetY = { fullHeight -> fullHeight })
+        return fadeIn() + slideInVertically(animationSpec = tween(400), initialOffsetY = { fullHeight -> fullHeight })
     }
 
     override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition {
@@ -25,18 +23,13 @@ object NavigationSlideUp : DestinationStyle.Animated {
     }
 
     override fun AnimatedContentScope<NavBackStackEntry>.popEnterTransition(): EnterTransition {
-        return fadeIn() + slideInVertically(
-            animationSpec = tween(400),
-            initialOffsetY = { fullHeight -> fullHeight })
+        return fadeIn() + slideInVertically(animationSpec = tween(400), initialOffsetY = { fullHeight -> fullHeight })
     }
 
     override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition {
         return fadeOut(animationSpec = tween(200))
     }
-
 }
-
-
 
 @OptIn(ExperimentalAnimationApi::class)
 object NavigationFadeInOut : DestinationStyle.Animated {
@@ -56,5 +49,4 @@ object NavigationFadeInOut : DestinationStyle.Animated {
     override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition {
         return fadeOut(animationSpec = tween(200))
     }
-
 }

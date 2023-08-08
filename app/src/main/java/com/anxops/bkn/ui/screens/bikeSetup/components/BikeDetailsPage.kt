@@ -1,14 +1,8 @@
 package com.anxops.bkn.ui.screens.bikeSetup.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.ui.screens.bikeSetup.BikeSetupDescription
@@ -26,12 +20,12 @@ fun BikeDetailsPage(
     onContinue: () -> Unit = {}
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
         if (!listOf(
-                BikeType.Road, BikeType.Gravel, BikeType.Stationary
+                BikeType.Road,
+                BikeType.Gravel,
+                BikeType.Stationary
             ).contains(details.selectedBikeType)
         ) {
-
             BikeSetupTitle(text = "Bike details")
             BikeSetupDivider(30.dp)
             BikeSetupDescription(text = "Is this bike full suspension?")

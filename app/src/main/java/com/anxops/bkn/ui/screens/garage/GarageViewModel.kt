@@ -10,21 +10,20 @@ import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.data.repository.successOrException
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class GarageScreenState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val bikes: List<Bike> = emptyList(),
     val selectedBike: Bike? = null,
-    val lastRides: List<BikeRide> = emptyList(),
+    val lastRides: List<BikeRide> = emptyList()
 )
-
 
 @HiltViewModel
 class GarageViewModel @Inject constructor(
@@ -38,7 +37,9 @@ class GarageViewModel @Inject constructor(
     private val selectedBikeFlow = MutableStateFlow<Bike?>(null)
 
     val screenState: StateFlow<GarageScreenState> = combine(
-        bikesFlow, selectedBikeFlow, isRefreshingFlow
+        bikesFlow,
+        selectedBikeFlow,
+        isRefreshingFlow
     ) { bikesResult, selectedBikeResult, refreshResult ->
 
         val lastRides = selectedBikeResult?.let { bike ->
@@ -67,6 +68,4 @@ class GarageViewModel @Inject constructor(
             selectedBikeFlow.emit(bike)
         }
     }
-
 }
-

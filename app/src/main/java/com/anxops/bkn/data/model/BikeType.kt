@@ -22,6 +22,5 @@ sealed class BikeType(val name: String, val extendedType: String) {
         fun getAll() = allTypes
 
         fun getAllKnown() = allKnownTypes
-
     }
 }

@@ -22,13 +22,14 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun BikeEditTopBar(
-    bike: Bike, onBikeDelete: () -> Unit = {}, onClickBack: () -> Unit = {}
+    bike: Bike,
+    onBikeDelete: () -> Unit = {},
+    onClickBack: () -> Unit = {}
 ) {
-
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
         backgroundColor = MaterialTheme.colors.primaryVariant,
-        elevation = 5.dp,
+        elevation = 5.dp
     ) {
         Column(Modifier.fillMaxWidth()) {
             Row(
@@ -37,9 +38,7 @@ fun BikeEditTopBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        modifier = Modifier.padding(start = 6.dp),
-                        onClick = { onClickBack() }) {
+                    IconButton(modifier = Modifier.padding(start = 6.dp), onClick = { onClickBack() }) {
                         BknIcon(
                             icon = CommunityMaterial.Icon.cmd_arrow_left,
                             color = Color.White,

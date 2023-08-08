@@ -45,5 +45,4 @@ interface BikeDao {
         unSyncAllBikes()
         syncSelectedBikes(ids)
     }
-
 }

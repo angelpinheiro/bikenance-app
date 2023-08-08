@@ -27,15 +27,13 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun BikeStats(bikeStats: BikeStats) {
-
     Column(
-        Modifier
-            .padding(10.dp)
-            .fillMaxWidth(), verticalArrangement = Arrangement.Center
+        Modifier.padding(10.dp).fillMaxWidth(),
+        verticalArrangement = Arrangement.Center
     ) {
-
         Row(
-            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             BikeStat(
                 title = "Rides",
@@ -44,9 +42,8 @@ fun BikeStats(bikeStats: BikeStats) {
                 modifier = Modifier.weight(1f)
             )
             Divider(
-                Modifier
-                    .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                Modifier.height(50.dp).width(1.dp),
+                color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Distance",
@@ -55,20 +52,20 @@ fun BikeStats(bikeStats: BikeStats) {
                 modifier = Modifier.weight(1f)
             )
             Divider(
-                Modifier
-                    .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                Modifier.height(50.dp).width(1.dp),
+                color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Ascent",
                 value = "${formatElevationShort(bikeStats.elevationGain.toInt())}",
                 modifier = Modifier.weight(1f),
-                icon = CommunityMaterial.Icon2.cmd_image_filter_hdr,
+                icon = CommunityMaterial.Icon2.cmd_image_filter_hdr
             )
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             BikeStat(
                 title = "Speed",
@@ -77,20 +74,18 @@ fun BikeStats(bikeStats: BikeStats) {
                 modifier = Modifier.weight(1f)
             )
             Divider(
-                Modifier
-                    .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                Modifier.height(50.dp).width(1.dp),
+                color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Max Speed",
                 value = "${bikeStats.maxSpeed?.toInt()} kmh",
                 modifier = Modifier.weight(1f),
-                icon = CommunityMaterial.Icon3.cmd_speedometer,
+                icon = CommunityMaterial.Icon3.cmd_speedometer
             )
             Divider(
-                Modifier
-                    .height(50.dp)
-                    .width(1.dp), color = MaterialTheme.colors.primary
+                Modifier.height(50.dp).width(1.dp),
+                color = MaterialTheme.colors.primary
             )
             BikeStat(
                 title = "Last ride",
@@ -102,15 +97,16 @@ fun BikeStats(bikeStats: BikeStats) {
     }
 }
 
-
 @Composable
 fun BikeStat(
-    title: String, value: String, icon: IIcon? = null, modifier: Modifier = Modifier, onClick: () -> Unit = {}
+    title: String,
+    value: String,
+    icon: IIcon? = null,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Column(
-        modifier
-            .padding(horizontal = 4.dp)
-            .padding(6.dp),
+        modifier.padding(horizontal = 4.dp).padding(6.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -120,14 +116,16 @@ fun BikeStat(
         ) {
             icon?.let {
                 BknIcon(
-                    it, MaterialTheme.colors.onBackground, modifier = Modifier.size(16.dp)
+                    it,
+                    MaterialTheme.colors.onBackground,
+                    modifier = Modifier.size(16.dp)
                 )
             }
             Text(
                 modifier = Modifier.padding(start = if (icon == null) 0.dp else 10.dp),
                 color = MaterialTheme.colors.onBackground,
                 text = title,
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.h4
             )
         }
         Text(
@@ -135,11 +133,8 @@ fun BikeStat(
             style = MaterialTheme.typography.h2,
             color = MaterialTheme.colors.secondary
         )
-
-
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

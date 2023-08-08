@@ -61,9 +61,8 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 fun ProfileScreen(
     navigator: DestinationsNavigator,
     viewModel: ProfileScreenViewModel = hiltViewModel(),
-    resultNavigator: ResultBackNavigator<Boolean>,
+    resultNavigator: ResultBackNavigator<Boolean>
 ) {
-
     val bknNavigator = BknNavigator(navigator)
     val state by viewModel.state.collectAsState()
     val event by viewModel.events.collectAsState()
@@ -86,7 +85,6 @@ fun ProfileScreen(
 
             else -> {}
         }
-
     }
 
     LaunchedEffect(true) {
@@ -95,7 +93,6 @@ fun ProfileScreen(
 
     BackgroundBox(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (state.status) {
-
             ProfileScreenStatus.Loading -> {
                 Loading("Loading profile...")
             }
@@ -111,29 +108,22 @@ fun ProfileScreen(
             }
 
             ProfileScreenStatus.Loaded -> {
-
                 Column(Modifier.fillMaxSize()) {
-
                     ProfileEditTopBar(onClickBack = {
                         bknNavigator.popBackStack()
                     }, onLogout = {
                         viewModel.onLogoutRequest()
                     })
 
-
                     Column(
-                        modifier = Modifier
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 20.dp)
-                            .weight(1f),
+                        modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).weight(1f),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.Start
                     ) {
-
                         Spacer(modifier = Modifier.height(26.dp))
 
                         Text(
-                            text = "Hi, ${state.profile?.firstname}!",
+                            text = "Hi, ${state.profile.firstname}!",
                             style = MaterialTheme.typography.h1,
                             modifier = Modifier.padding(start = 10.dp),
                             color = MaterialTheme.colors.onPrimary
@@ -147,16 +137,11 @@ fun ProfileScreen(
                         )
 
                         Row(
-                            modifier = Modifier
-                                .padding(20.dp)
-                                .padding(top = 20.dp)
-                                .fillMaxWidth(),
+                            modifier = Modifier.padding(20.dp).padding(top = 20.dp).fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = Alignment.CenterVertically
 
-                            ) {
-
-
+                        ) {
                             ProfileImageLoader(state.profile.profilePhotoUrl, onNewImageSelected = {
                                 viewModel.onUpdateProfileImage(it)
                             })
@@ -167,21 +152,22 @@ fun ProfileScreen(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
-
-                            BknLabelTopTextField(value = state.profile.firstname,
+                            BknLabelTopTextField(
+                                value = state.profile.firstname,
                                 label = "First name",
                                 modifier = Modifier.fillMaxWidth(),
                                 onValueChange = {
                                     viewModel.updateFirstname(it)
-
-                                })
-                            BknLabelTopTextField(value = state.profile.lastname,
+                                }
+                            )
+                            BknLabelTopTextField(
+                                value = state.profile.lastname,
                                 label = "Last name",
                                 modifier = Modifier.fillMaxWidth(),
                                 onValueChange = {
                                     viewModel.updateLastname(it)
-                                })
-
+                                }
+                            )
                         }
 
 //                        Button(
@@ -197,14 +183,10 @@ fun ProfileScreen(
 //                                color = MaterialTheme.colors.surface,
 //                            )
 //                        }
-
                     }
 
                     Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.primaryVariant)
-                            .padding(16.dp)
+                        Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(16.dp)
                     ) {
                         OutlinedButton(
                             onClick = { viewModel.saveProfileChanges() },
@@ -219,7 +201,6 @@ fun ProfileScreen(
                             )
                         }
                     }
-
                 }
             }
         }
@@ -230,34 +211,29 @@ fun ProfileScreen(
             })
         }
     }
-
 }
 
 @Composable
 private fun ProfileImageLoader(
     url: String?,
     onNewImageSelected: (ByteArray) -> Unit = {},
-    onError: () -> Unit = {},
+    onError: () -> Unit = {}
 ) {
-
     val progress = remember {
         mutableStateOf(0f)
     }
 
     val context = LocalContext.current
     val imageData = remember { mutableStateOf<Uri?>(null) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            imageData.value = uri
-            uri?.let { uri ->
-                val inputStream = context.contentResolver.openInputStream(uri)
-                inputStream?.readBytes()?.let { onNewImageSelected(it) }
-            }
-        })
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(), onResult = { uri ->
+        imageData.value = uri
+        uri?.let { uri ->
+            val inputStream = context.contentResolver.openInputStream(uri)
+            inputStream?.readBytes()?.let { onNewImageSelected(it) }
+        }
+    })
 
     Box {
-
         IconButton(onClick = {
             launcher.launch("image/jpeg")
         }) {
@@ -265,42 +241,39 @@ private fun ProfileImageLoader(
                 progress = progress.value,
                 modifier = Modifier.size(110.dp),
                 strokeWidth = 5.dp,
-                color = MaterialTheme.colors.statusGood,
+                color = MaterialTheme.colors.statusGood
             )
-            SubcomposeAsyncImage(model = url?.let {
+            SubcomposeAsyncImage(
+                model = url?.let {
                 ImageRequest.Builder(LocalContext.current).data(url).crossfade(true).build()
             },
                 contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(0.dp)
-                    .clip(CircleShape),
+                modifier = Modifier.size(100.dp).padding(0.dp).clip(CircleShape),
                 loading = {
-                    CircularProgressIndicator(
-                        strokeWidth = 5.dp, color = MaterialTheme.colors.statusGood
-                    )
-                },
+                CircularProgressIndicator(
+                    strokeWidth = 5.dp,
+                    color = MaterialTheme.colors.statusGood
+                )
+            },
                 contentScale = ContentScale.Crop,
-                onLoading = {
-
-                },
+                onLoading = {},
                 onError = {
-                    onError()
-                })
+                onError()
+            }
+            )
         }
     }
 }
 
-
 @Composable
 fun ProfileEditTopBar(
-    onLogout: () -> Unit = {}, onClickBack: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onClickBack: () -> Unit = {}
 ) {
-
     TopAppBar(
         contentPadding = PaddingValues(5.dp),
         backgroundColor = MaterialTheme.colors.primaryVariant,
-        elevation = 5.dp,
+        elevation = 5.dp
     ) {
         Column(Modifier.fillMaxWidth()) {
             Row(
@@ -309,8 +282,7 @@ fun ProfileEditTopBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(modifier = Modifier.padding(start = 6.dp),
-                        onClick = { onClickBack() }) {
+                    IconButton(modifier = Modifier.padding(start = 6.dp), onClick = { onClickBack() }) {
                         BknIcon(
                             icon = CommunityMaterial.Icon.cmd_arrow_left,
                             color = Color.White,

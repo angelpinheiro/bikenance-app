@@ -3,10 +3,7 @@ package com.anxops.bkn.data.database.dao
 import androidx.room.*
 import com.anxops.bkn.data.database.entities.ComponentEntity
 import com.anxops.bkn.data.database.entities.ComponentWithMaintenancesEntity
-import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.data.model.BikeComponent
 import kotlinx.coroutines.flow.Flow
-
 
 @Dao
 interface BikeComponentDao {
@@ -37,7 +34,6 @@ interface BikeComponentDao {
     @JvmSuppressWildcards
     suspend fun insertAll(components: List<ComponentEntity>)
 
-
 //    @Query("DELETE FROM maintenance WHERE componentId = :componentId")
 //    suspend fun removeAllComponentMaintenances(componentId: String)
 //
@@ -55,9 +51,6 @@ interface BikeComponentDao {
 //        delete(c._id)
 //    }
 
-
     @Query("DELETE FROM component")
     suspend fun clear()
-
-
 }

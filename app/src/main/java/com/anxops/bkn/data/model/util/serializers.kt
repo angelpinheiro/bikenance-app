@@ -1,17 +1,15 @@
 package com.anxops.bkn.data.model.util
 
-import android.util.Log
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.data.model.ComponentType
 import com.anxops.bkn.data.model.MaintenanceType
 import com.anxops.bkn.util.formatAsIso8061
 import com.anxops.bkn.util.toLocalDateTime
+import java.time.LocalDateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializer
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.time.LocalDateTime
-
 
 @Serializer(forClass = LocalDateTime::class)
 object LocalDateSerializer : KSerializer<LocalDateTime> {

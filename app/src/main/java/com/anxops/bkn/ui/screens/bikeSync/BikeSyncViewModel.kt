@@ -6,28 +6,26 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 enum class BikeSyncScreenStatus {
     LOADING, LOADED, SAVING, DONE
 }
 
 data class BikeSyncState(
-    val status: BikeSyncScreenStatus, val bikes: Map<Bike, Boolean> = emptyMap()
+    val status: BikeSyncScreenStatus,
+    val bikes: Map<Bike, Boolean> = emptyMap()
 )
-
 
 @HiltViewModel
 class BikeSyncViewModel @Inject constructor(
-    private val bikeRepository: BikeRepositoryFacade,
+    private val bikeRepository: BikeRepositoryFacade
 ) : ViewModel() {
 
     private val statusFlow = MutableStateFlow(BikeSyncScreenStatus.LOADING)
@@ -72,6 +70,4 @@ class BikeSyncViewModel @Inject constructor(
             statusFlow.emit(BikeSyncScreenStatus.DONE)
         }
     }
-
 }
-

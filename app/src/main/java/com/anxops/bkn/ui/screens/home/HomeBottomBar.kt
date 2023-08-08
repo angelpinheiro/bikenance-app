@@ -15,9 +15,10 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
-
 enum class HomeSections(
-    val id: String, val icon: IIcon, @StringRes val titleRes: Int
+    val id: String,
+    val icon: IIcon,
+    @StringRes val titleRes: Int
 ) {
     Home(
         "HomeScreenDestination",
@@ -25,25 +26,27 @@ enum class HomeSections(
         R.string.garage_section_title
     ),
     Rides(
-        "RidesScreenDestination", CommunityMaterial.Icon.cmd_bike_fast, R.string.rides_section_title
+        "RidesScreenDestination",
+        CommunityMaterial.Icon.cmd_bike_fast,
+        R.string.rides_section_title
     ),
     Maintenances(
         "MaintenancesScreenDestination",
         CommunityMaterial.Icon3.cmd_tools,
         R.string.maintenance_section_title
-    ),
+    )
 }
-
 
 @ExperimentalMaterialNavigationApi
 @Composable
 fun HomeBottomBar(
-    selectedItem: HomeSections, onItemSelected: (HomeSections) -> Unit
+    selectedItem: HomeSections,
+    onItemSelected: (HomeSections) -> Unit
 ) {
     BottomNavigation(
-        elevation = 32.dp, backgroundColor = MaterialTheme.colors.primaryVariant
+        elevation = 32.dp,
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
-
         HomeSections.values().forEach { destination ->
 
             val isCurrent = selectedItem.id == destination.id
@@ -54,12 +57,9 @@ fun HomeBottomBar(
                 BknIcon(
                     destination.icon,
                     MaterialTheme.colors.onPrimary,
-                    modifier = Modifier
-                        .size(22.dp)
-                        .alpha(if (isCurrent) 1f else 0.5f)
+                    modifier = Modifier.size(22.dp).alpha(if (isCurrent) 1f else 0.5f)
                 )
             })
         }
     }
 }
-

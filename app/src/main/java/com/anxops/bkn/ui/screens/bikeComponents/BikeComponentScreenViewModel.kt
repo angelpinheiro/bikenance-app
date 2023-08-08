@@ -1,6 +1,5 @@
 package com.anxops.bkn.ui.screens.bikeComponents
 
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.model.Bike
@@ -16,6 +15,7 @@ import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.onSuccessNotNull
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -23,11 +23,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
-
 
 data class EditingMaintenance(
-    val original: Maintenance, val editingMaintenance: Maintenance = original.copy()
+    val original: Maintenance,
+    val editingMaintenance: Maintenance = original.copy()
 )
 
 sealed interface BikeComponentScreenState {
@@ -47,14 +46,16 @@ class BikeComponentScreenViewModel @Inject constructor(
     private val ridesRepository: RidesRepositoryFacade
 ) : ViewModel() {
 
-
     private val isLoadingFlow = MutableStateFlow(false)
     private val bikeFlow = MutableStateFlow<Bike?>(null)
     private val componentFlow = MutableStateFlow<BikeComponent?>(null)
     private val editingMaintenanceFlow = MutableStateFlow<EditingMaintenance?>(null)
 
     val state: StateFlow<BikeComponentScreenState> = combine(
-        isLoadingFlow, bikeFlow, componentFlow, editingMaintenanceFlow
+        isLoadingFlow,
+        bikeFlow,
+        componentFlow,
+        editingMaintenanceFlow
     ) { loading, bike, component, editingMaintenance ->
 
         if (loading) {
@@ -87,14 +88,12 @@ class BikeComponentScreenViewModel @Inject constructor(
     }
 
     fun onMaintenanceFreqUpdate(frequency: RevisionFrequency) {
-
         editingMaintenanceFlow.update { em ->
 
             em?.let {
                 val updated = it.editingMaintenance.copy(defaultFrequency = frequency)
                 it.copy(editingMaintenance = updated)
             }
-
         }
     }
 
@@ -125,13 +124,10 @@ class BikeComponentScreenViewModel @Inject constructor(
                 bikeRepository.replaceComponent(bikeComponent).onSuccessNotNull {
                     loadComponent(bike._id, it._id)
                 }.onError {
-                    //TODO: Handle error
+                    // TODO: Handle error
                 }
-
             }
-
         }
-
     }
 
     fun onMaintenanceWearUpdate(wear: Double) {
@@ -146,4 +142,3 @@ class BikeComponentScreenViewModel @Inject constructor(
         }
     }
 }
-

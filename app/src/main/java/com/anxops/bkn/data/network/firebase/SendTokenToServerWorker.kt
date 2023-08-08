@@ -3,7 +3,6 @@ package com.anxops.bkn.data.network.firebase
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
-import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -12,7 +11,6 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import timber.log.Timber
-
 
 class SendTokenToServerWorkerStarter(val context: Context) {
     fun start() {
@@ -28,7 +26,7 @@ class SendTokenToServerWorker @AssistedInject constructor(
     val api: Api
 ) : CoroutineWorker(appContext, workerParams) {
 
-    override suspend fun doWork(): ListenableWorker.Result {
+    override suspend fun doWork(): Result {
         dataStore.getAuthToken()?.let {
             dataStore.getFirebaseToken()?.let {
                 api.updateFirebaseToken(it)

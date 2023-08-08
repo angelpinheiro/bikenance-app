@@ -9,11 +9,11 @@ import com.anxops.bkn.data.repository.ProfileRepositoryFacade
 import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 sealed class CheckLoginState {
     object LoggedIn : CheckLoginState()
@@ -25,7 +25,7 @@ sealed class CheckLoginState {
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     val dataStore: BknDataStore,
-    private val repository: ProfileRepositoryFacade,
+    private val repository: ProfileRepositoryFacade
 ) : ViewModel() {
 
     init {
@@ -47,5 +47,4 @@ class SplashScreenViewModel @Inject constructor(
             emit(CheckLoginState.NotLoggedIn)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), CheckLoginState.Checking)
-
 }

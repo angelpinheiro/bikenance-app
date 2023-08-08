@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-
 interface BikeRepositoryFacade {
 
     suspend fun getBike(id: String): Result<Bike>
@@ -71,8 +70,7 @@ class BikeRepository(
 
     override suspend fun getBikeComponent(id: String): Result<BikeComponent?> = result {
         db.bikeComponentDao().getById(id)?.toDomain()?.let {
-            val maintenances =
-                db.maintenanceDao().getByComponentId(it._id).map { m -> m.toDomain() }
+            val maintenances = db.maintenanceDao().getByComponentId(it._id).map { m -> m.toDomain() }
             it.copy(maintenances = maintenances)
         }
     }
@@ -141,7 +139,6 @@ class BikeRepository(
         }
     }
 
-
     private suspend fun insertOrUpdateBike(bike: Bike) {
         db.database().withTransaction {
             // remove old bike components
@@ -169,14 +166,14 @@ class BikeRepository(
         }
     }
 
-
     private suspend fun getBikeWithComponentsAndMaintenances(it: Bike): Bike {
         return withContext(defaultDispatcher) {
-            it.copy(components = db.bikeComponentDao().bike(it._id).map { component ->
-                val maintenances = db.maintenanceDao().getByComponentId(component.component._id)
-                    .map(MaintenanceEntity::toDomain)
+            it.copy(
+                components = db.bikeComponentDao().bike(it._id).map { component ->
+                val maintenances = db.maintenanceDao().getByComponentId(component.component._id).map(MaintenanceEntity::toDomain)
                 component.toDomain().copy(maintenances = maintenances)
-            })
+            }
+            )
         }
     }
 }

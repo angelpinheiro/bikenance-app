@@ -28,31 +28,25 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @Composable
 fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .clickable {
-            onSelected()
-        }) {
-
+    Column(
+        modifier = Modifier.fillMaxWidth().clickable {
+        onSelected()
+    }
+    ) {
         val expanded = remember {
             mutableStateOf(false)
         }
 
         Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 6.dp),
+            Modifier.fillMaxWidth().padding(top = 6.dp),
             verticalAlignment = Alignment.CenterVertically
 
         ) {
-
             Text(
                 text = stringResource(id = item.type.resources().nameResId),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h2,
-                modifier = Modifier
-                    .padding(bottom = 0.dp)
-                    .weight(1f)
+                modifier = Modifier.padding(bottom = 0.dp).weight(1f)
             )
 
 //            IconButton(onClick = {onSelected() }) {
@@ -66,32 +60,25 @@ fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
 //                    color = MaterialTheme.colors.onBackground
 //                )
 //            }
-
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_repeat,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(16.dp)
+                modifier = Modifier.padding(end = 10.dp).size(16.dp)
             )
             Text(
                 text = "${item.defaultFrequency.displayText()} (${item.displayStatus()})",
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h3
             )
         }
 
         LinearProgressIndicator(
             progress = item.status.toFloat(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp)
-                .height(5.dp)
-                .clip(RoundedCornerShape(20.dp)),
+            modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp).height(5.dp).clip(RoundedCornerShape(20.dp)),
             color = getColorForProgress(percentage = item.status.toFloat()),
-            backgroundColor = MaterialTheme.colors.primaryVariant,
+            backgroundColor = MaterialTheme.colors.primaryVariant
         )
 
         Row(
@@ -102,15 +89,14 @@ fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
             Text(
                 text = "${item.lastMaintenanceDate?.formatAsMonthYear()}",
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.h4
             )
             Text(
                 text = "~ ${item.estimatedDate?.formatAsMonthYear()}",
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.h4
             )
         }
-
 
 //        Row(verticalAlignment = Alignment.CenterVertically) {
 //            BknIcon(
@@ -140,7 +126,6 @@ fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
 //            )
 //        }
 
-
 //        Row(verticalAlignment = Alignment.CenterVertically) {
 //            BknIcon(
 //                icon = CommunityMaterial.Icon.cmd_calendar_end,
@@ -168,6 +153,5 @@ fun BikeComponentDetailMaintenance(item: Maintenance, onSelected: () -> Unit) {
 //                style = MaterialTheme.typography.h3,
 //            )
 //        }
-
     }
 }

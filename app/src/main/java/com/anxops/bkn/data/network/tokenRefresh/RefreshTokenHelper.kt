@@ -10,17 +10,17 @@ import com.anxops.bkn.BuildConfig
 import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.preferences.BknDataStore
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 interface TokenRefresher {
     suspend fun performRefresh(): Boolean
     fun startPeriodicRefreshTokenWork(context: Context)
 }
 
-
 class DefaultTokenRefresher(
-    val dataStore: BknDataStore, val api: Api
+    val dataStore: BknDataStore,
+    val api: Api
 ) : TokenRefresher {
     override suspend fun performRefresh(): Boolean {
         dataStore.getRefreshToken()?.let {
@@ -44,11 +44,12 @@ class DefaultTokenRefresher(
     }
 
     override fun startPeriodicRefreshTokenWork(context: Context) {
-        val workConstraints =
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val workConstraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
         val periodicRefreshTokenWork = PeriodicWorkRequest.Builder(
-            RefreshTokenWork::class.java, 1, TimeUnit.DAYS
+            RefreshTokenWork::class.java,
+            1,
+            TimeUnit.DAYS
         ).setConstraints(workConstraints).build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -56,8 +57,5 @@ class DefaultTokenRefresher(
             ExistingPeriodicWorkPolicy.UPDATE,
             periodicRefreshTokenWork
         )
-
-
     }
-
 }

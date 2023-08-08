@@ -4,11 +4,8 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.anxops.bkn.data.network.Api
-import com.anxops.bkn.data.preferences.BknDataStore
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-
 
 @HiltWorker
 class RefreshTokenWork @AssistedInject constructor(
@@ -17,9 +14,10 @@ class RefreshTokenWork @AssistedInject constructor(
     private val tokenRefresher: TokenRefresher
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
-        return if (tokenRefresher.performRefresh())
+        return if (tokenRefresher.performRefresh()) {
             Result.success()
-        else
+        } else {
             Result.failure()
+        }
     }
 }

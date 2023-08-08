@@ -24,6 +24,5 @@ fun app() {
             )
             ConnectionStateBanner(Modifier.background(MaterialTheme.colors.primary))
         }
-
     }
 }

@@ -36,13 +36,10 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.ui.screens.bike.components.PulsatingCircles
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.theme.statusWarning
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -55,58 +52,36 @@ fun GarageBikeCard(
     topLeftSlot: @Composable () -> Unit = {},
     isLast: Boolean
 ) {
-
-
     val height = 110.dp
 
     val gradient = Brush.horizontalGradient(
         0f to tintColor,
         0.1f to tintColor,
-        0.5f to tintColor.copy(alpha = 0.9f),
+        0.5f to tintColor.copy(alpha = 0.9f)
     )
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height),
+        modifier = Modifier.fillMaxWidth().height(height),
         elevation = elevation,
         backgroundColor = tintColor
     ) {
-
         Box(
-            modifier = Modifier
-                .padding(0.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .combinedClickable(
-                    onClick = { onDetail() },
-                    onLongClick = { onEdit() },
-                ),
+            modifier = Modifier.padding(0.dp).clip(MaterialTheme.shapes.medium)
+                .combinedClickable(onClick = { onDetail() }, onLongClick = { onEdit() })
         ) {
-
             AsyncImage(
                 url = bike.photoUrl,
-                modifier = Modifier
-                    .width(height + (height * 0.8f))
-                    .height(height)
-                    .padding(start = 0.dp, top = 1.dp, end = 1.dp, bottom = 1.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                modifier = Modifier.width(height + (height * 0.8f)).height(height)
+                    .padding(start = 0.dp, top = 1.dp, end = 1.dp, bottom = 1.dp).clip(MaterialTheme.shapes.medium)
                     .align(Alignment.CenterEnd),
                 alignment = Alignment.TopCenter
             )
             Box(
-                modifier =
-                Modifier
-                    .width(height + (height * 0.8f))
-                    .height(height)
-                    .align(Alignment.CenterEnd)
-                    .background(gradient)
+                modifier = Modifier.width(height + (height * 0.8f)).height(height).align(Alignment.CenterEnd).background(gradient)
             )
 
             Column(
-                Modifier
-                    .fillMaxHeight()
-                    .padding(start = 16.dp, top = 16.dp, bottom = 10.dp)
-                    .align(Alignment.BottomStart),
+                Modifier.fillMaxHeight().padding(start = 16.dp, top = 16.dp, bottom = 10.dp).align(Alignment.BottomStart),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -121,7 +96,7 @@ fun GarageBikeCard(
                         modifier = Modifier.padding(start = 10.dp),
                         color = MaterialTheme.colors.onPrimary,
                         text = bike.displayName(),
-                        style = MaterialTheme.typography.h3,
+                        style = MaterialTheme.typography.h3
                     )
                 }
                 Text(
@@ -129,24 +104,17 @@ fun GarageBikeCard(
                     style = MaterialTheme.typography.h1,
                     color = MaterialTheme.colors.secondary
                 )
-
             }
 
             Column(
-                modifier = Modifier
-                    .padding(top = 10.dp, end = 16.dp)
-                    .size(40.dp)
-                    .align(Alignment.TopEnd)
-                    .aspectRatio(1f),
+                modifier = Modifier.padding(top = 10.dp, end = 16.dp).size(40.dp).align(Alignment.TopEnd).aspectRatio(1f),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.End
             ) {
                 topLeftSlot()
             }
-
         }
     }
-
 }
 
 @Composable
@@ -154,9 +122,8 @@ fun AsyncImage(
     url: String?,
     modifier: Modifier = Modifier.fillMaxSize(),
     contentScale: ContentScale = ContentScale.Crop,
-    alignment: Alignment = Alignment.Center,
+    alignment: Alignment = Alignment.Center
 ) {
-
     val defaultImage = R.drawable.default_bike_image
 
     var imageLoadFinished by remember {
@@ -169,13 +136,9 @@ fun AsyncImage(
 
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(url)
-                .crossfade(true)
-                .build(),
+            model = ImageRequest.Builder(LocalContext.current).data(url).crossfade(true).build(),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             loading = {
                 Loading()
             },
@@ -196,18 +159,11 @@ fun AsyncImage(
 
         if (imageBroken) {
             SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(defaultImage)
-                    .crossfade(true)
-                    .build(),
+                model = ImageRequest.Builder(LocalContext.current).data(defaultImage).crossfade(true).build(),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colors.surface),
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface),
                 contentScale = ContentScale.Crop
             )
         }
     }
-
 }
-

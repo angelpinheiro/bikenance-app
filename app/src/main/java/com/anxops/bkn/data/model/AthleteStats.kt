@@ -1,9 +1,9 @@
 package com.anxops.bkn.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import java.util.Calendar
 import java.util.Date
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class AthleteStats(
@@ -11,7 +11,7 @@ data class AthleteStats(
     @SerialName("biggest_climb_elevation_gain") val biggestClimbElevationGain: Double,
     @SerialName("recent_ride_totals") val recentRideTotals: ActivityTotal,
     @SerialName("ytd_ride_totals") val ytdRideTotals: ActivityTotal,
-    @SerialName("all_ride_totals") val allRideTotals: ActivityTotal,
+    @SerialName("all_ride_totals") val allRideTotals: ActivityTotal
 ) {
     fun recentAverageActivity(): ActivityTotal {
         return ActivityTotal(
@@ -51,7 +51,6 @@ data class AthleteStats(
     }
 
     fun monthlyEstimationBasedOnYTD(): Pair<Usage, ActivityTotal> {
-
         val ridesPerYear = 365f * ytdRideTotals.count / ridesPerYear()
         val ridesPerMonth = ridesPerYear / 12
 

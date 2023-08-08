@@ -15,6 +15,7 @@ import com.anxops.bkn.data.repository.onError
 import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,8 +23,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 sealed class ProfileScreenStatus {
     object Loading : ProfileScreenStatus()
@@ -61,11 +60,13 @@ class ProfileScreenViewModel @Inject constructor(
     val events = eventFlow.asStateFlow()
 
     val state: StateFlow<ProfileScreenState> = combine(
-        statusFlow, loadProgressFlow, profileFlow, errorStateFlow
+        statusFlow,
+        loadProgressFlow,
+        profileFlow,
+        errorStateFlow
     ) { statusRes, loadProgressRes, profileRes, error ->
         ProfileScreenState(statusRes, loadProgressRes, profileRes, error)
     }.stateIn(viewModelScope, WhileUiSubscribed, ProfileScreenState())
-
 
     fun loadProfile() {
         viewModelScope.launch {
@@ -73,7 +74,7 @@ class ProfileScreenViewModel @Inject constructor(
                 profileFlow.emit(it)
                 statusFlow.emit(ProfileScreenStatus.Loaded)
             }.onError {
-                //TODO
+                // TODO
             }
         }
     }
@@ -87,13 +88,10 @@ class ProfileScreenViewModel @Inject constructor(
     }
 
     fun saveProfileChanges() {
-
         viewModelScope.launch {
-
             statusFlow.update { ProfileScreenStatus.Loading }
 
             when (val result = profileRepository.updateProfile(profileFlow.value)) {
-
                 is Result.Success -> {
                     profileFlow.update { result.data }
                     statusFlow.update { ProfileScreenStatus.UpdateSuccess }
@@ -107,20 +105,25 @@ class ProfileScreenViewModel @Inject constructor(
         }
     }
 
-
     fun onUpdateProfileImage(bytes: ByteArray) {
         viewModelScope.launch {
             loadProgressFlow.update { 0f }
-            imageUploader.uploadImage(ImageUploadRequest(
-                dataStore.getAuthUserOrFail(), bytes
-            ), onProgressUpdate = { updatePercent ->
+            imageUploader.uploadImage(
+                ImageUploadRequest(
+                dataStore.getAuthUserOrFail(),
+                    bytes
+            ),
+                onProgressUpdate = { updatePercent ->
                 loadProgressFlow.update { updatePercent }
-            }, onSuccess = { url ->
+            },
+                onSuccess = { url ->
                 loadProgressFlow.update { 0f }
                 profileFlow.update { it.copy(profilePhotoUrl = url) }
-            }, onFailure = {
+            },
+                onFailure = {
                 errorStateFlow.update { AppError(ErrorType.Unexpected, message = "Could not process the selected image") }
-            })
+            }
+            )
         }
     }
 
@@ -135,5 +138,4 @@ class ProfileScreenViewModel @Inject constructor(
     fun onDismissError() {
         errorStateFlow.update { null }
     }
-
 }

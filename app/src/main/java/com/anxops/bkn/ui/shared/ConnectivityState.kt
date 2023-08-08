@@ -50,7 +50,6 @@ fun connectivityState(): State<ConnectionState> {
 
 @Composable
 fun ConnectionStateBanner(modifier: Modifier = Modifier) {
-
     val connectionState by connectivityState()
 
     var prevConnectionState by remember {
@@ -98,17 +97,12 @@ fun ConnectionStateBanner(modifier: Modifier = Modifier) {
 
     FadeInFadeOutSlideAnimatedVisibility(showConnectionState != null) {
         Box(
-            Modifier
-                .fillMaxWidth()
-                .then(modifier), contentAlignment = Alignment.TopStart
+            Modifier.fillMaxWidth().then(modifier),
+            contentAlignment = Alignment.TopStart
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(color)
-                    .padding(horizontal = 5.dp, vertical = 2.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).clip(RoundedCornerShape(16.dp))
+                    .background(color).padding(horizontal = 5.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -123,6 +117,4 @@ fun ConnectionStateBanner(modifier: Modifier = Modifier) {
             }
         }
     }
-
-
 }

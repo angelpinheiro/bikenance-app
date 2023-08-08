@@ -25,9 +25,10 @@ interface RidesRepositoryFacade {
 }
 
 class BikeRidesRepository(
-    val api: Api, val db: AppDb, private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+    val api: Api,
+    val db: AppDb,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : RidesRepositoryFacade, BaseRepository(defaultDispatcher) {
-
 
     override suspend fun refreshRides(): Result<Unit> = result {
         api.getRides().successOrException {
@@ -42,8 +43,6 @@ class BikeRidesRepository(
                     }
                 }
             }
-
-
         }
     }
 
@@ -61,8 +60,7 @@ class BikeRidesRepository(
     }
 
     override suspend fun getRide(id: String): Result<BikeRide> = result {
-        db.bikeRideDao().getById(id)?.toDomain()
-            ?: throw RuntimeException("Ride with id $id not found")
+        db.bikeRideDao().getById(id)?.toDomain() ?: throw RuntimeException("Ride with id $id not found")
     }
 
     override suspend fun getRides(): Result<List<BikeRide>> = result {

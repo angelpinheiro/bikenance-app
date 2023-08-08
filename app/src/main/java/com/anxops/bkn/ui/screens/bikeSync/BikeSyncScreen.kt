@@ -35,12 +35,12 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun BikeSyncScreen(
-    navigator: DestinationsNavigator, viewModel: BikeSyncViewModel = hiltViewModel()
+    navigator: DestinationsNavigator,
+    viewModel: BikeSyncViewModel = hiltViewModel()
 ) {
     val nav = BknNavigator(navigator)
     val state by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
-
 
     LaunchedEffect(state.status) {
         if (state.status == BikeSyncScreenStatus.DONE) {
@@ -49,47 +49,35 @@ fun BikeSyncScreen(
     }
 
     BackgroundBox {
-
         when (state.status) {
             BikeSyncScreenStatus.LOADING, BikeSyncScreenStatus.SAVING -> Loading()
             BikeSyncScreenStatus.LOADED -> {
                 Column(
                     Modifier.fillMaxSize()
                 ) {
-
                     Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.primaryVariant)
-                            .padding(26.dp)
+                        Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(26.dp)
                     ) {
                         Text(
                             text = "STRAVA bike tracking",
                             style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.onPrimary,
+                            color = MaterialTheme.colors.onPrimary
                         )
 
                         Text(
                             text = "You have ${state.bikes.size} bikes on Strava. Check the ones you want to track to receive maintenance recommendations.",
                             style = MaterialTheme.typography.h3,
-                            color = MaterialTheme.colors.onPrimary,
+                            color = MaterialTheme.colors.onPrimary
 
                         )
                     }
 
                     Column(
-                        Modifier
-                            .fillMaxSize()
-                            .weight(1f)
-                            .padding(horizontal = 26.dp)
-                            .verticalScroll(scrollState), verticalArrangement = Arrangement.Center
+                        Modifier.fillMaxSize().weight(1f).padding(horizontal = 26.dp).verticalScroll(scrollState),
+                        verticalArrangement = Arrangement.Center
                     ) {
-
-
                         Divider(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(20.dp)
+                            Modifier.fillMaxWidth().height(20.dp)
                         )
 
                         state.bikes.forEach { (bike, sync) ->
@@ -98,7 +86,7 @@ fun BikeSyncScreen(
                                 Switch(
                                     checked = sync,
                                     onCheckedChange = { viewModel.syncBike(bike, it) },
-                                    colors = SwitchDefaults.colors(
+                                        colors = SwitchDefaults.colors(
 
                                         checkedThumbColor = MaterialTheme.colors.strava,
                                         uncheckedTrackColor = MaterialTheme.colors.primaryVariant,
@@ -110,25 +98,18 @@ fun BikeSyncScreen(
                             }, isLast = true)
 
                             Divider(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(6.dp)
-                                    .height(0.dp)
+                                Modifier.fillMaxWidth().padding(6.dp).height(0.dp)
                             )
                         }
-
                     }
 
                     Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.primaryVariant)
-                            .padding(16.dp)
+                        Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(16.dp)
                     ) {
                         OutlinedButton(
                             onClick = { viewModel.performSync() },
                             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
                                 text = "Let's go!",
@@ -142,11 +123,5 @@ fun BikeSyncScreen(
 
             else -> {}
         }
-
-
     }
 }
-
-
-
-

@@ -5,9 +5,9 @@ import com.anxops.bkn.data.model.util.LocalDateSerializer
 import com.anxops.bkn.data.model.util.MaintenanceTypeSerializer
 import com.anxops.bkn.data.model.util.expectedNextMaintenanceDate
 import com.anxops.bkn.data.model.util.wearPercentage
+import java.time.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
 
 fun revisionUnitRange(unit: RevisionUnit): IntRange {
     return when (unit) {
@@ -25,7 +25,8 @@ enum class RevisionUnit {
 
 @Serializable
 data class RevisionFrequency(
-    @SerialName("every") val every: Int, @SerialName("unit") val unit: RevisionUnit
+    @SerialName("every") val every: Int,
+    @SerialName("unit") val unit: RevisionUnit
 ) {
     fun displayText(): String {
         return "Every $every ${unit.name.lowercase()}"
@@ -36,12 +37,18 @@ data class RevisionFrequency(
 data class Maintenance(
     @SerialName("_id") val _id: String,
     @SerialName("componentId") val componentId: String,
-    @Serializable(with = MaintenanceTypeSerializer::class) @SerialName("type") val type: MaintenanceType,
+    @Serializable(with = MaintenanceTypeSerializer::class)
+    @SerialName("type")
+    val type: MaintenanceType,
     @SerialName("defaultFrequency") val defaultFrequency: RevisionFrequency,
     @SerialName("description") val description: String,
-    @Serializable(with = ComponentTypeSerializer::class) @SerialName("componentType") val componentType: ComponentType,
+    @Serializable(with = ComponentTypeSerializer::class)
+    @SerialName("componentType")
+    val componentType: ComponentType,
     @SerialName("usageSinceLast") var usageSinceLast: Usage = Usage(0.0, 0.0),
-    @Serializable(with = LocalDateSerializer::class) @SerialName("lastDate") val lastMaintenanceDate: LocalDateTime? = null,
+    @Serializable(with = LocalDateSerializer::class)
+    @SerialName("lastDate")
+    val lastMaintenanceDate: LocalDateTime? = null
 ) {
 
     val status: Double by lazy {

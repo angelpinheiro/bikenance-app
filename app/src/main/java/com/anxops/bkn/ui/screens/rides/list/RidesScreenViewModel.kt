@@ -19,12 +19,12 @@ import com.anxops.bkn.data.repository.RidesRepositoryFacade
 import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class RidesScreenViewModel @Inject constructor(
@@ -32,14 +32,16 @@ class RidesScreenViewModel @Inject constructor(
     private val bikesRepository: BikeRepositoryFacade,
     private val appInfoRepository: AppInfoRepositoryFacade,
     val db: AppDb,
-    val api: Api,
+    val api: Api
 ) : ViewModel() {
 
     val lastUpdatedFlow = appInfoRepository.appInfoFlow()
     val paginatedRidesFlow = createPaginatedRidesFlow(db, api)
 
     val bikes = bikesRepository.getBikesFlow().stateIn(
-        viewModelScope, WhileUiSubscribed, emptyList()
+        viewModelScope,
+        WhileUiSubscribed,
+        emptyList()
     )
 
     val openActivityEvent: MutableSharedFlow<String> = MutableSharedFlow()
@@ -58,10 +60,9 @@ class RidesScreenViewModel @Inject constructor(
         }
     }
 
-
     private fun createPaginatedRidesFlow(
         db: AppDb,
-        api: Api,
+        api: Api
     ): Flow<PagingData<RideAndBike>> = createPager(db, api, appInfoRepository).flow.map { p ->
         p.map { rideEntity ->
             val bike = bikes.value.find { rideEntity.bikeId == it._id }
@@ -71,18 +72,23 @@ class RidesScreenViewModel @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     fun createPager(
-        db: AppDb, api: Api, appInfoRepository: AppInfoRepositoryFacade
+        db: AppDb,
+        api: Api,
+        appInfoRepository: AppInfoRepositoryFacade
     ): Pager<Int, BikeRideEntity> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20, prefetchDistance = 20
-            ), pagingSourceFactory = {
+                pageSize = 20,
+                prefetchDistance = 20
+            ),
+                pagingSourceFactory = {
                 db.bikeRideDao().pagingSource()
-            }, remoteMediator = RideRemoteMediator(
-                db, api, appInfoRepository
+            },
+                remoteMediator = RideRemoteMediator(
+                db,
+                    api,
+                    appInfoRepository
             )
         )
     }
-
-
 }

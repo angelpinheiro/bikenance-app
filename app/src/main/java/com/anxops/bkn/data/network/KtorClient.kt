@@ -33,12 +33,13 @@ class KtorClient {
 
         // JSON
         install(JsonFeature) {
-            serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+            serializer = KotlinxSerializer(
+                kotlinx.serialization.json.Json {
                 prettyPrint = true
                 isLenient = true
                 ignoreUnknownKeys = true
-            })
-
+            }
+            )
         }
         // Timeout
         install(HttpTimeout) {
@@ -54,4 +55,3 @@ class KtorClient {
         }
     }
 }
-

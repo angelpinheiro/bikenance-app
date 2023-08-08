@@ -5,8 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.util.toLocalDateTime
-import kotlinx.serialization.SerialName
-
 
 @Entity(tableName = "bike_ride")
 data class BikeRideEntity(
@@ -23,7 +21,7 @@ data class BikeRideEntity(
     @ColumnInfo(name = "elapsed_time") val elapsedTime: Int?,
     @ColumnInfo(name = "elevation") val elevationGain: Int?,
     @ColumnInfo(name = "date_time") val dateTime: String?,
-    @ColumnInfo(name = "summary_polyline") val mapSummaryPolyline: String?,
+    @ColumnInfo(name = "summary_polyline") val mapSummaryPolyline: String?
 ) {
     fun toDomain(): BikeRide {
         return BikeRide(
@@ -44,4 +42,3 @@ data class BikeRideEntity(
         )
     }
 }
-

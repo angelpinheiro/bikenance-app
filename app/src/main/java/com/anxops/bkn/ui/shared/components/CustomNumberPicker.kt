@@ -34,15 +34,17 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CustomNumberPicker(
-    value: Int, increment: Int = 1, suffix: String, range: IntRange, onChange: (Int) -> Unit,
+    value: Int,
+    increment: Int = 1,
+    suffix: String,
+    range: IntRange,
+    onChange: (Int) -> Unit
 ) {
     val colors = onBackgroundTextFieldColors()
     val interactionSource = remember { MutableInteractionSource() }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 6.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -52,32 +54,23 @@ fun CustomNumberPicker(
         }) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_minus,
-                modifier = Modifier
-                    .height(48.dp)
-                    .width(60.dp)
-                    .clip(
-                        RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp)
-                    )
-                    .background(MaterialTheme.colors.secondary)
-                    .padding(6.dp)
+                    modifier = Modifier.height(48.dp).width(60.dp).clip(
+                    RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp)
+                ).background(MaterialTheme.colors.secondary).padding(6.dp)
             )
         }
 
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .background(MaterialTheme.colors.surface)
+            modifier = Modifier.weight(1f).background(MaterialTheme.colors.surface)
         ) {
             BasicTextField(
                 value = valueToText(value),
                 onValueChange = { onChange(textToValue(it, range)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                visualTransformation = VisualTransformation.None,
+                visualTransformation = VisualTransformation.None
             ) { innerTextField ->
                 TextFieldDefaults.TextFieldDecorationBox(
                     value = value.toString(),
@@ -87,15 +80,13 @@ fun CustomNumberPicker(
                     interactionSource = interactionSource,
                     visualTransformation = VisualTransformation.None,
                     innerTextField = innerTextField,
-                    contentPadding = PaddingValues(6.dp),
+                    contentPadding = PaddingValues(6.dp)
                 )
             }
 
             Text(
                 text = suffix.lowercase(),
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 10.dp),
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 10.dp),
                 color = MaterialTheme.colors.onSurface,
                 style = MaterialTheme.typography.caption
             )
@@ -104,14 +95,9 @@ fun CustomNumberPicker(
         IconButton(onClick = { onChange(incrementBy(value, increment, range)) }) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_plus,
-                modifier = Modifier
-                    .height(48.dp)
-                    .width(60.dp)
-                    .clip(
-                        RoundedCornerShape(topEnd = 50.dp, bottomEnd = 50.dp)
-                    )
-                    .background(MaterialTheme.colors.secondary)
-                    .padding(6.dp)
+                    modifier = Modifier.height(48.dp).width(60.dp).clip(
+                    RoundedCornerShape(topEnd = 50.dp, bottomEnd = 50.dp)
+                ).background(MaterialTheme.colors.secondary).padding(6.dp)
             )
         }
         Spacer(modifier = Modifier.weight(0.3f))

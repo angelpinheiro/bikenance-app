@@ -3,9 +3,10 @@ package com.anxops.bkn.data.repository
 import com.anxops.bkn.data.network.ApiException
 import java.io.IOException
 
-
 data class AppError(
-    val type: ErrorType, val message: String? = null, val throwable: Throwable? = null
+    val type: ErrorType,
+    val message: String? = null,
+    val throwable: Throwable? = null
 )
 
 sealed interface ErrorType {
@@ -16,7 +17,6 @@ sealed interface ErrorType {
 }
 
 fun Throwable?.toAppError(msg: String? = null): AppError {
-
     val type = when (this) {
         is ApiException.Authorization -> ErrorType.Authorization
         is ApiException.Server -> ErrorType.Backend
@@ -25,7 +25,8 @@ fun Throwable?.toAppError(msg: String? = null): AppError {
         else -> ErrorType.Unexpected
     }
     return AppError(
-        type, throwable = this, message = msg
+        type,
+        throwable = this,
+        message = msg
     )
 }
-

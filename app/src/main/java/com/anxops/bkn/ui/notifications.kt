@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -18,9 +17,8 @@ import com.anxops.bkn.MainActivity
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.DeepLinkDestination
 import com.ramcosta.composedestinations.spec.Direction
-import timber.log.Timber
 import java.util.UUID
-
+import timber.log.Timber
 
 sealed class NotificationData(
     open val title: String,
@@ -28,7 +26,7 @@ sealed class NotificationData(
 ) {
     class Simple(
         override val title: String,
-        override val text: String,
+        override val text: String
     ) : NotificationData(title, text)
 
     class DeepLink(
@@ -41,7 +39,7 @@ sealed class NotificationData(
     class DestinationDeepLink(
         override val title: String,
         override val text: String,
-        val to: Direction,
+        val to: Direction
     ) : NotificationData(title, text)
 }
 
@@ -51,21 +49,19 @@ class Notifier {
         const val CHANNEL_ID = "BIKENANCE_CHANNEL"
     }
 
-
     fun show(context: Context, data: NotificationData): Int {
         val notificationId: Int = genNotificationId()
         val intent = getIntent(context, data)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            context, 0, intent,
+            context,
+            0,
+            intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification_link)
-            .setContentTitle(data.title)
-            .setContentText(data.text)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
+        val builder =
+            NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_notification_link).setContentTitle(data.title)
+                .setContentText(data.text).setPriority(NotificationCompat.PRIORITY_DEFAULT).setContentIntent(pendingIntent)
+                .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(
@@ -109,17 +105,16 @@ class Notifier {
         }
     }
 
-    private fun buildDeepLinkUri(data: NotificationData.DeepLink): Uri? {
+    private fun buildDeepLinkUri(data: NotificationData.DeepLink): Uri {
         val params = data.params?.map { entry ->
             "${entry.key}=${entry.value}"
         }?.joinToString("&")
         return "bikenance://${data.to.value}${params?.let { "?$it" }}".toUri()
     }
 
-    private fun buildDestinationDeepLinkUri(data: NotificationData.DestinationDeepLink): Uri? {
+    private fun buildDestinationDeepLinkUri(data: NotificationData.DestinationDeepLink): Uri {
         return "bikenance://notification?route=${data.to.route}".toUri()
     }
-
 
     private fun genNotificationId(): Int {
         return UUID.randomUUID().hashCode()
@@ -134,12 +129,8 @@ class Notifier {
                 description = descriptionText
             }
             // Register the channel with the system
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
-
 }
-
-

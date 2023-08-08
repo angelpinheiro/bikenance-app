@@ -16,15 +16,16 @@ import com.anxops.bkn.data.model.RevisionUnit
 import com.anxops.bkn.data.model.Usage
 import com.anxops.bkn.util.toLocalDateTime
 
-@Entity(tableName = "component",
-    foreignKeys = [
-        ForeignKey(
-            entity = BikeEntity::class,
-            parentColumns = arrayOf("_id"),
-            childColumns = arrayOf("bike_id"),
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+@Entity(
+    tableName = "component",
+        foreignKeys = [
+            ForeignKey(
+        entity = BikeEntity::class,
+                parentColumns = arrayOf("_id"),
+                childColumns = arrayOf("bike_id"),
+                onDelete = ForeignKey.CASCADE
+    )
+        ]
 )
 data class ComponentEntity(
     @PrimaryKey val _id: String,
@@ -34,7 +35,7 @@ data class ComponentEntity(
     @ColumnInfo(name = "usage_distance") val usageDistance: Double = 0.0,
     @ColumnInfo(name = "component_type") val type: String,
     @ColumnInfo(name = "modifier") val modifier: String? = null,
-    @ColumnInfo(name = "from") val from: String?,
+    @ColumnInfo(name = "from") val from: String?
 ) {
     fun toDomain(): BikeComponent {
         return BikeComponent(
@@ -51,41 +52,35 @@ data class ComponentEntity(
 }
 
 data class UsageEntity(
-    @ColumnInfo(name = "usage_duration")
-    val duration: Double,
-    @ColumnInfo(name = "usage_distance")
-    val distance: Double
+    @ColumnInfo(name = "usage_duration") val duration: Double,
+    @ColumnInfo(name = "usage_distance") val distance: Double
 ) {
     fun toDomain(): Usage {
         return Usage(duration, distance)
     }
 }
-@Entity(tableName = "maintenance",    foreignKeys = [
-    ForeignKey(
+
+@Entity(
+    tableName = "maintenance",
+        foreignKeys = [
+            ForeignKey(
         entity = ComponentEntity::class,
         parentColumns = arrayOf("_id"),
         childColumns = arrayOf("componentId"),
         onDelete = ForeignKey.CASCADE
     )
-])
+        ]
+)
 data class MaintenanceEntity(
     @PrimaryKey val _id: String,
-    @ColumnInfo("componentId")
-    val componentId: String,
-    @ColumnInfo("type")
-    val type: String,
-    @ColumnInfo("defaultFrequencyUnit")
-    val defaultFrequencyUnit: String,
-    @ColumnInfo("defaultFrequencyEvery")
-    val defaultFrequencyEvery: Int,
-    @ColumnInfo("description")
-    val description: String,
-    @ColumnInfo("componentType")
-    val componentType: String,
-    @ColumnInfo("lastDate")
-    var lastMaintenanceDate: String? = null,
-    @Embedded
-    var usageSinceLast: UsageEntity,
+    @ColumnInfo("componentId") val componentId: String,
+    @ColumnInfo("type") val type: String,
+    @ColumnInfo("defaultFrequencyUnit") val defaultFrequencyUnit: String,
+    @ColumnInfo("defaultFrequencyEvery") val defaultFrequencyEvery: Int,
+    @ColumnInfo("description") val description: String,
+    @ColumnInfo("componentType") val componentType: String,
+    @ColumnInfo("lastDate") var lastMaintenanceDate: String? = null,
+    @Embedded var usageSinceLast: UsageEntity
 ) {
 
     fun toDomain(): Maintenance {
@@ -116,13 +111,9 @@ data class ComponentWithMaintenancesEntity(
         entity = MaintenanceEntity::class,
         parentColumn = "_id",
         entityColumn = "componentId"
-    )
-    val maintenances: List<MaintenanceEntity>
+    ) val maintenances: List<MaintenanceEntity>
 ) {
     fun toDomain(): BikeComponent {
-        return component.toDomain().copy(
-            maintenances = maintenances.map { it.toDomain() }
-        )
+        return component.toDomain().copy(maintenances = maintenances.map { it.toDomain() })
     }
 }
-

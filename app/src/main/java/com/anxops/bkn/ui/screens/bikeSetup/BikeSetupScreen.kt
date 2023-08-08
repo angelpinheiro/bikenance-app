@@ -35,7 +35,6 @@ import com.anxops.bkn.ui.screens.bikeSetup.components.BikeStatusPage
 import com.anxops.bkn.ui.screens.bikeSetup.components.BikeTypePage
 import com.anxops.bkn.ui.screens.bikeSetup.components.InfoPage
 import com.anxops.bkn.ui.screens.bikeSetup.components.RidingHabitsPage
-import com.anxops.bkn.ui.screens.destinations.BikeScreenDestination
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BackgroundBox
@@ -47,7 +46,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 @Composable
 @Destination
 fun BikeSetupScreen(
@@ -55,7 +53,6 @@ fun BikeSetupScreen(
     viewModel: BikeSetupViewModel = hiltViewModel(),
     bikeId: String = ""
 ) {
-
     val bknNavigator = BknNavigator(navigator)
     val state = viewModel.state.collectAsState()
 
@@ -63,15 +60,10 @@ fun BikeSetupScreen(
         viewModel.loadBike(bikeId)
     }
 
-
     Column(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.primaryVariant)
-            .padding(0.dp),
+        Modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant).padding(0.dp),
         verticalArrangement = Arrangement.Center
     ) {
-
         when (val screenState = state.value) {
             is BikeSetupScreenState.SetupInProgress -> {
                 SetupDetailsPager(viewModel, screenState)
@@ -92,15 +84,12 @@ fun BikeSetupScreen(
                 Loading()
             }
         }
-
-
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState.SetupInProgress) {
-
     val pageCount = 5
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
@@ -120,24 +109,18 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
     }
 
     BackgroundBox {
-
-
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-
             Row(
                 modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 IconButton(onClick = { scrollToPrevPage() }) {
                     BknIcon(
                         icon = CommunityMaterial.Icon.cmd_arrow_left,
-                        modifier = Modifier.size(42.dp).clip(CircleShape)
-                            .background(MaterialTheme.colors.primary).padding(5.dp)
+                        modifier = Modifier.size(42.dp).clip(CircleShape).background(MaterialTheme.colors.primary).padding(5.dp)
                     )
                 }
 
@@ -153,12 +136,10 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
                 IconButton(onClick = { scrollToNextPage() }) {
                     BknIcon(
                         icon = CommunityMaterial.Icon.cmd_arrow_right,
-                        modifier = Modifier.size(36.dp).clip(CircleShape)
-                            .background(MaterialTheme.colors.primary).padding(5.dp)
+                        modifier = Modifier.size(36.dp).clip(CircleShape).background(MaterialTheme.colors.primary).padding(5.dp)
                     )
                 }
             }
-
 
             HorizontalPager(
                 pageCount = pageCount,
@@ -169,25 +150,22 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
             ) { page ->
 
                 when (page) {
-
                     0 -> InfoPage(onContinue = {
                         scrollToNextPage()
                     })
 
-                    1 -> BikeTypePage(
-                        details = state.details,
-                        bike = state.bike,
-                        onBikeTypeSelected = {
-                            viewModel.onSetupDetailsEvent(BSSEvent.BikeTypeSelected(it))
-                            scrollToNextPage(delayMs = 500)
-                        })
+                    1 -> BikeTypePage(details = state.details, bike = state.bike, onBikeTypeSelected = {
+                        viewModel.onSetupDetailsEvent(BSSEvent.BikeTypeSelected(it))
+                        scrollToNextPage(delayMs = 500)
+                    })
 
                     3 -> BikeStatusPage(state.details, onContinue = {
                         scrollToNextPage()
                     }, onLastMaintenanceUpdate = { category, value ->
                         viewModel.onSetupDetailsEvent(
                             BSSEvent.LastMaintenanceUpdate(
-                                category, value
+                                category,
+                                value
                             )
                         )
                     })
@@ -213,7 +191,6 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
     }
 }
 
-
 @Composable
 fun BikeSetupTitle(text: String) {
     Text(
@@ -223,7 +200,6 @@ fun BikeSetupTitle(text: String) {
         style = MaterialTheme.typography.h1
     )
 }
-
 
 @Composable
 fun BikeSetupDescription(text: String, align: TextAlign = TextAlign.Center) {
@@ -253,5 +229,3 @@ fun BikeSetupText(text: String) {
 fun BikeSetupDivider(size: Dp) {
     Box(Modifier.height(size))
 }
-
-

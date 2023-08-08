@@ -24,13 +24,10 @@ import com.anxops.bkn.R
 @Composable
 fun EmptyComponentList(onClickAction: () -> Unit = {}) {
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 20.dp),
+        Modifier.fillMaxSize().padding(top = 20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = "Your bike  does not has any attached components",
             modifier = Modifier.padding(vertical = 30.dp, horizontal = 30.dp),
@@ -42,17 +39,14 @@ fun EmptyComponentList(onClickAction: () -> Unit = {}) {
         Image(
             painter = painterResource(id = R.drawable.ic_undraw_not_found),
             contentDescription = "Not found",
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .background(Color.Transparent)
-                .padding(top = 0.dp)
+            modifier = Modifier.fillMaxWidth(0.6f).background(Color.Transparent).padding(top = 0.dp)
         )
 
         OutlinedButton(onClick = { onClickAction() }, modifier = Modifier.padding(top = 20.dp)) {
             Text(
                 text = "Proceed with initial setup",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h3
             )
         }
     }

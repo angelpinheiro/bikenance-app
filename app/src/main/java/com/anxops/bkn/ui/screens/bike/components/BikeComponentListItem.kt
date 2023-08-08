@@ -20,54 +20,34 @@ import androidx.compose.ui.unit.dp
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.ui.shared.BikeComponentIcon
 
-
 @Composable
 fun BikeComponentListItem(component: BikeComponent, onClick: () -> Unit = {}) {
-
     val prefix = component.modifier?.let {
         "${it.displayName} "
     } ?: ""
 
     Card(
         backgroundColor = MaterialTheme.colors.primary,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-            .padding(top = 10.dp)
-            .clickable { onClick() }
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp).clickable { onClick() }
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-
             BikeComponentIcon(
                 type = component.type,
                 tint = MaterialTheme.colors.onSurface,
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.surface)
-                    .padding(6.dp)
+                modifier = Modifier.size(36.dp).clip(CircleShape).background(MaterialTheme.colors.surface).padding(6.dp)
             )
 
             Text(
                 text = prefix + stringResource(component.type.resources().nameResId),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h2,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
-
         }
     }
 }
-
-
-

@@ -36,7 +36,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ErrorDialog(appError: AppError, bknNavigator: BknNavigator?, onDismissRequest: () -> Unit) {
-
     val (title, defaultText) = getErrorTitleAndText(appError)
     val content = (appError.message?.let { "$it. " } ?: "") + defaultText
 
@@ -57,18 +56,16 @@ fun ErrorDialog(appError: AppError, bknNavigator: BknNavigator?, onDismissReques
 
     Dialog(
         properties = DialogProperties(
-            usePlatformDefaultWidth = false, dismissOnBackPress = true
-        ), onDismissRequest = onDismissRequest
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true
+        ),
+            onDismissRequest = onDismissRequest
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             SlideFromBottomAnimatedVisibility(visible = visible) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                        .shadow(8.dp)
-                        .background(MaterialTheme.colors.primary)
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)).shadow(8.dp)
+                        .background(MaterialTheme.colors.primary).padding(16.dp),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.Start
                 ) {
@@ -80,7 +77,7 @@ fun ErrorDialog(appError: AppError, bknNavigator: BknNavigator?, onDismissReques
                         Text(
                             text = title,
                             color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.h2,
+                            style = MaterialTheme.typography.h2
                         )
                         IconButton(onClick = { visible = false }) {
                             BknIcon(icon = CommunityMaterial.Icon.cmd_close)
@@ -101,7 +98,6 @@ fun ErrorDialog(appError: AppError, bknNavigator: BknNavigator?, onDismissReques
     }
 }
 
-
 @Composable
 private fun getErrorTitleAndText(appError: AppError) = when (appError.type) {
     is ErrorType.Network -> "Network error" to "Something failed while talking to server."
@@ -112,7 +108,6 @@ private fun getErrorTitleAndText(appError: AppError) = when (appError.type) {
 
 @Composable
 private fun ErrorActions(appError: AppError, bknNavigator: BknNavigator?) = when (appError.type) {
-
     ErrorType.Authorization -> {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             OutlinedButton(
@@ -120,7 +115,7 @@ private fun ErrorActions(appError: AppError, bknNavigator: BknNavigator?) = when
                     bknNavigator?.popBackStackTo(HomeScreenDestination.route, true)
                     bknNavigator?.navigateToLogin()
                 },
-                colors = secondaryButtonColors(),
+                colors = secondaryButtonColors()
             ) {
                 Text("Login again")
             }
@@ -129,4 +124,3 @@ private fun ErrorActions(appError: AppError, bknNavigator: BknNavigator?) = when
 
     else -> {}
 }
-

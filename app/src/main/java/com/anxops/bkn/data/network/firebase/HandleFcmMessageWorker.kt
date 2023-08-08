@@ -26,15 +26,14 @@ class HandleFcmMessageWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-
         when (inputData.getString("app_message_type")) {
-
             MessageType.RIDES_UPDATED.type -> {
                 ridesRepository.refreshRides()
 
                 val count = inputData.getString("count") ?: "0"
                 notifier.show(
-                    applicationContext, NotificationData.DestinationDeepLink(
+                    applicationContext,
+                        NotificationData.DestinationDeepLink(
                         title = "Rides updated!",
                         text = "$count rides where imported from strava!",
                         to = HomeScreenDestination.invoke(section = HomeSections.Rides.id)
@@ -47,13 +46,13 @@ class HandleFcmMessageWorker @AssistedInject constructor(
             }
 
             MessageType.PROFILE_SYNC.type -> {
-
                 profileRepository.refreshProfile()
                 bikeRepository.refreshBikes()
                 ridesRepository.refreshRides()
 
                 notifier.show(
-                    applicationContext, NotificationData.DestinationDeepLink(
+                    applicationContext,
+                        NotificationData.DestinationDeepLink(
                         title = "Sync complete!",
                         text = "Profile synchronization complete",
                         to = HomeScreenDestination.invoke(HomeSections.Home.name)
@@ -66,13 +65,13 @@ class HandleFcmMessageWorker @AssistedInject constructor(
 
                 val id = inputData.getString("id") ?: ""
                 notifier.show(
-                    applicationContext, NotificationData.DestinationDeepLink(
+                    applicationContext,
+                        NotificationData.DestinationDeepLink(
                         title = "New activity!",
-                        text = "New activity imported from strava ${id?.let { "($id)" }}!",
+                        text = "New activity imported from strava ${id.let { "($id)" }}!",
                         to = RideScreenDestination.invoke(id)
                     )
                 )
-
             }
         }
 

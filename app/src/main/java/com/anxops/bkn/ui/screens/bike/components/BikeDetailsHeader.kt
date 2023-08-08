@@ -27,70 +27,53 @@ import com.anxops.bkn.util.formatDistanceAsKm
 
 @Composable
 fun BikeDetailsHeader(bike: Bike) {
-
     val headerBg = MaterialTheme.colors.primaryVariant
 
     val gradient = Brush.horizontalGradient(
         0f to headerBg,
-        1f to headerBg.copy(alpha = 0.7f),
+        1f to headerBg.copy(alpha = 0.7f)
     )
 
     val verticalGradient = Brush.verticalGradient(
         0f to headerBg,
-        1f to headerBg.copy(alpha = 0.8f),
+        1f to headerBg.copy(alpha = 0.8f)
     )
 
     val headerHeight = 170.dp
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(headerHeight)
-            .background(headerBg)
+        modifier = Modifier.fillMaxWidth().height(headerHeight).background(headerBg)
     ) {
-
         Column(Modifier.fillMaxHeight()) {
             Box(modifier = Modifier.weight(1f)) {
                 AsyncImage(
                     url = bike.photoUrl,
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     alignment = Alignment.TopCenter
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
 //                        .background(gradient)
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(verticalGradient)
+                    modifier = Modifier.fillMaxSize().background(verticalGradient)
                 )
-
             }
-
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 10.dp)
+            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(horizontal = 16.dp).padding(bottom = 10.dp)
                 .align(Alignment.BottomStart)
         ) {
-
 //            HeaderInfo(item = "Brand", detail = bike.brandName ?: "")
 //            HeaderInfo(item = "Model", detail = bike.modelName ?: "")
 //            HeaderInfo(item = "Distance", detail = formatDistanceAsKm(bike.distance?.toInt() ?: 0))
-
 
             Text(
                 modifier = Modifier,
                 text = formatDistanceAsKm(bike.distance?.toInt() ?: 0),
                 color = MaterialTheme.colors.secondary,
-                style = MaterialTheme.typography.h2,
+                style = MaterialTheme.typography.h2
             )
             Text(
                 modifier = Modifier,
@@ -104,20 +87,13 @@ fun BikeDetailsHeader(bike: Bike) {
             bike.type.name,
             color = MaterialTheme.colors.onSecondary,
             style = MaterialTheme.typography.h3,
-            modifier = Modifier
-                .padding(16.dp)
-                .padding(bottom = 10.dp)
-                .background(
-                    color = MaterialTheme.colors.secondary,
-                    shape = RoundedCornerShape(6.dp)
-                )
-                .padding(horizontal = 10.dp, vertical = 2.dp)
-                .align(Alignment.BottomEnd)
+            modifier = Modifier.padding(16.dp).padding(bottom = 10.dp).background(
+                color = MaterialTheme.colors.secondary,
+                shape = RoundedCornerShape(6.dp)
+            ).padding(horizontal = 10.dp, vertical = 2.dp).align(Alignment.BottomEnd)
         )
-
     }
 }
-
 
 @Composable
 fun HeaderInfo(
@@ -132,22 +108,18 @@ fun HeaderInfo(
         horizontalArrangement = Arrangement.Start
     ) {
         Text(
-            modifier = modifier
-                .weight(1f)
-                .padding(start = 4.dp),
+            modifier = modifier.weight(1f).padding(start = 4.dp),
             text = "$item: ",
             color = color,
-            style = MaterialTheme.typography.h3,
+            style = MaterialTheme.typography.h3
 
-            )
+        )
         Text(
-            modifier = modifier
-                .weight(3f)
-                .padding(start = 3.dp),
+            modifier = modifier.weight(3f).padding(start = 3.dp),
             text = detail,
             color = color.copy(alpha = 0.8f),
             style = MaterialTheme.typography.h3,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
     }
 }

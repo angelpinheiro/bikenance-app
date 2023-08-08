@@ -13,14 +13,13 @@ import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.successOrException
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Duration
+import java.time.Instant
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.Instant
-import javax.inject.Inject
-
 
 sealed class HomeEvent {
     object Logout : HomeEvent()
@@ -32,7 +31,7 @@ class HomeViewModel @Inject constructor(
     private val api: Api,
     private val db: AppDb,
     private val profileRepository: ProfileRepositoryFacade,
-    private val appInfoRepository: AppInfoRepositoryFacade,
+    private val appInfoRepository: AppInfoRepositoryFacade
 ) : ViewModel() {
 
     val events: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
@@ -79,7 +78,6 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun allowRefresh(appInfo: AppInfo): Boolean {
-        return Instant.ofEpochMilli(appInfo.lastRidesRefreshRequest)
-            .isBefore(Instant.now().minus(Duration.ofDays(1)))
+        return Instant.ofEpochMilli(appInfo.lastRidesRefreshRequest).isBefore(Instant.now().minus(Duration.ofDays(1)))
     }
 }

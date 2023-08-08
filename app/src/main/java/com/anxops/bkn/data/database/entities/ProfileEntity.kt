@@ -23,12 +23,12 @@ data class ProfileEntity(
     @ColumnInfo(name = "ytd_ride_total_distance") val ytdRideTotalDistance: Double = 0.0,
     @ColumnInfo(name = "ytd_ride_totals_duration") val ytdRideTotalDuration: Double = 0.0,
     @ColumnInfo(name = "all_ride_totals_distance") val allRideTotalDistance: Double = 0.0,
-    @ColumnInfo(name = "all_ride_total_duration") val allRideTotalDuration: Double = 0.0,
+    @ColumnInfo(name = "all_ride_total_duration") val allRideTotalDuration: Double = 0.0
 
-    ) {
+) {
     fun toDomain(): Profile {
         return Profile(
-            _id = _id ?: "",
+            _id = _id,
             userId = userId,
             username = username,
             firstname = firstName,

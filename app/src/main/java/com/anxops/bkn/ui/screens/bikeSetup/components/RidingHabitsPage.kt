@@ -31,10 +31,8 @@ import com.anxops.bkn.ui.shared.components.FadeInFadeOutAnimatedVisibility
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
-
 @Composable
 fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () -> Unit = {}) {
-
     val showDialog = remember {
         mutableStateOf(false)
     }
@@ -58,7 +56,6 @@ fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () 
                     style = MaterialTheme.typography.h1
                 )
 
-
                 IconButton(onClick = { showDialog.value = !showDialog.value }) {
                     BknIcon(
                         CommunityMaterial.Icon2.cmd_information,
@@ -73,7 +70,6 @@ fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () 
                 TextAlign.Center
             )
 
-
             BikeSetupDivider(20.dp)
 
             OutlinedButton(
@@ -84,21 +80,16 @@ fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () 
             ) {
                 Text(text = "Agree and finish!", Modifier.padding(2.dp))
             }
-
         }
 
         FadeInFadeOutAnimatedVisibility(visible = showDialog.value) {
             Card(
-                backgroundColor = MaterialTheme.colors.primary, elevation = 10.dp,
+                backgroundColor = MaterialTheme.colors.primary,
+                elevation = 10.dp
             ) {
-
                 Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 26.dp)
-                        .padding(bottom = 26.dp, top = 16.dp)
+                    Modifier.fillMaxWidth().padding(horizontal = 26.dp).padding(bottom = 26.dp, top = 16.dp)
                 ) {
-
                     Box(Modifier.fillMaxWidth()) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterStart),
@@ -107,9 +98,7 @@ fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () 
                             style = MaterialTheme.typography.h2
                         )
 
-
-                        IconButton(modifier = Modifier.align(Alignment.CenterEnd),
-                            onClick = { showDialog.value = !showDialog.value }) {
+                        IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = { showDialog.value = !showDialog.value }) {
                             BknIcon(
                                 CommunityMaterial.Icon.cmd_close,
                                 MaterialTheme.colors.onPrimary,
@@ -131,7 +120,7 @@ fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () 
                         } (${avgActivity.hours()} hours) and ${avgActivity.count.toInt()} rides per month.",
                         color = MaterialTheme.colors.onPrimary,
                         style = MaterialTheme.typography.h3,
-                        fontWeight = FontWeight.Light,
+                        fontWeight = FontWeight.Light
                     )
 
                     Text(
@@ -145,12 +134,10 @@ fun RidingHabitsPage(stats: AthleteStats, details: SetupDetails, onContinue: () 
                         } hours) in ${stats.recentRideTotals.count.toInt()} rides.",
                         color = MaterialTheme.colors.onPrimary,
                         style = MaterialTheme.typography.h3,
-                        fontWeight = FontWeight.Light,
+                        fontWeight = FontWeight.Light
                     )
                 }
             }
         }
-
     }
-
 }

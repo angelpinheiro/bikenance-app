@@ -47,7 +47,6 @@ fun RevisionFreqEdit(
     onSaveChanges: () -> Unit = {},
     onFrequencyChange: (RevisionFrequency) -> Unit
 ) {
-
     val unit by remember(frequency) {
         mutableStateOf(frequency.unit)
     }
@@ -59,8 +58,6 @@ fun RevisionFreqEdit(
     Column(
         Modifier.fillMaxWidth()
     ) {
-
-
         Text(
             text = "Service cycle",
             style = MaterialTheme.typography.h3,
@@ -73,14 +70,12 @@ fun RevisionFreqEdit(
         ) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_repeat,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(22.dp)
+                modifier = Modifier.padding(end = 10.dp).size(22.dp)
             )
             Text(
                 text = "${frequency.displayText()} (${editing.displayStatus()})",
                 color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h3
             )
         }
 
@@ -90,17 +85,16 @@ fun RevisionFreqEdit(
             modifier = Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
         )
 
-
         FreqUnitCarousel(selected = frequency.unit, onSelected = {
             onFrequencyChange(
                 frequency.copy(
-                    unit = it, every = frequency.every.coerceIn(
+                    unit = it,
+                        every = frequency.every.coerceIn(
                         revisionUnitRange(it)
                     )
                 )
             )
         })
-
 
         Text(
             text = "Cycle duration (From ${range.first} to ${range.last})",
@@ -109,66 +103,59 @@ fun RevisionFreqEdit(
         )
 
         Box(
-            modifier = Modifier
-                .padding(top = 16.dp, bottom = 26.dp)
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.padding(top = 16.dp, bottom = 26.dp).padding(horizontal = 16.dp)
         ) {
-
             when (unit) {
                 RevisionUnit.KILOMETERS -> RevisionFrequencyDistanceEdit(
-                    frequency, onChange = onFrequencyChange
+                    frequency,
+                    onChange = onFrequencyChange
                 )
 
                 RevisionUnit.HOURS -> RevisionFrequencyHoursEdit(
-                    frequency, onChange = onFrequencyChange
+                    frequency,
+                    onChange = onFrequencyChange
                 )
 
                 RevisionUnit.MONTHS, RevisionUnit.WEEKS, RevisionUnit.YEARS -> RevisionFrequencyIntervalEdit(
-                    frequency, onChange = onFrequencyChange
+                    frequency,
+                    onChange = onFrequencyChange
                 )
             }
         }
 
         Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Spacer(
-                modifier = Modifier
-                    .height(52.dp)
-                    .width(1.dp)
+                modifier = Modifier.height(52.dp).width(1.dp)
             )
             if (showSave) {
-                OutlinedButton(modifier = Modifier.weight(1f),
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                    onClick = { onSaveChanges() }) {
+                    onClick = { onSaveChanges() }
+                ) {
                     Text(text = "Confirm service cycle", Modifier.padding(5.dp))
                 }
             }
             Spacer(
-                modifier = Modifier
-                    .height(52.dp)
-                    .width(1.dp)
+                modifier = Modifier.height(52.dp).width(1.dp)
             )
-
         }
-
-
     }
-
 }
 
 @Composable
 fun RevisionFrequencyIntervalEdit(
-    frequency: RevisionFrequency, onChange: (RevisionFrequency) -> Unit = {}
+    frequency: RevisionFrequency,
+    onChange: (RevisionFrequency) -> Unit = {}
 ) {
     CustomNumberPicker(
         value = frequency.every,
         increment = 1,
         suffix = frequency.unit.name,
-        range = revisionUnitRange(frequency.unit),
+        range = revisionUnitRange(frequency.unit)
     ) {
         onChange(frequency.copy(every = it))
     }
@@ -176,7 +163,8 @@ fun RevisionFrequencyIntervalEdit(
 
 @Composable
 fun RevisionFrequencyHoursEdit(
-    frequency: RevisionFrequency, onChange: (RevisionFrequency) -> Unit = {}
+    frequency: RevisionFrequency,
+    onChange: (RevisionFrequency) -> Unit = {}
 ) {
     CustomNumberPicker(
         value = frequency.every,
@@ -190,7 +178,8 @@ fun RevisionFrequencyHoursEdit(
 
 @Composable
 fun RevisionFrequencyDistanceEdit(
-    frequency: RevisionFrequency, onChange: (RevisionFrequency) -> Unit = {}
+    frequency: RevisionFrequency,
+    onChange: (RevisionFrequency) -> Unit = {}
 ) {
     CustomNumberPicker(
         value = frequency.every,
@@ -211,13 +200,12 @@ fun decrementBy(value: Int, decrement: Int, range: IntRange): Int {
     return (((value / decrement) * decrement) - decrement).coerceIn(range)
 }
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FreqUnitCarousel(
-    selected: RevisionUnit, onSelected: (RevisionUnit) -> Unit = {}
+    selected: RevisionUnit,
+    onSelected: (RevisionUnit) -> Unit = {}
 ) {
-
     val units = remember {
         listOf(
             RevisionUnit.KILOMETERS,
@@ -249,7 +237,7 @@ fun FreqUnitCarousel(
         Modifier.fillMaxWidth(),
         state = scroll,
         horizontalArrangement = Arrangement.Center,
-        contentPadding = PaddingValues(
+            contentPadding = PaddingValues(
             horizontal = 6.dp
         )
     ) {
@@ -261,19 +249,17 @@ fun FreqUnitCarousel(
                     modifier = Modifier.padding(horizontal = 3.dp),
                     onClick = { onSelected(unit) },
                     colors = ChipDefaults.chipColors(
-                        backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primaryVariant,
-                        contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
-                    ),
+                    backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primaryVariant,
+                    contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
+                ),
                     leadingIcon = {
-                        BknIcon(
-                            icon = CommunityMaterial.Icon.cmd_check,
-                            modifier = Modifier
-                                .padding(start = 6.dp)
-                                .size(10.dp),
-                            color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
+                    BknIcon(
+                        icon = CommunityMaterial.Icon.cmd_check,
+                        modifier = Modifier.padding(start = 6.dp).size(10.dp),
+                        color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
 
-                        )
-                    },
+                    )
+                }
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 16.dp),

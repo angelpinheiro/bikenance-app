@@ -45,5 +45,4 @@ class BaseRepositoryTest {
 
         Assert.assertEquals(expectedException, (result as Result.Error).exception)
     }
-
 }

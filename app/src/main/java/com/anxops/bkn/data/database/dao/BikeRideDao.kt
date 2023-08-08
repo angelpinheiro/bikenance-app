@@ -5,7 +5,6 @@ import androidx.room.*
 import com.anxops.bkn.data.database.entities.BikeRideEntity
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
 interface BikeRideDao {
 
@@ -38,6 +37,4 @@ interface BikeRideDao {
 
     @Query("DELETE FROM bike_ride")
     suspend fun clear()
-
-
 }

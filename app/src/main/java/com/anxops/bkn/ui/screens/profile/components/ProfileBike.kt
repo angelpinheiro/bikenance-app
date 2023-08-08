@@ -24,21 +24,14 @@ import com.anxops.bkn.ui.theme.BknGrey
 import com.anxops.bkn.ui.theme.strava
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
-
 @Composable
 fun ProfileBike(bike: Bike, onCheckedChange: ((Boolean) -> Unit) = {}) {
-
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        elevation = 1.dp,
+        modifier = Modifier.fillMaxWidth(),
+        elevation = 1.dp
     ) {
-
         Column(
-            modifier = Modifier
-                .width(250.dp)
-                .background(MaterialTheme.colors.surface)
-                .padding(10.dp),
+            modifier = Modifier.width(250.dp).background(MaterialTheme.colors.surface).padding(10.dp)
         ) {
             Row(
                 modifier = Modifier.padding(5.dp),
@@ -58,7 +51,7 @@ fun ProfileBike(bike: Bike, onCheckedChange: ((Boolean) -> Unit) = {}) {
 
             Text(
                 text = (bike.brandName ?: "") + " " + (bike.modelName ?: ""),
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h3
             )
 
             Text(
@@ -79,8 +72,6 @@ fun ProfileBike(bike: Bike, onCheckedChange: ((Boolean) -> Unit) = {}) {
                     colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.strava)
                 )
             }
-
         }
     }
-
 }

@@ -8,7 +8,6 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-
 @SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
     primary = md_theme_light_primary,
@@ -22,9 +21,8 @@ private val LightColorPalette = lightColors(
     surface = md_theme_light_surface,
     onSurface = md_theme_light_onSurface,
     primaryVariant = md_theme_light_primary_variant,
-    secondaryVariant = md_theme_light_secondary_variant,
+    secondaryVariant = md_theme_light_secondary_variant
 )
-
 
 private val DarkColorPalette = darkColors(
     primary = md_theme_dark_primary,
@@ -38,9 +36,8 @@ private val DarkColorPalette = darkColors(
     surface = md_theme_dark_surface,
     onSurface = md_theme_dark_onSurface,
     primaryVariant = md_theme_dark_primary_variant,
-    secondaryVariant = md_theme_dark_secondary_variant,
+    secondaryVariant = md_theme_dark_secondary_variant
 )
-
 
 @Composable
 fun BikenanceAndroidTheme(

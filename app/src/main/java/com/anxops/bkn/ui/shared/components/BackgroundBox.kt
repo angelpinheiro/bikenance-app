@@ -12,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
@@ -30,18 +28,14 @@ fun BackgroundBox(
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.backgroundBox),
+        modifier = modifier.fillMaxSize().background(MaterialTheme.colors.backgroundBox),
         contentAlignment = contentAlignment
     ) {
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.polygon_bg_alt),
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(0.05f)
+            modifier = Modifier.fillMaxSize().alpha(0.05f)
         )
         content()
     }
@@ -50,14 +44,10 @@ fun BackgroundBox(
 @Preview
 @Composable
 fun BackgroundBoxPreview() {
-    BikenanceAndroidTheme() {
+    BikenanceAndroidTheme {
         BackgroundBox(
-            modifier = Modifier
-                .width(600.dp)
-                .height(1200.dp)
-        ) {
-
-        }
+            modifier = Modifier.width(600.dp).height(1200.dp)
+        ) {}
     }
 }
 
@@ -66,11 +56,7 @@ fun BackgroundBoxPreview() {
 fun BackgroundBoxPreviewDark() {
     BikenanceAndroidTheme(darkTheme = true) {
         BackgroundBox(
-            modifier = Modifier
-                .width(600.dp)
-                .height(1200.dp)
-        ) {
-
-        }
+            modifier = Modifier.width(600.dp).height(1200.dp)
+        ) {}
     }
 }

@@ -1,8 +1,8 @@
 package com.anxops.bkn.data.repository
 
-import com.anxops.bkn.data.network.ApiException
 import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.util.LoadableState
+import java.util.concurrent.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.concurrent.CancellationException
 
 /**
  * Sealed interface representing a result of an operation that can be either a Success with data
@@ -143,7 +142,6 @@ fun <T> Flow<T>.asResult(): Flow<Result<T>> {
         }
 }
 
-
 fun <T> Flow<T>.asLoadableState(): Flow<LoadableState<T>> {
     return this.map<T, LoadableState<T>> {
         LoadableState.Success(it)
@@ -161,13 +159,11 @@ suspend inline fun <T> runCatchingResult(block: suspend () -> T): Result<T> {
     return try {
         val result = block()
         Result.Success(result)
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         Timber.e(e)
         Result.Error(e)
     }
 }
-
 
 /**
  * Base repository class that provides a result function that executes a block within a specified coroutine dispatcher,
@@ -184,8 +180,7 @@ open class BaseRepository(private val dispatcher: CoroutineDispatcher = Dispatch
             try {
                 val result = block()
                 Result.Success(result)
-            }
-            catch (e: Throwable) {
+            } catch (e: Throwable) {
                 Timber.e(e)
                 Result.Error(e)
             }

@@ -8,7 +8,6 @@ import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeStats
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.util.toLocalDateTime
-import java.time.LocalDateTime
 
 @Entity(tableName = "bike")
 data class BikeEntity(
@@ -25,7 +24,7 @@ data class BikeEntity(
     @ColumnInfo(name = "full_suspension") val fullSuspension: Boolean = false,
     @ColumnInfo(name = "configDOne") val configDone: Boolean = false,
     @ColumnInfo(name = "type") val type: String,
-    @Embedded val stats : BikeStatsEntity? = null
+    @Embedded val stats: BikeStatsEntity? = null
 ) {
     fun toDomain(): Bike {
         return Bike(
@@ -48,20 +47,13 @@ data class BikeEntity(
 }
 
 data class BikeStatsEntity(
-    @ColumnInfo("ride_count")
-    val rideCount: Double? = null,
-    @ColumnInfo("total_duration")
-    val duration: Double = 0.0,
-    @ColumnInfo("total_distance")
-    val distance: Double = 0.0,
-    @ColumnInfo("total_elevationGain")
-    val elevationGain: Double = 0.0,
-    @ColumnInfo("average_speed")
-    val averageSpeed: Double? = null,
-    @ColumnInfo("max_speed")
-    val maxSpeed: Double? = null,
-    @ColumnInfo("last_ride_date")
-    val lastRideDate: String? = null,
+    @ColumnInfo("ride_count") val rideCount: Double? = null,
+    @ColumnInfo("total_duration") val duration: Double = 0.0,
+    @ColumnInfo("total_distance") val distance: Double = 0.0,
+    @ColumnInfo("total_elevationGain") val elevationGain: Double = 0.0,
+    @ColumnInfo("average_speed") val averageSpeed: Double? = null,
+    @ColumnInfo("max_speed") val maxSpeed: Double? = null,
+    @ColumnInfo("last_ride_date") val lastRideDate: String? = null
 ) {
     fun toDomain(): BikeStats {
         return BikeStats(

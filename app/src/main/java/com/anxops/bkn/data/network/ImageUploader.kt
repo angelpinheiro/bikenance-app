@@ -1,7 +1,8 @@
 package com.anxops.bkn.data.network
 
 class ImageUploadRequest(
-    val userId: String, val data: ByteArray
+    val userId: String,
+    val data: ByteArray
 )
 
 interface ImageUploader {

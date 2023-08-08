@@ -16,7 +16,6 @@ import com.anxops.bkn.data.model.Profile
 import com.anxops.bkn.data.model.Usage
 import com.anxops.bkn.util.formatAsIso8061
 
-
 fun Profile.toEntity(): ProfileEntity {
     return ProfileEntity(
         _id = _id,
@@ -91,7 +90,7 @@ fun Maintenance.toEntity(): MaintenanceEntity {
         componentType = componentType.name,
         type = type.name,
         defaultFrequencyEvery = defaultFrequency.every,
-        defaultFrequencyUnit = defaultFrequency.unit.name,
+        defaultFrequencyUnit = defaultFrequency.unit.name
     )
 }
 
@@ -110,6 +109,3 @@ fun BikeStats.toEntity(): BikeStatsEntity {
         lastRideDate = lastRideDate?.formatAsIso8061()
     )
 }
-
-
-

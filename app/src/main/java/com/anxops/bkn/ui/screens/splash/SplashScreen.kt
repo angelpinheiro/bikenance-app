@@ -32,30 +32,30 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @RootNavGraph(start = true)
 @Destination(
-    deepLinks = [DeepLink(
+    deepLinks = [
+        DeepLink(
         uriPattern = "bikenance://garage?section={section}"
     ), DeepLink(
         uriPattern = "bikenance://notification?route={route}"
-    )]
+    )
+    ]
 )
 @Composable
 fun SplashScreen(
     navigator: DestinationsNavigator,
     viewModel: SplashScreenViewModel = hiltViewModel(),
     section: String?,
-    route: String?,
+    route: String?
 
-    ) {
+) {
     val context = LocalContext.current
     val nav = BknNavigator(navigator)
 
     val isLogged = viewModel.isLogged.collectAsState()
-
 
     route?.let {
         nav.popBackStack()
@@ -68,8 +68,11 @@ fun SplashScreen(
             is CheckLoginState.LoggedIn -> {
                 SendTokenToServerWorker.launch(context)
                 nav.popBackStack()
-                if (section != null) nav.navigateToGarage(section)
-                else nav.navigateToGarage()
+                if (section != null) {
+                    nav.navigateToGarage(section)
+                } else {
+                    nav.navigateToGarage()
+                }
             }
 
             is CheckLoginState.NotLoggedIn -> {
@@ -88,11 +91,8 @@ fun SplashScreen(
         }
     }
 
-
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.surface),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -119,15 +119,10 @@ fun SplashScreen(
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.pwrdby_strava_stack),
             contentDescription = stringResource(R.string.powered_by_strava),
-            modifier = Modifier
-                .size(120.dp)
-                .padding(bottom = 50.dp)
-                .align(Alignment.BottomCenter)
+            modifier = Modifier.size(120.dp).padding(bottom = 50.dp).align(Alignment.BottomCenter)
         )
     }
-
 }
-
 
 @ExperimentalMaterialNavigationApi
 @Preview(showBackground = true)

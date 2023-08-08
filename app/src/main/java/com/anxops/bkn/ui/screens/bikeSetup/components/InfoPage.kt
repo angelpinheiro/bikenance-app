@@ -14,9 +14,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun InfoPage(onContinue: ()->Unit = {}) {
+fun InfoPage(onContinue: () -> Unit = {}) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
         Text(
             modifier = Modifier.padding(bottom = 20.dp),
             text = "Bike Setup",
@@ -25,7 +24,7 @@ fun InfoPage(onContinue: ()->Unit = {}) {
         )
 
         Text(
-            modifier =  Modifier.padding(bottom = 10.dp),
+            modifier = Modifier.padding(bottom = 10.dp),
             text = "We need some essential information about your bike and riding habits.",
             color = MaterialTheme.colors.onPrimary,
             style = MaterialTheme.typography.h2,
@@ -34,7 +33,7 @@ fun InfoPage(onContinue: ()->Unit = {}) {
         )
 
         Text(
-            modifier =  Modifier.padding(bottom = 20.dp),
+            modifier = Modifier.padding(bottom = 20.dp),
             text = "This will help us to provide you with the best maintenance recommendations.",
             color = MaterialTheme.colors.onPrimary,
             style = MaterialTheme.typography.h2,
@@ -44,7 +43,7 @@ fun InfoPage(onContinue: ()->Unit = {}) {
 
         OutlinedButton(
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-            onClick = {onContinue()},
+            onClick = { onContinue() },
             modifier = Modifier.padding(top = 25.dp)
 
         ) {

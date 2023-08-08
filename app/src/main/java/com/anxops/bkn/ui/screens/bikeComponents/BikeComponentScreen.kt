@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -66,9 +65,8 @@ fun BikeComponentScreen(
     navigator: ResultBackNavigator<Boolean>,
     viewModel: BikeComponentScreenViewModel = hiltViewModel(),
     bikeId: String,
-    componentId: String,
+    componentId: String
 ) {
-
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
     val state by viewModel.state.collectAsState()
@@ -96,7 +94,6 @@ fun BikeComponentScreen(
         is BikeComponentScreenState.Loading -> Loading()
         is BikeComponentScreenState.Error -> Text(text = "Error")
         is BikeComponentScreenState.Loaded -> {
-
             BottomSheetScaffold(
                 scaffoldState = scaffoldState,
                 sheetPeekHeight = 0.dp,
@@ -111,35 +108,28 @@ fun BikeComponentScreen(
                 sheetContent = {
                     Box(
                         // this box acts as an overlay
-                        modifier = Modifier
-
-                            .fillMaxSize()
-                            .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.6f))
-                            .padding(top = 1.dp), contentAlignment = Alignment.BottomCenter
+                        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.6f))
+                            .padding(top = 1.dp),
+                                contentAlignment = Alignment.BottomCenter
                     ) {
                         Surface(
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                             color = MaterialTheme.colors.primary
                         ) {
                             currentState.editingMaintenance?.let { m ->
-                                MaintenanceEdit(maintenance = m.editingMaintenance,
-                                    original = m.original,
-                                    onFrequencyChange = {
-                                        viewModel.onMaintenanceFreqUpdate(it)
-                                    },
-                                    onWearChange = {
-                                        viewModel.onMaintenanceWearUpdate(it)
-                                    },
-                                    onSaveChanges = {
-                                        viewModel.onConfirmEdit()
-                                    },
-                                    onClose = {
-                                        viewModel.onMaintenanceEdit(null)
-                                    })
+                                MaintenanceEdit(maintenance = m.editingMaintenance, original = m.original, onFrequencyChange = {
+                                    viewModel.onMaintenanceFreqUpdate(it)
+                                }, onWearChange = {
+                                    viewModel.onMaintenanceWearUpdate(it)
+                                }, onSaveChanges = {
+                                    viewModel.onConfirmEdit()
+                                }, onClose = {
+                                    viewModel.onMaintenanceEdit(null)
+                                })
                             }
                         }
                     }
-                },
+                }
 //                floatingActionButton = {
 //                    ExtendedFloatingActionButton(text = { Text("Replace component") }, icon = {
 //                        BknIcon(icon = CommunityMaterial.Icon3.cmd_wrench)
@@ -147,21 +137,12 @@ fun BikeComponentScreen(
 //                },
             ) {
                 BackgroundBox(contentAlignment = Alignment.TopCenter) {
-
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it)
+                        modifier = Modifier.fillMaxSize().padding(it)
                     ) {
-
                         Column(
-                            modifier = Modifier
-                                .verticalScroll(scrollState)
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .weight(1f)
+                            modifier = Modifier.verticalScroll(scrollState).fillMaxWidth().padding(16.dp).weight(1f)
                         ) {
-
                             // BikeComponentInfo(bikeComponent = currentState.component)
 
 //                            Row(
@@ -182,11 +163,7 @@ fun BikeComponentScreen(
 //                            }
 
                             Row(
-                                Modifier
-                                    .padding(top = 0.dp)
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                Modifier.padding(top = 0.dp).fillMaxWidth().padding(vertical = 10.dp).clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -203,11 +180,7 @@ fun BikeComponentScreen(
                             }
 
                             Row(
-                                Modifier
-                                    .padding(top = 0.dp)
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                Modifier.padding(top = 0.dp).fillMaxWidth().padding(vertical = 10.dp).clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -227,7 +200,6 @@ fun BikeComponentScreen(
                                 )
                             }
 
-
                             currentState.maintenances.forEach { m ->
                                 MaintenanceDetail(item = m) {
                                     viewModel.onMaintenanceEdit(m)
@@ -236,10 +208,7 @@ fun BikeComponentScreen(
                         }
 
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colors.primaryVariant)
-                                .padding(16.dp),
+                            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
 //                            ExtendedFloatingActionButton(text = { Text("Replace component") },
@@ -247,20 +216,20 @@ fun BikeComponentScreen(
 //                                    BknIcon(icon = CommunityMaterial.Icon3.cmd_wrench, modifier = Modifier.size(24.dp))
 //                                },
 //                                onClick = { })
-                            OutlinedButton(modifier = Modifier.fillMaxWidth(),
+                            OutlinedButton(
+                                modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                                onClick = { viewModel.onComponentReplace() }) {
+                                onClick = { viewModel.onComponentReplace() }
+                            ) {
                                 Text(text = "Replace component", Modifier.padding(5.dp))
                             }
                         }
-
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun MaintenanceEdit(
@@ -271,35 +240,25 @@ fun MaintenanceEdit(
     onSaveChanges: () -> Unit,
     onClose: () -> Unit
 ) {
-
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-
         Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+            Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
 
         ) {
-
             BikeComponentIcon(
                 type = maintenance.componentType,
                 tint = MaterialTheme.colors.onSurface,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.surface)
-                    .padding(5.dp)
+                modifier = Modifier.size(32.dp).clip(CircleShape).background(MaterialTheme.colors.surface).padding(5.dp)
             )
 
             Text(
                 stringResource(id = maintenance.type.resources().nameResId),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h2,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 10.dp),
+                modifier = Modifier.weight(1f).padding(horizontal = 10.dp),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
@@ -307,7 +266,6 @@ fun MaintenanceEdit(
             IconButton(onClick = { onClose() }) {
                 BknIcon(icon = CommunityMaterial.Icon.cmd_close)
             }
-
         }
 
         RevisionFreqEdit(
@@ -322,15 +280,19 @@ fun MaintenanceEdit(
 
 @Composable
 fun WearEdit(currentWear: Double, onUpdate: (Double) -> Unit) {
-    Slider(modifier = Modifier.fillMaxWidth(), colors = SliderDefaults.colors(
+    Slider(
+        modifier = Modifier.fillMaxWidth(),
+        colors = SliderDefaults.colors(
         activeTrackColor = MaterialTheme.colors.surface,
         thumbColor = MaterialTheme.colors.surface,
         inactiveTrackColor = MaterialTheme.colors.primaryVariant,
         inactiveTickColor = MaterialTheme.colors.surface.copy(alpha = 0.5f),
         activeTickColor = MaterialTheme.colors.surface
-    ), value = currentWear.toFloat(), onValueChange = { onUpdate(it.toDouble()) })
+    ),
+        value = currentWear.toFloat(),
+        onValueChange = { onUpdate(it.toDouble()) }
+    )
 }
-
 
 @Composable
 fun BikeComponentInfo(bikeComponent: BikeComponent) {
@@ -339,13 +301,8 @@ fun BikeComponentInfo(bikeComponent: BikeComponent) {
             BikeComponentIcon(
                 type = bikeComponent.type,
                 tint = MaterialTheme.colors.onPrimary,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(120.dp)
-                    .padding(24.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.primaryVariant)
-                    .padding(16.dp)
+                modifier = Modifier.align(Alignment.Center).size(120.dp).padding(24.dp).clip(CircleShape)
+                    .background(MaterialTheme.colors.primaryVariant).padding(16.dp)
             )
         }
         Text(
@@ -389,7 +346,5 @@ fun BikeComponentInfo(bikeComponent: BikeComponent) {
             textAlign = TextAlign.Center,
             maxLines = 1
         )
-
-
     }
 }
