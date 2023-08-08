@@ -8,8 +8,9 @@ The app relies on a [kotlin backend](https://github.com/angelpinheiro/bikenance-
 
 Below you can see some parts of the app that are currently being developed:
 
-| <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120"> | <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/7.png" width="120"> |
-|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|
+| <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120">  |
+|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:-------------------------------------:|
+| <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/8.png" width="120"> | <img src="assets/9.png" width="120"> | <img src="assets/10.png" width="120"> |
 
 > **Bikenance is an ongoing learning project**, there may be changes or updates made at any time without prior notice.
 
