@@ -1,35 +1,31 @@
 # 🚴‍ Bikenance
 
-Bikenance is an Android application that allows you to keep complete control over bike and component
-maintenance. With Bikenance, you can register your bikes, manage components, track maintenance, and
-receive reminders to keep your bikes in optimal condition. The app features seamless integration
-with Strava, a popular platform for tracking cycling activities.
+Bikenance is a work-in-progress Android app designed for bike enthusiasts who want to keep complete control over bike and component
+maintenances. The app features integration with [Strava](https://strava.com/), a popular platform for tracking cycling activities,
+enabling users to leverage their activity data for enhanced maintenance tracking.
 
-**This is an ongoing learning project** that I build to explore and enhance my programming skills
-and try new stuff. There may be changes or updates made at any time without prior notice.
+The app relies on a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built with the Ktor framework.
 
-Below you can see some screenshots of some parts off the app that are currently being developed.
+Below you can see some parts of the app that are currently being developed:
 
 | <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120"> | <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/7.png" width="120"> |
 |:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|
 
+> **Bikenance is an ongoing learning project**, there may be changes or updates made at any time without prior notice.
+
 ## Key Features
 
-- **Strava Integration**: Bikenance integrates with Strava, allowing you to leverage your
-  activity data for enhanced maintenance tracking.
+- **Strava Integration**: Bikenance integrates with Strava (import user profile and user bikes, and receive new user activities). Activity
+  data from Strava is used to update bike and component mileage and usage hours.
 
-- **Component Management**: Manage the components of your bikes, such as forks, wheels, brakes,
-  chains,
-  etc. Record details such as the brand, model, and installation date for each component, and
-  associate
-  them with your Strava-imported bikes.
+- **Component Management**: Manage the components of your bikes, such as forks, wheels, chains, etc. Record details such as the brand,
+  model, and installation date for each component, and associate them with your Strava-imported bikes.
 
-- **Maintenance Tracking**: Activity data from Strava is used to update component mileage and usage
-  hours.
+- **Maintenance Tracking**: Setup mileage-based or time-based maintenance rules for your bike components, which will be automatically
+  updated with each new activity.
 
-- **Maintenance Reminders**: Receive notifications and reminders when maintenance or component
-  replacement is due based on accumulated mileage and usage hours. Future smart calculations will
-  take into account your Strava activity parameters like avg power, or climatological data.
+- **Maintenance Reminders**: Receive timely notifications and reminders when maintenance tasks or component replacements are necessary,
+  calculated based on accumulated mileage and usage hours.
 
 - **Maintenance History**: Keep a maintenance history for each component. Record
   repairs, part replacements, adjustments, and other maintenance tasks performed.
@@ -38,13 +34,10 @@ Below you can see some screenshots of some parts off the app that are currently 
 
 ### MVP Version
 
-The MVP version of Bikenance will focus on the following functionalities:
-
 - Strava integration
-    - Login with strava
-    - Import user profile and bikes from Strava
-    - Keep track of user rides
-    - Display user rides
+  - Login with strava
+  - Import user profile and bikes from Strava
+  - Keep track of user past rides and receive new ones.
 - Bike components registration.
 - Basic maintenance tracking based on mileage and usage hours.
 - Maintenance reminders based on accumulated mileage and usage hours.
@@ -59,36 +52,28 @@ The MVP version of Bikenance will focus on the following functionalities:
   adjustments in case of changes or necessary modifications.
 
 - 🧠 Intelligent Wear Calculation
-    - Utilize activity parameters from Strava to weigh component wear. These parameters may include
-      terrain type, weather conditions, and activity intensity.
-    - Dynamic Wear Thresholds: Over time, the app analyzes the user's maintenance history to
-      determine personalized wear thresholds for each component. If a component consistently wears
-      out before the initially suggested threshold, the app adjusts the threshold accordingly for
-      future maintenance notifications.
+  - Utilize activity parameters from Strava to weigh component wear. These parameters may include
+    terrain type, weather conditions, and activity intensity.
+  - Dynamic Wear Thresholds: Over time, the app analyzes the user's maintenance history to
+    determine personalized wear thresholds for each component. If a component consistently wears
+    out before the initially suggested threshold, the app adjusts the threshold accordingly for
+    future maintenance notifications.
 
-## Architecture
+### Architecture
 
-Bikenance utilizes a client-server architecture, with a mobile app for Android and
-a [backend server](https://github.com/angelpinheiro/bikenance-backend).
+The app employs a clean-oriented architecture with MVVM in the UI layer. Use cases are implemented only when they encapsulate
+pertinent domain logic.
 
-### Android App
+I try to apply an **"offline first"** approach, emphasizing the ability to access local data even when an internet
+connection is unavailable. Future iterations could incorporate the option for offline remote updates.
 
-The Android app follow an MVVM architecture.
+**Tech stack**:
 
 - Jetpack Compose for modern UI development.
-- Room, Hilt, ViewModel, Coroutines, and other Android Jetpack Libraries.
-- Push Notifications: Firebase Cloud Messaging (FCM) for delivering push notifications.
-
-### Backend Server
-
-The Bikenance backend server comprises the following technologies:
-
-- Language: Kotlin
-- Framework: Ktor, a flexible and asynchronous web framework for building server applications.
-- Database: MongoDB, a NoSQL database used to store user profiles, bike data, and activity
-  information.
-- API Integration: Utilizes the Strava API to authenticate users, retrieve bike data, and receive
-  activity information.
+- Room for local persistence
+- Ktor client for remote api communication
+- Hilt for Dependency Injection.
+- Firebase Cloud Messaging (FCM) for delivering push notifications.
 
 ## Artwork attribution
 
