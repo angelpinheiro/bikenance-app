@@ -16,7 +16,6 @@ import com.anxops.bkn.data.network.Api
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
 import com.anxops.bkn.data.repository.RidesRepositoryFacade
-import com.anxops.bkn.data.repository.data
 import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel

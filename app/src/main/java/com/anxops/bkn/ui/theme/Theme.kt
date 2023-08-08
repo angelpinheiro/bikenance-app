@@ -60,7 +60,7 @@ fun BikenanceAndroidTheme(
             color = colors.primaryVariant
         )
         systemUiController.setNavigationBarColor(
-            color = colors.primary
+            color = colors.primaryVariant
         )
     }
 

@@ -9,7 +9,10 @@ import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.network.ImageUploadRequest
 import com.anxops.bkn.data.network.ImageUploader
 import com.anxops.bkn.data.preferences.BknDataStore
+import com.anxops.bkn.data.repository.AppError
 import com.anxops.bkn.data.repository.BikeRepositoryFacade
+import com.anxops.bkn.data.repository.ErrorType
+import com.anxops.bkn.data.repository.toAppError
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +29,7 @@ sealed class BikeEditScreenStatus {
     object Loading : BikeEditScreenStatus()
     object Saving : BikeEditScreenStatus()
     object Editing : BikeEditScreenStatus()
-    object Error : BikeEditScreenStatus()
+    object LoadFailed : BikeEditScreenStatus()
     object UpdateSuccess : BikeEditScreenStatus()
 }
 
@@ -34,6 +37,7 @@ data class BikeEditScreenState(
     val bike: Bike = Bike(_id = ""),
     val status: BikeEditScreenStatus = BikeEditScreenStatus.Loading,
     val imageLoadProgress: Float = 0f,
+    val error: AppError? = null
 )
 
 @HiltViewModel
@@ -47,13 +51,18 @@ class BikeEditScreenViewModel @Inject constructor(
     private val bikeFlow = MutableStateFlow(Bike(_id = ""))
     private val statusFlow = MutableStateFlow<BikeEditScreenStatus>(BikeEditScreenStatus.Loading)
     private val loadProgressFlow = MutableStateFlow(0.0f)
+    private val errorStateFlow = MutableStateFlow<AppError?>(null)
 
-    val state: StateFlow<BikeEditScreenState> =
-        combine(bikeFlow, statusFlow, loadProgressFlow) { bike, status, progress ->
-            BikeEditScreenState(
-                bike = bike, status = status, imageLoadProgress = progress
-            )
-        }.stateIn(viewModelScope, WhileUiSubscribed, BikeEditScreenState())
+    val state: StateFlow<BikeEditScreenState> = combine(
+        bikeFlow,
+        statusFlow,
+        loadProgressFlow,
+        errorStateFlow
+    ) { bike, status, progress, error ->
+        BikeEditScreenState(
+            bike = bike, status = status, imageLoadProgress = progress, error = error
+        )
+    }.stateIn(viewModelScope, WhileUiSubscribed, BikeEditScreenState())
 
 
     fun loadBike(bikeId: String) {
@@ -63,9 +72,9 @@ class BikeEditScreenViewModel @Inject constructor(
                     bikeFlow.update { r.data }
                     statusFlow.update { BikeEditScreenStatus.Editing }
                 }
-
-                else -> {
-                    statusFlow.update { BikeEditScreenStatus.Error }
+                is ApiResponse.Error -> {
+                    statusFlow.update { BikeEditScreenStatus.LoadFailed }
+                    errorStateFlow.update { r.exception.toAppError("Could not load bike") }
                 }
             }
         }
@@ -83,7 +92,9 @@ class BikeEditScreenViewModel @Inject constructor(
                     loadProgressFlow.update { 0.0f }
                     bikeFlow.update { it.copy(photoUrl = url) }
                 }, onFailure = {
-                    statusFlow.update { BikeEditScreenStatus.Error }
+                    loadProgressFlow.update { 0.0f }
+                    statusFlow.update { BikeEditScreenStatus.Editing }
+                    errorStateFlow.update { AppError(ErrorType.Unexpected) }
                 })
             }
 
@@ -119,7 +130,8 @@ class BikeEditScreenViewModel @Inject constructor(
                 statusFlow.emit(BikeEditScreenStatus.UpdateSuccess)
             } catch (err: Exception) {
                 Timber.e(err)
-                statusFlow.emit(BikeEditScreenStatus.Error)
+                statusFlow.emit(BikeEditScreenStatus.Editing)
+                errorStateFlow.update { AppError(ErrorType.Unexpected) } // TODO
             }
         }
     }
@@ -135,11 +147,16 @@ class BikeEditScreenViewModel @Inject constructor(
                     statusFlow.emit(BikeEditScreenStatus.UpdateSuccess)
                 } catch (err: Exception) {
                     Timber.e(err)
-                    statusFlow.emit(BikeEditScreenStatus.Error)
+                    statusFlow.emit(BikeEditScreenStatus.Editing)
+                    errorStateFlow.update { AppError(ErrorType.Unexpected) } // TODO
                 }
             }
         }
 
+    }
+
+    fun onDismissError() {
+        errorStateFlow.update { null }
     }
 
 

@@ -39,7 +39,7 @@ fun BikeScreenBottomBar(
     selectedItem: BikeSections, onItemSelected: (BikeSections) -> Unit
 ) {
     BottomNavigation(
-        elevation = 8.dp, backgroundColor = MaterialTheme.colors.primary
+        elevation = 8.dp, backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
 
         BikeSections.values().forEach { destination ->

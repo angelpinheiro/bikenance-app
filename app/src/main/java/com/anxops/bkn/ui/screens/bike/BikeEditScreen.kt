@@ -49,13 +49,16 @@ import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.bike.components.BikeEditTopBar
 import com.anxops.bkn.ui.shared.Loading
+import com.anxops.bkn.ui.shared.Message
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknLabelTopTextField
+import com.anxops.bkn.ui.shared.components.ErrorDialog
 import com.anxops.bkn.ui.shared.components.onBackgroundTextFieldColors
 import com.anxops.bkn.ui.theme.statusGood
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
@@ -89,9 +92,9 @@ fun BikeEditScreen(
         }, onClickBack = {
             bknNavigator.popBackStack()
         })
-    }) {
+    }) { padding ->
 
-        BackgroundBox(Modifier.padding(it), contentAlignment = Alignment.TopCenter) {
+        BackgroundBox(Modifier.padding(padding), contentAlignment = Alignment.TopCenter) {
 
             Column(
                 modifier = Modifier.fillMaxWidth()
@@ -103,27 +106,17 @@ fun BikeEditScreen(
                         Loading(color = Color.Transparent)
                     }
 
-
                     BikeEditScreenStatus.Saving -> {
-                        Loading("Updating bike...", Color.Transparent)
-                    }
-
-                    BikeEditScreenStatus.Error -> {
-                        Text(
-                            text = "An error occurred!",
-                            modifier = Modifier,
-                            color = MaterialTheme.colors.secondary
-                        )
+                        Loading("Updating bike...")
                     }
 
                     BikeEditScreenStatus.UpdateSuccess -> {
-                        Text(
-                            text = "Done!",
-                            modifier = Modifier,
-                            color = MaterialTheme.colors.secondary
-                        )
+                        Message(text = "Done!")
                     }
 
+                    BikeEditScreenStatus.LoadFailed -> {
+                        Message(text = "Could not load bike")
+                    }
 
                     BikeEditScreenStatus.Editing -> {
 
@@ -141,7 +134,7 @@ fun BikeEditScreen(
                         Box(
                             Modifier
                                 .fillMaxWidth()
-                                .background(MaterialTheme.colors.primary)
+                                .background(MaterialTheme.colors.primaryVariant)
                                 .padding(16.dp)
                         ) {
                             OutlinedButton(
@@ -157,9 +150,15 @@ fun BikeEditScreen(
                                 )
                             }
                         }
-
                     }
                 }
+            }
+        }
+
+        state.value.error?.let {
+            ErrorDialog(appError = it, bknNavigator = bknNavigator) {
+                viewModel.onDismissError()
+                navigator.popBackStack()
             }
         }
     }
@@ -171,16 +170,16 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
     val context = LocalContext.current
     val colors = onBackgroundTextFieldColors()
     val imageData = remember { mutableStateOf<Uri?>(null) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = (ActivityResultContracts.GetContent()),
-        onResult = { uri ->
-            imageData.value = uri
-            uri?.let {
-                val inputStream = context.contentResolver.openInputStream(it)
-                val imageByteArray = inputStream?.readBytes()
-                viewModel.updateBikeImage(imageByteArray)
-            }
-        })
+    val launcher =
+        rememberLauncherForActivityResult(contract = (ActivityResultContracts.GetContent()),
+            onResult = { uri ->
+                imageData.value = uri
+                uri?.let {
+                    val inputStream = context.contentResolver.openInputStream(it)
+                    val imageByteArray = inputStream?.readBytes()
+                    viewModel.updateBikeImage(imageByteArray)
+                }
+            })
 
 
 

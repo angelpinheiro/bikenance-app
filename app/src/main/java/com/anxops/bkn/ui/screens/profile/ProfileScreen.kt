@@ -39,6 +39,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.Loading
+import com.anxops.bkn.ui.shared.Message
 import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.anxops.bkn.ui.shared.components.BknLabelTopTextField
 import com.anxops.bkn.ui.shared.components.ErrorDialog
@@ -88,21 +89,9 @@ fun ProfileScreen(
                 Loading("Updating profile...")
             }
 
-//            ProfileScreenStatus.Error -> {
-//                Text(
-//                    text = "An error occurred!", modifier = Modifier, color = MaterialTheme.colors.secondary
-//                )
-//            }
-//
-//            ProfileScreenStatus.UpdateFailed -> {
-//                Text(
-//                    text = "Could not update profile!", modifier = Modifier, color = MaterialTheme.colors.secondary
-//                )
-//            }
-
             ProfileScreenStatus.UpdateSuccess -> {
-                Text(
-                    text = "Done!", modifier = Modifier, color = MaterialTheme.colors.secondary
+                Message(
+                    text = "Done!"
                 )
             }
 

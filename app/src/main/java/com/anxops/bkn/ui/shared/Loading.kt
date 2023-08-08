@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVariant) {
+fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVariant, contentColor: Color = MaterialTheme.colors.onPrimary) {
     Column(
         Modifier
             .fillMaxSize()
@@ -26,7 +26,7 @@ fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVar
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
-            color = MaterialTheme.colors.onPrimary,
+            color = contentColor,
             strokeWidth = 5.dp,
             modifier = Modifier
                 .size(50.dp)
@@ -36,8 +36,32 @@ fun Loading(text: String? = null, color: Color = MaterialTheme.colors.primaryVar
                 text = text,
                 modifier = Modifier
                     .padding(top = 16.dp),
-                color = MaterialTheme.colors.onPrimary
+                color = contentColor
             )
         }
     }
 }
+
+
+
+@Composable
+fun Message(text: String? = null, color: Color = MaterialTheme.colors.primaryVariant.copy(alpha = 0.6f), contentColor: Color = MaterialTheme.colors.onPrimary) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(color),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (text != null) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier
+                    .padding(top = 16.dp),
+                color = contentColor
+            )
+        }
+    }
+}
+

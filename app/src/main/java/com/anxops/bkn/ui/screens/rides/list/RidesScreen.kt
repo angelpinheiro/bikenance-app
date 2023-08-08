@@ -21,6 +21,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.rides.list.components.BikeRideItem
 import com.anxops.bkn.ui.screens.rides.list.components.RideAndBike
 import com.anxops.bkn.ui.shared.components.BknIcon
+import com.anxops.bkn.ui.shared.connectivityState
 import com.anxops.bkn.util.formatAsRelativeTime
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -76,17 +78,24 @@ fun RidesScreen(
 
     val pullRefreshState =
         rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { pagedRides.refresh() })
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
 
-        PagedRideList(rides = pagedRides, bikes = bikes.value, pullRefreshState = pullRefreshState, onClickOpenStrava = {
-            viewModel.openActivity(it)
-        }, onClickRide = {
-            bknNav.navigateToRide(it)
-        }, onBikeConfirm = { bike, ride ->
-            viewModel.onBikeRideConfirmed(ride, bike)
-        })
+        PagedRideList(rides = pagedRides,
+            bikes = bikes.value,
+            pullRefreshState = pullRefreshState,
+            onClickOpenStrava = {
+                viewModel.openActivity(it)
+            },
+            onClickRide = {
+                bknNav.navigateToRide(it)
+            },
+            onBikeConfirm = { bike, ride ->
+                viewModel.onBikeRideConfirmed(ride, bike)
+            })
+
         Text(
             text = "Updated $at",
             color = MaterialTheme.colors.onPrimary,

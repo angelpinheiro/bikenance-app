@@ -238,7 +238,7 @@ fun BikeComponentScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(MaterialTheme.colors.primary)
+                                .background(MaterialTheme.colors.primaryVariant)
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
