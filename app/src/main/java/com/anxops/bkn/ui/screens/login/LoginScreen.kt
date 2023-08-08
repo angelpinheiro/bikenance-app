@@ -153,16 +153,16 @@ fun LoginScreen(
 //                modifier = Modifier.padding(top = 60.dp)
 //            )
 //
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Use debug api", color = MaterialTheme.colors.onPrimary)
-                RadioButton(selected = useDebugApi.value, onClick = {
-                    viewModel.setUseDebugApi(useDebugApi.value.not())
-                }, colors = RadioButtonDefaults.colors(MaterialTheme.colors.onPrimary))
-            }
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
+//            ) {
+//                Text(text = "Use debug api", color = MaterialTheme.colors.onPrimary)
+//                RadioButton(selected = useDebugApi.value, onClick = {
+//                    viewModel.setUseDebugApi(useDebugApi.value.not())
+//                }, colors = RadioButtonDefaults.colors(MaterialTheme.colors.onPrimary))
+//            }
         }
 
         Box(
@@ -175,8 +175,6 @@ fun LoginScreen(
             }
 
         }
-
-
     }
 }
 

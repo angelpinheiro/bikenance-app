@@ -108,7 +108,7 @@ fun HomeScreen(
                                     .size(20.dp)
                             )
                         }
-                        IconButton(onClick = {
+                        /*IconButton(onClick = {
                             viewModel.logout()
                         }) {
                             BknIcon(
@@ -118,7 +118,7 @@ fun HomeScreen(
                                     .padding(horizontal = 6.dp)
                                     .size(20.dp)
                             )
-                        }
+                        }*/
                     } else if (selectedItem == HomeSections.Rides) {
                         if (allowRefresh) {
                             IconButton(onClick = {

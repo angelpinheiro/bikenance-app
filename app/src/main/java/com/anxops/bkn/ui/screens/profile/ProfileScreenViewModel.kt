@@ -17,6 +17,7 @@ import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,8 +36,13 @@ data class ProfileScreenState(
     val status: ProfileScreenStatus = ProfileScreenStatus.Loading,
     val profileImagePercent: Float = 0f,
     val profile: Profile = Profile.Empty,
-    val error: AppError? = null
+    val error: AppError? = null,
+    val logoutRequested: Boolean = false
 )
+
+sealed class ProfileScreenEvent {
+    object Logout : ProfileScreenEvent()
+}
 
 @HiltViewModel
 class ProfileScreenViewModel @Inject constructor(
@@ -50,6 +56,9 @@ class ProfileScreenViewModel @Inject constructor(
     private val profileFlow = MutableStateFlow(Profile.Empty)
     private val loadProgressFlow = MutableStateFlow(0.0f)
     private val errorStateFlow = MutableStateFlow<AppError?>(null)
+
+    private val eventFlow = MutableStateFlow<ProfileScreenEvent?>(null)
+    val events = eventFlow.asStateFlow()
 
     val state: StateFlow<ProfileScreenState> = combine(
         statusFlow, loadProgressFlow, profileFlow, errorStateFlow
@@ -112,6 +121,14 @@ class ProfileScreenViewModel @Inject constructor(
             }, onFailure = {
                 errorStateFlow.update { AppError(ErrorType.Unexpected, message = "Could not process the selected image") }
             })
+        }
+    }
+
+    fun onLogoutRequest() {
+        viewModelScope.launch {
+            profileRepository.logout().onSuccess {
+                eventFlow.emit(ProfileScreenEvent.Logout)
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mikepenz.iconics.typeface.IIcon
@@ -39,11 +40,11 @@ fun onSurfaceTextFieldColors(): TextFieldColors = TextFieldDefaults.textFieldCol
 
 @Composable
 fun onBackgroundTextFieldColors(): TextFieldColors = TextFieldDefaults.textFieldColors(
-    backgroundColor = MaterialTheme.colors.surface,
-    cursorColor = MaterialTheme.colors.onSurface,
+    backgroundColor = MaterialTheme.colors.primary,
+    cursorColor = MaterialTheme.colors.onPrimary,
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
-    textColor = MaterialTheme.colors.onSurface,
+    textColor = MaterialTheme.colors.onPrimary,
 )
 
 
@@ -112,7 +113,7 @@ fun BknLabelTopTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
+    colors: TextFieldColors = onBackgroundTextFieldColors()
 ) {
 
     TextField(
