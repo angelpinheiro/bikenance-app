@@ -1,10 +1,11 @@
 # 🚴‍ Bikenance
 
-Bikenance is a work-in-progress Android app designed for bike enthusiasts who want to keep complete control over bike and component
-maintenances. The app features integration with [Strava](https://strava.com/), a popular platform for tracking cycling activities,
-enabling users to leverage their activity data for enhanced maintenance tracking.
+Bikenance is an Android app for bike enthusiasts who want to keep complete control over their bike maintenances.
+The app features integration with [Strava](https://strava.com/), a popular platform for tracking cycling activities,
+enabling users to leverage their activity data for enhanced maintenance tracking. The app relies on
+a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built with the Ktor framework.
 
-The app relies on a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built with the Ktor framework.
+> **Bikenance is an ongoing learning project**, there may be changes or updates made at any time without prior notice.
 
 Below you can see some parts of the app that are currently being developed:
 
@@ -12,38 +13,25 @@ Below you can see some parts of the app that are currently being developed:
 |:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:-------------------------------------:|
 | <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/8.png" width="120"> | <img src="assets/9.png" width="120"> | <img src="assets/10.png" width="120"> |
 
-> **Bikenance is an ongoing learning project**, there may be changes or updates made at any time without prior notice.
+## Features
 
-## Key Features
+## Features
 
-- **Strava Integration**: Bikenance integrates with Strava (import user profile and user bikes, and receive new user activities). Activity
-  data from Strava is used to update bike and component mileage and usage hours.
+- **Strava Integration**: Connect your Strava account to import your user profile and bikes. Stay updated with new activity information. The
+  app uses Strava activity data to keep track of mileage and usage hours for your bikes and components.
 
-- **Component Management**: Manage the components of your bikes, such as forks, wheels, chains, etc. Record details such as the brand,
-  model, and installation date for each component, and associate them with your Strava-imported bikes.
+- **Component Management**: Easily add or remove bike components. Keep a record of when each component was installed and link them to your
+  Strava-imported bikes.
 
-- **Maintenance Tracking**: Setup mileage-based or time-based maintenance rules for your bike components, which will be automatically
-  updated with each new activity.
+- **Maintenance Tracking**: Set up maintenance rules based on mileage or time intervals for your bike components. The app will automatically
+  adjust these rules with each new activity you undertake.
 
-- **Maintenance Reminders**: Receive timely notifications and reminders when maintenance tasks or component replacements are necessary,
-  calculated based on accumulated mileage and usage hours.
+- **Maintenance Reminders**: Receive timely notifications and reminders for maintenance tasks and component replacements.
 
-- **Maintenance History**: Keep a maintenance history for each component. Record
-  repairs, part replacements, adjustments, and other maintenance tasks performed.
+- **Maintenance History**: Maintain a detailed history for each component's maintenance. Keep track of repairs, part replacements,
+  adjustments, and other tasks performed on your bike.
 
-## Roadmap
-
-### MVP Version
-
-- Strava integration
-  - Login with strava
-  - Import user profile and bikes from Strava
-  - Keep track of user past rides and receive new ones.
-- Bike components registration.
-- Basic maintenance tracking based on mileage and usage hours.
-- Maintenance reminders based on accumulated mileage and usage hours.
-
-### Future versions
+### Future development ideas
 
 - 📄 Invoice and Note Storage: Allow users to store invoices and notes related to repairs carried out
   at specialized stores.
@@ -60,12 +48,12 @@ Below you can see some parts of the app that are currently being developed:
     out before the initially suggested threshold, the app adjusts the threshold accordingly for
     future maintenance notifications.
 
-### Architecture
+## Architecture
 
 The app employs a clean-oriented architecture with MVVM in the UI layer. Use cases are implemented only when they encapsulate
 pertinent domain logic.
 
-I try to apply an **"offline first"** approach, emphasizing the ability to access local data even when an internet
+The design follows an **"offline first"** approach, emphasizing the ability to access local data even when an internet
 connection is unavailable. Future iterations could incorporate the option for offline remote updates.
 
 **Tech stack**:
@@ -75,6 +63,8 @@ connection is unavailable. Future iterations could incorporate the option for of
 - Ktor client for remote api communication
 - Hilt for Dependency Injection.
 - Firebase Cloud Messaging (FCM) for delivering push notifications.
+
+The app relies on a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built with the Ktor framework.
 
 ## Artwork attribution
 
