@@ -7,14 +7,6 @@ a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built wit
 
 > **Bikenance is an ongoing learning project**, there may be changes or updates made at any time without prior notice.
 
-Below you can see some parts of the app that are currently being developed:
-
-| <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120">  |
-|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:-------------------------------------:|
-| <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/8.png" width="120"> | <img src="assets/9.png" width="120"> | <img src="assets/10.png" width="120"> |
-
-## Features
-
 ## Features
 
 - **Strava Integration**: Connect your Strava account to import your user profile and bikes. Stay updated with new activity information. The
@@ -31,7 +23,35 @@ Below you can see some parts of the app that are currently being developed:
 - **Maintenance History**: Maintain a detailed history for each component's maintenance. Keep track of repairs, part replacements,
   adjustments, and other tasks performed on your bike.
 
-### Future development ideas
+## UI
+
+Bikenance UI is powered by Jetpack Compose, and I personally crafted the app's design. Below you can see some parts of the app that are
+currently being developed:
+
+| <img src="assets/1.png" width="120"> | <img src="assets/2.png" width="120"> | <img src="assets/3.png" width="120"> | <img src="assets/4.png" width="120"> | <img src="assets/5.png" width="120">  |
+|:------------------------------------:|:------------------------------------:|:------------------------------------:|:------------------------------------:|:-------------------------------------:|
+| <img src="assets/6.png" width="120"> | <img src="assets/7.png" width="120"> | <img src="assets/8.png" width="120"> | <img src="assets/9.png" width="120"> | <img src="assets/10.png" width="120"> |
+
+## Architecture
+
+The app is built upon the Clean Architecture philosophy, emphasizing a pragmatic approach, which means avoiding
+overengineering while integrating essential principles of clean and modular design. The UI layer adheres to the MVVM (Model-View-ViewModel)
+pattern.
+
+The design follows an **"offline first"** approach, emphasizing the ability to access local data even when an internet
+connection is unavailable. Future iterations could incorporate the option for offline remote updates.
+
+#### Tech stack
+
+- Jetpack Compose for modern UI development.
+- Room for local persistence
+- Ktor client for remote api communication
+- Hilt for Dependency Injection.
+- Firebase Cloud Messaging (FCM) for delivering push notifications.
+
+The app relies on a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built with the Ktor framework.
+
+## Future development lines
 
 - 📄 Invoice and Note Storage: Allow users to store invoices and notes related to repairs carried out
   at specialized stores.
@@ -47,24 +67,6 @@ Below you can see some parts of the app that are currently being developed:
     determine personalized wear thresholds for each component. If a component consistently wears
     out before the initially suggested threshold, the app adjusts the threshold accordingly for
     future maintenance notifications.
-
-## Architecture
-
-The app employs a clean-oriented architecture with MVVM in the UI layer. Use cases are implemented only when they encapsulate
-pertinent domain logic.
-
-The design follows an **"offline first"** approach, emphasizing the ability to access local data even when an internet
-connection is unavailable. Future iterations could incorporate the option for offline remote updates.
-
-**Tech stack**:
-
-- Jetpack Compose for modern UI development.
-- Room for local persistence
-- Ktor client for remote api communication
-- Hilt for Dependency Injection.
-- Firebase Cloud Messaging (FCM) for delivering push notifications.
-
-The app relies on a [kotlin backend](https://github.com/angelpinheiro/bikenance-backend) built with the Ktor framework.
 
 ## Artwork attribution
 
