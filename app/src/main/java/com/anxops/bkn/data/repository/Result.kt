@@ -1,14 +1,12 @@
 package com.anxops.bkn.data.repository
 
 import com.anxops.bkn.data.network.ApiResponse
-import com.anxops.bkn.util.LoadableState
 import java.util.concurrent.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -140,15 +138,6 @@ fun <T> Flow<T>.asResult(): Flow<Result<T>> {
             Timber.e(it)
             emit(Result.Error(it))
         }
-}
-
-fun <T> Flow<T>.asLoadableState(): Flow<LoadableState<T>> {
-    return this.map<T, LoadableState<T>> {
-        LoadableState.Success(it)
-    }.onStart { emit(LoadableState.Loading) }.catch {
-        Timber.e(it)
-        emit(LoadableState.Error)
-    }
 }
 
 /**
