@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.RevisionFrequency
@@ -110,7 +111,7 @@ fun BikeComponentScreen(
                         // this box acts as an overlay
                         modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.6f))
                             .padding(top = 1.dp),
-                                contentAlignment = Alignment.BottomCenter
+                        contentAlignment = Alignment.BottomCenter
                     ) {
                         Surface(
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -143,25 +144,6 @@ fun BikeComponentScreen(
                         Column(
                             modifier = Modifier.verticalScroll(scrollState).fillMaxWidth().padding(16.dp).weight(1f)
                         ) {
-                            // BikeComponentInfo(bikeComponent = currentState.component)
-
-//                            Row(
-//                                Modifier
-//                                    .padding(top = 0.dp)
-//                                    .fillMaxWidth()
-//                                    .padding(vertical = 10.dp)
-//                                    .clip(RoundedCornerShape(8.dp))
-//                                    .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
-//                                verticalAlignment = Alignment.CenterVertically,
-//                                horizontalArrangement = Arrangement.SpaceEvenly
-//
-//                            ) {
-//                                BikeStat(
-//                                    title = "Alias",
-//                                    value = "${currentState.component.alias ?: "Add an alias..."}"
-//                                )
-//                            }
-
                             Row(
                                 Modifier.padding(top = 0.dp).fillMaxWidth().padding(vertical = 10.dp).clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)),
@@ -170,11 +152,11 @@ fun BikeComponentScreen(
 
                             ) {
                                 BikeStat(
-                                    title = "Mounted on",
+                                    title = stringResource(R.string.component_mounted_on_label),
                                     value = "${currentState.bike.displayName()}"
                                 )
                                 BikeStat(
-                                    title = "Installation date",
+                                    title = stringResource(R.string.component_installation_date_label),
                                     value = "${currentState.component.from?.formatAsDate()}"
                                 )
                             }
@@ -187,15 +169,15 @@ fun BikeComponentScreen(
 
                             ) {
                                 BikeStat(
-                                    title = "Distance",
+                                    title = stringResource(R.string.component_distance_label),
                                     value = "${currentState.component.displayDistance()}"
                                 )
                                 BikeStat(
-                                    title = "Duration",
+                                    title = stringResource(R.string.component_duration_label),
                                     value = "${currentState.component.from?.formatElapsedTimeUntilNow()}"
                                 )
                                 BikeStat(
-                                    title = "Active hours",
+                                    title = stringResource(R.string.component_active_hours_label),
                                     value = "${currentState.component.displayDuration()}"
                                 )
                             }
@@ -211,17 +193,12 @@ fun BikeComponentScreen(
                             modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-//                            ExtendedFloatingActionButton(text = { Text("Replace component") },
-//                                icon = {
-//                                    BknIcon(icon = CommunityMaterial.Icon3.cmd_wrench, modifier = Modifier.size(24.dp))
-//                                },
-//                                onClick = { })
                             OutlinedButton(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
                                 onClick = { viewModel.onComponentReplace() }
                             ) {
-                                Text(text = "Replace component", Modifier.padding(5.dp))
+                                Text(text = stringResource(R.string.replace_component_button_text), Modifier.padding(5.dp))
                             }
                         }
                     }
@@ -283,12 +260,12 @@ fun WearEdit(currentWear: Double, onUpdate: (Double) -> Unit) {
     Slider(
         modifier = Modifier.fillMaxWidth(),
         colors = SliderDefaults.colors(
-        activeTrackColor = MaterialTheme.colors.surface,
-        thumbColor = MaterialTheme.colors.surface,
-        inactiveTrackColor = MaterialTheme.colors.primaryVariant,
-        inactiveTickColor = MaterialTheme.colors.surface.copy(alpha = 0.5f),
-        activeTickColor = MaterialTheme.colors.surface
-    ),
+            activeTrackColor = MaterialTheme.colors.surface,
+            thumbColor = MaterialTheme.colors.surface,
+            inactiveTrackColor = MaterialTheme.colors.primaryVariant,
+            inactiveTickColor = MaterialTheme.colors.surface.copy(alpha = 0.5f),
+            activeTickColor = MaterialTheme.colors.surface
+        ),
         value = currentWear.toFloat(),
         onValueChange = { onUpdate(it.toDouble()) }
     )

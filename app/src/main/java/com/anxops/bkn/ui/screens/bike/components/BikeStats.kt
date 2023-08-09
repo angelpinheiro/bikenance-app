@@ -14,8 +14,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.BikeStats
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
@@ -36,7 +38,7 @@ fun BikeStats(bikeStats: BikeStats) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             BikeStat(
-                title = "Rides",
+                title = stringResource(R.string.bike_stats_rides),
                 value = "${bikeStats.rideCount?.toInt() ?: 0}",
                 icon = CommunityMaterial.Icon.cmd_bike_fast,
                 modifier = Modifier.weight(1f)
@@ -46,7 +48,7 @@ fun BikeStats(bikeStats: BikeStats) {
                 color = MaterialTheme.colors.primary
             )
             BikeStat(
-                title = "Distance",
+                title = stringResource(R.string.bike_stats_distance),
                 value = "${formatDistanceAsShortKm(bikeStats.distance.toInt())}",
                 icon = CommunityMaterial.Icon3.cmd_map_marker_distance,
                 modifier = Modifier.weight(1f)
@@ -56,7 +58,7 @@ fun BikeStats(bikeStats: BikeStats) {
                 color = MaterialTheme.colors.primary
             )
             BikeStat(
-                title = "Ascent",
+                title = stringResource(R.string.bike_stats_ascent),
                 value = "${formatElevationShort(bikeStats.elevationGain.toInt())}",
                 modifier = Modifier.weight(1f),
                 icon = CommunityMaterial.Icon2.cmd_image_filter_hdr
@@ -68,7 +70,7 @@ fun BikeStats(bikeStats: BikeStats) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             BikeStat(
-                title = "Speed",
+                title = stringResource(R.string.bike_stats_speed),
                 value = "${bikeStats.averageSpeed?.toInt()} kmh",
                 icon = CommunityMaterial.Icon.cmd_clock_fast,
                 modifier = Modifier.weight(1f)
@@ -78,7 +80,7 @@ fun BikeStats(bikeStats: BikeStats) {
                 color = MaterialTheme.colors.primary
             )
             BikeStat(
-                title = "Max Speed",
+                title = stringResource(R.string.bike_stats_max_speed),
                 value = "${bikeStats.maxSpeed?.toInt()} kmh",
                 modifier = Modifier.weight(1f),
                 icon = CommunityMaterial.Icon3.cmd_speedometer
@@ -88,7 +90,7 @@ fun BikeStats(bikeStats: BikeStats) {
                 color = MaterialTheme.colors.primary
             )
             BikeStat(
-                title = "Last ride",
+                title = stringResource(R.string.bike_stats_last_ride),
                 value = "${bikeStats.lastRideDate?.formatAsDayMonth()}",
                 modifier = Modifier.weight(1f),
                 icon = CommunityMaterial.Icon2.cmd_history

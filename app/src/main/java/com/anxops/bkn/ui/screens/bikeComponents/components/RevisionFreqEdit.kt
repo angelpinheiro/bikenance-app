@@ -28,9 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.RevisionFrequency
 import com.anxops.bkn.data.model.RevisionUnit
@@ -59,7 +61,7 @@ fun RevisionFreqEdit(
         Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Service cycle",
+            text = stringResource(R.string.freq_edit_service_cycle_text),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
         )
@@ -80,7 +82,7 @@ fun RevisionFreqEdit(
         }
 
         Text(
-            text = "Cycle type",
+            text = stringResource(R.string.freq_edit_cycle_type_text),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
         )
@@ -89,7 +91,7 @@ fun RevisionFreqEdit(
             onFrequencyChange(
                 frequency.copy(
                     unit = it,
-                        every = frequency.every.coerceIn(
+                    every = frequency.every.coerceIn(
                         revisionUnitRange(it)
                     )
                 )
@@ -97,7 +99,7 @@ fun RevisionFreqEdit(
         })
 
         Text(
-            text = "Cycle duration (From ${range.first} to ${range.last})",
+            text = stringResource(R.string.freq_edit_cycle_duration_from_to, range.first, range.last),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.padding(top = 10.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
         )
@@ -136,7 +138,7 @@ fun RevisionFreqEdit(
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
                     onClick = { onSaveChanges() }
                 ) {
-                    Text(text = "Confirm service cycle", Modifier.padding(5.dp))
+                    Text(text = stringResource(R.string.confirm_service_cycle_button_text), Modifier.padding(5.dp))
                 }
             }
             Spacer(
@@ -216,15 +218,13 @@ fun FreqUnitCarousel(
         )
     }
 
-    val unitText = remember {
-        mapOf(
-            RevisionUnit.KILOMETERS to "By distance",
-            RevisionUnit.HOURS to "By usage",
-            RevisionUnit.WEEKS to "By weeks",
-            RevisionUnit.MONTHS to "By months",
-            RevisionUnit.YEARS to "By years"
-        )
-    }
+    val unitText = mapOf(
+        RevisionUnit.KILOMETERS to stringResource(R.string.revision_unit_by_distance),
+        RevisionUnit.HOURS to stringResource(R.string.revision_unit_by_usage),
+        RevisionUnit.WEEKS to stringResource(R.string.revision_unit_by_weeks),
+        RevisionUnit.MONTHS to stringResource(R.string.revision_unit_by_months),
+        RevisionUnit.YEARS to stringResource(R.string.revision_unit_by_years)
+    )
 
     val scroll = rememberLazyListState()
 
@@ -237,7 +237,7 @@ fun FreqUnitCarousel(
         Modifier.fillMaxWidth(),
         state = scroll,
         horizontalArrangement = Arrangement.Center,
-            contentPadding = PaddingValues(
+        contentPadding = PaddingValues(
             horizontal = 6.dp
         )
     ) {
@@ -249,17 +249,17 @@ fun FreqUnitCarousel(
                     modifier = Modifier.padding(horizontal = 3.dp),
                     onClick = { onSelected(unit) },
                     colors = ChipDefaults.chipColors(
-                    backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primaryVariant,
-                    contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
-                ),
+                        backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primaryVariant,
+                        contentColor = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onPrimary
+                    ),
                     leadingIcon = {
-                    BknIcon(
-                        icon = CommunityMaterial.Icon.cmd_check,
-                        modifier = Modifier.padding(start = 6.dp).size(10.dp),
-                        color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
+                        BknIcon(
+                            icon = CommunityMaterial.Icon.cmd_check,
+                            modifier = Modifier.padding(start = 6.dp).size(10.dp),
+                            color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
 
-                    )
-                }
+                        )
+                    }
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 16.dp),

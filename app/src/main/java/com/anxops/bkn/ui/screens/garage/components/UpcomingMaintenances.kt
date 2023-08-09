@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.data.model.StatusLevel
@@ -47,7 +48,13 @@ fun UpcomingMaintenances(
             ) {
                 Text(
                     modifier = Modifier.padding(bottom = 10.dp),
-                    text = if (items.isNotEmpty()) "Upcoming maintenance" else "No upcoming maintenance",
+                    text = if (items.isNotEmpty()) {
+                        stringResource(R.string.upcoming_maintenance_title)
+                    } else {
+                        stringResource(
+                            R.string.upcoming_maintenance_empty_title
+                        )
+                    },
                     style = MaterialTheme.typography.h2,
                     color = MaterialTheme.colors.onBackground
                 )
@@ -146,42 +153,11 @@ fun UpcomingMaintenanceItem(item: Maintenance, onClickItem: (Maintenance) -> Uni
                     modifier = Modifier.padding(end = 10.dp).size(20.dp)
                 )
                 Text(
-                    text = "Estimated date: ${item.estimatedDate?.formatAsMonthYear()}",
+                    text = stringResource(R.string.maintenance_estimated_date, item.estimatedDate?.formatAsMonthYear() ?: "--"),
                     color = MaterialTheme.colors.onPrimary,
                     style = MaterialTheme.typography.h3
                 )
             }
-
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//
-//
-//                Text(
-//                    text = "Last ${item.title}: 3 months ago",
-//                    color = MaterialTheme.colors.onBackground,
-//                    style = MaterialTheme.typography.h4,
-//                    modifier = Modifier.padding(start = 0.dp)
-//                )
-//            }
-//
-//            if (item.percentage < 1.0) {
-//                Text(
-//                    text = "Estimated duration: 2 months",
-//                    color = MaterialTheme.colors.onBackground,
-//                    style = MaterialTheme.typography.h4,
-//                )
-//            } else {
-//                Text(
-//                    text = "Service required",
-//                    color = MaterialTheme.colors.onPrimary,
-//                    style = MaterialTheme.typography.h4,
-//                    modifier = Modifier
-//                        .padding(top = 6.dp)
-//                        .background(
-//                            color = MaterialTheme.colors.statusDanger, shape = CircleShape
-//                        )
-//                        .padding(horizontal = 6.dp, vertical = 1.dp)
-//                )
-//            }
         }
     }
 }

@@ -27,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -72,7 +74,7 @@ fun BikesPager(
                 verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Bikes (${bikes.size})",
+                text = stringResource(R.string.bikes_pager_title),
                 style = MaterialTheme.typography.h2,
                 color = MaterialTheme.colors.onBackground
             )

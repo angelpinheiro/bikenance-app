@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Categorías de componentes -->
+    <string name="component_category_suspension">Suspensión</string>
+    <string name="component_category_brakes">Frenos</string>
+    <string name="component_category_wheels">Ruedas</string>
+    <string name="component_category_misc">Cuadro</string>
+    <string name="component_category_transmission">Transmisión</string>
+
+    <!-- Tipos de componentes -->
+    <string name="componentType_BRAKE_LEVER">Maneta de freno</string>
+    <string name="componentType_CASSETTE">Casete</string>
+    <string name="componentType_DISC_BRAKE">Freno de disco</string>
+    <string name="componentType_FORK">Horquilla</string>
+    <string name="componentType_PEDAL_CLIPLESS">Pedales automáticos</string>
+    <string name="componentType_REAR_HUB">Buje trasero</string>
+    <string name="componentType_THRU_AXLE">Eje pasante</string>
+    <string name="componentType_WHEELSET">Rueda</string>
+    <string name="componentType_FRAME_BEARINGS">Rodamientos del cuadro</string>
+    <string name="componentType_CABLE_HOUSING">Funda y cables</string>
+    <string name="componentType_CHAIN">Cadena</string>
+    <string name="componentType_DISC_PAD">Pastilla freno</string>
+    <string name="componentType_DROPER_POST">Tija telescópica</string>
+    <string name="componentType_FRONT_HUB">Buje delantero</string>
+    <string name="componentType_REAR_DERAUILLEURS">Desviador trasero</string>
+    <string name="componentType_REAR_SUSPENSION">Suspensión trasera</string>
+    <string name="componentType_TIRE">Neumático</string>
+    <string name="componentType_HANDLEBAR_TAPE">Cinta de manillar</string>
+    <string name="componentType_CHAIN_RING">Plato</string>
+    <string name="componentType_CUSTOM">Personalizado</string>
+
+    <!-- Descripciones de componentes -->
+    <string name="componentType_HANDLEBAR_TAPE_description">Proporciona agarre, comodidad y un acabado elegante al manillar.</string>
+    <string name="componentType_FRAME_BEARINGS_description">Permite un movimiento suave y rotación del pivote de la suspensión trasera.</string>
+    <string name="componentType_BRAKE_LEVER_description">Controla el sistema de frenado de la bicicleta.</string>
+    <string name="componentType_CASSETTE_description">Engranajes en el buje de la rueda trasera.</string>
+    <string name="componentType_CHAIN_RING_description">Anillo dentado circular conectado a las bielas, responsable de mover la cadena.</string>
+    <string name="componentType_DISC_BRAKE_description">Sistema de frenado que utiliza un rotor y una pinza de freno de disco.</string>
+    <string name="componentType_FORK_description">Soporte de la rueda delantera con suspensión y dirección.</string>
+    <string name="componentType_PEDAL_CLIPLESS_description">Fija los zapatos de forma segura a los pedales.</string>
+    <string name="componentType_REAR_HUB_description">Centro de la rueda trasera con rodamientos.</string>
+    <string name="componentType_THRU_AXLE_description">Eje rígido y seguro para las ruedas.</string>
+    <string name="componentType_WHEELSET_description">Par de ruedas que incluye llantas, radios y bujes.</string>
+    <string name="componentType_CABLE_HOUSING_description">Cables de cambio y freno y su cubierta protectora.</string>
+    <string name="componentType_CHAIN_description">Transfiere la potencia de los pedales a la rueda trasera.</string>
+    <string name="componentType_DISC_PAD_description">Pastillas de freno para frenos de disco.</string>
+    <string name="componentType_DROPER_POST_description">Tija de sillín ajustable para cambios rápidos de altura.</string>
+    <string name="componentType_FRONT_HUB_description">Centro de la rueda delantera con rodamientos.</string>
+    <string name="componentType_REAR_DERAUILLEURS_description">Cambia la cadena entre marchas en la rueda trasera.</string>
+    <string name="componentType_REAR_SUSPENSION_description">Proporciona suspensión en la rueda trasera.</string>
+    <string name="componentType_TIRE_description">Capa externa de goma para las ruedas.</string>
+    <string name="componentType_CUSTOM_description">Personalizado</string>
+
+</resources>

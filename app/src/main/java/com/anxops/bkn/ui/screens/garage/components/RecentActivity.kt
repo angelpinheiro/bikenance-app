@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.FadeInFadeOutAnimatedVisibility
@@ -29,7 +31,7 @@ fun RecentActivity(rides: List<BikeRide>, onActivitySelected: (BikeRide) -> Unit
 
             Column {
                 Text(
-                    text = "Recent activity (${formatDistanceAsKm(total)})",
+                    text = stringResource(R.string.recent_activity_title, formatDistanceAsKm(total)),
                     modifier = Modifier.padding(start = 10.dp, top = 24.dp, bottom = 10.dp),
                     style = MaterialTheme.typography.h2,
                     color = MaterialTheme.colors.onBackground

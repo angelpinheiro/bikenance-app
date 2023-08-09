@@ -182,13 +182,13 @@ fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
         ).value
 
         Text(
-            text = "Building profile",
+            text = stringResource(R.string.building_profile_text),
             modifier = Modifier.padding(top = 30.dp),
             style = MaterialTheme.typography.h2
         )
 
         Text(
-            text = "We're fetching your bikes and rides from Strava. It'll be a quick process, and we'll let you know once your profile is ready!",
+            text = stringResource(R.string.fetching_data_explanation),
             modifier = Modifier.padding(horizontal = 30.dp).padding(top = 10.dp, bottom = 50.dp),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
@@ -208,7 +208,7 @@ fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
             )
         }
         Text(
-            text = "Fetching from Strava...",
+            text = stringResource(R.string.fetching_data_text),
             modifier = Modifier.padding(top = 20.dp),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Thin,

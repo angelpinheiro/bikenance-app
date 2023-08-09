@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -103,13 +104,13 @@ fun EmptyGarage(onClickAction: () -> Unit = {}) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "There are no bikes on your garage",
+            text = stringResource(R.string.no_bikes_message),
             modifier = Modifier.padding(vertical = 30.dp, horizontal = 30.dp),
             style = MaterialTheme.typography.h2
         )
 
         Text(
-            text = "Get started by syncing your bikes from strava or manually create a new bike",
+            text = stringResource(R.string.no_bikes_get_started),
             modifier = Modifier.padding(vertical = 30.dp, horizontal = 30.dp),
             style = MaterialTheme.typography.h3,
             textAlign = TextAlign.Center
@@ -123,7 +124,7 @@ fun EmptyGarage(onClickAction: () -> Unit = {}) {
 
         OutlinedButton(onClick = { onClickAction() }, modifier = Modifier.padding(top = 20.dp)) {
             Text(
-                text = "Sync bikes with Strava",
+                text = stringResource(R.string.sync_bikes_with_strava),
                 color = MaterialTheme.colors.primary,
                 style = MaterialTheme.typography.h3
             )

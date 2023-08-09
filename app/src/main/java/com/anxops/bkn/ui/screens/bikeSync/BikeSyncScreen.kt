@@ -22,8 +22,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.components.GarageBikeCard
 import com.anxops.bkn.ui.shared.Loading
@@ -59,13 +61,13 @@ fun BikeSyncScreen(
                         Modifier.fillMaxWidth().background(MaterialTheme.colors.primaryVariant).padding(26.dp)
                     ) {
                         Text(
-                            text = "STRAVA bike tracking",
+                            text = stringResource(R.string.strava_bike_tracking),
                             style = MaterialTheme.typography.h2,
                             color = MaterialTheme.colors.onPrimary
                         )
 
                         Text(
-                            text = "You have ${state.bikes.size} bikes on Strava. Check the ones you want to track to receive maintenance recommendations.",
+                            text = stringResource(R.string.strava_bike_tracking_message, state.bikes.size),
                             style = MaterialTheme.typography.h3,
                             color = MaterialTheme.colors.onPrimary
 
@@ -112,7 +114,7 @@ fun BikeSyncScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = "Let's go!",
+                                text = stringResource(R.string.bike_tracking_confirm_button_text),
                                 modifier = Modifier.padding(4.dp),
                                 color = MaterialTheme.colors.onPrimary
                             )

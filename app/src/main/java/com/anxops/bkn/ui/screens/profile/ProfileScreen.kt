@@ -38,10 +38,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.destinations.HomeScreenDestination
 import com.anxops.bkn.ui.shared.Loading
@@ -94,16 +96,16 @@ fun ProfileScreen(
     BackgroundBox(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (state.status) {
             ProfileScreenStatus.Loading -> {
-                Loading("Loading profile...")
+                Loading(stringResource(R.string.loading_profile))
             }
 
             ProfileScreenStatus.Saving -> {
-                Loading("Updating profile...")
+                Loading(stringResource(R.string.updating_profile))
             }
 
             ProfileScreenStatus.UpdateSuccess -> {
                 Message(
-                    text = "Done!"
+                    text = stringResource(R.string.done_message)
                 )
             }
 
@@ -123,14 +125,14 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(26.dp))
 
                         Text(
-                            text = "Hi, ${state.profile.firstname}!",
+                            text = stringResource(R.string.profile_hi, state.profile.firstname ?: ""),
                             style = MaterialTheme.typography.h1,
                             modifier = Modifier.padding(start = 10.dp),
                             color = MaterialTheme.colors.onPrimary
                         )
 
                         Text(
-                            text = "You can edit your profile below",
+                            text = stringResource(R.string.edit_profile_subtitle),
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(start = 10.dp),
                             color = MaterialTheme.colors.onPrimary
@@ -154,7 +156,7 @@ fun ProfileScreen(
                         ) {
                             BknLabelTopTextField(
                                 value = state.profile.firstname,
-                                label = "First name",
+                                label = stringResource(R.string.profile_first_name_label),
                                 modifier = Modifier.fillMaxWidth(),
                                 onValueChange = {
                                     viewModel.updateFirstname(it)
@@ -162,7 +164,7 @@ fun ProfileScreen(
                             )
                             BknLabelTopTextField(
                                 value = state.profile.lastname,
-                                label = "Last name",
+                                label = stringResource(R.string.profile_last_name_label),
                                 modifier = Modifier.fillMaxWidth(),
                                 onValueChange = {
                                     viewModel.updateLastname(it)
@@ -195,7 +197,7 @@ fun ProfileScreen(
                             enabled = (state.profile.firstname != null && state.profile.lastname != null)
                         ) {
                             Text(
-                                text = "Save profile",
+                                text = stringResource(R.string.save_profile_button_text),
                                 modifier = Modifier.padding(4.dp),
                                 color = MaterialTheme.colors.onPrimary
                             )

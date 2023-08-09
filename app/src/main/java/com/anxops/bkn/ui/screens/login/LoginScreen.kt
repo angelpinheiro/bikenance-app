@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -109,16 +110,16 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.bicycle),
-                contentDescription = "Bikenance Logo",
+                contentDescription = stringResource(R.string.bikenance_logo_content_description),
                 modifier = Modifier.size(80.dp)
             )
             Text(
-                text = "Bikenance",
+                text = stringResource(R.string.login_screen_title),
                 color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.h2
             )
             Text(
-                text = "Bike maintenance done right!",
+                text = stringResource(R.string.login_screen_subtitle),
                 color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier.padding(top = 5.dp, bottom = 100.dp)
@@ -193,7 +194,7 @@ fun SignInWithStrava(onClick: () -> Unit = {}) {
         modifier = Modifier.padding(top = 10.dp).requiredWidth(277.dp)
 
     ) {
-        Text(text = "Sign In with Strava", color = Color.White, modifier = Modifier.padding(6.dp))
+        Text(text = stringResource(R.string.sign_in_with_strava), color = Color.White, modifier = Modifier.padding(6.dp))
     }
 }
 
@@ -202,22 +203,11 @@ fun ConnectWithStrava(onClick: () -> Unit = {}) {
     IconButton(onClick = onClick) {
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.btn_strava_connect),
-            contentDescription = "Connect with Strava",
+            contentDescription = stringResource(R.string.connect_with_strava),
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.width(220.dp)
         )
     }
-//
-//    Button(
-//        colors = ButtonDefaults.buttonColors(
-//            backgroundColor = MaterialTheme.colors.strava
-//        ), onClick = onClick, modifier = Modifier
-//            .padding(top = 10.dp)
-//            .requiredWidth(277.dp)
-//
-//    ) {
-//        Text(text = "Sign In with Strava", color = Color.White, modifier = Modifier.padding(6.dp))
-//    }
 }
 
 @Preview(showBackground = true)

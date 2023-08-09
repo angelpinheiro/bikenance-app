@@ -27,9 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeRide
 import com.anxops.bkn.ui.shared.components.BknIcon
@@ -150,7 +152,7 @@ fun BikeRideItem(
                 }
 
                 Text(
-                    text = "View on Strava",
+                    text = stringResource(R.string.view_on_strava),
                     color = MaterialTheme.colors.strava,
                     style = MaterialTheme.typography.h3,
                     fontWeight = FontWeight.Bold,
@@ -202,7 +204,7 @@ private fun BikeConfirmationView(
                 modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Confirm",
+                    text = stringResource(R.string.ride_confirm_bike),
                     style = MaterialTheme.typography.h4,
                     color = MaterialTheme.colors.onPrimary
                 )
@@ -231,7 +233,7 @@ fun BikesDropDown(
                 modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = selected?.displayName() ?: "Select bike",
+                    text = selected?.displayName() ?: stringResource(R.string.bikes_dropdown_select_bike),
                     style = MaterialTheme.typography.h4,
                     color = MaterialTheme.colors.onPrimary,
                     modifier = Modifier.weight(1f)

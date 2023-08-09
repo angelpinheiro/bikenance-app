@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeComponent
 import com.anxops.bkn.data.model.ComponentCategory
@@ -139,7 +141,7 @@ private fun BikeNameAndType(
         )
 
         Text(
-            text = "View on Strava",
+            text = stringResource(id = R.string.view_on_strava),
             color = MaterialTheme.colors.strava,
             style = MaterialTheme.typography.h3,
             fontWeight = FontWeight.Bold,

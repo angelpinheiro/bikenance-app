@@ -125,21 +125,32 @@ fun BikeStatusMap(
     }
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxHeight().aspectRatio(1.6f).clickable(
-        interactionSource = interactionSource,
-            indication = null
-    ) { onCategoryUnselected() }
+        modifier = Modifier
+            .fillMaxHeight()
+            .aspectRatio(1.6f)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { onCategoryUnselected() }
     ) {
         Image(
             imageVector = ImageVector.vectorResource(id = vector),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize().blur(1.dp).padding(5.dp).align(Alignment.Center).alpha(0.1f),
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(1.dp)
+                .padding(5.dp)
+                .align(Alignment.Center)
+                .alpha(0.1f),
             colorFilter = ColorFilter.tint(Color.Black)
         )
         Image(
             imageVector = ImageVector.vectorResource(id = vector),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize().padding(5.dp).align(Alignment.Center),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(5.dp)
+                .align(Alignment.Center),
             colorFilter = ColorFilter.tint(
                 MaterialTheme.colors.surface.copy(alpha = 0.25f).compositeOver(MaterialTheme.colors.primary)
             )
@@ -286,7 +297,9 @@ fun ComponentCategoryCarousel(
     }
 
     LazyRow(
-        Modifier.fillMaxWidth().padding(top = 6.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 6.dp),
         state = categoryScroll,
         horizontalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(
@@ -298,7 +311,9 @@ fun ComponentCategoryCarousel(
             val isSelected = selectedCategory == category
             item {
                 Chip(
-                    modifier = Modifier.widthIn(80.dp, 180.dp).padding(horizontal = 3.dp),
+                    modifier = Modifier
+                        .widthIn(80.dp, 180.dp)
+                        .padding(horizontal = 3.dp),
                     onClick = { onCategorySelected(category) },
                     colors = ChipDefaults.chipColors(
                         backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
@@ -307,7 +322,9 @@ fun ComponentCategoryCarousel(
                     leadingIcon = {
                         BknIcon(
                             icon = CommunityMaterial.Icon.cmd_close,
-                            modifier = Modifier.padding(start = 6.dp).size(10.dp),
+                            modifier = Modifier
+                                .padding(start = 6.dp)
+                                .size(10.dp),
                             color = if (isSelected) MaterialTheme.colors.surface else Color.Transparent
 
                         )
@@ -340,8 +357,13 @@ fun ComponentCarousel(
         if (index > 0) categoryScroll.animateScrollToItem(index)
     }
 
+    val rear = stringResource(R.string.component_modifier_rear_suffix)
+    val front = stringResource(R.string.component_modifier_front_suffix)
+
     LazyRow(
-        Modifier.fillMaxWidth().padding(horizontal = 0.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 0.dp),
         state = categoryScroll,
         horizontalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(
@@ -351,10 +373,18 @@ fun ComponentCarousel(
         components.forEach { component ->
 
             val isSelected = selectedComponent?._id == component._id
+            val suffix = component.modifier?.let {
+                when (it) {
+                    ComponentModifier.REAR -> rear
+                    ComponentModifier.FRONT -> front
+                }
+            }
 
             item {
                 Chip(
-                    modifier = Modifier.widthIn(80.dp, 180.dp).padding(end = 6.dp),
+                    modifier = Modifier
+                        .widthIn(80.dp, 180.dp)
+                        .padding(end = 6.dp),
                     onClick = { onComponentSelected(component) },
                     colors = ChipDefaults.chipColors(
                         backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface,
@@ -364,16 +394,18 @@ fun ComponentCarousel(
                         BikeComponentIcon(
                             type = component.type,
                             tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
-                            modifier = Modifier.padding(start = 6.dp).size(16.dp)
+                            modifier = Modifier
+                                .padding(start = 6.dp)
+                                .size(16.dp)
                         )
                     }
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, end = 16.dp),
                         textAlign = TextAlign.Center,
-                        text = (component.modifier?.displayName?.plus(" ") ?: "") + stringResource(
+                        text = stringResource(
                             id = component.type.resources().nameResId
-                        ),
+                        ) + (suffix?.let { " ($it)" } ?: ""),
                         color = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h4,
                         maxLines = 1,
@@ -406,7 +438,10 @@ fun HotSpot(
     val start = max(maxWidth * xOffset - boxSize / 2, 0.dp)
 
     Box(
-        modifier.padding(top = top, start = start).size(boxSize).clickable(interactionSource, indication = null) { onSelected() },
+        modifier
+            .padding(top = top, start = start)
+            .size(boxSize)
+            .clickable(interactionSource, indication = null) { onSelected() },
         contentAlignment = Alignment.Center
 
     ) {
@@ -414,9 +449,13 @@ fun HotSpot(
 
         Text(
             text = text,
-            Modifier.align(textAlignment).clip(
-                RoundedCornerShape(20.dp)
-            ).background(MaterialTheme.colors.surface).padding(horizontal = 6.dp, vertical = 1.dp),
+            Modifier
+                .align(textAlignment)
+                .clip(
+                    RoundedCornerShape(20.dp)
+                )
+                .background(MaterialTheme.colors.surface)
+                .padding(horizontal = 6.dp, vertical = 1.dp),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             textAlign = TextAlign.Center,
@@ -450,9 +489,12 @@ fun StatusMapComponent(
     val icon = getIconResForStatus(status ?: StatusLevel.UNKNOWN)
 
     Box(
-        modifier.padding(top = top, start = start).width(boxSize).height(boxSize)
+        modifier
+            .padding(top = top, start = start)
+            .width(boxSize)
+            .height(boxSize)
             .clickable(interactionSource, indication = null) { onSelected() },
-                contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center
 
     ) {
         CircularProgressIndicator(
@@ -465,8 +507,11 @@ fun StatusMapComponent(
         BikeComponentIcon(
             type = component.type,
             tint = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSurface,
-            modifier = Modifier.size(35.dp).clip(CircleShape)
-                .background(if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface).padding(5.dp)
+            modifier = Modifier
+                .size(35.dp)
+                .clip(CircleShape)
+                .background(if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.surface)
+                .padding(5.dp)
         )
     }
 }
@@ -498,9 +543,13 @@ fun SimpleCircleShape(
         modifier = Modifier.wrapContentSize(Alignment.Center)
     ) {
         Box(
-            modifier = Modifier.size(size).clip(CircleShape).background(
-                color
-            ).border(borderWidth, borderColor)
+            modifier = Modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(
+                    color
+                )
+                .border(borderWidth, borderColor)
         )
     }
 }
@@ -552,16 +601,18 @@ fun PulsatingCircles(
                 initialValue = size * 0.7f,
                 targetValue = size * 0.5f,
                 Dp.VectorConverter,
-                    animationSpec = infiniteRepeatable(
+                animationSpec = infiniteRepeatable(
                     animation = tween(1000, easing = FastOutLinearInEasing),
-                        repeatMode = RepeatMode.Reverse
+                    repeatMode = RepeatMode.Reverse
                 ),
-                    label = ""
+                label = ""
             ).value
         }
 
         Box(
-            modifier = Modifier.fillMaxWidth().height(size),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(size),
             contentAlignment = Alignment.Center
         ) {
             SimpleCircleShape(

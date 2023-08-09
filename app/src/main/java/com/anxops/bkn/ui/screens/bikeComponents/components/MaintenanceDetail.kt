@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Maintenance
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.secondaryButtonColors
@@ -102,38 +103,9 @@ fun MaintenanceDetail(item: Maintenance, onEdit: () -> Unit) {
                     modifier = Modifier.weight(1f),
                     colors = secondaryButtonColors()
                 ) {
-                    Text("Perform service")
+                    Text(stringResource(R.string.perform_service_button_text))
                 }
             }
-
-//
-//        Column(
-//            modifier = Modifier.padding(top = 10.dp).fillMaxWidth().clip(RoundedCornerShape(10.dp))
-//                .background(MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)).padding(10.dp)
-//        ) {
-//
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.padding(bottom = 10.dp)
-//            ) {
-//                BknIcon(
-//                    icon = CommunityMaterial.Icon3.cmd_wrench_check,
-//                    modifier = Modifier.padding(end = 10.dp).size(20.dp)
-//                )
-//                Text(
-//                    text = "Instructions",
-//                    color = MaterialTheme.colors.onPrimary,
-//                    style = MaterialTheme.typography.h3,
-//                )
-//            }
-//
-//            Text(
-//                text = stringResource(id = item.type.resources().descriptionResId),
-//                color = MaterialTheme.colors.onPrimary,
-//                style = MaterialTheme.typography.h3,
-//                modifier = Modifier
-//            )
-//        }
         }
     }
 }

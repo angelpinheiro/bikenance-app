@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tipos de Mantenimiento -->
+    <string name="brake_maintenance">Servicio de Frenos</string>
+    <string name="disc_pads_maintenance">Servicio de Pastillas de Freno de Disco</string>
+    <string name="cables_and_housing_maintenance">Servicio de Cables y Fundas</string>
+    <string name="cassette_maintenance">Servicio de Cassette</string>
+    <string name="chain_maintenance">Servicio de Cadena</string>
+    <string name="chain_ring_maintenance">Servicio de Plato de Cadena</string>
+    <string name="rear_derailleur_maintenance">Servicio de Cambio Trasero</string>
+    <string name="frame_bearings_maintenance">Servicio de Rodamientos del Cuadro</string>
+    <string name="rear_hub_maintenance">Servicio de Buje Trasero</string>
+    <string name="disc_brake_maintenance">Servicio de Frenos de Disco</string>
+    <string name="dropper_post_maintenance">Servicio de Tija Telescópica</string>
+    <string name="fork_maintenance">Servicio de Horquilla</string>
+    <string name="front_hub_maintenance">Servicio de Buje Delantero</string>
+    <string name="rear_suspension_maintenance">Servicio de Suspensión Trasera</string>
+    <string name="thru_axle_maintenance">Servicio de Eje Pasante</string>
+    <string name="tire_maintenance">Servicio de Neumáticos</string>
+    <string name="wheelset_tubeless_maintenance">Reemplazo de Fluido Tubeless</string>
+    <string name="wheelset_wheels_and_spokes_maintenance">Inspección de Ruedas y Radios</string>
+    <string name="wheelset_tread_wear_maintenance">Inspección del Desgaste de la Banda de Rodadura</string>
+
+    <string name="brake_maintenance_description">Realiza el purgado del circuito hidráulico y el mantenimiento de los pistones para un rendimiento óptimo de los frenos.</string>
+    <string name="disc_pads_maintenance_description">Inspecciona visualmente las pastillas de freno de disco en busca de desgaste o daños. Reemplázalas si es necesario para asegurar un frenado eficiente.</string>
+    <string name="cables_and_housing_maintenance_description">Inspecciona visualmente las fundas de cables en busca de desgaste o daños. Reemplázalas si es necesario para mantener un cambio de marchas suave.</string>
+    <string name="cassette_maintenance_description">Verifica el desgaste del cassette. Considera reemplazarlo si muestra un desgaste excesivo o dificulta el cambio de marchas.</string>
+    <string name="chain_maintenance_description">Reemplaza la cadena para mantener cambios de marcha precisos y prevenir un desgaste excesivo en otros componentes.</string>
+    <string name="chain_ring_maintenance_description">Verifica el desgaste del plato de cadena. Considera reemplazarlo si muestra un desgaste excesivo.</string>
+    <string name="rear_derailleur_maintenance_description">Limpia y lubrica el mecanismo del cambio trasero para un cambio de marchas suave y confiable.</string>
+    <string name="frame_bearings_maintenance_description">Verifica el estado y la lubricación de los rodamientos del cuadro. Reemplázalos si es necesario para mantener la integridad del cuadro y un funcionamiento suave.</string>
+    <string name="rear_hub_maintenance_description">Verifica el estado y la lubricación del buje trasero para asegurar una rotación suave y un rendimiento confiable.</string>
+    <string name="disc_brake_maintenance_description">Verifica el desgaste de los frenos de disco. Considera reemplazarlos si están desgastados o deformados para asegurar un frenado seguro.</string>
+    <string name="dropper_post_maintenance_description">Verifica y lubrica la tija telescópica ajustable para un funcionamiento suave sin juego ni bloqueo.</string>
+    <string name="fork_maintenance_description">Verifica y realiza el mantenimiento de la horquilla de acuerdo a las recomendaciones del fabricante para un rendimiento óptimo de la suspensión.</string>
+    <string name="front_hub_maintenance_description">Verifica el estado y la lubricación del buje delantero para asegurar una rotación suave y un rendimiento confiable.</string>
+    <string name="rear_suspension_maintenance_description">Verifica y realiza el mantenimiento de la suspensión trasera de acuerdo a las recomendaciones del fabricante para un rendimiento y comodidad óptimos.</string>
+    <string name="thru_axle_maintenance_description">Verifica el estado y el ajuste adecuado del eje pasante para asegurar una sujeción segura de la rueda.</string>
+    <string name="tire_maintenance_description">Verifica el desgaste de la banda de rodadura de los neumáticos. Considera reemplazarlos si están desgastados para asegurar una tracción y seguridad óptimas.</string>
+    <string name="wheelset_tubeless_maintenance_description">Reemplaza el líquido tubeless cada 1000 km para un sellado efectivo y la prevención de pinchazos.</string>
+    <string name="wheelset_wheels_and_spokes_maintenance_description">Inspecciona el estado de las ruedas y los radios cada 1000 km. Asegúrate de que estén correctamente tensionados y sin daños visibles para mantener la integridad de las ruedas.</string>
+    <string name="wheelset_tread_wear_maintenance_description">Inspecciona el desgaste de la banda de rodadura de los neumáticos cada 4000 km. Considera reemplazarlos si están desgastados para asegurar un rendimiento óptimo.</string>
+
+</resources>

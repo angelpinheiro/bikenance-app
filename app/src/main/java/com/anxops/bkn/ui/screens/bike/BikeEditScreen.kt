@@ -40,10 +40,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
 import com.anxops.bkn.data.model.BikeType
 import com.anxops.bkn.ui.navigation.BknNavigator
@@ -102,15 +104,15 @@ fun BikeEditScreen(
                     }
 
                     BikeEditScreenStatus.Saving -> {
-                        Loading("Updating bike...")
+                        Loading(stringResource(R.string.updating_bike_message))
                     }
 
                     BikeEditScreenStatus.UpdateSuccess -> {
-                        Message(text = "Done!")
+                        Message(text = stringResource(id = R.string.done_message))
                     }
 
                     BikeEditScreenStatus.LoadFailed -> {
-                        Message(text = "Could not load bike")
+                        Message(text = stringResource(R.string.could_not_load_bike_message))
                     }
 
                     BikeEditScreenStatus.Editing -> {
@@ -130,7 +132,7 @@ fun BikeEditScreen(
                                 enabled = (state.value.bike.name != null)
                             ) {
                                 Text(
-                                    text = "Save",
+                                    text = stringResource(R.string.save_bike_button_text),
                                     modifier = Modifier.padding(4.dp),
                                     color = MaterialTheme.colors.onPrimary
                                 )
@@ -170,7 +172,7 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "Edit your bike details below",
+            text = stringResource(R.string.bike_details_edit_message),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.padding(start = 10.dp),
             color = MaterialTheme.colors.onBackground
@@ -213,7 +215,7 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
 
             BknLabelTopTextField(
                 value = bike.brandName,
-                label = "Brand name",
+                label = stringResource(R.string.bike_edit_brand_name_label),
                 modifier = Modifier.fillMaxWidth(),
                 colors = colors,
                 onValueChange = {
@@ -223,7 +225,7 @@ fun BikeDetailsEdit(viewModel: BikeEditScreenViewModel, bike: Bike) {
 
             BknLabelTopTextField(
                 value = bike.modelName,
-                label = "Model name",
+                label = stringResource(R.string.bike_edit_model_name_label),
                 modifier = Modifier.fillMaxWidth(),
                 colors = colors,
                 onValueChange = {
@@ -247,7 +249,7 @@ fun BikeTypeDropDown(bikeType: String, onBikeTypeChange: (BikeType) -> Unit = {}
             readOnly = true,
             value = bikeType,
             onValueChange = {},
-            label = "Bike Type",
+            label = stringResource(R.string.bike_edit_bike_type_label),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = onBackgroundTextFieldColors(),
             modifier = Modifier.fillMaxWidth()

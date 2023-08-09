@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -68,7 +69,9 @@ fun RidesScreen(
     val pagedRides = viewModel.paginatedRidesFlow.collectAsLazyPagingItems()
     val lastUpdated = viewModel.lastUpdatedFlow.collectAsState(null)
 
-    val at = lastUpdated.value?.let { Instant.ofEpochMilli(it.lastRidesUpdate).formatAsRelativeTime() } ?: "Never"
+    val at = lastUpdated.value?.let {
+        Instant.ofEpochMilli(it.lastRidesUpdate).formatAsRelativeTime()
+    } ?: stringResource(R.string.never_updated)
 
     val isRefreshing = pagedRides.loadState.refresh == LoadState.Loading || pagedRides.loadState.append == LoadState.Loading
 
@@ -86,7 +89,7 @@ fun RidesScreen(
         })
 
         Text(
-            text = "Updated $at",
+            text = stringResource(R.string.rides_last_updated_text, at),
             color = MaterialTheme.colors.onPrimary,
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(10.dp).clip(RoundedCornerShape(5.dp)).background(MaterialTheme.colors.primaryVariant).padding(10.dp)

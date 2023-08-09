@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
@@ -29,8 +30,8 @@ import timber.log.Timber
 @Destination(
     deepLinks = [
         DeepLink(
-        uriPattern = "bikenance://redirect?code={code}&refresh={refresh}"
-    )
+            uriPattern = "bikenance://redirect?code={code}&refresh={refresh}"
+        )
     ]
 )
 @Composable
@@ -83,7 +84,7 @@ fun HandleLoginScreen(
             when (state.isNewAccount) {
                 null -> {
                     Text(
-                        text = "Loading profile...",
+                        text = stringResource(R.string.loading_profile_message),
                         color = MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h3
                     )
@@ -91,7 +92,7 @@ fun HandleLoginScreen(
 
                 true -> {
                     Text(
-                        text = "Welcome ${state.profile?.firstname}...",
+                        text = stringResource(R.string.welcome_message, state.profile?.firstname ?: ""),
                         color = MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h3
                     )
@@ -99,7 +100,7 @@ fun HandleLoginScreen(
 
                 else -> {
                     Text(
-                        text = "Hi ${state.profile?.firstname}, nice to see you again!",
+                        text = stringResource(R.string.welcome_again_message, state.profile?.firstname ?: ""),
                         color = MaterialTheme.colors.onSurface,
                         style = MaterialTheme.typography.h3
                     )
