@@ -59,7 +59,7 @@ fun ErrorDialog(appError: AppError, bknNavigator: BknNavigator?, onDismissReques
             usePlatformDefaultWidth = false,
             dismissOnBackPress = true
         ),
-            onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             SlideFromBottomAnimatedVisibility(visible = visible) {

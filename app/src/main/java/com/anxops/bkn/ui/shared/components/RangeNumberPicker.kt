@@ -33,7 +33,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CustomNumberPicker(
+fun RangeNumberPicker(
     value: Int,
     increment: Int = 1,
     suffix: String,
@@ -54,7 +54,7 @@ fun CustomNumberPicker(
         }) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_minus,
-                    modifier = Modifier.height(48.dp).width(60.dp).clip(
+                modifier = Modifier.height(48.dp).width(60.dp).clip(
                     RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp)
                 ).background(MaterialTheme.colors.secondary).padding(6.dp)
             )
@@ -95,7 +95,7 @@ fun CustomNumberPicker(
         IconButton(onClick = { onChange(incrementBy(value, increment, range)) }) {
             BknIcon(
                 icon = CommunityMaterial.Icon3.cmd_plus,
-                    modifier = Modifier.height(48.dp).width(60.dp).clip(
+                modifier = Modifier.height(48.dp).width(60.dp).clip(
                     RoundedCornerShape(topEnd = 50.dp, bottomEnd = 50.dp)
                 ).background(MaterialTheme.colors.secondary).padding(6.dp)
             )

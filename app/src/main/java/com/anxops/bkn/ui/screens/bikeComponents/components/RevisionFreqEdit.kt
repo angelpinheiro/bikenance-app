@@ -36,7 +36,7 @@ import com.anxops.bkn.data.model.RevisionFrequency
 import com.anxops.bkn.data.model.RevisionUnit
 import com.anxops.bkn.data.model.revisionUnitRange
 import com.anxops.bkn.ui.shared.components.BknIcon
-import com.anxops.bkn.ui.shared.components.CustomNumberPicker
+import com.anxops.bkn.ui.shared.components.RangeNumberPicker
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
@@ -151,7 +151,7 @@ fun RevisionFrequencyIntervalEdit(
     frequency: RevisionFrequency,
     onChange: (RevisionFrequency) -> Unit = {}
 ) {
-    CustomNumberPicker(
+    RangeNumberPicker(
         value = frequency.every,
         increment = 1,
         suffix = frequency.unit.name,
@@ -166,7 +166,7 @@ fun RevisionFrequencyHoursEdit(
     frequency: RevisionFrequency,
     onChange: (RevisionFrequency) -> Unit = {}
 ) {
-    CustomNumberPicker(
+    RangeNumberPicker(
         value = frequency.every,
         range = revisionUnitRange(frequency.unit),
         increment = 25,
@@ -181,7 +181,7 @@ fun RevisionFrequencyDistanceEdit(
     frequency: RevisionFrequency,
     onChange: (RevisionFrequency) -> Unit = {}
 ) {
-    CustomNumberPicker(
+    RangeNumberPicker(
         value = frequency.every,
         range = revisionUnitRange(frequency.unit),
         increment = 100,
