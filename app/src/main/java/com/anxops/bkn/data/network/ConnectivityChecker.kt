@@ -32,7 +32,6 @@ class ConnectivityChecker(context: Context) {
     fun connectivityAsFlow() = callbackFlow {
         val callback = networkStatusCallback {
             val state = getCurrentConnectivityState(connectivityManager)
-            // Timber.d("[ConnectivityState] Network callback: ${state == ConnectionState.Available}")
             trySend(state)
         }
 

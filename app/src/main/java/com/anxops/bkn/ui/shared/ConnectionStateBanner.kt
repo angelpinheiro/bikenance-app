@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.anxops.bkn.data.network.ConnectionState
+import com.anxops.bkn.ui.DisplayConnectionState
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.ui.shared.components.FadeInFadeOutSlideAnimatedVisibility
 import com.anxops.bkn.ui.theme.statusDanger
@@ -24,26 +24,14 @@ import com.anxops.bkn.ui.theme.statusGood
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 
 @Composable
-fun ConnectionStateBanner(connectionState: ConnectionState?, modifier: Modifier = Modifier) {
-    val isConnected = connectionState === ConnectionState.Available
-
-    val icon = if (isConnected) {
-        CommunityMaterial.Icon.cmd_cloud_check_outline
+fun ConnectionStateBanner(connectionState: DisplayConnectionState, modifier: Modifier = Modifier) {
+    val (icon, message, color) = if (connectionState is DisplayConnectionState.DisplayOnline) {
+        Triple(CommunityMaterial.Icon.cmd_cloud_check_outline, "You're back online!", MaterialTheme.colors.statusGood)
     } else {
-        CommunityMaterial.Icon.cmd_cloud_off_outline
-    }
-    val msg = if (isConnected) {
-        "You're back online!"
-    } else {
-        "You're offline"
-    }
-    val color = if (isConnected) {
-        MaterialTheme.colors.statusGood
-    } else {
-        MaterialTheme.colors.statusDanger
+        Triple(CommunityMaterial.Icon.cmd_cloud_off_outline, "You're offline", MaterialTheme.colors.statusDanger)
     }
 
-    FadeInFadeOutSlideAnimatedVisibility(connectionState != null) {
+    FadeInFadeOutSlideAnimatedVisibility(connectionState != DisplayConnectionState.DisplayNone) {
         Box(
             Modifier.fillMaxWidth().then(modifier),
             contentAlignment = Alignment.TopStart
@@ -58,7 +46,7 @@ fun ConnectionStateBanner(connectionState: ConnectionState?, modifier: Modifier 
                 Spacer(Modifier.size(6.dp))
                 Text(
 
-                    text = msg,
+                    text = message,
                     color = MaterialTheme.colors.onPrimary,
                     style = MaterialTheme.typography.h6
                 )

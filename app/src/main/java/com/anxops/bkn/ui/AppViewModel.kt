@@ -1,18 +1,25 @@
 package com.anxops.bkn.ui
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import com.anxops.bkn.data.network.ConnectionState
 import com.anxops.bkn.data.network.ConnectivityChecker
+import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
+
+sealed interface DisplayConnectionState {
+    object DisplayOnline : DisplayConnectionState
+    object DisplayOffline : DisplayConnectionState
+    object DisplayNone : DisplayConnectionState
+}
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
@@ -20,33 +27,32 @@ class AppViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val previousConnectionState = MutableStateFlow<ConnectionState?>(null)
-    val displayConnectionState = MutableStateFlow<ConnectionState?>(null)
+    val displayConnectionState = createDisplayConnectionFlow().stateIn(
+        viewModelScope,
+        WhileUiSubscribed,
+        DisplayConnectionState.DisplayNone
+    )
 
-    fun subscribeToConnectivity(
-        lifeCycleScope: LifecycleCoroutineScope,
-        lifeCycle: Lifecycle
-    ) {
-        lifeCycleScope.launch {
-            // Ensure we are not collecting the flow when the app is in background
-            lifeCycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                connectivityChecker.connectivityAsFlow().distinctUntilChanged().collect { currentState ->
-                    Timber.d("Connectivity change")
-                    // Emit the current state on every change
-                    displayConnectionState.emit(currentState)
-                    // When transitioning from Unavailable to Available, show Available during 2 seconds
-                    if (currentState is ConnectionState.Available &&
-                        previousConnectionState.value is ConnectionState.Unavailable
-                    ) {
+    private fun createDisplayConnectionFlow(): Flow<DisplayConnectionState> {
+        return flow {
+            connectivityChecker.connectivityAsFlow().distinctUntilChanged().collect { currentState ->
+                Timber.d("Connectivity change")
+                if (currentState is ConnectionState.Available) {
+                    // Emit Online state when connection is Available
+                    emit(DisplayConnectionState.DisplayOnline)
+                    // Check if transitioning from Unavailable to Available
+                    if (previousConnectionState.value is ConnectionState.Unavailable) {
                         delay(2000)
-                        displayConnectionState.emit(null)
+                        emit(DisplayConnectionState.DisplayNone)
+                    } else {
+                        emit(DisplayConnectionState.DisplayNone)
                     }
-                    // Connection Available from Unknown, clear display
-                    else if (currentState is ConnectionState.Available) {
-                        displayConnectionState.emit(null)
-                    }
-                    // Store the current state for future comparison.
-                    previousConnectionState.emit(currentState)
+                } else {
+                    // Emit Offline state when connection is not Available
+                    emit(DisplayConnectionState.DisplayOffline)
                 }
+                // Store the current state for future comparison
+                previousConnectionState.emit(currentState)
             }
         }
     }

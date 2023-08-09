@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.ConnectionStateBanner
@@ -23,7 +22,7 @@ fun app(viewModel: AppViewModel = hiltViewModel()) {
     val state by viewModel.displayConnectionState.collectAsState()
     val navController = rememberNavController()
 
-    viewModel.subscribeToConnectivity(lifeCycleScope = lifecycleOwner.lifecycleScope, lifeCycle = lifecycleOwner.lifecycle)
+//    viewModel.subscribeToConnectivity(lifeCycleScope = lifecycleOwner.lifecycleScope, lifeCycle = lifecycleOwner.lifecycle)
 
     BikenanceAndroidTheme(darkTheme = true) {
         Column(
