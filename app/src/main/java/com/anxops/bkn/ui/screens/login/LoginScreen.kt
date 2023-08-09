@@ -12,7 +12,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
@@ -21,6 +23,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +40,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.anxops.bkn.BuildConfig
 import com.anxops.bkn.R
 import com.anxops.bkn.data.network.ApiEndpoints
 import com.anxops.bkn.data.preferences.BknDataStore
@@ -142,16 +147,18 @@ fun LoginScreen(
 //                modifier = Modifier.padding(top = 60.dp)
 //            )
 //
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.Center
-//            ) {
-//                Text(text = "Use debug api", color = MaterialTheme.colors.onPrimary)
-//                RadioButton(selected = useDebugApi.value, onClick = {
-//                    viewModel.setUseDebugApi(useDebugApi.value.not())
-//                }, colors = RadioButtonDefaults.colors(MaterialTheme.colors.onPrimary))
-//            }
+            if (BuildConfig.ENABLE_DEBUG_API) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Use debug api", color = MaterialTheme.colors.onPrimary)
+                    RadioButton(selected = useDebugApi.value, onClick = {
+                        viewModel.setUseDebugApi(useDebugApi.value.not())
+                    }, colors = RadioButtonDefaults.colors(MaterialTheme.colors.onPrimary))
+                }
+            }
         }
 
         Box(
@@ -182,7 +189,7 @@ fun SignInWithStrava(onClick: () -> Unit = {}) {
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.strava
         ),
-            onClick = onClick,
+        onClick = onClick,
         modifier = Modifier.padding(top = 10.dp).requiredWidth(277.dp)
 
     ) {

@@ -1,14 +1,14 @@
 import com.android.build.api.variant.BuildConfigField
 
 plugins {
-    id "kotlin-kapt"
-    alias libs.plugins.android.application
-    alias libs.plugins.android.hilt
-    alias libs.plugins.kotlin.android
-    alias libs.plugins.kotlin.serialization
-    alias libs.plugins.google.services
-    alias libs.plugins.kotlin.kapt
-    alias libs.plugins.ksp
+  id "kotlin-kapt"
+  alias libs.plugins.android.application
+  alias libs.plugins.android.hilt
+  alias libs.plugins.kotlin.android
+  alias libs.plugins.kotlin.serialization
+  alias libs.plugins.google.services
+  alias libs.plugins.kotlin.kapt
+  alias libs.plugins.ksp
 }
 
 // Load local.properties file for reading app config params
@@ -16,132 +16,133 @@ Properties localProperties = new Properties()
 localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    compileSdk = 34
-    namespace = "com.anxops.bkn"
+  compileSdk = 34
+  namespace = "com.anxops.bkn"
 
-    defaultConfig {
-        applicationId = "com.anxops.bkn"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0-alpha"
+  defaultConfig {
+    applicationId = "com.anxops.bkn"
+    minSdk = 26
+    targetSdk = 34
+    versionCode = 1
+    versionName = "1.0.0-alpha"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // load maps api key from local.properties and inject it to the manifest
-        manifestPlaceholders = [googleMapsApiKey: "${localProperties['MAPS_API_KEY']}"]
-    }
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    // load maps api key from local.properties and inject it to the manifest
+    manifestPlaceholders = [googleMapsApiKey: "${localProperties['MAPS_API_KEY']}"]
+  }
 
-    buildTypes {
-        debug {
-            versionNameSuffix = ".debug"
-        }
-        release {
-            versionNameSuffix = ".release"
-            proguardFile(getDefaultProguardFile("proguard-android-optimize.txt"))
-        }
+  buildTypes {
+    debug {
+      versionNameSuffix = ".debug"
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+    release {
+      versionNameSuffix = ".release"
+      proguardFile(getDefaultProguardFile("proguard-android-optimize.txt"))
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+  }
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+  }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_17.toString()
+  }
+  buildFeatures {
+    compose = true
+    buildConfig = true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.compose.get()
+  }
+  packagingOptions {
+    resources {
+      excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
-    }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+  }
 }
 
 androidComponents {
-    onVariants(selector().all()) { variant ->
-        // Inject API_URL from local.properties to build config
-        variant.buildConfigFields.put("API_URL", new BuildConfigField('String', "\"${localProperties['API_URL']}\"", "Bikenance API URL"))
-        variant.buildConfigFields.put("DEBUG_API_URL", new BuildConfigField('String', "\"${localProperties['DEBUG_API_URL']}\"", "Bikenance debug API URL"))
-    }
+  onVariants(selector().all()) { variant ->
+    // Inject API_URL from local.properties to build config
+    variant.buildConfigFields.put("API_URL", new BuildConfigField('String', "\"${localProperties['API_URL']}\"", "Bikenance API URL"))
+    variant.buildConfigFields.put("DEBUG_API_URL", new BuildConfigField('String', "\"${localProperties['DEBUG_API_URL']}\"", "Bikenance debug API URL"))
+    variant.buildConfigFields.put("ENABLE_DEBUG_API", new BuildConfigField('Boolean', "${localProperties['ENABLE_DEBUG_API']}", "Bikenance debug API enabled"))
+  }
 }
 
 kapt {
-    correctErrorTypes = true
+  correctErrorTypes = true
 }
 
 dependencies {
 
-    def composePlatform = platform(libs.bom.compose)
-    implementation composePlatform
-    androidTestImplementation composePlatform
+  def composePlatform = platform(libs.bom.compose)
+  implementation composePlatform
+  androidTestImplementation composePlatform
 
-    def firebasePlatform = platform(libs.firebase.bom)
-    implementation firebasePlatform
-    androidTestImplementation firebasePlatform
+  def firebasePlatform = platform(libs.firebase.bom)
+  implementation firebasePlatform
+  androidTestImplementation firebasePlatform
 
-    implementation libs.androidx.core
-    implementation libs.androidx.material
-    implementation libs.androidx.datastore.preferences
-    implementation libs.androidx.room.runtime
-    implementation libs.androidx.room.ktx
-    implementation libs.androidx.work
-    implementation libs.androidx.browser
-    implementation libs.androidx.paging.runtime
-    implementation libs.androidx.paging.compose
-    implementation libs.androidx.room.paging
+  implementation libs.androidx.core
+  implementation libs.androidx.material
+  implementation libs.androidx.datastore.preferences
+  implementation libs.androidx.room.runtime
+  implementation libs.androidx.room.ktx
+  implementation libs.androidx.work
+  implementation libs.androidx.browser
+  implementation libs.androidx.paging.runtime
+  implementation libs.androidx.paging.compose
+  implementation libs.androidx.room.paging
 
-    implementation libs.hilt.android
-    implementation libs.hilt.work
+  implementation libs.hilt.android
+  implementation libs.hilt.work
 
-    implementation libs.compose.ui
-    implementation libs.compose.material
-    implementation libs.compose.preview
-    implementation libs.compose.navigation.core
-    implementation libs.compose.navigation.hilt
-    implementation libs.compose.activity
+  implementation libs.compose.ui
+  implementation libs.compose.material
+  implementation libs.compose.preview
+  implementation libs.compose.navigation.core
+  implementation libs.compose.navigation.hilt
+  implementation libs.compose.activity
 
-    implementation libs.accompanist.navigation.material
-    implementation libs.accompanist.pager.indicators
-    implementation libs.accompanist.pager.indicators
-    implementation libs.accompanist.systemuicontroller
-    implementation libs.accompanist.swiperefresh
+  implementation libs.accompanist.navigation.material
+  implementation libs.accompanist.pager.indicators
+  implementation libs.accompanist.pager.indicators
+  implementation libs.accompanist.systemuicontroller
+  implementation libs.accompanist.swiperefresh
 
-    implementation libs.ktor.client.android
-    implementation libs.ktor.client.core
-    implementation libs.ktor.serialization
-    implementation libs.ktor.logging
+  implementation libs.ktor.client.android
+  implementation libs.ktor.client.core
+  implementation libs.ktor.serialization
+  implementation libs.ktor.logging
 
-    implementation libs.firebase.storage.ktx
-    implementation libs.firebase.messaging.ktx
+  implementation libs.firebase.storage.ktx
+  implementation libs.firebase.messaging.ktx
 
-    implementation libs.coil.compose
-    implementation libs.maps.compose
-    implementation libs.maps.playservices
-    implementation libs.timber
-    implementation libs.rc.compose.destinations.core
-    implementation libs.iconics.compose
-    implementation(libs.iconics.community.material) {
-        artifact {
-            type = 'aar'
-        }
+  implementation libs.coil.compose
+  implementation libs.maps.compose
+  implementation libs.maps.playservices
+  implementation libs.timber
+  implementation libs.rc.compose.destinations.core
+  implementation libs.iconics.compose
+  implementation(libs.iconics.community.material) {
+    artifact {
+      type = 'aar'
     }
+  }
 
-    kapt libs.hilt.androidCompiler
-    kapt libs.androidx.hilt.compiler
-    ksp libs.rc.compose.destinations.ksp
-    ksp libs.androidx.room.compiler
+  kapt libs.hilt.androidCompiler
+  kapt libs.androidx.hilt.compiler
+  ksp libs.rc.compose.destinations.ksp
+  ksp libs.androidx.room.compiler
 
-    testImplementation libs.androidx.junit
-    testImplementation libs.kotlinx.coroutines.test
+  testImplementation libs.androidx.junit
+  testImplementation libs.kotlinx.coroutines.test
 
-    androidTestImplementation libs.androidx.junit
-    androidTestImplementation libs.compose.test.uiJunit4
+  androidTestImplementation libs.androidx.junit
+  androidTestImplementation libs.compose.test.uiJunit4
 
-    debugImplementation libs.compose.test.uiManifest
-    debugImplementation libs.compose.tooling
-    debugImplementation libs.compose.preview
+  debugImplementation libs.compose.test.uiManifest
+  debugImplementation libs.compose.tooling
+  debugImplementation libs.compose.preview
 }
