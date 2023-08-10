@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -21,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
+import com.anxops.bkn.ui.screens.destinations.SplashScreenDestination
+import com.anxops.bkn.ui.shared.components.BackgroundBox
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -54,13 +57,13 @@ fun HandleLoginScreen(
             when (ev) {
                 is LoadProfileEvent.NewAccount -> {
                     delay(1000)
-                    nav.popBackStack()
+                    nav.popBackStackTo(SplashScreenDestination.route, true)
                     nav.navigateToProfile()
                 }
 
                 is LoadProfileEvent.ExistingAccount -> {
                     delay(1000)
-                    nav.popBackStack()
+                    nav.popBackStackTo(SplashScreenDestination.route, true)
                     nav.navigateToGarage()
                 }
 
@@ -69,23 +72,23 @@ fun HandleLoginScreen(
         }
     }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
+    BackgroundBox {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.bicycle),
+                painter = painterResource(id = R.drawable.splash_chain_ring),
                 contentDescription = "LocationPin",
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(100.dp).padding(10.dp)
             )
 
             when (state.isNewAccount) {
                 null -> {
                     Text(
                         text = stringResource(R.string.loading_profile_message),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h3
                     )
                 }
@@ -93,7 +96,7 @@ fun HandleLoginScreen(
                 true -> {
                     Text(
                         text = stringResource(R.string.welcome_message, state.profile?.firstname ?: ""),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h3
                     )
                 }
@@ -101,7 +104,7 @@ fun HandleLoginScreen(
                 else -> {
                     Text(
                         text = stringResource(R.string.welcome_again_message, state.profile?.firstname ?: ""),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.h3
                     )
                 }

@@ -34,6 +34,7 @@ fun BackgroundBox(
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.polygon_bg_alt),
             contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
             contentDescription = null,
             modifier = Modifier.fillMaxSize().alpha(0.05f)
         )

@@ -18,7 +18,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 @Composable
 fun app(viewModel: AppViewModel = hiltViewModel()) {
     val showConnectionState by viewModel.displayConnectionState.collectAsState()
-    val showing = showConnectionState is DisplayConnectionState.DisplayNone
+    val showBanner = showConnectionState !is DisplayConnectionState.DisplayNone
     val navController = rememberNavController()
     BikenanceAndroidTheme(darkTheme = true) {
         Column(
@@ -27,11 +27,11 @@ fun app(viewModel: AppViewModel = hiltViewModel()) {
                 .background(MaterialTheme.colors.primaryVariant)
         ) {
             DestinationsNavHost(
-                modifier = if (!showing) Modifier.weight(1f) else Modifier.fillMaxSize(),
+                modifier = if (showBanner) Modifier.weight(1f) else Modifier.fillMaxSize(),
                 navController = navController,
                 navGraph = BknNavigator.rootNavGraph()
             )
-            if (!showing) {
+            if (showBanner) {
                 ConnectionStateBanner(showConnectionState, Modifier.background(MaterialTheme.colors.primaryVariant))
             }
         }
