@@ -91,7 +91,7 @@ fun BikeSetupScreen(
 @Composable
 fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState.SetupInProgress) {
     val pageCount = 5
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { 5 }
     val scope = rememberCoroutineScope()
 
     fun scrollToNextPage(delayMs: Long = 0) {
@@ -142,7 +142,6 @@ fun SetupDetailsPager(viewModel: BikeSetupViewModel, state: BikeSetupScreenState
             }
 
             HorizontalPager(
-                pageCount = pageCount,
                 state = pagerState,
                 key = { it },
                 verticalAlignment = Alignment.Top,

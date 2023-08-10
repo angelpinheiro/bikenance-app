@@ -44,11 +44,12 @@ fun BikesPager(
     onClickSync: () -> Unit = {}
 ) {
     val configuration = LocalConfiguration.current
-    val pagerState = rememberPagerState()
 
     val selectedBike = remember {
         mutableStateOf<Bike?>(null)
     }
+
+    val pagerState = rememberPagerState { bikes.size }
 
     LaunchedEffect(pagerState, bikes) {
         // Observe bike selection en notify callback
@@ -71,7 +72,7 @@ fun BikesPager(
                     it
                 }
             },
-                verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.bikes_pager_title),
@@ -100,11 +101,11 @@ fun BikesPager(
                     GarageBikeCard(
                         bike = bike,
                         onEdit = {
-                        onEditBike(bike)
-                    },
+                            onEditBike(bike)
+                        },
                         onDetail = {
-                        onBikeDetails(bike)
-                    },
+                            onBikeDetails(bike)
+                        },
                         isLast = true
                     )
                 }
@@ -112,7 +113,6 @@ fun BikesPager(
         } else {
             HorizontalPager(
                 modifier = Modifier.fillMaxWidth(),
-                pageCount = bikes.size,
                 state = pagerState,
                 pageSize = PageSize.Fixed((configuration.screenWidthDp.dp.value * 0.8).toInt().dp),
                 contentPadding = PaddingValues(horizontal = 16.dp),
@@ -122,11 +122,11 @@ fun BikesPager(
                 GarageBikeCard(
                     bike = bike,
                     onEdit = {
-                    onEditBike(bike)
-                },
+                        onEditBike(bike)
+                    },
                     onDetail = {
-                    onBikeDetails(bike)
-                },
+                        onBikeDetails(bike)
+                    },
                     isLast = it == bikes.size - 1
                 )
             }

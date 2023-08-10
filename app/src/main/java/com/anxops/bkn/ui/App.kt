@@ -15,15 +15,13 @@ import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.ConnectionStateBanner
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
+import timber.log.Timber
 
 @Composable
 fun app(viewModel: AppViewModel = hiltViewModel()) {
-    val lifecycleOwner = LocalLifecycleOwner.current
+    Timber.d("APP")
     val state by viewModel.displayConnectionState.collectAsState()
     val navController = rememberNavController()
-
-//    viewModel.subscribeToConnectivity(lifeCycleScope = lifecycleOwner.lifecycleScope, lifeCycle = lifecycleOwner.lifecycle)
-
     BikenanceAndroidTheme(darkTheme = true) {
         Column(
             Modifier
