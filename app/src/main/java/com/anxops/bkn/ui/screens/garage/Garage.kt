@@ -25,7 +25,6 @@ import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenances
-import com.anxops.bkn.ui.shared.Loading
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -45,7 +44,7 @@ fun Garage(
         modifier = Modifier.pullRefresh(pullRefreshState)
     ) {
         if (currentState.isLoading) {
-            Loading()
+            LinearProgressIndicator(Modifier.fillMaxWidth())
         } else if (currentState.bikes.isEmpty()) {
             EmptyGarage {
                 nav.navigateToBikeSync()
@@ -88,11 +87,13 @@ fun Garage(
             }
         }
 
-        PullRefreshIndicator(
-            currentState.isRefreshing,
-            pullRefreshState,
-            Modifier.align(Alignment.TopCenter)
-        )
+        if (!currentState.isLoading) {
+            PullRefreshIndicator(
+                currentState.isRefreshing,
+                pullRefreshState,
+                Modifier.align(Alignment.TopCenter)
+            )
+        }
     }
 }
 

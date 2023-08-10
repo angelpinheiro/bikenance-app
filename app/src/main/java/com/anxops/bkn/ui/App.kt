@@ -8,19 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.shared.ConnectionStateBanner
 import com.anxops.bkn.ui.theme.BikenanceAndroidTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
-import timber.log.Timber
 
 @Composable
 fun app(viewModel: AppViewModel = hiltViewModel()) {
-    Timber.d("APP")
-    val state by viewModel.displayConnectionState.collectAsState()
+    val showConnectionState by viewModel.displayConnectionState.collectAsState()
+    val showing = showConnectionState is DisplayConnectionState.DisplayNone
     val navController = rememberNavController()
     BikenanceAndroidTheme(darkTheme = true) {
         Column(
@@ -29,11 +27,13 @@ fun app(viewModel: AppViewModel = hiltViewModel()) {
                 .background(MaterialTheme.colors.primaryVariant)
         ) {
             DestinationsNavHost(
-                modifier = Modifier.weight(1f),
+                modifier = if (!showing) Modifier.weight(1f) else Modifier.fillMaxSize(),
                 navController = navController,
                 navGraph = BknNavigator.rootNavGraph()
             )
-            ConnectionStateBanner(state, Modifier.background(MaterialTheme.colors.primaryVariant))
+            if (!showing) {
+                ConnectionStateBanner(showConnectionState, Modifier.background(MaterialTheme.colors.primaryVariant))
+            }
         }
     }
 }

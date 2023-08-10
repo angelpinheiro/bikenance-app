@@ -130,11 +130,9 @@ fun HomeScreen(
             }
         }
     }, bottomBar = {
-        if (profileSync == true) {
-            HomeBottomBar(selectedItem = selectedItem, onItemSelected = {
-                selectedItem = it
-            })
-        }
+        HomeBottomBar(selectedItem = selectedItem, onItemSelected = {
+            selectedItem = it
+        })
     }) {
         BackgroundBox(
             Modifier.padding(it).fillMaxSize(),
@@ -175,9 +173,9 @@ fun ProfileSyncInProgress(onClickAction: () -> Unit = {}) {
             initialValue = 30.dp,
             targetValue = 40.dp,
             typeConverter = Dp.VectorConverter,
-                animationSpec = infiniteRepeatable(
+            animationSpec = infiniteRepeatable(
                 animation = tween(1000, easing = FastOutLinearInEasing),
-                    repeatMode = RepeatMode.Reverse
+                repeatMode = RepeatMode.Reverse
             )
         ).value
 
