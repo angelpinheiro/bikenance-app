@@ -2,6 +2,7 @@ package com.anxops.bkn.data.repository
 
 import androidx.room.withTransaction
 import com.anxops.bkn.data.database.AppDb
+import com.anxops.bkn.data.database.entities.ProfileEntity
 import com.anxops.bkn.data.database.toEntity
 import com.anxops.bkn.data.model.AthleteStats
 import com.anxops.bkn.data.model.Profile
@@ -11,6 +12,7 @@ import com.anxops.bkn.data.preferences.BknDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
@@ -28,7 +30,7 @@ interface ProfileRepositoryFacade {
 
     suspend fun updateProfile(profile: Profile): Result<Profile>
 
-    fun getProfileFlow(): Flow<Result<Profile?>>
+    fun getProfileFlow(): Flow<Result<Profile>>
 
     suspend fun saveLogin(token: String, refreshToken: String?): Result<Profile>
 
@@ -108,10 +110,9 @@ class ProfileRepository(
         }
     }
 
-    override fun getProfileFlow(): Flow<Result<Profile?>> {
-        return db.profileDao().getProfileFlow().map {
-            it?.toDomain()
-        }.asResult()
+    override fun getProfileFlow(): Flow<Result<Profile>> {
+        // filterNotNull -> https://issuetracker.google.com/issues/213175894
+        return db.profileDao().getProfileFlow().filterNotNull().map(ProfileEntity::toDomain).asResult()
     }
 
     override suspend fun updateProfile(profile: Profile): Result<Profile> = result {

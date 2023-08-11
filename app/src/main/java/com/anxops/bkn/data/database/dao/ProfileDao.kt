@@ -10,15 +10,13 @@ interface ProfileDao {
     @Query("SELECT COUNT(*) FROM profile")
     suspend fun count(): Int
 
-    suspend fun exists(): Boolean {
-        return count() > 0
-    }
+    suspend fun exists() = count() > 0
 
     @Query("SELECT * FROM profile LIMIT 1")
     suspend fun getProfile(): ProfileEntity
 
     @Query("SELECT * FROM profile LIMIT 1")
-    fun getProfileFlow(): Flow<ProfileEntity?>
+    fun getProfileFlow(): Flow<ProfileEntity>
 
     @Update
     suspend fun update(profile: ProfileEntity)

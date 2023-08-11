@@ -9,7 +9,6 @@ import com.anxops.bkn.data.network.ApiResponse
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.data.repository.AppInfoRepositoryFacade
 import com.anxops.bkn.data.repository.ProfileRepositoryFacade
-import com.anxops.bkn.data.repository.onSuccess
 import com.anxops.bkn.data.repository.successOrException
 import com.anxops.bkn.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,20 +40,12 @@ class HomeViewModel @Inject constructor(
     }.stateIn(viewModelScope, WhileUiSubscribed, false)
 
     val profileSyncState = profileRepository.getProfileFlow().map {
-        it.successOrException { p -> p?.sync ?: false }
-    }.stateIn(viewModelScope, WhileUiSubscribed, null)
+        it.successOrException { p -> p.sync }
+    }.stateIn(viewModelScope, WhileUiSubscribed, true)
 
     init {
         viewModelScope.launch {
             profileRepository.refreshProfile()
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            profileRepository.logout().onSuccess {
-                events.emit(HomeEvent.Logout)
-            }
         }
     }
 
