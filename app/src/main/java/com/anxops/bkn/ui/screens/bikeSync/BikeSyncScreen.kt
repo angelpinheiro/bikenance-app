@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Switch
@@ -75,13 +73,9 @@ fun BikeSyncScreen(
                     }
 
                     Column(
-                        Modifier.fillMaxSize().weight(1f).padding(horizontal = 26.dp).verticalScroll(scrollState),
-                        verticalArrangement = Arrangement.Center
+                        Modifier.fillMaxSize().weight(1f).verticalScroll(scrollState).padding(horizontal = 26.dp, vertical = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Divider(
-                            Modifier.fillMaxWidth().height(20.dp)
-                        )
-
                         state.bikes.forEach { (bike, sync) ->
 
                             GarageBikeCard(bike = bike, elevation = 2.dp, topLeftSlot = {
@@ -98,10 +92,6 @@ fun BikeSyncScreen(
                                     )
                                 )
                             })
-
-                            Divider(
-                                Modifier.fillMaxWidth().padding(6.dp).height(0.dp)
-                            )
                         }
                     }
 
