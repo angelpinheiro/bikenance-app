@@ -127,6 +127,10 @@ class ProfileScreenViewModel @Inject constructor(
         }
     }
 
+    fun onUpdateProfileImageError() {
+        errorStateFlow.update { AppError(ErrorType.Unexpected, message = "Could not load image") }
+    }
+
     fun onLogoutRequest() {
         viewModelScope.launch {
             profileRepository.logout().onSuccess {

@@ -82,29 +82,31 @@ class BikeEditScreenViewModel @Inject constructor(
         }
     }
 
-    fun updateBikeImage(byteArray: ByteArray?) {
+    fun updateBikeImage(bytes: ByteArray) {
         viewModelScope.launch {
-            byteArray?.let { bytes ->
-                imageUploader.uploadImage(
-                    ImageUploadRequest(
+            imageUploader.uploadImage(
+                ImageUploadRequest(
                     dataStore.getAuthUserOrFail(),
-                        bytes
+                    bytes
                 ),
-                    onProgressUpdate = { updatePercent ->
+                onProgressUpdate = { updatePercent ->
                     loadProgressFlow.update { updatePercent }
                 },
-                    onSuccess = { url ->
+                onSuccess = { url ->
                     loadProgressFlow.update { 0.0f }
                     bikeFlow.update { it.copy(photoUrl = url) }
                 },
-                    onFailure = {
+                onFailure = {
                     loadProgressFlow.update { 0.0f }
                     statusFlow.update { BikeEditScreenStatus.Editing }
                     errorStateFlow.update { AppError(ErrorType.Unexpected) }
                 }
-                )
-            }
+            )
         }
+    }
+
+    fun onUpdateBikeImageError() {
+        errorStateFlow.update { AppError(ErrorType.Unexpected, message = "Could not load image") }
     }
 
     fun updateName(value: String) {
