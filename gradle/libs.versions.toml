@@ -10,7 +10,7 @@ ksp = "1.9.0-1.0.13"
 
 # Compose
 compose = "1.5.0"
-bomCompose = "2023.06.01"
+bomCompose = "2023.08.00"
 composeNavigation = "2.7.0"
 composeNavigationHilt = "1.0.0"
 composeTest = "1.5.0"
