@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -31,12 +32,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.anxops.bkn.R
 import com.anxops.bkn.data.model.Bike
-import com.anxops.bkn.ui.shared.Loading
 import com.anxops.bkn.ui.shared.components.BknIcon
 import com.anxops.bkn.util.formatDistanceAsKm
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -49,10 +51,10 @@ fun GarageBikeCard(
     tintColor: Color = MaterialTheme.colors.primary,
     onEdit: () -> Unit = {},
     onDetail: () -> Unit = {},
-    topLeftSlot: @Composable () -> Unit = {},
-    isLast: Boolean
+    topLeftSlot: @Composable () -> Unit = {}
 ) {
     val height = 110.dp
+    val size = DpSize(height, height + (height * 0.8f))
 
     val gradient = Brush.horizontalGradient(
         0f to tintColor,
@@ -61,27 +63,41 @@ fun GarageBikeCard(
     )
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(height),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height),
         elevation = elevation,
         backgroundColor = tintColor
     ) {
         Box(
-            modifier = Modifier.padding(0.dp).clip(MaterialTheme.shapes.medium)
+            modifier = Modifier
+                .padding(0.dp)
+                .clip(MaterialTheme.shapes.medium)
                 .combinedClickable(onClick = { onDetail() }, onLongClick = { onEdit() })
         ) {
             AsyncImage(
                 url = bike.photoUrl,
-                modifier = Modifier.width(height + (height * 0.8f)).height(height)
-                    .padding(start = 0.dp, top = 1.dp, end = 1.dp, bottom = 1.dp).clip(MaterialTheme.shapes.medium)
+                modifier = Modifier
+                    .width(height + (height * 0.8f))
+                    .height(height)
+                    .padding(start = 0.dp, top = 1.dp, end = 1.dp, bottom = 1.dp)
+                    .clip(MaterialTheme.shapes.medium)
                     .align(Alignment.CenterEnd),
                 alignment = Alignment.TopCenter
             )
             Box(
-                modifier = Modifier.width(height + (height * 0.8f)).height(height).align(Alignment.CenterEnd).background(gradient)
+                modifier = Modifier
+                    .width(height + (height * 0.8f))
+                    .height(height)
+                    .align(Alignment.CenterEnd)
+                    .background(gradient)
             )
 
             Column(
-                Modifier.fillMaxHeight().padding(start = 16.dp, top = 16.dp, bottom = 10.dp).align(Alignment.BottomStart),
+                Modifier
+                    .fillMaxHeight()
+                    .padding(start = 16.dp, top = 16.dp, bottom = 10.dp)
+                    .align(Alignment.BottomStart),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -107,7 +123,11 @@ fun GarageBikeCard(
             }
 
             Column(
-                modifier = Modifier.padding(top = 10.dp, end = 16.dp).size(40.dp).align(Alignment.TopEnd).aspectRatio(1f),
+                modifier = Modifier
+                    .padding(top = 10.dp, end = 16.dp)
+                    .size(40.dp)
+                    .align(Alignment.TopEnd)
+                    .aspectRatio(1f),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.End
             ) {
@@ -126,44 +146,37 @@ fun AsyncImage(
 ) {
     val defaultImage = R.drawable.default_bike_image
 
-    var imageLoadFinished by remember {
-        mutableStateOf(false)
-    }
+    val imageRequest = ImageRequest.Builder(LocalContext.current)
+        .data(url)
+        .memoryCacheKey(url)
+        .diskCacheKey(url)
+        .error(defaultImage)
+        .fallback(defaultImage)
+        .diskCachePolicy(CachePolicy.ENABLED)
+        .networkCachePolicy(CachePolicy.ENABLED)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .crossfade(true)
+        .build()
 
-    var imageBroken by remember {
-        mutableStateOf(false)
+    var loading by remember {
+        mutableStateOf(true)
     }
 
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(url).crossfade(true).build(),
+            model = imageRequest,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            loading = {
-                Loading()
-            },
+            alignment = alignment,
             contentScale = contentScale,
-            onSuccess = {
-                imageLoadFinished = true
-            },
-            onError = {
-                imageLoadFinished = true
-                imageBroken = true
-            },
-            onLoading = {
-                imageLoadFinished = false
-                imageBroken = false
-            },
-            alignment = alignment
+            loading = {
+                Box {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth().height(4.dp),
+                        color = MaterialTheme.colors.secondary
+                    )
+                }
+            }
         )
-
-        if (imageBroken) {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(defaultImage).crossfade(true).build(),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface),
-                contentScale = ContentScale.Crop
-            )
-        }
     }
 }

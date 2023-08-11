@@ -3,6 +3,10 @@ package com.anxops.bkn
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.disk.DiskCache
+import coil.util.DebugLogger
 import com.anxops.bkn.data.network.tokenRefresh.TokenRefresher
 import com.anxops.bkn.data.preferences.BknDataStore
 import com.anxops.bkn.ui.Notifier
@@ -17,7 +21,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @HiltAndroidApp
-class BknApplication : Application(), Configuration.Provider {
+class BknApplication : Application(), Configuration.Provider, ImageLoaderFactory {
 
     @Inject
     lateinit var dispatcher: CoroutineDispatcher
@@ -72,5 +76,17 @@ class BknApplication : Application(), Configuration.Provider {
                 }
             }
         }
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .logger(DebugLogger())
+            .respectCacheHeaders(false)
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(this.cacheDir.resolve("img_cache"))
+                    .build()
+            }
+            .build()
     }
 }

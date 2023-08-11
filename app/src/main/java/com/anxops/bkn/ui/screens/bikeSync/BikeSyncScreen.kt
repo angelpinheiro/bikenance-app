@@ -88,7 +88,7 @@ fun BikeSyncScreen(
                                 Switch(
                                     checked = sync,
                                     onCheckedChange = { viewModel.syncBike(bike, it) },
-                                        colors = SwitchDefaults.colors(
+                                    colors = SwitchDefaults.colors(
 
                                         checkedThumbColor = MaterialTheme.colors.strava,
                                         uncheckedTrackColor = MaterialTheme.colors.primaryVariant,
@@ -97,7 +97,7 @@ fun BikeSyncScreen(
                                         )
                                     )
                                 )
-                            }, isLast = true)
+                            })
 
                             Divider(
                                 Modifier.fillMaxWidth().padding(6.dp).height(0.dp)

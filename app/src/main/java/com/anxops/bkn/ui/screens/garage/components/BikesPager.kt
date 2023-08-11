@@ -105,8 +105,7 @@ fun BikesPager(
                         },
                         onDetail = {
                             onBikeDetails(bike)
-                        },
-                        isLast = true
+                        }
                     )
                 }
             }
@@ -126,8 +125,7 @@ fun BikesPager(
                     },
                     onDetail = {
                         onBikeDetails(bike)
-                    },
-                    isLast = it == bikes.size - 1
+                    }
                 )
             }
         }

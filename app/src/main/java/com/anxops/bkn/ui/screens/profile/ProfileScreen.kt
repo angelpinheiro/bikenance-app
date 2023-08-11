@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
@@ -171,20 +173,6 @@ fun ProfileScreen(
                                 }
                             )
                         }
-
-//                        Button(
-//                            onClick = { viewModel.saveProfileChanges() },
-//                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-//                            modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
-//                            enabled = (state.profile.firstname != null && state.profile.lastname != null)
-//                        ) {
-//
-//                            Text(
-//                                text = "Save changes",
-//                                modifier = Modifier.padding(4.dp),
-//                                color = MaterialTheme.colors.surface,
-//                            )
-//                        }
                     }
 
                     Box(
@@ -222,7 +210,7 @@ private fun ProfileImageLoader(
     onError: () -> Unit = {}
 ) {
     val progress = remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     val context = LocalContext.current
@@ -235,6 +223,19 @@ private fun ProfileImageLoader(
         }
     })
 
+    val defaultImage = R.drawable.default_bike_image
+    val imageRequest = ImageRequest.Builder(LocalContext.current)
+        .data(url)
+        .memoryCacheKey(url)
+        .diskCacheKey(url)
+        .error(defaultImage)
+        .fallback(defaultImage)
+        .diskCachePolicy(CachePolicy.ENABLED)
+        .networkCachePolicy(CachePolicy.ENABLED)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .crossfade(true)
+        .build()
+
     Box {
         IconButton(onClick = {
             launcher.launch("image/jpeg")
@@ -246,22 +247,20 @@ private fun ProfileImageLoader(
                 color = MaterialTheme.colors.statusGood
             )
             SubcomposeAsyncImage(
-                model = url?.let {
-                ImageRequest.Builder(LocalContext.current).data(url).crossfade(true).build()
-            },
+                model = imageRequest,
                 contentDescription = null,
                 modifier = Modifier.size(100.dp).padding(0.dp).clip(CircleShape),
                 loading = {
-                CircularProgressIndicator(
-                    strokeWidth = 5.dp,
-                    color = MaterialTheme.colors.statusGood
-                )
-            },
+                    CircularProgressIndicator(
+                        strokeWidth = 5.dp,
+                        color = MaterialTheme.colors.statusGood
+                    )
+                },
                 contentScale = ContentScale.Crop,
                 onLoading = {},
                 onError = {
-                onError()
-            }
+                    onError()
+                }
             )
         }
     }
@@ -291,13 +290,6 @@ fun ProfileEditTopBar(
                             modifier = Modifier.size(26.dp)
                         )
                     }
-//
-//                    Text(
-//                        text = bike.name ?: bike.displayName(),
-//                        color = MaterialTheme.colors.onPrimary,
-//                        style = MaterialTheme.typography.h2,
-//                        modifier = Modifier.padding(start = 12.dp, end = 4.dp)
-//                    )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Button(onClick = {
