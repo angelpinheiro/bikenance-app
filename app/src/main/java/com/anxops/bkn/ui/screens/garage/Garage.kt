@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.anxops.bkn.R
 import com.anxops.bkn.ui.navigation.BknNavigator
 import com.anxops.bkn.ui.screens.garage.components.BikesPager
+import com.anxops.bkn.ui.screens.garage.components.OneShotDelayedVisibility
 import com.anxops.bkn.ui.screens.garage.components.RecentActivity
 import com.anxops.bkn.ui.screens.garage.components.UpcomingMaintenances
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -73,16 +74,19 @@ fun Garage(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     currentState.lastRides.let { rides ->
-                        RecentActivity(rides = rides) {
-                            nav.navigateToRide(it._id)
+                        OneShotDelayedVisibility(100) {
+                            RecentActivity(rides = rides) {
+                                nav.navigateToRide(it._id)
+                            }
                         }
                     }
-
-                    UpcomingMaintenances(currentState.selectedBike, onClickItem = { m ->
-                        currentState.selectedBike?.let {
-                            nav.navigateToBikeComponent(it._id, m.componentId)
-                        }
-                    })
+                    OneShotDelayedVisibility(200) {
+                        UpcomingMaintenances(currentState.selectedBike, onClickItem = { m ->
+                            currentState.selectedBike?.let {
+                                nav.navigateToBikeComponent(it._id, m.componentId)
+                            }
+                        })
+                    }
                 }
             }
         }

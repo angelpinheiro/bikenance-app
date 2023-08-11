@@ -75,4 +75,5 @@
     <string name="bike_edit_bike_type_label">Bike Type</string>
     <string name="component_modifier_rear_suffix">Rear</string>
     <string name="component_modifier_front_suffix">Front</string>
+    <string name="no_recent_activity">No recent activity</string>
 </resources>

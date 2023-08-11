@@ -45,7 +45,7 @@
     <string name="login_screen_subtitle">¡Mantenimiento bien hecho!</string>
     <string name="recent_activity_title">Actividad reciente (%1$s)</string>
     <string name="upcoming_maintenance_title">Próximos mantenimientos</string>
-    <string name="upcoming_maintenance_empty_title">Sin mantenimientos próximos</string>
+    <string name="upcoming_maintenance_empty_title">Sin mantenimientos a la vista!</string>
     <string name="maintenance_estimated_date">Fecha estimada: %1$s</string>
     <string name="strava_bike_tracking">Sincronización de bicicletas con STRAVA</string>
     <string name="strava_bike_tracking_message">Tienes %1$s bicicletas en Strava. Marca las que quieras sincronizar para recibir recomendaciones de mantenimiento.</string>
@@ -75,4 +75,5 @@
     <string name="bike_edit_bike_type_label">Tipo de bicicleta</string>
     <string name="component_modifier_rear_suffix">Atrás</string>
     <string name="component_modifier_front_suffix">Delante</string>
+    <string name="no_recent_activity">Sin actividad reciente</string>
 </resources>

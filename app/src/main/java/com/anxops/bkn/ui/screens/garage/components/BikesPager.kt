@@ -62,7 +62,7 @@ fun BikesPager(
     }
 
     Column(
-        Modifier.fillMaxWidth().padding(top = 0.dp)
+        Modifier.fillMaxWidth()
     ) {
         Row(
             Modifier.padding(start = 16.dp, top = 6.dp, bottom = 6.dp, end = 0.dp).let {
